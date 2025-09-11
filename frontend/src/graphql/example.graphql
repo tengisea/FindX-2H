@@ -1,0 +1,7 @@
+query Example {
+  example {
+    id
+    age
+    phoneNumber
+  }
+}
