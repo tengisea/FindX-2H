@@ -1,8 +1,10 @@
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import { ApolloServer } from "@apollo/server";
-import { resolvers } from "@/resolvers";
 import { typeDefs } from "@/schemas";
+import { resolvers } from "@/resolvers";
 import { NextRequest } from "next/server";
+import { connectDataBase } from "@/database";
+import { ApolloServer } from "@apollo/server";
+import { startServerAndCreateNextHandler } from "@as-integrations/next";
+connectDataBase();
 
 const server = new ApolloServer({
   resolvers,
