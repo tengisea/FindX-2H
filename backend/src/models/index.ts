@@ -5,4 +5,5 @@ export * from "./Organizer.model";
 export * from "./MatchRoom.model";
 export * from "./Tournament.model";
 export * from "./ChallengeRoom.model";
-export * from "./StudentsResult.model";
+export * from "./ClassType.model";
+export * from "./Question.model";
