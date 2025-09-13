@@ -7,3 +7,4 @@ export * from "./Tournament.model";
 export * from "./ChallengeRoom.model";
 export * from "./StudentsResult.model";
 export * from "./Task.model";
+export * from "./Answer.model";

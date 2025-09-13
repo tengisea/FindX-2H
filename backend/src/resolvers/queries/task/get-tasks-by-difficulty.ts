@@ -3,15 +3,15 @@ import { GraphQLError } from "graphql";
 
 export const tasksByDifficulty: any = async (_: any, { difficulty }: { difficulty: string }) => {
   try {
-    // Convert uppercase GraphQL input to lowercase for database query
-    const tasks = await TaskModel.find({ difficulty: difficulty.toLowerCase() });
-    // Convert lowercase database values to uppercase for GraphQL response and map _id to id
+    console.log(`🔍 Looking for tasks with difficulty: ${difficulty}`);
+    // The database stores values in uppercase, so use the difficulty as-is
+    const tasks = await TaskModel.find({ difficulty: difficulty });
+    console.log(`✅ Found ${tasks.length} tasks with difficulty ${difficulty}`);
+    // Map _id to id and convert topic to uppercase for GraphQL response
     return tasks.map(task => ({
       ...task.toObject(),
       id: task._id.toString(),
-      topic: task.topic?.toUpperCase(),
-      difficulty: task.difficulty?.toUpperCase(),
-      type: task.type?.toUpperCase(),
+      topic: task.topic?.toUpperCase().replace(/-/g, '_'),
     }));
   } catch (error) {
     console.error('Error fetching tasks by difficulty:', error);

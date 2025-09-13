@@ -13,6 +13,16 @@ export interface GeneratedTaskResponse {
   problemStatement?: string;
 }
 
+export interface GeneratedAnswerResponse {
+  answer: string;
+  solution: string;
+  testCases: Array<{
+    input: string;
+    expectedOutput: string;
+    explanation?: string;
+  }>;
+}
+
 export class AIService {
   static async generateTask(request: AIGenerationRequest): Promise<GeneratedTaskResponse> {
     try {
@@ -30,6 +40,33 @@ export class AIService {
       return generatedContent;
     } catch (error) {
       console.error('❌ AI generation failed:', error);
+      throw error;
+    }
+  }
+
+  static async generateTaskAnswer(taskData: {
+    title: string;
+    description: string;
+    problemStatement: string;
+    topic: string;
+    difficulty: string;
+    type: string;
+  }): Promise<GeneratedAnswerResponse> {
+    try {
+      console.log('🤖 Starting AI answer generation...');
+      
+      const prompt = this.buildAnswerPrompt(taskData);
+      console.log('📝 Generated answer prompt for AI service');
+      
+      const response = await this.callAIService(prompt);
+      console.log('✅ AI service responded successfully');
+      
+      const generatedContent = this.parseAnswerResponse(response);
+      console.log('📋 Parsed AI answer response');
+      
+      return generatedContent;
+    } catch (error) {
+      console.error('❌ AI answer generation failed:', error);
       throw error;
     }
   }
@@ -264,6 +301,114 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
         return 'Tournament';
       default:
         return 'Challenge';
+    }
+  }
+
+  private static buildAnswerPrompt(taskData: {
+    title: string;
+    description: string;
+    problemStatement: string;
+    topic: string;
+    difficulty: string;
+    type: string;
+  }): string {
+    return `
+You are an expert competitive programming problem solver. Generate a complete solution for the following problem:
+
+Title: ${taskData.title}
+Description: ${taskData.description}
+Topic: ${taskData.topic}
+Difficulty: ${taskData.difficulty}
+Type: ${taskData.type}
+
+Problem Statement:
+${taskData.problemStatement}
+
+Requirements:
+1. Provide the correct answer/result
+2. Include a detailed step-by-step solution explaining the approach
+3. Provide 3-5 test cases with input, expected output, and explanations
+4. Consider the difficulty level when providing the solution complexity
+
+IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no markdown, no code blocks):
+{
+  "answer": "The final answer or result",
+  "solution": "Detailed step-by-step solution explaining the approach, algorithm, and reasoning",
+  "testCases": [
+    {
+      "input": "test input 1",
+      "expectedOutput": "expected output 1",
+      "explanation": "explanation of why this output is correct"
+    },
+    {
+      "input": "test input 2", 
+      "expectedOutput": "expected output 2",
+      "explanation": "explanation of why this output is correct"
+    },
+    {
+      "input": "test input 3",
+      "expectedOutput": "expected output 3", 
+      "explanation": "explanation of why this output is correct"
+    }
+  ]
+}
+    `;
+  }
+
+  private static parseAnswerResponse(response: string): GeneratedAnswerResponse {
+    try {
+      let cleanedResponse = response
+        .replace(/```json\n?/g, '')
+        .replace(/```\n?$/g, '')
+        .replace(/^```/g, '')
+        .trim();
+      
+      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedResponse = jsonMatch[0];
+      }
+      
+      const parseJSON = (jsonString: string) => {
+        try {
+          return JSON.parse(jsonString);
+        } catch (error) {
+          let cleaned = jsonString
+            .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+            .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+            .replace(/([^\\])\\([^"\\\/bfnrt])/g, '$1\\\\$2'); // Fix unescaped backslashes
+          
+          return JSON.parse(cleaned);
+        }
+      };
+      
+      const parsed = parseJSON(cleanedResponse);
+      
+      if (!parsed.answer || !parsed.solution || !parsed.testCases) {
+        throw new Error('Invalid AI response format - missing answer, solution, or testCases');
+      }
+      
+      return parsed;
+    } catch (error) {
+      console.error('Error parsing AI answer response:', error);
+      console.error('Raw response:', response);
+      
+      try {
+        const answerMatch = response.match(/"answer":\s*"([^"]+)"/);
+        const solutionMatch = response.match(/"solution":\s*"([^"]+)"/);
+        
+        if (answerMatch && solutionMatch) {
+          console.log('🔄 Using fallback parsing for AI answer response');
+          return {
+            answer: answerMatch[1],
+            solution: solutionMatch[1],
+            testCases: []
+          };
+        }
+      } catch (fallbackError) {
+        console.error('Fallback parsing also failed:', fallbackError);
+      }
+      
+      throw new Error('Failed to parse AI answer response');
     }
   }
 }

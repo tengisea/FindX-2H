@@ -17,6 +17,19 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type Answer = {
+  __typename?: 'Answer';
+  aiGenerated: Scalars['Boolean']['output'];
+  answer: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  generatedAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  solution: Scalars['String']['output'];
+  taskId: Scalars['ID']['output'];
+  testCases: Array<TestCase>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export enum Difficulty {
   Easy = 'EASY',
   Hard = 'HARD',
@@ -49,6 +62,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   generateMultipleTasks: Array<Task>;
   generateTask: Task;
+  generateTaskAnswer: Answer;
 };
 
 
@@ -61,12 +75,23 @@ export type MutationGenerateTaskArgs = {
   input: GenerateTaskInput;
 };
 
+
+export type MutationGenerateTaskAnswerArgs = {
+  taskId: Scalars['ID']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  answer?: Maybe<Answer>;
   task?: Maybe<Task>;
   tasks: Array<Task>;
   tasksByDifficulty: Array<Task>;
   tasksByTopic: Array<Task>;
+};
+
+
+export type QueryAnswerArgs = {
+  taskId: Scalars['ID']['input'];
 };
 
 
@@ -110,6 +135,13 @@ export enum TaskType {
   Challenge = 'CHALLENGE',
   Tournament = 'TOURNAMENT'
 }
+
+export type TestCase = {
+  __typename?: 'TestCase';
+  expectedOutput: Scalars['String']['output'];
+  explanation?: Maybe<Scalars['String']['output']>;
+  input: Scalars['String']['output'];
+};
 
 export enum Topic {
   Algorithms = 'ALGORITHMS',
@@ -203,6 +235,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Answer: ResolverTypeWrapper<Answer>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Difficulty: Difficulty;
@@ -217,11 +250,13 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Task: ResolverTypeWrapper<Task>;
   TaskType: TaskType;
+  TestCase: ResolverTypeWrapper<TestCase>;
   Topic: Topic;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Answer: Answer;
   Boolean: Scalars['Boolean']['output'];
   DateTime: Scalars['DateTime']['output'];
   DifficultyDistribution: DifficultyDistribution;
@@ -233,6 +268,19 @@ export type ResolversParentTypes = {
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
   Task: Task;
+  TestCase: TestCase;
+};
+
+export type AnswerResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Answer'] = ResolversParentTypes['Answer']> = {
+  aiGenerated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  answer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  generatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  solution?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  taskId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  testCases?: Resolver<Array<ResolversTypes['TestCase']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
@@ -242,9 +290,11 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   generateMultipleTasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationGenerateMultipleTasksArgs, 'input'>>;
   generateTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationGenerateTaskArgs, 'input'>>;
+  generateTaskAnswer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationGenerateTaskAnswerArgs, 'taskId'>>;
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  answer?: Resolver<Maybe<ResolversTypes['Answer']>, ParentType, ContextType, RequireFields<QueryAnswerArgs, 'taskId'>>;
   task?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTaskArgs, 'id'>>;
   tasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType>;
   tasksByDifficulty?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTasksByDifficultyArgs, 'difficulty'>>;
@@ -267,10 +317,18 @@ export type TaskResolvers<ContextType = Context, ParentType extends ResolversPar
   usageCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
+export type TestCaseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TestCase'] = ResolversParentTypes['TestCase']> = {
+  expectedOutput?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  explanation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  input?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
+  Answer?: AnswerResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Task?: TaskResolvers<ContextType>;
+  TestCase?: TestCaseResolvers<ContextType>;
 };
 
