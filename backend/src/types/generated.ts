@@ -17,36 +17,121 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
-export type CreateExampleInput = {
-  age?: InputMaybe<Scalars['Int']['input']>;
-  phoneNumber?: InputMaybe<Scalars['String']['input']>;
+export enum Difficulty {
+  Easy = 'EASY',
+  Hard = 'HARD',
+  Medium = 'MEDIUM'
+}
+
+export type DifficultyDistribution = {
+  easy?: InputMaybe<Scalars['Int']['input']>;
+  hard?: InputMaybe<Scalars['Int']['input']>;
+  medium?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type Example = {
-  __typename?: 'Example';
-  age?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  phoneNumber?: Maybe<Scalars['String']['output']>;
+export type GenerateMultipleTasksInput = {
+  difficultyDistribution?: InputMaybe<DifficultyDistribution>;
+  piPoints: Scalars['Int']['input'];
+  taskCount: Scalars['Int']['input'];
+  topic: Topic;
+  type: TaskType;
+};
+
+export type GenerateTaskInput = {
+  difficulty: Difficulty;
+  piPoints: Scalars['Int']['input'];
+  taskCount?: InputMaybe<Scalars['Int']['input']>;
+  topic: Topic;
+  type: TaskType;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createExample: Response;
+  generateMultipleTasks: Array<Task>;
+  generateTask: Task;
 };
 
 
-export type MutationCreateExampleArgs = {
-  input: CreateExampleInput;
+export type MutationGenerateMultipleTasksArgs = {
+  input: GenerateMultipleTasksInput;
+};
+
+
+export type MutationGenerateTaskArgs = {
+  input: GenerateTaskInput;
 };
 
 export type Query = {
   __typename?: 'Query';
-  example?: Maybe<Example>;
+  task?: Maybe<Task>;
+  tasks: Array<Task>;
+  tasksByDifficulty: Array<Task>;
+  tasksByTopic: Array<Task>;
+};
+
+
+export type QueryTaskArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryTasksByDifficultyArgs = {
+  difficulty: Difficulty;
+};
+
+
+export type QueryTasksByTopicArgs = {
+  topic: Topic;
 };
 
 export enum Response {
   NotFound = 'NOT_FOUND',
   Success = 'Success'
+}
+
+export type Task = {
+  __typename?: 'Task';
+  aiGenerated: Scalars['Boolean']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  description: Scalars['String']['output'];
+  difficulty: Difficulty;
+  generatedAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  piPoints: Scalars['Int']['output'];
+  problemStatement: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  topic: Topic;
+  type: TaskType;
+  updatedAt: Scalars['DateTime']['output'];
+  usageCount: Scalars['Int']['output'];
+};
+
+export enum TaskType {
+  Challenge = 'CHALLENGE',
+  Tournament = 'TOURNAMENT'
+}
+
+export enum Topic {
+  Algorithms = 'ALGORITHMS',
+  Astronomy = 'ASTRONOMY',
+  Biology = 'BIOLOGY',
+  Chemistry = 'CHEMISTRY',
+  ComputerScience = 'COMPUTER_SCIENCE',
+  DataStructures = 'DATA_STRUCTURES',
+  DynamicProgramming = 'DYNAMIC_PROGRAMMING',
+  EarthScience = 'EARTH_SCIENCE',
+  Economics = 'ECONOMICS',
+  English = 'ENGLISH',
+  Geography = 'GEOGRAPHY',
+  Graph = 'GRAPH',
+  Greedy = 'GREEDY',
+  History = 'HISTORY',
+  Linguistics = 'LINGUISTICS',
+  Math = 'MATH',
+  Philosophy = 'PHILOSOPHY',
+  Physics = 'PHYSICS',
+  String = 'STRING',
+  TextProcessing = 'TEXT_PROCESSING'
 }
 
 
@@ -119,50 +204,73 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  CreateExampleInput: CreateExampleInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  Example: ResolverTypeWrapper<Example>;
+  Difficulty: Difficulty;
+  DifficultyDistribution: DifficultyDistribution;
+  GenerateMultipleTasksInput: GenerateMultipleTasksInput;
+  GenerateTaskInput: GenerateTaskInput;
+  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Response: Response;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Task: ResolverTypeWrapper<Task>;
+  TaskType: TaskType;
+  Topic: Topic;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
-  CreateExampleInput: CreateExampleInput;
   DateTime: Scalars['DateTime']['output'];
-  Example: Example;
+  DifficultyDistribution: DifficultyDistribution;
+  GenerateMultipleTasksInput: GenerateMultipleTasksInput;
+  GenerateTaskInput: GenerateTaskInput;
+  ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
+  Task: Task;
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
-export type ExampleResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Example'] = ResolversParentTypes['Example']> = {
-  age?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  phoneNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-};
-
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createExample?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreateExampleArgs, 'input'>>;
+  generateMultipleTasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationGenerateMultipleTasksArgs, 'input'>>;
+  generateTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationGenerateTaskArgs, 'input'>>;
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  example?: Resolver<Maybe<ResolversTypes['Example']>, ParentType, ContextType>;
+  task?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTaskArgs, 'id'>>;
+  tasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType>;
+  tasksByDifficulty?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTasksByDifficultyArgs, 'difficulty'>>;
+  tasksByTopic?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<QueryTasksByTopicArgs, 'topic'>>;
+};
+
+export type TaskResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']> = {
+  aiGenerated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  difficulty?: Resolver<ResolversTypes['Difficulty'], ParentType, ContextType>;
+  generatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  piPoints?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  problemStatement?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  topic?: Resolver<ResolversTypes['Topic'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['TaskType'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  usageCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = Context> = {
   DateTime?: GraphQLScalarType;
-  Example?: ExampleResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Task?: TaskResolvers<ContextType>;
 };
 
