@@ -35,6 +35,12 @@ export const taskTypeDefs = gql`
     ECONOMICS
   }
 
+  type TestCase {
+    input: String!
+    expectedOutput: String!
+    explanation: String
+  }
+
   type Task {
     id: ID!
     title: String!
@@ -47,6 +53,18 @@ export const taskTypeDefs = gql`
     aiGenerated: Boolean!
     generatedAt: DateTime!
     usageCount: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type Answer {
+    id: ID!
+    taskId: ID!
+    answer: String!
+    solution: String!
+    testCases: [TestCase!]!
+    aiGenerated: Boolean!
+    generatedAt: DateTime!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -78,10 +96,12 @@ export const taskTypeDefs = gql`
     tasks: [Task!]!
     tasksByTopic(topic: Topic!): [Task!]!
     tasksByDifficulty(difficulty: Difficulty!): [Task!]!
+    answer(taskId: ID!): Answer
   }
 
   type Mutation {
     generateTask(input: GenerateTaskInput!): Task!
     generateMultipleTasks(input: GenerateMultipleTasksInput!): [Task!]!
+    generateTaskAnswer(taskId: ID!): Answer!
   }
 `;

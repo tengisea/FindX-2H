@@ -3,15 +3,16 @@ import { GraphQLError } from "graphql";
 
 export const tasksByTopic: any = async (_: any, { topic }: { topic: string }) => {
   try {
-    // Convert uppercase GraphQL input to lowercase for database query
-    const tasks = await TaskModel.find({ topic: topic.toLowerCase() });
-    // Convert lowercase database values to uppercase for GraphQL response and map _id to id
+    console.log(`🔍 Looking for tasks with topic: ${topic}`);
+    // Convert GraphQL enum to database format (lowercase with hyphens)
+    const dbTopic = topic.toLowerCase().replace(/_/g, '-');
+    const tasks = await TaskModel.find({ topic: dbTopic });
+    console.log(`✅ Found ${tasks.length} tasks with topic ${topic}`);
+    // Map _id to id and convert topic to uppercase for GraphQL response
     return tasks.map(task => ({
       ...task.toObject(),
       id: task._id.toString(),
-      topic: task.topic?.toUpperCase(),
-      difficulty: task.difficulty?.toUpperCase(),
-      type: task.type?.toUpperCase(),
+      topic: task.topic?.toUpperCase().replace(/-/g, '_'),
     }));
   } catch (error) {
     console.error('Error fetching tasks by topic:', error);
