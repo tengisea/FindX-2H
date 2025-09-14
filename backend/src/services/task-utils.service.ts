@@ -1,12 +1,13 @@
 import { TaskModel } from "@/models/Task.model";
-import { TaskType as ModelTaskType, Difficulty as ModelDifficulty } from "@/models/Task.model";
-import { Task, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, Topic as GraphQLTopic } from "@/types/generated";
-import { GeneratedTaskResponse } from "./ai.service";
+import { TaskType as ModelTaskType, Difficulty as ModelDifficulty, ClassType as ModelClassType } from "@/models/Task.model";
+import { Task, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, Topic as GraphQLTopic, ClassType as GraphQLClassType } from "@/types/generated";
+import { GeneratedTaskResponse } from "./ai.service.new";
 
 export interface TaskGenerationRequest {
   topic: GraphQLTopic;
   difficulty: GraphQLDifficulty;
   type: GraphQLTaskType;
+  classType: GraphQLClassType;
   piPoints: number;
   taskCount?: number;
 }
@@ -20,6 +21,7 @@ export interface DifficultyDistribution {
 export interface MultipleTaskGenerationRequest {
   topic: GraphQLTopic;
   type: GraphQLTaskType;
+  classType: GraphQLClassType;
   piPoints: number;
   taskCount: number;
   difficultyDistribution?: DifficultyDistribution;
@@ -47,6 +49,37 @@ export class TaskUtilsService {
         return ModelTaskType.TOURNAMENT;
       default:
         return ModelTaskType.CHALLENGE;
+    }
+  }
+
+  static mapClassTypeToModel(classType: GraphQLClassType): ModelClassType {
+    switch (classType) {
+      case GraphQLClassType.Grade_1:
+        return ModelClassType.GRADE_1;
+      case GraphQLClassType.Grade_2:
+        return ModelClassType.GRADE_2;
+      case GraphQLClassType.Grade_3:
+        return ModelClassType.GRADE_3;
+      case GraphQLClassType.Grade_4:
+        return ModelClassType.GRADE_4;
+      case GraphQLClassType.Grade_5:
+        return ModelClassType.GRADE_5;
+      case GraphQLClassType.Grade_6:
+        return ModelClassType.GRADE_6;
+      case GraphQLClassType.Grade_7:
+        return ModelClassType.GRADE_7;
+      case GraphQLClassType.Grade_8:
+        return ModelClassType.GRADE_8;
+      case GraphQLClassType.Grade_9:
+        return ModelClassType.GRADE_9;
+      case GraphQLClassType.Grade_10:
+        return ModelClassType.GRADE_10;
+      case GraphQLClassType.Grade_11:
+        return ModelClassType.GRADE_11;
+      case GraphQLClassType.Grade_12:
+        return ModelClassType.GRADE_12;
+      default:
+        return ModelClassType.GRADE_5;
     }
   }
 
@@ -97,7 +130,7 @@ export class TaskUtilsService {
     }
   }
 
-  static transformToGraphQLTask(taskDoc: any, originalDifficulty: GraphQLDifficulty, originalTopic: GraphQLTopic): Task {
+  static transformToGraphQLTask(taskDoc: any, originalDifficulty: GraphQLDifficulty, originalTopic: GraphQLTopic, originalClassType: GraphQLClassType): Task {
     return {
       __typename: 'Task',
       id: taskDoc._id.toString(),
@@ -106,6 +139,7 @@ export class TaskUtilsService {
       topic: originalTopic,
       difficulty: originalDifficulty,
       type: taskDoc.type === ModelTaskType.CHALLENGE ? GraphQLTaskType.Challenge : GraphQLTaskType.Tournament,
+      classType: originalClassType,
       piPoints: taskDoc.piPoints,
       problemStatement: this.formatProblemStatement(taskDoc.problemStatement || ''),
       aiGenerated: taskDoc.aiGenerated,
@@ -127,6 +161,7 @@ export class TaskUtilsService {
   ): Promise<any> {
     const modelDifficulty = this.mapDifficultyToModel(request.difficulty);
     const modelType = this.mapTaskTypeToModel(request.type);
+    const modelClassType = this.mapClassTypeToModel(request.classType);
     const topicString = this.mapTopicToString(request.topic);
     
     return await TaskModel.create({
@@ -135,6 +170,7 @@ export class TaskUtilsService {
       topic: topicString,
       difficulty: modelDifficulty,
       type: modelType,
+      classType: modelClassType,
       piPoints: request.piPoints,
       problemStatement: content.problemStatement || '',
       aiGenerated: aiGenerated,

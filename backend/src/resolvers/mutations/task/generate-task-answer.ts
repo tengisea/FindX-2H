@@ -1,7 +1,8 @@
 import { TaskModel } from "@/models/Task.model";
 import { AnswerModel } from "@/models/Answer.model";
-import { AIService } from "@/services/ai.service";
+import { AnswerGeneratorService } from "@/services/answer-generator.service";
 import { GraphQLError } from "graphql";
+import { Topic as GraphQLTopic, ClassType as GraphQLClassType } from "@/types/generated";
 
 export const generateTaskAnswer = async (
   _: unknown,
@@ -28,11 +29,22 @@ export const generateTaskAnswer = async (
         taskId: existingAnswer.taskId,
         answer: existingAnswer.answer,
         solution: existingAnswer.solution,
-        testCases: existingAnswer.testCases.map(tc => ({
+        testCases: existingAnswer.testCases?.map(tc => ({
           input: tc.input,
           expectedOutput: tc.expectedOutput,
           explanation: tc.explanation || undefined
         })),
+        answerValidation: {
+          format: existingAnswer.answerValidation.format,
+          correctAnswers: existingAnswer.answerValidation.correctAnswers,
+          multipleChoiceOptions: existingAnswer.answerValidation.multipleChoiceOptions?.map(opt => ({
+            letter: opt.letter,
+            text: opt.text,
+            isCorrect: opt.isCorrect
+          })),
+          partialCreditAnswers: existingAnswer.answerValidation.partialCreditAnswers,
+          validationRules: existingAnswer.answerValidation.validationRules
+        },
         aiGenerated: existingAnswer.aiGenerated,
         generatedAt: existingAnswer.generatedAt,
         createdAt: existingAnswer.createdAt,
@@ -40,19 +52,21 @@ export const generateTaskAnswer = async (
       };
     }
 
-    // Generate answer using AI service
-    console.log('🤖 Generating answer using AI service...');
+    // Generate answer using the new AnswerGeneratorService
+    console.log('🤖 Generating answer using AnswerGeneratorService...');
     
-    const answerData = await AIService.generateTaskAnswer({
+    // Map model types to GraphQL types
+    const { topic, classType } = AnswerGeneratorService.mapModelToGraphQLTypes(task.topic, task.classType);
+    
+    const answerData = await AnswerGeneratorService.generateAnswerFormat({
+      topic,
+      classType,
       title: task.title,
       description: task.description,
-      problemStatement: task.problemStatement || '',
-      topic: task.topic,
-      difficulty: task.difficulty,
-      type: task.type
+      problemStatement: task.problemStatement || ''
     });
 
-    console.log('✅ AI service generated answer successfully');
+    console.log('✅ AnswerGeneratorService generated answer successfully');
 
     // Create a new answer document
     const newAnswer = new AnswerModel({
@@ -60,6 +74,7 @@ export const generateTaskAnswer = async (
       answer: answerData.answer,
       solution: answerData.solution,
       testCases: answerData.testCases,
+      answerValidation: answerData.answerValidation,
       aiGenerated: true,
       generatedAt: new Date()
     });
@@ -74,11 +89,22 @@ export const generateTaskAnswer = async (
       taskId: savedAnswer.taskId,
       answer: savedAnswer.answer,
       solution: savedAnswer.solution,
-      testCases: savedAnswer.testCases.map(tc => ({
+      testCases: savedAnswer.testCases?.map(tc => ({
         input: tc.input,
         expectedOutput: tc.expectedOutput,
         explanation: tc.explanation || undefined
       })),
+      answerValidation: {
+        format: savedAnswer.answerValidation.format,
+        correctAnswers: savedAnswer.answerValidation.correctAnswers,
+        multipleChoiceOptions: savedAnswer.answerValidation.multipleChoiceOptions?.map(opt => ({
+          letter: opt.letter,
+          text: opt.text,
+          isCorrect: opt.isCorrect
+        })),
+        partialCreditAnswers: savedAnswer.answerValidation.partialCreditAnswers,
+        validationRules: savedAnswer.answerValidation.validationRules
+      },
       aiGenerated: savedAnswer.aiGenerated,
       generatedAt: savedAnswer.generatedAt,
       createdAt: savedAnswer.createdAt,

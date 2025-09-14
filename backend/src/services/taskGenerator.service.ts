@@ -1,5 +1,5 @@
-import { Task, Difficulty as GraphQLDifficulty } from "@/types/generated";
-import { AIService, AIGenerationRequest, GeneratedTaskResponse } from "./ai.service";
+import { Task, Difficulty as GraphQLDifficulty, ClassType as GraphQLClassType } from "@/types/generated";
+import { AIService, AIGenerationRequest, GeneratedTaskResponse } from "./ai.service.new";
 import { TemplateService, TemplateGenerationRequest } from "./template.service";
 import { TaskUtilsService, TaskGenerationRequest, MultipleTaskGenerationRequest } from "./task-utils.service";
 
@@ -35,6 +35,7 @@ export class TaskGeneratorService {
             topic: request.topic,
             difficulty: difficulty,
             type: request.type,
+            classType: request.classType,
             piPoints: request.piPoints
           };
           
@@ -47,7 +48,7 @@ export class TaskGeneratorService {
           );
 
           console.log('💾 Task saved to database with AI generation');
-          const task = TaskUtilsService.transformToGraphQLTask(taskDoc, difficulty, request.topic);
+          const task = TaskUtilsService.transformToGraphQLTask(taskDoc, difficulty, request.topic, request.classType);
           tasks.push(task);
           
           if (i < count - 1) {
@@ -67,6 +68,7 @@ export class TaskGeneratorService {
                 topic: request.topic,
                 difficulty: difficulty,
                 type: request.type,
+                classType: request.classType,
                 piPoints: request.piPoints
               };
               
@@ -76,7 +78,7 @@ export class TaskGeneratorService {
                 { ...request, difficulty },
                 true
               );
-              const task = TaskUtilsService.transformToGraphQLTask(taskDoc, difficulty, request.topic);
+              const task = TaskUtilsService.transformToGraphQLTask(taskDoc, difficulty, request.topic, request.classType);
               tasks.push(task);
               continue;
             } catch (retryError) {
@@ -108,6 +110,7 @@ export class TaskGeneratorService {
         topic: request.topic,
         difficulty: request.difficulty,
         type: request.type,
+        classType: request.classType,
         piPoints: request.piPoints
       };
       
@@ -120,7 +123,7 @@ export class TaskGeneratorService {
       );
 
       console.log('💾 Task saved to database with AI generation');
-      return TaskUtilsService.transformToGraphQLTask(taskDoc, request.difficulty, request.topic);
+      return TaskUtilsService.transformToGraphQLTask(taskDoc, request.difficulty, request.topic, request.classType);
     } catch (error) {
       console.error('❌ AI generation failed, falling back to templates:', error);
       const templateRequest: TemplateGenerationRequest = {
@@ -140,6 +143,6 @@ export class TaskGeneratorService {
       false
     );
 
-    return TaskUtilsService.transformToGraphQLTask(taskDoc, request.difficulty, request.topic);
+    return TaskUtilsService.transformToGraphQLTask(taskDoc, request.difficulty, request.topic, request.classType);
   }
 }
