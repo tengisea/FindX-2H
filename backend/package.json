@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": " PORT=8000 next dev --turbopack ",
-    "predev": "graphql-codegen --config codegen.yml",
+    "predev": "graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "codegen": "graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js"
   },
   "dependencies": {
     "@apollo/server": "^5.0.0",

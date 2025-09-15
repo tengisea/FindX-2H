@@ -11,6 +11,21 @@ import { Model, model, models, Schema } from "mongoose";
   HARD = "HARD",
 }
 
+ export enum ClassType {
+  GRADE_1 = "GRADE_1",
+  GRADE_2 = "GRADE_2",
+  GRADE_3 = "GRADE_3",
+  GRADE_4 = "GRADE_4",
+  GRADE_5 = "GRADE_5",
+  GRADE_6 = "GRADE_6",
+  GRADE_7 = "GRADE_7",
+  GRADE_8 = "GRADE_8",
+  GRADE_9 = "GRADE_9",
+  GRADE_10 = "GRADE_10",
+  GRADE_11 = "GRADE_11",
+  GRADE_12 = "GRADE_12",
+}
+
 type TaskSchemaType = {
   id: string;
   title: string;
@@ -18,6 +33,7 @@ type TaskSchemaType = {
   topic: string;
   difficulty: Difficulty;
   type: TaskType;
+  classType: ClassType;
   piPoints: number; 
   aiGenerated: boolean;
   generatedAt: Date;
@@ -34,6 +50,7 @@ type TaskSchemaType = {
     topic: { type: String, required: true },
     difficulty: { type: String, enum: Object.values(Difficulty), required: true },
     type: { type: String, enum: Object.values(TaskType), required: true },
+    classType: { type: String, enum: Object.values(ClassType), required: true },
     piPoints: { type: Number, required: true },
     problemStatement: { type: String, required: false, default: '' },
     aiGenerated: { type: Boolean, default: true },

@@ -22,6 +22,7 @@ export const taskTypeDefs = gql`
     GREEDY
     ENGLISH
     TEXT_PROCESSING
+    SCIENCE
     CHEMISTRY
     BIOLOGY
     PHYSICS
@@ -35,10 +36,50 @@ export const taskTypeDefs = gql`
     ECONOMICS
   }
 
+  enum ClassType {
+    GRADE_1
+    GRADE_2
+    GRADE_3
+    GRADE_4
+    GRADE_5
+    GRADE_6
+    GRADE_7
+    GRADE_8
+    GRADE_9
+    GRADE_10
+    GRADE_11
+    GRADE_12
+  }
+
+  enum AnswerFormat {
+    SINGLE_NUMBER
+    SINGLE_WORD
+    MULTIPLE_CHOICE
+    SHORT_TEXT
+    LONG_TEXT
+    CODE_SOLUTION
+    DRAWING
+    TRUE_FALSE
+  }
+
   type TestCase {
     input: String!
     expectedOutput: String!
     explanation: String
+  }
+
+  type MultipleChoiceOption {
+    letter: String!
+    text: String!
+    isCorrect: Boolean!
+  }
+
+  type AnswerValidation {
+    format: AnswerFormat!
+    correctAnswers: [String!]!
+    multipleChoiceOptions: [MultipleChoiceOption!]
+    partialCreditAnswers: [String!]
+    validationRules: String
   }
 
   type Task {
@@ -48,6 +89,7 @@ export const taskTypeDefs = gql`
     topic: Topic!
     difficulty: Difficulty!
     type: TaskType!
+    classType: ClassType!
     piPoints: Int!
     problemStatement: String!
     aiGenerated: Boolean!
@@ -62,7 +104,8 @@ export const taskTypeDefs = gql`
     taskId: ID!
     answer: String!
     solution: String!
-    testCases: [TestCase!]!
+    testCases: [TestCase!]
+    answerValidation: AnswerValidation!
     aiGenerated: Boolean!
     generatedAt: DateTime!
     createdAt: DateTime!
@@ -73,8 +116,10 @@ export const taskTypeDefs = gql`
     topic: Topic!
     difficulty: Difficulty!
     type: TaskType!
+    classType: ClassType!
     piPoints: Int!
     taskCount: Int
+    answerFormat: AnswerFormat
   }
 
   input DifficultyDistribution {
@@ -86,9 +131,11 @@ export const taskTypeDefs = gql`
   input GenerateMultipleTasksInput {
     topic: Topic!
     type: TaskType!
+    classType: ClassType!
     piPoints: Int!
     taskCount: Int!
     difficultyDistribution: DifficultyDistribution
+    answerFormat: AnswerFormat
   }
 
   type Query {
