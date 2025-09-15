@@ -50,7 +50,7 @@ export class AIService {
     try {
       console.log('🤖 Starting AI answer generation...');
       
-      const response = await AIClient.callOpenAI(prompt);
+      const response = await AIClient.callOpenAIForAnswer(prompt);
       console.log('✅ AI service responded successfully');
       
       return response;

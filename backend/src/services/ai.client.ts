@@ -1,19 +1,24 @@
 export class AIClient {
   static async callOpenAI(prompt: string): Promise<string> {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY in your environment variables.');
+    const apiKey = process.env.OPENAI_API_KEY_TASKS || process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY_TASKS or OPENAI_API_KEY in your environment variables.');
     }
 
-    console.log('🔑 OpenAI API key found, making request...');
+    console.log('🔑 OpenAI API key found for task generation, making request...');
+
+    const model = process.env.OPENAI_MODEL_TASKS || 'gpt-4o-mini';
+    const temperature = parseFloat(process.env.OPENAI_TEMP_TASKS || '0.7');
+    const maxTokens = parseInt(process.env.OPENAI_MAX_TOKENS_TASKS || '1500');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: model,
         messages: [
           {
             role: 'system',
@@ -24,8 +29,8 @@ export class AIClient {
             content: prompt
           }
         ],
-        temperature: 0.7,
-        max_tokens: 1500
+        temperature: temperature,
+        max_tokens: maxTokens
       })
     });
 
@@ -54,20 +59,25 @@ export class AIClient {
   }
 
   static async callOpenAIForAnswer(prompt: string): Promise<string> {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY in your environment variables.');
+    const apiKey = process.env.OPENAI_API_KEY_ANSWERS || process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY_ANSWERS or OPENAI_API_KEY in your environment variables.');
     }
 
-    console.log('🔑 OpenAI API key found, making answer request...');
+    console.log('🔑 OpenAI API key found for answer generation, making request...');
+
+    const model = process.env.OPENAI_MODEL_ANSWERS || 'gpt-4o-mini';
+    const temperature = parseFloat(process.env.OPENAI_TEMP_ANSWERS || '0.3');
+    const maxTokens = parseInt(process.env.OPENAI_MAX_TOKENS_ANSWERS || '2000');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: model,
         messages: [
           {
             role: 'system',
@@ -78,8 +88,8 @@ export class AIClient {
             content: prompt
           }
         ],
-        temperature: 0.3,
-        max_tokens: 2000
+        temperature: temperature,
+        max_tokens: maxTokens
       })
     });
 

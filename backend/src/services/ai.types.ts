@@ -7,6 +7,7 @@ export interface AIGenerationRequest {
   classType: GraphQLClassType;
   piPoints: number;
   answerFormat?: GraphQLAnswerFormat;
+  variation?: string;
 }
 
 export interface GeneratedTaskResponse {
