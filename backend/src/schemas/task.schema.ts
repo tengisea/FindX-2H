@@ -22,6 +22,7 @@ export const taskTypeDefs = gql`
     GREEDY
     ENGLISH
     TEXT_PROCESSING
+    SCIENCE
     CHEMISTRY
     BIOLOGY
     PHYSICS
@@ -118,6 +119,7 @@ export const taskTypeDefs = gql`
     classType: ClassType!
     piPoints: Int!
     taskCount: Int
+    answerFormat: AnswerFormat
   }
 
   input DifficultyDistribution {
@@ -133,6 +135,7 @@ export const taskTypeDefs = gql`
     piPoints: Int!
     taskCount: Int!
     difficultyDistribution: DifficultyDistribution
+    answerFormat: AnswerFormat
   }
 
   type Query {

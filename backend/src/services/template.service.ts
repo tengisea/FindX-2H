@@ -1,5 +1,5 @@
 import { getRandomTemplate } from "./taskstemplates";
-import { GeneratedTaskResponse } from "./ai.service";
+import { GeneratedTaskResponse } from "./ai.service.new";
 import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty } from "@/types/generated";
 
 export interface TemplateGenerationRequest {

@@ -1,6 +1,7 @@
 import { Topic as GraphQLTopic, ClassType as GraphQLClassType } from "@/types/generated";
 import { AnswerFormat } from "@/models/Answer.model";
 import { ClassType as ModelClassType } from "@/models/Task.model";
+import { AIService } from "./ai.service.new";
 
 export interface AnswerGenerationRequest {
   topic: GraphQLTopic;
@@ -47,6 +48,7 @@ export class AnswerGeneratorService {
       'GREEDY': GraphQLTopic.Greedy,
       'ENGLISH': GraphQLTopic.English,
       'TEXT_PROCESSING': GraphQLTopic.TextProcessing,
+      'SCIENCE': GraphQLTopic.Science,
       'CHEMISTRY': GraphQLTopic.Chemistry,
       'BIOLOGY': GraphQLTopic.Biology,
       'PHYSICS': GraphQLTopic.Physics,
@@ -114,7 +116,7 @@ export class AnswerGeneratorService {
       // Grades 4-6: Moderate formats
       if (topic === GraphQLTopic.Math) return AnswerFormat.SINGLE_NUMBER;
       if (topic === GraphQLTopic.English) return AnswerFormat.SHORT_TEXT;
-      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return AnswerFormat.MULTIPLE_CHOICE;
       }
       return AnswerFormat.SHORT_TEXT;
@@ -122,7 +124,7 @@ export class AnswerGeneratorService {
       // Grades 7-9: More complex formats
       if (topic === GraphQLTopic.Math) return AnswerFormat.SINGLE_NUMBER;
       if (topic === GraphQLTopic.English) return AnswerFormat.SHORT_TEXT;
-      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return AnswerFormat.SHORT_TEXT;
       }
       return AnswerFormat.SHORT_TEXT;
@@ -130,7 +132,7 @@ export class AnswerGeneratorService {
       // Grades 10-12: Advanced formats
       if (topic === GraphQLTopic.Math) return AnswerFormat.SINGLE_NUMBER;
       if (topic === GraphQLTopic.English) return AnswerFormat.LONG_TEXT;
-      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return AnswerFormat.LONG_TEXT;
       }
       return AnswerFormat.LONG_TEXT;
@@ -140,35 +142,12 @@ export class AnswerGeneratorService {
   /**
    * Generates appropriate answer format based on topic and grade
    */
-  static generateAnswerFormat(request: AnswerGenerationRequest): AnswerGenerationResponse {
+  static async generateAnswerFormat(request: AnswerGenerationRequest): Promise<AnswerGenerationResponse> {
     const format = this.getAnswerFormat(request.topic, request.classType);
     const gradeNumber = this.getGradeNumber(request.classType);
 
-    switch (format) {
-      case AnswerFormat.SINGLE_NUMBER:
-        return this.generateSingleNumberAnswer(request, gradeNumber);
-      
-      case AnswerFormat.SINGLE_WORD:
-        return this.generateSingleWordAnswer(request, gradeNumber);
-      
-      case AnswerFormat.MULTIPLE_CHOICE:
-        return this.generateMultipleChoiceAnswer(request, gradeNumber);
-      
-      case AnswerFormat.SHORT_TEXT:
-        return this.generateShortTextAnswer(request, gradeNumber);
-      
-      case AnswerFormat.LONG_TEXT:
-        return this.generateLongTextAnswer(request, gradeNumber);
-      
-      case AnswerFormat.CODE_SOLUTION:
-        return this.generateCodeSolutionAnswer(request, gradeNumber);
-      
-      case AnswerFormat.TRUE_FALSE:
-        return this.generateTrueFalseAnswer(request, gradeNumber);
-      
-      default:
-        return this.generateShortTextAnswer(request, gradeNumber);
-    }
+    // For all answer formats, analyze the problem statement to get the correct answer
+    return this.generateContentAwareAnswer(request, gradeNumber, format);
   }
 
   private static generateSingleNumberAnswer(request: AnswerGenerationRequest, gradeNumber: number): AnswerGenerationResponse {
@@ -201,6 +180,105 @@ export class AnswerGeneratorService {
         validationRules: "Case-insensitive word match"
       }
     };
+  }
+
+  private static async generateContentAwareAnswer(request: AnswerGenerationRequest, gradeNumber: number, format: AnswerFormat): Promise<AnswerGenerationResponse> {
+    try {
+      // Use AI to analyze the problem statement and determine the correct answer
+      const aiPrompt = `
+Analyze this question and determine the correct answer:
+
+Title: ${request.title}
+Description: ${request.description}
+Problem Statement: ${request.problemStatement}
+Topic: ${request.topic}
+Grade Level: ${request.classType}
+Answer Format: ${format}
+
+CRITICAL INSTRUCTIONS:
+1. FIRST, identify the question format:
+   - If you see "A) B) C) D)" options, this is MULTIPLE CHOICE
+   - If you see a math problem without options, this is SINGLE_NUMBER
+   - If you see drawing instructions, this is DRAWING
+
+2. FOR MULTIPLE CHOICE QUESTIONS:
+   - Solve the math problem first (e.g., 3 + 2 = 5)
+   - Find which option contains the correct answer (e.g., B) 5)
+   - Return the LETTER of the correct option (e.g., "B")
+
+3. FOR SINGLE_NUMBER QUESTIONS:
+   - Solve the math problem
+   - Return just the number (e.g., "5")
+
+4. FOR DRAWING QUESTIONS:
+   - Determine what should be drawn/calculated
+   - Return the answer to the calculation part
+
+EXAMPLES:
+- "What is 3 + 2? A) 4 B) 5 C) 6 D) 7" → Answer: "B" (because 3+2=5, and B) 5)
+- "What is 3 + 2?" → Answer: "5" (just the number)
+- "Draw 5 circles + 3 triangles. How many total?" → Answer: "8"
+
+Return ONLY valid JSON in this exact format:
+{
+  "correctAnswer": "B",
+  "solution": "Step 1: Calculate 3 + 2 = 5. Step 2: Find option with 5. Step 3: B) 5 is correct, so answer is B",
+  "options": [
+    {"letter": "A", "text": "4", "isCorrect": false},
+    {"letter": "B", "text": "5", "isCorrect": true},
+    {"letter": "C", "text": "6", "isCorrect": false},
+    {"letter": "D", "text": "7", "isCorrect": false}
+  ]
+}
+`;
+
+      const aiResponse = await AIService.generateAnswer(aiPrompt);
+      
+      // Clean the AI response (remove markdown code blocks)
+      const cleanedResponse = this.cleanAIResponse(aiResponse);
+      
+      // Parse the AI response
+      const answerData = JSON.parse(cleanedResponse);
+      
+      // Create answer validation based on the format
+      let answerValidation: any = {
+        format: format,
+        correctAnswers: [answerData.correctAnswer],
+        validationRules: this.getValidationRules(format)
+      };
+
+      // Add format-specific fields
+      if (format === AnswerFormat.MULTIPLE_CHOICE && answerData.options && answerData.options !== null) {
+        answerValidation.multipleChoiceOptions = answerData.options;
+      }
+
+      return {
+        answer: answerData.correctAnswer,
+        solution: answerData.solution,
+        answerValidation: answerValidation
+      };
+    } catch (error) {
+      console.error('AI answer generation failed, falling back to simple generation:', error);
+      // Fallback to simple generation based on format
+      switch (format) {
+        case AnswerFormat.SINGLE_NUMBER:
+          return this.generateSingleNumberAnswer(request, gradeNumber);
+        case AnswerFormat.SINGLE_WORD:
+          return this.generateSingleWordAnswer(request, gradeNumber);
+        case AnswerFormat.MULTIPLE_CHOICE:
+          return this.generateMultipleChoiceAnswer(request, gradeNumber);
+        case AnswerFormat.SHORT_TEXT:
+          return this.generateShortTextAnswer(request, gradeNumber);
+        case AnswerFormat.LONG_TEXT:
+          return this.generateLongTextAnswer(request, gradeNumber);
+        case AnswerFormat.CODE_SOLUTION:
+          return this.generateCodeSolutionAnswer(request, gradeNumber);
+        case AnswerFormat.TRUE_FALSE:
+          return this.generateTrueFalseAnswer(request, gradeNumber);
+        default:
+          return this.generateShortTextAnswer(request, gradeNumber);
+      }
+    }
   }
 
   private static generateMultipleChoiceAnswer(request: AnswerGenerationRequest, gradeNumber: number): AnswerGenerationResponse {
@@ -370,6 +448,49 @@ export class AnswerGeneratorService {
         explanation: "Test case 2 explanation"
       }
     ];
+  }
+
+  private static cleanAIResponse(response: string): string {
+    try {
+      let cleanedResponse = response
+        .replace(/```json\n?/g, '')
+        .replace(/```\n?$/g, '')
+        .replace(/^```/g, '')
+        .trim();
+      
+      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedResponse = jsonMatch[0];
+      }
+      
+      return cleanedResponse;
+    } catch (error) {
+      console.error('Error cleaning AI response:', error);
+      return response;
+    }
+  }
+
+  private static getValidationRules(format: AnswerFormat): string {
+    switch (format) {
+      case AnswerFormat.SINGLE_NUMBER:
+        return "Exact numeric match required, with tolerance for formatting differences";
+      case AnswerFormat.SINGLE_WORD:
+        return "Case-insensitive word match";
+      case AnswerFormat.MULTIPLE_CHOICE:
+        return "Single letter selection (A, B, C, D)";
+      case AnswerFormat.SHORT_TEXT:
+        return "Case-insensitive text match, partial credit for similar answers";
+      case AnswerFormat.LONG_TEXT:
+        return "Case-insensitive text match with keyword analysis for partial credit";
+      case AnswerFormat.CODE_SOLUTION:
+        return "Code solution that passes all test cases";
+      case AnswerFormat.TRUE_FALSE:
+        return "Exact match: 'True' or 'False'";
+      case AnswerFormat.DRAWING:
+        return "Visual assessment of drawing accuracy";
+      default:
+        return "General answer validation";
+    }
   }
 
   private static getGradeNumber(classType: GraphQLClassType): number {

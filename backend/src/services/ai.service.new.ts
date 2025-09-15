@@ -45,4 +45,18 @@ export class AIService {
       throw error;
     }
   }
+
+  static async generateAnswer(prompt: string): Promise<string> {
+    try {
+      console.log('🤖 Starting AI answer generation...');
+      
+      const response = await AIClient.callOpenAI(prompt);
+      console.log('✅ AI service responded successfully');
+      
+      return response;
+    } catch (error) {
+      console.error('❌ AI answer generation failed:', error);
+      throw error;
+    }
+  }
 }

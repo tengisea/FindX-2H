@@ -79,6 +79,7 @@ export type DifficultyDistribution = {
 };
 
 export type GenerateMultipleTasksInput = {
+  answerFormat?: InputMaybe<AnswerFormat>;
   classType: ClassType;
   difficultyDistribution?: InputMaybe<DifficultyDistribution>;
   piPoints: Scalars['Int']['input'];
@@ -88,6 +89,7 @@ export type GenerateMultipleTasksInput = {
 };
 
 export type GenerateTaskInput = {
+  answerFormat?: InputMaybe<AnswerFormat>;
   classType: ClassType;
   difficulty: Difficulty;
   piPoints: Scalars['Int']['input'];
@@ -208,6 +210,7 @@ export enum Topic {
   Math = 'MATH',
   Philosophy = 'PHILOSOPHY',
   Physics = 'PHYSICS',
+  Science = 'SCIENCE',
   String = 'STRING',
   TextProcessing = 'TEXT_PROCESSING'
 }

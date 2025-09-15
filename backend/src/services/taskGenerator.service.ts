@@ -36,7 +36,8 @@ export class TaskGeneratorService {
             difficulty: difficulty,
             type: request.type,
             classType: request.classType,
-            piPoints: request.piPoints
+            piPoints: request.piPoints,
+            answerFormat: request.answerFormat
           };
           
           const generatedContent = await AIService.generateTask(aiRequest);
@@ -69,7 +70,8 @@ export class TaskGeneratorService {
                 difficulty: difficulty,
                 type: request.type,
                 classType: request.classType,
-                piPoints: request.piPoints
+                piPoints: request.piPoints,
+                answerFormat: request.answerFormat
               };
               
               const generatedContent = await AIService.generateTask(aiRequest);
@@ -111,7 +113,8 @@ export class TaskGeneratorService {
         difficulty: request.difficulty,
         type: request.type,
         classType: request.classType,
-        piPoints: request.piPoints
+        piPoints: request.piPoints,
+        answerFormat: request.answerFormat
       };
       
       const generatedContent = await AIService.generateTask(aiRequest);

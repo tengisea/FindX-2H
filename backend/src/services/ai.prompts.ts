@@ -20,11 +20,15 @@ export class AIPrompts {
     // Get age-appropriate topic description
     const ageAppropriateTopic = AIMappers.getAgeAppropriateTopic(validatedTopic, request.classType);
     
-    // Determine problem format based on topic and grade
-    const problemFormat = this.getProblemFormat(validatedTopic, request.classType);
+    // Use specified answer format or determine based on topic and grade
+    const problemFormat = request.answerFormat 
+      ? this.getProblemFormatFromAnswerFormat(request.answerFormat)
+      : this.getProblemFormat(validatedTopic, request.classType);
     
     return `
 Create a ${problemFormat} problem for a ${typeString.toLowerCase()} worth ${request.piPoints} PiPoints.
+
+CRITICAL: The problem MUST be about ${topicString} (${ageAppropriateTopic}) AND in ${problemFormat} format.
 
 Topic: ${topicString} (adjusted for ${classString}: ${ageAppropriateTopic})
 Difficulty: ${difficultyString}
@@ -36,6 +40,14 @@ Expected complexity: ${spec.complexity}
 Language level: ${classSpec.language}
 Suggested constraints: ${spec.constraints}
 
+TOPIC REQUIREMENTS:
+- The problem MUST be about ${topicString} concepts
+- For ENGLISH: Focus on letters, words, reading, writing, vocabulary
+- For MATH: Focus on numbers, counting, addition, subtraction, shapes
+- For SCIENCE: Focus on basic scientific concepts, observations, facts
+- For GEOGRAPHY: Focus on places, maps, countries, directions
+- For HISTORY: Focus on historical events, people, time periods
+
 IMPORTANT: Make sure the topic is age-appropriate for ${classString} students:
 - Grades 1-3: Focus on basic concepts like counting, simple math, basic reading, shapes, colors
 - Grades 4-5: Simple science concepts, basic geometry, word problems
@@ -45,13 +57,17 @@ IMPORTANT: Make sure the topic is age-appropriate for ${classString} students:
 Problem Format Guidelines:
 ${this.getFormatGuidelines(problemFormat, classString)}
 
+FORMAT-SPECIFIC REQUIREMENTS:
+${this.getFormatSpecificRequirements(problemFormat, classString)}
+
 Requirements:
 1. Clear, engaging problem statement appropriate for ${classString} students
 2. Use ${classSpec.language} in the problem description
 3. Focus on ${classSpec.concepts} that are age-appropriate
-4. Follow the ${problemFormat} format guidelines
+4. Follow the ${problemFormat} format guidelines EXACTLY
 5. Make it educational and fun for ${classString} level
 6. If the topic seems too advanced for the grade, adapt it to simpler concepts
+7. Ensure the problem format matches the expected answer type
 
 IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no markdown, no code blocks):
 {
@@ -191,6 +207,29 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
     };
   }
 
+  private static getProblemFormatFromAnswerFormat(answerFormat: string): string {
+    switch (answerFormat) {
+      case 'MULTIPLE_CHOICE':
+        return 'multiple choice question';
+      case 'SINGLE_NUMBER':
+        return 'math problem requiring a single number answer';
+      case 'SINGLE_WORD':
+        return 'word problem requiring a single word answer';
+      case 'SHORT_TEXT':
+        return 'short text response question';
+      case 'LONG_TEXT':
+        return 'detailed text response question';
+      case 'CODE_SOLUTION':
+        return 'competitive programming (LeetCode-style)';
+      case 'TRUE_FALSE':
+        return 'true/false question';
+      case 'DRAWING':
+        return 'drawing/visual response question';
+      default:
+        return 'general question';
+    }
+  }
+
   private static getProblemFormat(topic: GraphQLTopic, classType: GraphQLClassType): string {
     const gradeNumber = this.getGradeNumber(classType);
     
@@ -221,7 +260,7 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       // Grades 4-6: Moderate formats
       if (topic === GraphQLTopic.Math) return "math word problem";
       if (topic === GraphQLTopic.English) return "short text response question";
-      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return "multiple choice science question";
       }
       return "short answer question";
@@ -229,7 +268,7 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       // Grades 7-9: More complex formats
       if (topic === GraphQLTopic.Math) return "algebraic problem";
       if (topic === GraphQLTopic.English) return "essay question";
-      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return "short answer science question";
       }
       return "short answer question";
@@ -237,7 +276,7 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       // Grades 10-12: Advanced formats
       if (topic === GraphQLTopic.Math) return "advanced math problem";
       if (topic === GraphQLTopic.English) return "analytical essay question";
-      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return "detailed explanation question";
       }
       return "detailed analysis question";
@@ -274,6 +313,55 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       return `- Use clear, engaging language appropriate for ${classString}
 - Focus on age-appropriate concepts
 - Provide clear instructions
+- Make the problem educational and fun`;
+    }
+  }
+
+  private static getFormatSpecificRequirements(format: string, classString: string): string {
+    if (format.includes("multiple choice")) {
+      return `- The problem statement MUST include 4 multiple choice options (A, B, C, D)
+- Each option should be clearly labeled and plausible
+- The correct answer should be obvious to students at this grade level
+- Use simple, clear language for all options
+- The question MUST be about the specified topic (ENGLISH, MATH, SCIENCE, etc.)
+- Example for ENGLISH: "What is the first letter of 'cat'? A) A B) B C) C D) D"
+- Example for MATH: "What is 2 + 2? A) 3 B) 4 C) 5 D) 6"`;
+    } else if (format.includes("math") && format.includes("word")) {
+      return `- The problem should be a word problem that requires a single number answer
+- Include a story or scenario that makes the math relevant
+- Use age-appropriate numbers and operations
+- The answer should be a single number (no units needed)
+- Example: "Sarah has 5 apples. She gives away 2 apples. How many apples does she have left?"`;
+    } else if (format.includes("math") && !format.includes("word")) {
+      return `- The problem should require a single number answer
+- Use age-appropriate numbers and operations
+- Present the problem clearly with visual elements if helpful
+- The answer should be a single number
+- Example: "What is 7 × 3?"`;
+    } else if (format.includes("word") || format.includes("text")) {
+      return `- The problem should require a short text response (1-3 words)
+- Focus on vocabulary, reading comprehension, or basic writing
+- Use simple, clear language
+- The answer should be a single word or short phrase
+- Example: "What color is the sky?" (Answer: "blue")`;
+    } else if (format.includes("science")) {
+      return `- The problem should be a multiple choice science question
+- Use age-appropriate scientific concepts
+- Include 4 options (A, B, C, D) with one correct answer
+- Make connections to everyday life
+- Avoid complex terminology
+- Example: "What do plants need to grow? A) Water B) Music C) Toys D) Cars"`;
+    } else if (format.includes("competitive programming")) {
+      return `- Use standard competitive programming format
+- Include input/output specifications
+- Provide 2-3 example test cases with explanations
+- Include constraints (1 ≤ n ≤ 1000)
+- Use algorithmic problem-solving approach
+- Example: "Given an array of integers, find the maximum element..."`;
+    } else {
+      return `- Use clear, engaging language appropriate for ${classString}
+- Focus on age-appropriate concepts
+- Provide clear instructions for the expected response
 - Make the problem educational and fun`;
     }
   }

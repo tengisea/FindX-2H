@@ -18,7 +18,8 @@ export const generateTask: MutationResolvers["generateTask"] = async (
       difficulty: input.difficulty,
       type: input.type,
       classType: input.classType,
-      piPoints: input.piPoints
+      piPoints: input.piPoints,
+      answerFormat: input.answerFormat
     });
 
     // Generate answer automatically after task generation
