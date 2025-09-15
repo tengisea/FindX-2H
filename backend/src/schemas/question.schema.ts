@@ -4,17 +4,17 @@ export const QuestionTypeDefs = gql`
   type Question {
     id: ID!
     classTypeId: ID!
-    questionNumber: Int!
+    questionName: String!
     maxScore: Int!
   }
 
   input CreateQuestionInput {
-    questionNumber: Int!
+    questionName: String!
     maxScore: Int!
   }
 
   input UpdateQuestionInput {
-    questionNumber: Int!
+    questionName: String!
     maxScore: Int!
   }
   

@@ -1,9 +1,55 @@
 import { OlympiadModel } from "@/models"; 
 
+// Reverse mapping from database values back to GraphQL enum values
+const mapClassYearToGraphQL = (dbValue: string): string => {
+  const reverseMapping: { [key: string]: string } = {
+    '1р анги': 'GRADE_1',
+    '2р анги': 'GRADE_2',
+    '3р анги': 'GRADE_3',
+    '4р анги': 'GRADE_4',
+    '5р анги': 'GRADE_5',
+    '6р анги': 'GRADE_6',
+    '7р анги': 'GRADE_7',
+    '8р анги': 'GRADE_8',
+    '9р анги': 'GRADE_9',
+    '10р анги': 'GRADE_10',
+    '11р анги': 'GRADE_11',
+    '12р анги': 'GRADE_12',
+  };
+  return reverseMapping[dbValue] || dbValue;
+};
+
 export const approveOlympiad = async (_: unknown, { id, input }: any) => {
-  return OlympiadModel.findByIdAndUpdate(
+  const updatedOlympiad = await OlympiadModel.findByIdAndUpdate(
     id,
     { $set: { scoreOfAward: input.scoreOfAward, status: "APPROVED" } },
     { new: true }
-  ).populate("classtypes");
+  ).populate({
+    path: "classtypes",
+    populate: {
+      path: "questions",
+      model: "Question"
+    }
+  });
+
+  if (!updatedOlympiad) {
+    throw new Error("Olympiad not found");
+  }
+
+  // Transform the data to convert database values back to GraphQL enum values
+  const transformedOlympiad = {
+    ...updatedOlympiad.toObject(),
+    id: updatedOlympiad._id.toString(),
+    classtypes: updatedOlympiad.classtypes.map((classType: any) => ({
+      ...classType.toObject(),
+      id: classType._id.toString(),
+      classYear: mapClassYearToGraphQL(classType.classYear),
+      questions: classType.questions.map((question: any) => ({
+        ...question.toObject(),
+        id: question._id.toString()
+      }))
+    }))
+  };
+
+  return transformedOlympiad;
 };

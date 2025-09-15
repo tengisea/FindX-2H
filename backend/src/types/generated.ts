@@ -37,9 +37,9 @@ export type ClassType = {
   id: Scalars['ID']['output'];
   maxScore: Scalars['Int']['output'];
   medalists: Scalars['Int']['output'];
-  olympiadId: Scalars['ID']['output'];
+  olympiadId?: Maybe<Scalars['ID']['output']>;
   participants: Array<Scalars['ID']['output']>;
-  questions: Array<Scalars['ID']['output']>;
+  questions: Array<Question>;
   studentsResults: Array<Scalars['ID']['output']>;
 };
 
@@ -62,10 +62,7 @@ export type CreateClassTypeInput = {
   classYear: ClassYear;
   maxScore: Scalars['Int']['input'];
   medalists: Scalars['Int']['input'];
-  olympiadId: Scalars['ID']['input'];
-  participants: Array<Scalars['ID']['input']>;
-  questions: Array<Scalars['ID']['input']>;
-  studentsResults: Array<Scalars['ID']['input']>;
+  questions: Array<CreateQuestionInput>;
 };
 
 export type CreateOlympiadRequestInput = {
@@ -84,7 +81,7 @@ export type CreateOrganizerInput = {
 
 export type CreateQuestionInput = {
   maxScore: Scalars['Int']['input'];
-  questionNumber: Scalars['Int']['input'];
+  questionName: Scalars['String']['input'];
 };
 
 export type CreateStudentAnswerInput = {
@@ -381,7 +378,7 @@ export type Question = {
   classTypeId: Scalars['ID']['output'];
   id: Scalars['ID']['output'];
   maxScore: Scalars['Int']['output'];
-  questionNumber: Scalars['Int']['output'];
+  questionName: Scalars['String']['output'];
 };
 
 export enum Response {
@@ -430,7 +427,7 @@ export type UpdateOlympiadInput = {
 
 export type UpdateQuestionInput = {
   maxScore: Scalars['Int']['input'];
-  questionNumber: Scalars['Int']['input'];
+  questionName: Scalars['String']['input'];
 };
 
 export type UpdateStudentAnswerInput = {
@@ -588,9 +585,9 @@ export type ClassTypeResolvers<ContextType = Context, ParentType extends Resolve
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   maxScore?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   medalists?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  olympiadId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  olympiadId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   participants?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
-  questions?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
+  questions?: Resolver<Array<ResolversTypes['Question']>, ParentType, ContextType>;
   studentsResults?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
 };
 
@@ -672,7 +669,7 @@ export type QuestionResolvers<ContextType = Context, ParentType extends Resolver
   classTypeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   maxScore?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  questionNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  questionName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type StudentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Student'] = ResolversParentTypes['Student']> = {

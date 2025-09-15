@@ -13,12 +13,8 @@ export const OlympiadTypeDefs = gql`
     status: String!
   }
 
-  input CreateClassTypeInput {
-    classYear: ClassYear!
-    maxScore: Int!
-    questions: [ID!]!
-    medalists: Int!
-  }
+
+
 
   input CreateOlympiadRequestInput {
     organizerId: ID!

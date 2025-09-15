@@ -2,14 +2,14 @@ import { Model, model, models, Schema } from "mongoose";
 
 type QuestionSchemaType = {
   classTypeId: Schema.Types.ObjectId;
-  questionNumber: number;
+  questionName: string;
   maxScore: number;
 };
 
 const questionSchema = new Schema<QuestionSchemaType>(
   {
     classTypeId: { type: Schema.Types.ObjectId, ref: "ClassType", required: true },
-    questionNumber: { type: Number, required: true },
+    questionName: { type: String, required: true },
     maxScore: { type: Number, required: true },
   },
   { timestamps: true }
