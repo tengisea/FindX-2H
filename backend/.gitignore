@@ -40,9 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-<<<<<<< HEAD
-# generated types
-=======
 #generated
->>>>>>> 488b7e7 (fixed)
 src/types/generated.ts
