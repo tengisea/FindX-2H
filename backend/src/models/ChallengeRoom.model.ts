@@ -15,16 +15,32 @@ type ChallengeRoomSchemaType = {
   opponentScore: number;
 };
 
-
 const challengeRoomSchema = new Schema<ChallengeRoomSchemaType>(
   {
-    challengeId: { type: Schema.Types.ObjectId, ref: "Challenge", required: true },
-    challengerId: { type: Schema.Types.ObjectId, ref: "Student", required: true },
+    challengeId: {
+      type: Schema.Types.ObjectId,
+      ref: "Challenge",
+      required: true,
+    },
+    challengerId: {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+      required: true,
+    },
     opponentId: { type: Schema.Types.ObjectId, ref: "Student", required: true },
-    status: { type: String, required: true },
-    winnerId: { type: Schema.Types.ObjectId, required: true },
-    challengerScore: { type: Number, required: true },
-    opponentScore: { type: Number, required: true },
+    status: {
+      type: String,
+      enum: Object.values(Status),
+      required: true,
+      default: Status.WAITING,
+    },
+    winnerId: {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+      required: false,
+    },
+    challengerScore: { type: Number, required: true, default: 0 },
+    opponentScore: { type: Number, required: true, default: 0 },
   },
   { timestamps: true }
 );
