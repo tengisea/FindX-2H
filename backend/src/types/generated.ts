@@ -265,16 +265,17 @@ export type Query = {
   allClassTypes: Array<ClassType>;
   allOlympiads: Array<Olympiad>;
   allStudentAnswers: Array<StudentAnswer>;
-  approvedOlympiads: Array<Olympiad>;
   classType: ClassType;
   classTypesByClassYear: Array<ClassType>;
   classTypesByOlympiad: Array<ClassType>;
+  getAllApprovedOlympiads: Array<Olympiad>;
   getAllOrganizer: Array<Organizer>;
   getAllStudent: Array<Student>;
+  getOlympiadByClassYear: Array<Olympiad>;
   getOrganizer: Organizer;
+  getPendingOlympiads: Array<Olympiad>;
   olympiad: Olympiad;
   participantsByClassType: Array<Scalars['ID']['output']>;
-  pendingOlympiads: Array<Olympiad>;
   question: Question;
   questionsByClassType: Array<Question>;
   student?: Maybe<Student>;
@@ -301,6 +302,11 @@ export type QueryClassTypesByClassYearArgs = {
 
 export type QueryClassTypesByOlympiadArgs = {
   olympiadId: Scalars['ID']['input'];
+};
+
+
+export type QueryGetOlympiadByClassYearArgs = {
+  classYear: ClassYear;
 };
 
 
@@ -642,16 +648,17 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   allClassTypes?: Resolver<Array<ResolversTypes['ClassType']>, ParentType, ContextType>;
   allOlympiads?: Resolver<Array<ResolversTypes['Olympiad']>, ParentType, ContextType>;
   allStudentAnswers?: Resolver<Array<ResolversTypes['StudentAnswer']>, ParentType, ContextType>;
-  approvedOlympiads?: Resolver<Array<ResolversTypes['Olympiad']>, ParentType, ContextType>;
   classType?: Resolver<ResolversTypes['ClassType'], ParentType, ContextType, RequireFields<QueryClassTypeArgs, 'id'>>;
   classTypesByClassYear?: Resolver<Array<ResolversTypes['ClassType']>, ParentType, ContextType, RequireFields<QueryClassTypesByClassYearArgs, 'classYear'>>;
   classTypesByOlympiad?: Resolver<Array<ResolversTypes['ClassType']>, ParentType, ContextType, RequireFields<QueryClassTypesByOlympiadArgs, 'olympiadId'>>;
+  getAllApprovedOlympiads?: Resolver<Array<ResolversTypes['Olympiad']>, ParentType, ContextType>;
   getAllOrganizer?: Resolver<Array<ResolversTypes['Organizer']>, ParentType, ContextType>;
   getAllStudent?: Resolver<Array<ResolversTypes['Student']>, ParentType, ContextType>;
+  getOlympiadByClassYear?: Resolver<Array<ResolversTypes['Olympiad']>, ParentType, ContextType, RequireFields<QueryGetOlympiadByClassYearArgs, 'classYear'>>;
   getOrganizer?: Resolver<ResolversTypes['Organizer'], ParentType, ContextType, RequireFields<QueryGetOrganizerArgs, 'id'>>;
+  getPendingOlympiads?: Resolver<Array<ResolversTypes['Olympiad']>, ParentType, ContextType>;
   olympiad?: Resolver<ResolversTypes['Olympiad'], ParentType, ContextType, RequireFields<QueryOlympiadArgs, 'id'>>;
   participantsByClassType?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType, RequireFields<QueryParticipantsByClassTypeArgs, 'classTypeId'>>;
-  pendingOlympiads?: Resolver<Array<ResolversTypes['Olympiad']>, ParentType, ContextType>;
   question?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<QueryQuestionArgs, 'id'>>;
   questionsByClassType?: Resolver<Array<ResolversTypes['Question']>, ParentType, ContextType, RequireFields<QueryQuestionsByClassTypeArgs, 'classTypeId'>>;
   student?: Resolver<Maybe<ResolversTypes['Student']>, ParentType, ContextType, RequireFields<QueryStudentArgs, 'id'>>;

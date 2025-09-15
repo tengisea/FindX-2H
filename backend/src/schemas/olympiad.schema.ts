@@ -13,9 +13,6 @@ export const OlympiadTypeDefs = gql`
     status: String!
   }
 
-
-
-
   input CreateOlympiadRequestInput {
     organizerId: ID!
     name: String!
@@ -45,7 +42,8 @@ export const OlympiadTypeDefs = gql`
   type Query {
     olympiad(id: ID!): Olympiad!
     allOlympiads: [Olympiad!]!
-    pendingOlympiads: [Olympiad!]!
-    approvedOlympiads: [Olympiad!]!
+    getPendingOlympiads: [Olympiad!]!
+    getAllApprovedOlympiads: [Olympiad!]!
+    getOlympiadByClassYear(classYear: ClassYear!): [Olympiad!]!
   }
 `;

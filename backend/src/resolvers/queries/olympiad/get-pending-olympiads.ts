@@ -19,8 +19,8 @@ const mapClassYearToGraphQL = (dbValue: string): string => {
   return reverseMapping[dbValue] || dbValue;
 };
 
-export const olympiad = async (_: any, { id }: any) => {
-  const olympiad = await OlympiadModel.findById(id).populate({
+export const getPendingOlympiads = async () => {
+  const olympiads = await OlympiadModel.find({ status: "PENDING" }).populate({
     path: "classtypes",
     populate: {
       path: "questions",
@@ -28,12 +28,8 @@ export const olympiad = async (_: any, { id }: any) => {
     }
   });
 
-  if (!olympiad) {
-    throw new Error("Olympiad not found");
-  }
-
   // Transform the data to convert database values back to GraphQL enum values
-  return {
+  return olympiads.map(olympiad => ({
     ...olympiad.toObject(),
     id: olympiad._id.toString(),
     classtypes: olympiad.classtypes.map((classType: any) => ({
@@ -45,5 +41,5 @@ export const olympiad = async (_: any, { id }: any) => {
         id: question._id.toString()
       }))
     }))
-  };
+  }));
 };
