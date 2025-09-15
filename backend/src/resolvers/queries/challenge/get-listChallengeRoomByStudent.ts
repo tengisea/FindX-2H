@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { ChallengeRoomModel } from "@/models";
 import { QueryResolvers, ChallengeRoom } from "@/types/generated";
 
-export const getListChallengeRoomByStudent: QueryResolvers["listChallengeRoomsByStudent"] =
+export const listChallengeRoomsByStudent: QueryResolvers["listChallengeRoomsByStudent"] =
   async (_: unknown, { studentId }: { studentId: string }) => {
     try {
       const challengeRooms = await ChallengeRoomModel.find({

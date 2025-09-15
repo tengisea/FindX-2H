@@ -1,0 +1,106 @@
+# Challenge queries
+query GetChallenge($id: ID!) {
+  getChallenge(id: $id) {
+    id
+    topic
+    difficulty
+    challenger
+    opponent
+    participants
+    winner
+    piPoints
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+query ListChallenges($studentId: ID!) {
+  listChallenges(studentId: $studentId) {
+    id
+    topic
+    difficulty
+    challenger
+    opponent
+    participants
+    winner
+    piPoints
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+# ChallengeRoom queries
+query GetChallengeRoom($id: ID!) {
+  getChallengeRoom(id: $id) {
+    id
+    challengeId
+    challengerId
+    opponentId
+    status
+    winnerId
+    challengerScore
+    opponentScore
+    createdAt
+    updatedAt
+  }
+}
+
+query ListChallengeRoomsByStudent($studentId: ID!) {
+  listChallengeRoomsByStudent(studentId: $studentId) {
+    id
+    challengeId
+    challengerId
+    opponentId
+    status
+    winnerId
+    challengerScore
+    opponentScore
+    createdAt
+    updatedAt
+  }
+}
+
+# ChallengeRoomResponse queries
+query GetChallengeRoomResponse($id: ID!) {
+  getChallengeRoomResponse(id: $id) {
+    id
+    challengeRoomId
+    studentId
+    submittedAnswer
+    isCorrect
+    points
+    submittedAt
+    createdAt
+    updatedAt
+  }
+}
+
+query ListChallengeRoomResponses($roomId: ID!) {
+  listChallengeRoomResponses(roomId: $roomId) {
+    id
+    challengeRoomId
+    studentId
+    submittedAnswer
+    isCorrect
+    points
+    submittedAt
+    createdAt
+    updatedAt
+  }
+}
+
+query ListStudentChallengeResponses($studentId: ID!) {
+  listStudentChallengeResponses(studentId: $studentId) {
+    id
+    challengeRoomId
+    studentId
+    submittedAnswer
+    isCorrect
+    points
+    submittedAt
+    createdAt
+    updatedAt
+  }
+}

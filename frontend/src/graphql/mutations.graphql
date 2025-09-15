@@ -1,0 +1,50 @@
+# Challenge mutations
+mutation CreateChallenge($input: ChallengeInput!) {
+  createChallenge(input: $input)
+}
+
+# ChallengeRoom mutations
+mutation CreateChallengeRoom($input: ChallengeRoomInput!) {
+  createChallengeRoom(input: $input) {
+    id
+    challengeId
+    challengerId
+    opponentId
+    status
+    winnerId
+    challengerScore
+    opponentScore
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateChallengeRoom($input: UpdateChallengeRoomInput!) {
+  updateChallengeRoom(input: $input) {
+    id
+    challengeId
+    challengerId
+    opponentId
+    status
+    winnerId
+    challengerScore
+    opponentScore
+    createdAt
+    updatedAt
+  }
+}
+
+# ChallengeRoomResponse mutations
+mutation CreateChallengeRoomResponse($input: ChallengeRoomResponseInput!) {
+  createChallengeRoomResponse(input: $input) {
+    id
+    challengeRoomId
+    studentId
+    submittedAnswer
+    isCorrect
+    points
+    submittedAt
+    createdAt
+    updatedAt
+  }
+}

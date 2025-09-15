@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
-import { ChallengeRoomResponseModel } from "@/models/challengeRoomResponse.model";
+import { ChallengeRoomResponseModel } from "@/models/ChallengeRoomResponse.model";
 import { QueryResolvers, ChallengeRoomResponse } from "@/types/generated";
 
-export const getListChallengeRoomResponses: QueryResolvers["listChallengeRoomResponses"] =
+export const listChallengeRoomResponses: QueryResolvers["listChallengeRoomResponses"] =
   async (_: unknown, { roomId }: { roomId: string }) => {
     try {
       const challengeRoomResponses = await ChallengeRoomResponseModel.find({

@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
-import { ChallengeRoomResponseModel } from "@/models/challengeRoomResponse.model";
+import { ChallengeRoomResponseModel } from "@/models/ChallengeRoomResponse.model";
 import { QueryResolvers, ChallengeRoomResponse } from "@/types/generated";
 
-export const getListStudentChallengeResponses: QueryResolvers["listStudentChallengeResponses"] =
-  async (_: unknown, { studentId }: { studentId: string }) => {
+export const listChallengeRoomResponses: QueryResolvers["listChallengeRoomResponses"] =
+  async (_: unknown, { roomId }: { roomId: string }) => {
     try {
       const challengeRoomResponses = await ChallengeRoomResponseModel.find({
-        studentId: studentId,
+        challengeRoomId: roomId,
       });
 
       return challengeRoomResponses.map((challengeRoomResponse) => ({
@@ -21,6 +21,6 @@ export const getListStudentChallengeResponses: QueryResolvers["listStudentChalle
         updatedAt: (challengeRoomResponse as any).updatedAt,
       })) as ChallengeRoomResponse[];
     } catch (error) {
-      throw new GraphQLError("Failed to get list student challenge responses");
+      throw new GraphQLError("Failed to get list challenge room responses");
     }
   };

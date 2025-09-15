@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import { QueryResolvers, ChallengeRoomResponse } from "@/types/generated";
-import { ChallengeRoomResponseModel } from "@/models/challengeRoomResponse.model";
+import { ChallengeRoomResponseModel } from "@/models/ChallengeRoomResponse.model";
 
 export const getChallengeRoomResponse: QueryResolvers["getChallengeRoomResponse"] =
   async (_: unknown, { id }: { id: string }) => {

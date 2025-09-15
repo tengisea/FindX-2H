@@ -3,7 +3,7 @@ import {
   ChallengeRoomResponseInput,
 } from "@/types/generated";
 import { GraphQLError } from "graphql";
-import { ChallengeRoomResponseModel } from "@/models/challengeRoomResponse.model";
+import { ChallengeRoomResponseModel } from "@/models/ChallengeRoomResponse.model";
 
 export const createChallengeRoomResponse: MutationResolvers["createChallengeRoomResponse"] =
   async (_: unknown, { input }: { input: ChallengeRoomResponseInput }) => {
