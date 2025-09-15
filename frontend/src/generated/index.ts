@@ -508,6 +508,13 @@ export type GetAllOrganizersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllOrganizersQuery = { __typename?: 'Query', getAllOrganizers: Array<{ __typename?: 'Organizer', id: string, organizationName: string, email: string, Olympiads?: Array<{ __typename?: 'Olympiad', id: string, name: string }> | null }> };
 
+export type GetOrganizerQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetOrganizerQuery = { __typename?: 'Query', getOrganizer: { __typename?: 'Organizer', id: string, organizationName: string, email: string, Olympiads?: Array<{ __typename?: 'Olympiad', id: string, name: string }> | null } };
+
 
 export const RequestOlympiadDocument = gql`
     mutation RequestOlympiad($input: CreateOlympiadRequestInput!) {
@@ -1025,3 +1032,49 @@ export type GetAllOrganizersQueryHookResult = ReturnType<typeof useGetAllOrganiz
 export type GetAllOrganizersLazyQueryHookResult = ReturnType<typeof useGetAllOrganizersLazyQuery>;
 export type GetAllOrganizersSuspenseQueryHookResult = ReturnType<typeof useGetAllOrganizersSuspenseQuery>;
 export type GetAllOrganizersQueryResult = Apollo.QueryResult<GetAllOrganizersQuery, GetAllOrganizersQueryVariables>;
+export const GetOrganizerDocument = gql`
+    query GetOrganizer($id: ID!) {
+  getOrganizer(id: $id) {
+    id
+    organizationName
+    email
+    Olympiads {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetOrganizerQuery__
+ *
+ * To run a query within a React component, call `useGetOrganizerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrganizerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrganizerQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetOrganizerQuery(baseOptions: Apollo.QueryHookOptions<GetOrganizerQuery, GetOrganizerQueryVariables> & ({ variables: GetOrganizerQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrganizerQuery, GetOrganizerQueryVariables>(GetOrganizerDocument, options);
+      }
+export function useGetOrganizerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrganizerQuery, GetOrganizerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrganizerQuery, GetOrganizerQueryVariables>(GetOrganizerDocument, options);
+        }
+export function useGetOrganizerSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetOrganizerQuery, GetOrganizerQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetOrganizerQuery, GetOrganizerQueryVariables>(GetOrganizerDocument, options);
+        }
+export type GetOrganizerQueryHookResult = ReturnType<typeof useGetOrganizerQuery>;
+export type GetOrganizerLazyQueryHookResult = ReturnType<typeof useGetOrganizerLazyQuery>;
+export type GetOrganizerSuspenseQueryHookResult = ReturnType<typeof useGetOrganizerSuspenseQuery>;
+export type GetOrganizerQueryResult = Apollo.QueryResult<GetOrganizerQuery, GetOrganizerQueryVariables>;
