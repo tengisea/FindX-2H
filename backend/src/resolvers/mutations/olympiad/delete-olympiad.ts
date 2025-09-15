@@ -1,6 +1,7 @@
 import { OlympiadModel } from "@/models";
 import { ClassTypeModel } from "@/models";
 import { QuestionModel } from "@/models";
+import { OrganizerModel } from "@/models";
 
 export const deleteOlympiad = async (_: unknown, { id }: any) => {
   try {
@@ -9,6 +10,14 @@ export const deleteOlympiad = async (_: unknown, { id }: any) => {
     if (!olympiad) {
       return false;
     }
+
+    // Remove the olympiad ID from the organizer's Olympiads array
+    await OrganizerModel.findByIdAndUpdate(
+      olympiad.organizer,
+      { $pull: { Olympiads: id } },
+      { new: true }
+    );
+
     const classTypes = await ClassTypeModel.find({ olympiadId: id });
     const questionIds = classTypes.flatMap(classType => classType.questions);
     

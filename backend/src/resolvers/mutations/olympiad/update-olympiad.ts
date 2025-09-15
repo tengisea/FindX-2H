@@ -30,7 +30,7 @@ export const updateOlympiad = async (_:unknown, { id, input }: any) => {
       path: "questions",
       model: "Question"
     }
-  });
+  }).populate("organizer");
 
   if (!updatedOlympiad) {
     throw new Error("Olympiad not found");
@@ -40,6 +40,10 @@ export const updateOlympiad = async (_:unknown, { id, input }: any) => {
   const transformedOlympiad = {
     ...updatedOlympiad.toObject(),
     id: updatedOlympiad._id.toString(),
+    organizer: updatedOlympiad.organizer && typeof updatedOlympiad.organizer === 'object' && 'toObject' in updatedOlympiad.organizer ? {
+      ...(updatedOlympiad.organizer as any).toObject(),
+      id: (updatedOlympiad.organizer as any)._id.toString()
+    } : null,
     classtypes: updatedOlympiad.classtypes.map((classType: any) => ({
       ...classType.toObject(),
       id: classType._id.toString(),

@@ -1,8 +1,7 @@
 import { OlympiadModel } from "@/models";
-import { ClassTypeModel, ClassYear } from "@/models";
+import { ClassTypeModel } from "@/models";
 import { QuestionModel } from "@/models";
-
-// Mapping from GraphQL enum to actual string values
+import { OrganizerModel } from "@/models";
 const mapClassYear = (graphqlEnum: string): string => {
   const mapping: { [key: string]: string } = {
     'GRADE_1': '1р анги',
@@ -21,7 +20,6 @@ const mapClassYear = (graphqlEnum: string): string => {
   return mapping[graphqlEnum] || graphqlEnum;
 };
 
-// Reverse mapping from database values back to GraphQL enum values
 const mapClassYearToGraphQL = (dbValue: string): string => {
   const reverseMapping: { [key: string]: string } = {
     '1р анги': 'GRADE_1',
@@ -43,14 +41,13 @@ const mapClassYearToGraphQL = (dbValue: string): string => {
 export const requestOlympiad = async (_: unknown, { input }: any) => {
   const { organizerId, name, description, date, location, classtypes } = input;
 
-  // First create the olympiad to get its ID
   const olympiad = new OlympiadModel({
     organizer: organizerId,
     name,
     description,
     date,
     location,
-    classtypes: [], // Will be populated later
+    classtypes: [],
     status: "PENDING",
   });
   await olympiad.save();
@@ -80,22 +77,34 @@ export const requestOlympiad = async (_: unknown, { input }: any) => {
     classTypeIds.push(classType._id as any);
   }
 
-  // Update the olympiad with the class type IDs
   olympiad.classtypes = classTypeIds;
   await olympiad.save();
 
-  const populatedOlympiad = await olympiad.populate({
+  // Add the olympiad ID to the organizer's Olympiads array
+  await OrganizerModel.findByIdAndUpdate(
+    organizerId,
+    { $push: { Olympiads: olympiad._id } },
+    { new: true }
+  );
+
+  const populatedOlympiad = await OlympiadModel.findById(olympiad._id).populate({
     path: "classtypes",
     populate: {
       path: "questions",
       model: "Question"
     }
-  });
+  }).populate("organizer");
 
-  // Transform the data to convert database values back to GraphQL enum values
+  if (!populatedOlympiad) {
+    throw new Error("Failed to populate olympiad data");
+  }
   const transformedOlympiad = {
     ...populatedOlympiad.toObject(),
     id: populatedOlympiad._id.toString(),
+    organizer: populatedOlympiad.organizer && typeof populatedOlympiad.organizer === 'object' && 'toObject' in populatedOlympiad.organizer ? {
+      ...(populatedOlympiad.organizer as any).toObject(),
+      id: (populatedOlympiad.organizer as any)._id.toString()
+    } : null,
     classtypes: populatedOlympiad.classtypes.map((classType: any) => ({
       ...classType.toObject(),
       id: classType._id.toString(),

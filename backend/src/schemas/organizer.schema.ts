@@ -1,11 +1,17 @@
 import { gql } from "graphql-tag";
 
 export const OrganizerTypeDefs = gql`
+
+  type Olympiad {
+    id: ID!
+    name: String!
+  }
+
   type Organizer {
     id: ID!
     organizationName: String!
     email: String!
-    Olympiads: [ID!]
+    Olympiads: [Olympiad!]
   }
 
   input CreateOrganizerInput {
@@ -20,6 +26,6 @@ export const OrganizerTypeDefs = gql`
 
   type Query {
     getOrganizer(id: ID!): Organizer!
-    getAllOrganizer: [Organizer!]!
+    getAllOrganizers: [Organizer!]!
   }
 `;

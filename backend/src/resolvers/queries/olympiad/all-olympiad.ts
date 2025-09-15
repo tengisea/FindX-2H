@@ -26,12 +26,16 @@ export const allOlympiads = async () => {
       path: "questions",
       model: "Question"
     }
-  });
+  }).populate("organizer");
 
   // Transform the data to convert database values back to GraphQL enum values
   return olympiads.map(olympiad => ({
     ...olympiad.toObject(),
     id: olympiad._id.toString(),
+    organizer: olympiad.organizer && typeof olympiad.organizer === 'object' && 'toObject' in olympiad.organizer ? {
+      ...(olympiad.organizer as any).toObject(),
+      id: (olympiad.organizer as any)._id.toString()
+    } : null,
     classtypes: olympiad.classtypes.map((classType: any) => ({
       ...classType.toObject(),
       id: classType._id.toString(),

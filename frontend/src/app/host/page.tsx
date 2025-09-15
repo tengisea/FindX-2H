@@ -1,3 +1,5 @@
+'use client';
+
 const HostPage = () => {
   return <div>HostPage</div>;
 };

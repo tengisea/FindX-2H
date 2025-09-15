@@ -26,7 +26,7 @@ export const olympiad = async (_: any, { id }: any) => {
       path: "questions",
       model: "Question"
     }
-  });
+  }).populate("organizer");
 
   if (!olympiad) {
     throw new Error("Olympiad not found");
@@ -36,6 +36,10 @@ export const olympiad = async (_: any, { id }: any) => {
   return {
     ...olympiad.toObject(),
     id: olympiad._id.toString(),
+    organizer: olympiad.organizer && typeof olympiad.organizer === 'object' && 'toObject' in olympiad.organizer ? {
+      ...(olympiad.organizer as any).toObject(),
+      id: (olympiad.organizer as any)._id.toString()
+    } : null,
     classtypes: olympiad.classtypes.map((classType: any) => ({
       ...classType.toObject(),
       id: classType._id.toString(),

@@ -7,10 +7,17 @@ export const OlympiadTypeDefs = gql`
     description: String!
     date: String!
     location: String!
-    organizer: ID!
+    organizer: Organizer
     classtypes: [ClassType!]!
     scoreOfAward: Int
     status: String!
+  }
+
+  type Organizer {
+    id: ID!
+    organizationName: String!
+    email: String!
+    Olympiads: [Olympiad!]
   }
 
   input CreateOlympiadRequestInput {
