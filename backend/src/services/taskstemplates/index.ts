@@ -1,23 +1,10 @@
-import { algorithmsTemplates } from './algorithms.templates';
-import { dataStructuresTemplates } from './dataStructures.templates';
 import { mathTemplates } from './math.templates';
-import { stringTemplates } from './string.templates';
-import { graphTemplates } from './graph.templates';
-import { dynamicProgrammingTemplates } from './dynamicProgramming.templates';
-import { greedyTemplates } from './greedy.templates';
 import { englishTemplates } from './english.templates';
-import { textProcessingTemplates } from './textProcessing.templates';
-import { chemistryTemplates } from './chemistry.templates';
+import { historyTemplates } from './history.templates';
 import { biologyTemplates } from './biology.templates';
 import { physicsTemplates } from './physics.templates';
-import { computerScienceTemplates } from './computer-science.templates';
-import { astronomyTemplates } from './astronomy.templates';
-import { earthScienceTemplates } from './earth-science.templates';
+import { chemistryTemplates } from './chemistry.templates';
 import { linguisticsTemplates } from './linguistics.templates';
-import { philosophyTemplates } from './philosophy.templates';
-import { historyTemplates } from './history.templates';
-import { geographyTemplates } from './geography.templates';
-import { economicsTemplates } from './economics.templates';
 
 export interface TaskTemplate {
   title: string;
@@ -32,30 +19,17 @@ export interface TopicTemplates {
 }
 
 export const allTemplates: Record<string, TopicTemplates> = {
-  algorithms: algorithmsTemplates,
-  'data-structures': dataStructuresTemplates,
   math: mathTemplates,
-  string: stringTemplates,
-  graph: graphTemplates,
-  'dynamic-programming': dynamicProgrammingTemplates,
-  greedy: greedyTemplates,
   english: englishTemplates,
-  'text-processing': textProcessingTemplates,
-  chemistry: chemistryTemplates,
+  history: historyTemplates,
   biology: biologyTemplates,
   physics: physicsTemplates,
-  'computer-science': computerScienceTemplates,
-  astronomy: astronomyTemplates,
-  'earth-science': earthScienceTemplates,
+  chemistry: chemistryTemplates,
   linguistics: linguisticsTemplates,
-  philosophy: philosophyTemplates,
-  history: historyTemplates,
-  geography: geographyTemplates,
-  economics: economicsTemplates,
 };
 
 export const getRandomTemplate = (topic: string, difficulty: string): TaskTemplate => {
-  const topicTemplates = allTemplates[topic.toLowerCase()] || allTemplates['algorithms'];
+  const topicTemplates = allTemplates[topic.toLowerCase()] || allTemplates['math'];
   const difficultyTemplates = topicTemplates[difficulty] || topicTemplates['EASY'];
   
   // Get all available templates for this difficulty
@@ -71,6 +45,6 @@ export const getAvailableTopics = (): string[] => {
 };
 
 export const getAvailableDifficulties = (topic: string): string[] => {
-  const topicTemplates = allTemplates[topic.toLowerCase()] || allTemplates['algorithms'];
+  const topicTemplates = allTemplates[topic.toLowerCase()] || allTemplates['math'];
   return Object.keys(topicTemplates);
 };

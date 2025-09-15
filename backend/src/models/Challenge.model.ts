@@ -21,6 +21,8 @@ type ChallengeSchemaType = {
   winner: Schema.Types.ObjectId;
   piPoints: number;
   status: Status;
+  tasks: Schema.Types.ObjectId[];
+  classType: string;
 };
 
 const challengeSchema = new Schema<ChallengeSchemaType>(
@@ -54,6 +56,12 @@ const challengeSchema = new Schema<ChallengeSchemaType>(
       required: true,
     },
     opponent: { type: Schema.Types.ObjectId, ref: "Student", required: true },
+    tasks: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+      required: false,
+      default: [],
+    },
+    classType: { type: String, required: false },
   },
   { timestamps: true }
 );
