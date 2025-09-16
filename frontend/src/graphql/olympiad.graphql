@@ -1,0 +1,228 @@
+mutation RequestOlympiad($input: CreateOlympiadRequestInput!) {
+  requestOlympiad(input: $input) {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+
+mutation ApproveOlympiad($approveOlympiadId: ID!, $input: ApproveOlympiadInput!) {
+  approveOlympiad(id: $approveOlympiadId, input: $input) {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+
+mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
+  updateOlympiad(id: $updateOlympiadId, input: $input) {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+
+mutation DeleteOlympiad($deleteOlympiadId: ID!) {
+  deleteOlympiad(id: $deleteOlympiadId)
+}
+
+query GetAllOlympiads {
+  allOlympiads {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+
+query GetPendingOlympiads {
+  getPendingOlympiads {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+
+query GetApprovedOlympiads {
+  getAllApprovedOlympiads {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+
+query GetOlympiadByClassYear($classYear: ClassYear!) {
+  getOlympiadByClassYear(classYear: $classYear) {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}
+

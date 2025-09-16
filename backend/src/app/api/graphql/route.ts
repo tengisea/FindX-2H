@@ -1,6 +1,6 @@
 import { typeDefs } from "@/schemas";
 import { resolvers } from "@/resolvers";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDataBase } from "@/database";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
@@ -11,8 +11,42 @@ const server = new ApolloServer({
   typeDefs,
 });
 
-const handler = startServerAndCreateNextHandler<NextRequest>(server);
+const handler = startServerAndCreateNextHandler<NextRequest>(server, {
+  context: async (req) => ({ req }),
+});
 
-// export const dynamic = "force-dynamic";
+// Add CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'http://localhost:3000',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true',
+};
 
-export { handler as GET, handler as POST };
+export async function GET(request: NextRequest) {
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, { status: 200, headers: corsHeaders });
+  }
+  
+  const response = await handler(request);
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+  return response;
+}
+
+export async function POST(request: NextRequest) {
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, { status: 200, headers: corsHeaders });
+  }
+  
+  const response = await handler(request);
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+  return response;
+}
+
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, { status: 200, headers: corsHeaders });
+}

@@ -11,12 +11,7 @@ const organizerSchema = new Schema<OrganizerSchemaType>(
   {
     organizationName: { type: String, required: true },
     email: { type: String, required: true },
-    Olympiads: {
-      type: [Schema.Types.ObjectId],
-      ref: "Olympiad",
-      required: true,
-    },
-  },
+    Olympiads: [{ type: Schema.Types.ObjectId, ref: "Olympiad"}]},
   { timestamps: true }
 );
 
