@@ -3,6 +3,6 @@ export * from "./host";
 export * from "./olympiad";
 export * from "./task";
 export * from "./challenge";
-export * from "./task";
-export * from "./tournement"
+export * from "./tournement";
+export * from "./match-room";
 

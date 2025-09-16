@@ -20,7 +20,7 @@ export const registerStudentToTournament: any = async (
     throw new Error("Сурагч аль хэдийн бүртгэгдсэн байна");
   }
 
-  tournament.participants.push(student._id as any);
+  tournament.participants = [...tournament.participants, student._id as any];
   await tournament.save();
 
   return {

@@ -4,7 +4,6 @@ export * from "./host";
 export * from "./task";
 export * from "./answer";
 export * from "./challenge";
-export * from "./task";
-export * from "./answer";
-export * from "./tournement"
+export * from "./tournement";
+export * from "./match-room";
 

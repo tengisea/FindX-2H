@@ -9,11 +9,14 @@ import { taskTypeDefs } from "./task.schema";
 import { challengeTypeDefs } from "./challenge.schema";
 import { challengeRoomTypeDefs } from "./challengeRoom.schema";
 import { challengeRoomResponseTypeDefs } from "./challengeRoomResponse.schema";
-import { matchRoomTypeDefs, piWardTypeDefs, tournamentTypeDefs } from "./tournement";
+import { tournamentTypeDefs } from "./tournement.schema";
+import { piWardTypeDefs } from "./pi-ward.schema";
+import { matchRoomTypeDefs } from "./match-room.schema";
+
 
 
 export const typeDefs = [
-  commonTypeDefs,  
+  commonTypeDefs,
   ClassTypeTypeDefs,
   QuestionTypeDefs,
   StudentTypeDefs,
@@ -24,7 +27,7 @@ export const typeDefs = [
   challengeRoomTypeDefs,
   challengeRoomResponseTypeDefs,
   taskTypeDefs,
-   matchRoomTypeDefs, 
-   tournamentTypeDefs,
-   piWardTypeDefs
+  tournamentTypeDefs,
+  matchRoomTypeDefs,
+  piWardTypeDefs
 ];

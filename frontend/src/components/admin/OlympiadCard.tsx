@@ -28,38 +28,35 @@ const formatDate = (dateString: string) => {
   }
 };
 
-export const OlympiadCard = ({ 
-  olympiad, 
-  showApprove = false, 
+export const OlympiadCard = ({
+  olympiad,
+  showApprove = false,
   isClickable = false,
   onOlympiadClick,
   onApprove,
   approveScore = '',
   onScoreChange
 }: OlympiadCardProps) => (
-  <div 
-    className={`group bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden ${
-      isClickable ? 'cursor-pointer' : ''
-    }`}
+  <div
+    className={`group bg-white rounded-2xl shadow-lg border border-gray-100 p-8 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden ${isClickable ? 'cursor-pointer' : ''
+      }`}
     onClick={isClickable ? () => onOlympiadClick?.(olympiad) : undefined}
   >
     {/* Gradient Background */}
     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-    
+
     {/* Header */}
     <div className="flex justify-between items-start mb-6">
       <div className="flex-1">
         <h3 className="text-2xl font-bold text-gray-900 mb-2">{olympiad.name}</h3>
         <p className="text-gray-600 text-lg leading-relaxed">{olympiad.description}</p>
       </div>
-      <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${
-        olympiad.status === 'APPROVED' 
-          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+      <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${olympiad.status === 'APPROVED'
+          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
           : 'bg-amber-100 text-amber-800 border border-amber-200'
-      }`}>
-        <div className={`w-2 h-2 rounded-full mr-2 ${
-          olympiad.status === 'APPROVED' ? 'bg-emerald-500' : 'bg-amber-500'
-        }`}></div>
+        }`}>
+        <div className={`w-2 h-2 rounded-full mr-2 ${olympiad.status === 'APPROVED' ? 'bg-emerald-500' : 'bg-amber-500'
+          }`}></div>
         {olympiad.status}
       </span>
     </div>
@@ -78,7 +75,7 @@ export const OlympiadCard = ({
             <p className="font-semibold text-gray-900">{formatDate(olympiad.date)}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
             <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +89,7 @@ export const OlympiadCard = ({
           </div>
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -105,7 +102,7 @@ export const OlympiadCard = ({
             <p className="font-semibold text-gray-900">{olympiad.organizer?.organizationName || 'Unknown'}</p>
           </div>
         </div>
-        
+
         {olympiad.scoreOfAward && (
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">

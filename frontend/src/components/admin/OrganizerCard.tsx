@@ -37,7 +37,7 @@ export const OrganizerCard = ({ organizer, index }: OrganizerCardProps) => {
               <p className="text-blue-100 text-sm">Organization #{index + 1}</p>
             </div>
           </div>
-          
+
           <div className="text-right">
             <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3">
               <div className="text-3xl font-bold">{olympiadCount}</div>
@@ -69,11 +69,11 @@ export const OrganizerCard = ({ organizer, index }: OrganizerCardProps) => {
               <h4 className="text-lg font-semibold text-gray-900">Organized Olympiads</h4>
               <span className="text-sm text-gray-500">{olympiadCount} total</span>
             </div>
-            
+
             <div className="space-y-3">
               {organizer.Olympiads.map((olympiad, olympiadIndex) => (
-                <div 
-                  key={olympiad.id} 
+                <div
+                  key={olympiad.id || `organizer-olympiad-${olympiadIndex}`}
                   className="group bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 border border-gray-200 hover:border-blue-200 transition-all duration-200 cursor-pointer"
                 >
                   <div className="flex items-center justify-between">
@@ -88,7 +88,7 @@ export const OrganizerCard = ({ organizer, index }: OrganizerCardProps) => {
                         <p className="text-xs text-gray-500">Olympiad ID: {olympiad.id.slice(-8)}</p>
                       </div>
                     </div>
-                    
+
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                       <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -119,7 +119,7 @@ export const OrganizerCard = ({ organizer, index }: OrganizerCardProps) => {
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <span className="text-sm text-gray-600">Active Organizer</span>
           </div>
-          
+
           <div className="flex space-x-2">
             <button className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors">
               View Details

@@ -5,7 +5,14 @@ import {
 } from "@/models/tournement/MatchRoom.model";
 import { TournamentModel } from "@/models/tournement/Tournament.model";
 import { PiWardModel } from "@/models/tournement/PiWard";
+import { StudentModel } from "@/models/Student.model";
 import mongoose from "mongoose";
+
+enum Status {
+  OPENING = "OPENING",
+  ONGOING = "ONGOING",
+  FINISHED = "FINISHED",
+}
 
 type PiWardResult = { studentId: string; points: number; place: number };
 
@@ -90,12 +97,23 @@ export const createPiWard: any = async (_: any, { tournamentId }: any) => {
     })),
   });
 
+  // Student-уудын piPoints-д оноо нэмэх
+  for (const piResult of piResults) {
+    await StudentModel.findByIdAndUpdate(
+      piResult.studentId,
+      { $inc: { piPoints: piResult.points } },
+      { new: true }
+    );
+  }
+
   // Tournament-д холбох
-  tournament.piWards.push(piWardDoc._id as any);
+  tournament.piWards = [...tournament.piWards, piWardDoc._id as any];
+  // Tournament статусыг FINISHED болгох
+  tournament.status = Status.FINISHED;
   await tournament.save();
 
   return {
-    message: "PiPoints 1-8 байр хүртэл тараалаа, Tournament-д холбогдлоо",
+    message: `PiPoints 1-8 байр хүртэл тараалаа, ${piResults.length} сурагчийн piPoints-д нэмэгдлээ. Tournament-д холбогдлоо`,
     success: true,
   };
 };
