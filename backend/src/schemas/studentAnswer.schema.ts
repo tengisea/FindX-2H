@@ -1,7 +1,7 @@
 import { gql } from "graphql-tag";
 
 export const StudentAnswerTypeDefs = gql`
-  type Answer {
+  type StudentAnswerItem {
     questionId: ID!
     score: Int!
   }
@@ -10,31 +10,41 @@ export const StudentAnswerTypeDefs = gql`
     id: ID!
     studentId: ID!
     classTypeId: ID!
-    answers: [Answer!]!
+    answers: [StudentAnswerItem!]!
     totalScoreofOlympiad: Int!
     createdAt: String!
     updatedAt: String!
   }
 
-  input AnswerInput {
+  input StudentAnswerItemInput {
+    questionId: ID!
     score: Int!
   }
 
   input CreateStudentAnswerInput {
     studentId: ID!
     classTypeId: ID!
-    answers: [AnswerInput!]!
+    answers: [StudentAnswerItemInput!]!
   }
 
   input UpdateStudentAnswerInput {
+    id: ID!
     studentId: ID
     classTypeId: ID
-    answers: [AnswerInput!]
+    answers: [StudentAnswerItemInput!]
   }
 
   type Mutation {
     createStudentAnswer(input: CreateStudentAnswerInput!): StudentAnswer!
-    updateStudentAnswer(id: ID!, input: UpdateStudentAnswerInput!): StudentAnswer!
+    updateStudentAnswer(
+      id: ID!
+      input: UpdateStudentAnswerInput!
+    ): StudentAnswer!
+    updateStudentAnswerScore(
+      studentAnswerId: ID!
+      questionId: ID!
+      score: Int!
+    ): StudentAnswer!
     deleteStudentAnswer(id: ID!): Boolean!
   }
 
@@ -42,5 +52,6 @@ export const StudentAnswerTypeDefs = gql`
     studentAnswer(id: ID!): StudentAnswer
     allStudentAnswers: [StudentAnswer!]!
     studentAnswersByClassType(classTypeId: ID!): [StudentAnswer!]!
+    debugOlympiadData(olympiadId: ID!): String!
   }
 `;

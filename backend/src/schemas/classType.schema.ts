@@ -65,5 +65,6 @@ export const ClassTypeTypeDefs = gql`
     classTypesByClassYear(classYear: ClassYear!): [ClassType!]!
     participantsByClassType(classTypeId: ID!): [ID!]!
     studentsResultsByClassType(classTypeId: ID!): [ID!]!
+    getStudentsByOlympiadId(olympiadId: ID!): [StudentAnswer!]!
   }
 `;
