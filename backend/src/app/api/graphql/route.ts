@@ -1,29 +1,30 @@
-import { NextRequest } from "next/server";
-import { ApolloServer } from "@apollo/server";
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { Context, buildContext } from "@/types/context";
-
-// Import all your existing schemas and resolvers
 import { typeDefs } from "@/schemas";
 import { resolvers } from "@/resolvers";
+import { NextRequest, NextResponse } from "next/server";
+import { connectDataBase } from "@/database";
+import { ApolloServer } from "@apollo/server";
+import { startServerAndCreateNextHandler } from "@as-integrations/next";
+connectDataBase();
 
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-
-// --- Apollo Server ---
-const apolloServer = new ApolloServer<Context>({
-  schema,
-  introspection: true,
+const server = new ApolloServer({
+  resolvers,
+  typeDefs,
 });
 
-const apolloHandler = startServerAndCreateNextHandler(apolloServer, {
-  context: async (req) => buildContext(req as any),
-});
+const handler = startServerAndCreateNextHandler<NextRequest>(server);
 
-export async function GET(req: NextRequest) {
-  return apolloHandler(req);
+// Handle CORS preflight requests
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
 }
 
-export async function POST(req: NextRequest) {
-  return apolloHandler(req);
-}
+// export const dynamic = "force-dynamic";
+
+export { handler as GET, handler as POST };
