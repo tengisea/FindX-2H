@@ -10,6 +10,7 @@ connectDataBase();
 const server = new ApolloServer({
   resolvers,
   typeDefs,
+  introspection: true,
 });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
