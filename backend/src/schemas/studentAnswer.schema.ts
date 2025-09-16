@@ -28,7 +28,6 @@ export const StudentAnswerTypeDefs = gql`
   }
 
   input UpdateStudentAnswerInput {
-    id: ID!
     studentId: ID
     classTypeId: ID
     answers: [StudentAnswerItemInput!]

@@ -1,4 +1,4 @@
-import { StudentModel, StudentAnswerModel } from "../../../models";
+import { StudentModel, ClassTypeModel } from "../../../models";
 import { GraphQLError } from "graphql";
 import { QueryResolvers } from "@/types/generated";
 import { Types } from "mongoose";
@@ -13,25 +13,27 @@ export const studentsByClassType: QueryResolvers["studentsByClassType"] =
 
       const classTypeObjectId = new Types.ObjectId(classTypeId);
 
-      // Find all StudentAnswers for this classType
-      const studentAnswers = await StudentAnswerModel.find({
-        classTypeId: classTypeObjectId,
-      }).lean();
+      // Find the ClassType and get its participants
+      const classType = await ClassTypeModel.findById(classTypeObjectId).lean();
 
-      console.log("📝 Found StudentAnswers:", studentAnswers.length);
-
-      if (studentAnswers.length === 0) {
-        console.log("❌ No StudentAnswers found for this classType");
+      if (!classType) {
+        console.log("❌ ClassType not found");
         return [];
       }
 
-      // Get unique student IDs from the StudentAnswers
-      const studentIds = [...new Set(studentAnswers.map((sa) => sa.studentId))];
-      console.log("👥 Unique student IDs:", studentIds.length);
+      console.log(
+        "📝 Found ClassType with participants:",
+        classType.participants?.length || 0
+      );
 
-      // Find all students with these IDs
+      if (!classType.participants || classType.participants.length === 0) {
+        console.log("❌ No participants found for this classType");
+        return [];
+      }
+
+      // Find all students who are participants in this class type
       const students = await StudentModel.find({
-        _id: { $in: studentIds },
+        _id: { $in: classType.participants },
       }).lean();
 
       console.log("📊 Found students:", students.length);

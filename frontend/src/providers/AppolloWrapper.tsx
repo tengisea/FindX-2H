@@ -10,8 +10,13 @@ import {
 import { ReactNode } from "react";
 import { setContext } from "@apollo/client/link/context";
 
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "https://find-x-2-h.vercel.app/api/graphql";
+console.log("🔧 Apollo Client Backend URL:", backendUrl);
+
 const httpLink = createHttpLink({
-  uri: process.env.BACKEND_URL || "http://localhost:8000/api/graphql",
+  uri: backendUrl,
 });
 
 export const ApolloWrapper = ({ children }: { children: ReactNode }) => {

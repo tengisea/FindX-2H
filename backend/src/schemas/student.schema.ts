@@ -16,7 +16,7 @@ export const StudentTypeDefs = gql`
     updatedAt: String!
   }
 
-input CreateStudentInput {
+  input CreateStudentInput {
     name: String!
     email: String!
     school: String!
@@ -29,7 +29,7 @@ input CreateStudentInput {
     email: String
     school: String
     class: String
-    location: String 
+    location: String
     profilePicture: String
   }
 
