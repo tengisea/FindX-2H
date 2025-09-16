@@ -18,7 +18,7 @@ export const updateStudentAnswerScore = async (
       (a: any) => String(a.questionId) === String(questionId)
     );
     if (idx === -1) {
-      answers.push({ questionId, score });
+      answers.push({ questionId: questionId as any, score });
     } else {
       answers[idx].score = score;
     }
