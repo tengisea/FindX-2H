@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx -r tsconfig-paths/register src/server.ts",
-    "predev": "graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js",
-    "build": "next build --turbopack",
+    "dev": "npm run codegen && tsx -r tsconfig-paths/register src/server.ts",
+    "predev": "npm run codegen",
+    "codegen": "npx graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js",
+    "build": "npm run codegen && next build --no-lint",
     "start": "tsx -r tsconfig-paths/register src/server.ts",
-    "start:prod": "next start",
-    "lint": "eslint",
-    "codegen": "graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js"
+    "start:prod": "npm run codegen && next start",
+    "lint": "eslint"
   },
   "dependencies": {
     "@apollo/server": "^5.0.0",
