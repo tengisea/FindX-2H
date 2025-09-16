@@ -84,3 +84,49 @@ query GetOlympiad($id: ID!) {
     status
   }
 }
+
+# Student Answer Queries and Mutations
+query GetStudentAnswersByClassType($classTypeId: ID!) {
+  studentAnswersByClassType(classTypeId: $classTypeId) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateStudentAnswer($input: CreateStudentAnswerInput!) {
+  createStudentAnswer(input: $input) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateStudentAnswer($id: ID!, $input: UpdateStudentAnswerInput!) {
+  updateStudentAnswer(id: $id, input: $input) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+  }
+}
