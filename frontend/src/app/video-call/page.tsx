@@ -13,12 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Video, Users, Settings, Wifi, WifiOff } from "lucide-react";
 
 export default function VideoCallPage() {
-  const [studentId, setStudentId] = useState(
-    () => localStorage.getItem("studentId") || "student-123"
-  );
-  const [organizerId, setOrganizerId] = useState(
-    () => localStorage.getItem("organizerId") || ""
-  );
+  const [studentId, setStudentId] = useState("student-123");
+  const [organizerId, setOrganizerId] = useState("");
   const [roomName, setRoomName] = useState("test-room");
   const [isInCall, setIsInCall] = useState(false);
   const [wsConnected, setWsConnected] = useState(false);

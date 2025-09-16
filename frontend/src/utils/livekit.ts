@@ -17,7 +17,11 @@ export const getLiveKitToken = async (
   });
 
   if (!response.ok) {
-    throw new Error("Failed to get LiveKit token");
+    const errorText = await response.text();
+    console.error("Token request failed:", response.status, errorText);
+    throw new Error(
+      `Failed to get LiveKit token: ${response.status} ${errorText}`
+    );
   }
 
   const data = await response.json();
@@ -25,6 +29,8 @@ export const getLiveKitToken = async (
 };
 
 export const getLiveKitWsUrl = (): string => {
-  return process.env.NEXT_PUBLIC_LIVEKIT_WS_URL || "ws://localhost:7880";
+  return (
+    process.env.NEXT_PUBLIC_LIVEKIT_WS_URL ||
+    "wss://findx-nxwehhao.livekit.cloud"
+  );
 };
-
