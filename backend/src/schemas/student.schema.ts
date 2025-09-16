@@ -33,17 +33,24 @@ input CreateStudentInput {
     profilePicture: String
   }
 
+  input RegisterForOlympiadInput {
+    studentId: ID!
+    classTypeId: ID!
+  }
+
   type Mutation {
     createStudent(input: CreateStudentInput!): Student!
+    createTestStudent: Student!
     updateStudent(id: ID!, input: UpdateStudentInput!): Student!
     deleteStudent(id: ID!): Boolean!
     addOlympiad(id: ID!, olympiadId: ID!): Student!
     updateTotalScore(id: ID!, totalScore: Int!): Student!
     updatePiPoints(id: ID!, piPoints: Int!): Student!
+    registerForOlympiad(input: RegisterForOlympiadInput!): Boolean!
   }
 
   type Query {
-    student(id: ID!): Student
+    getStudent(id: ID!): Student
     studentsByOlympiad(olympiadId: ID!): [Student!]!
     studentsByClassType(classTypeId: ID!): [Student!]!
     studentsByClass(class: String!): [Student!]!

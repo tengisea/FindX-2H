@@ -2,10 +2,80 @@
 
 import { useState } from 'react';
 import { StudentSidebar } from '@/components/student/StudentSidebar';
-import { useGetStudentQuery, useGetApprovedOlympiadsQuery } from '@/generated';
+import { useGetStudentQuery, useGetApprovedOlympiadsQuery, useRegisterForOlympiadMutation, useGetOlympiadQuery } from '@/generated';
+
+// Component for displaying participated olympiad table rows
+const ParticipatedOlympiadRow = ({ olympiadId, onViewDetails }: { olympiadId: string; onViewDetails: (olympiad: any) => void }) => {
+  const { data: olympiadData, loading, error } = useGetOlympiadQuery({
+    variables: { id: olympiadId }
+  });
+
+  if (loading) {
+    return (
+      <tr>
+        <td colSpan={5} className="px-6 py-4">
+          <div className="animate-pulse">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+          </div>
+        </td>
+      </tr>
+    );
+  }
+
+  if (error || !olympiadData?.olympiad) {
+    return (
+      <tr>
+        <td colSpan={5} className="px-6 py-4 text-red-600 text-sm">
+          Error loading olympiad details (ID: {olympiadId})
+        </td>
+      </tr>
+    );
+  }
+
+  const olympiad = olympiadData.olympiad;
+
+  return (
+    <tr className="hover:bg-gray-50 transition-colors duration-200">
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div>
+          <div className="text-sm font-medium text-gray-900">{olympiad.name}</div>
+          <div className="text-sm text-gray-500 truncate max-w-xs">{olympiad.description}</div>
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        {new Date(olympiad.date).toLocaleDateString()}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        {olympiad.location}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+          olympiad.status === 'APPROVED' 
+            ? 'bg-green-100 text-green-800' 
+            : 'bg-yellow-100 text-yellow-800'
+        }`}>
+          {olympiad.status}
+        </span>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <button 
+          onClick={() => onViewDetails(olympiad)}
+          className="text-blue-600 hover:text-blue-900 mr-3"
+        >
+          View Details
+        </button>
+        <span className="text-gray-500">Participated</span>
+      </td>
+    </tr>
+  );
+};
 
 const StudentPage = () => {
-  const [activeTab, setActiveTab] = useState<'profile' | 'olympiads' | 'results' | 'achievements' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'olympiads' | 'participated' | 'results' | 'achievements' | 'settings'>('profile');
+  const [selectedOlympiad, setSelectedOlympiad] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showGradeSelectionModal, setShowGradeSelectionModal] = useState(false);
+  const [selectedClassType, setSelectedClassType] = useState<any>(null);
   
   // For now, using a hardcoded student ID. In a real app, this would come from authentication
   const studentId = '68c54f1d22ed3250680b05c5';
@@ -15,9 +85,57 @@ const StudentPage = () => {
   });
 
   const { data: olympiadsData, loading: olympiadsLoading } = useGetApprovedOlympiadsQuery();
+  
+  const [registerForOlympiad, { loading: registering }] = useRegisterForOlympiadMutation();
 
   const student = studentData?.getStudent;
   const olympiads = olympiadsData?.getAllApprovedOlympiads || [];
+
+  const handleViewDetails = (olympiad: any) => {
+    setSelectedOlympiad(olympiad);
+    setShowDetailsModal(true);
+  };
+
+  const handleRegister = (olympiad: any) => {
+    setSelectedOlympiad(olympiad);
+    setShowGradeSelectionModal(true);
+  };
+
+  const handleGradeSelection = async (classType: any) => {
+    try {
+      await registerForOlympiad({
+        variables: {
+          input: {
+            studentId: studentId,
+            classTypeId: classType.id
+          }
+        }
+      });
+      
+      alert('Successfully registered for the olympiad!');
+      setShowGradeSelectionModal(false);
+      setSelectedClassType(null);
+      // Optionally refresh the data
+      window.location.reload();
+    } catch (error: any) {
+      alert(`Registration failed: ${error.message}`);
+    }
+  };
+
+  const getAvailableGrades = (olympiad: any) => {
+    if (!student?.class) return [];
+
+    const studentGradeNum = parseInt(student.class.replace('GRADE_', ''));
+    return olympiad.classtypes.filter((ct: any) => {
+      const classGradeNum = parseInt(ct.classYear.replace('GRADE_', ''));
+      return classGradeNum >= studentGradeNum;
+    });
+  };
+
+  const isStudentRegistered = (olympiad: any) => {
+    if (!student?.participatedOlympiads) return false;
+    return student.participatedOlympiads.includes(olympiad.id);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -234,30 +352,29 @@ const StudentPage = () => {
                           ))}
                         </div>
                       </div>
-
-                      {/* Questions Summary */}
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>Total Questions:</span>
-                          <span className="font-semibold">
-                            {olympiad.classtypes.reduce((total, ct) => total + ct.questions.length, 0)}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>Max Score:</span>
-                          <span className="font-semibold">
-                            {olympiad.classtypes.reduce((total, ct) => total + ct.maxScore, 0)}
-                          </span>
-                        </div>
-                      </div>
-
                       <div className="flex space-x-3">
-                        <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
+                        <button 
+                          onClick={() => handleViewDetails(olympiad)}
+                          className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                        >
                           View Details
                         </button>
-                        <button className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium">
-                          Register
-                        </button>
+                        {isStudentRegistered(olympiad) ? (
+                          <button 
+                            className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed text-sm font-medium"
+                            disabled
+                          >
+                            Registered
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={() => handleRegister(olympiad)}
+                            disabled={registering}
+                            className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {registering ? 'Registering...' : 'Register'}
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -270,6 +387,81 @@ const StudentPage = () => {
                 </svg>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">No Olympiads Available</h3>
                 <p className="text-gray-600">There are currently no approved olympiads available for registration.</p>
+              </div>
+            )}
+          </div>
+        );
+      case 'participated':
+        return (
+          <div className="p-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Participated Olympiads</h2>
+            
+            {studentLoading ? (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                </div>
+              </div>
+            ) : student?.participatedOlympiads && student.participatedOlympiads.length > 0 ? (
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {student.participatedOlympiads.length} Olympiad{student.participatedOlympiads.length !== 1 ? 's' : ''} Participated
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Olympiad Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Location
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {student.participatedOlympiads.map((olympiadId: string) => (
+                          <ParticipatedOlympiadRow 
+                            key={olympiadId} 
+                            olympiadId={olympiadId}
+                            onViewDetails={handleViewDetails}
+                          />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Participated Olympiads</h3>
+                <p className="text-gray-600">You haven't participated in any olympiads yet.</p>
+                <button 
+                  onClick={() => setActiveTab('olympiads')}
+                  className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Browse Available Olympiads
+                </button>
               </div>
             )}
           </div>
@@ -693,6 +885,227 @@ const StudentPage = () => {
       <div className="ml-80">
         {renderContent()}
       </div>
+
+      {/* Olympiad Details Modal */}
+      {showDetailsModal && selectedOlympiad && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">{selectedOlympiad.name}</h3>
+                <button 
+                  onClick={() => setShowDetailsModal(false)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                  <p className="text-gray-600">{selectedOlympiad.description}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Date</h4>
+                    <p className="text-gray-600">{new Date(selectedOlympiad.date).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Location</h4>
+                    <p className="text-gray-600">{selectedOlympiad.location}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Organizer</h4>
+                    <p className="text-gray-600">{selectedOlympiad.organizer?.organizationName || 'Unknown'}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Status</h4>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      selectedOlympiad.status === 'APPROVED' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {selectedOlympiad.status}
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Available Grades</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedOlympiad.classtypes.map((classType: any) => (
+                      <span 
+                        key={classType.id}
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          classType.classYear === student?.class 
+                            ? 'bg-blue-100 text-blue-800' 
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {classType.classYear.replace('GRADE_', 'Grade ')}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Questions & Scoring</h4>
+                  <div className="space-y-2">
+                    {selectedOlympiad.classtypes.map((classType: any) => (
+                      <div key={classType.id} className="bg-gray-50 p-3 rounded-lg">
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">{classType.classYear.replace('GRADE_', 'Grade ')}</span>
+                          <span className="text-sm text-gray-600">
+                            {classType.questions.length} questions • Max Score: {classType.maxScore}
+                          </span>
+                        </div>
+                        <div className="mt-2">
+                          <h5 className="text-sm font-medium text-gray-700 mb-1">Questions:</h5>
+                          <div className="space-y-1">
+                            {classType.questions.map((question: any) => (
+                              <div key={question.id} className="text-sm text-gray-600">
+                                • {question.questionName} ({question.maxScore} points)
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex space-x-3">
+                <button 
+                  onClick={() => setShowDetailsModal(false)}
+                  className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                >
+                  Close
+                </button>
+                {isStudentRegistered(selectedOlympiad) ? (
+                  <button 
+                    className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed"
+                    disabled
+                  >
+                    Already Registered
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setShowDetailsModal(false);
+                      handleRegister(selectedOlympiad);
+                    }}
+                    disabled={registering}
+                    className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Select Grade & Register
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Grade Selection Modal */}
+      {showGradeSelectionModal && selectedOlympiad && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">Select Grade Level</h3>
+                <button 
+                  onClick={() => setShowGradeSelectionModal(false)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              
+              <div className="mb-4">
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">{selectedOlympiad.name}</h4>
+                <p className="text-gray-600 text-sm">Choose the grade level you want to register for:</p>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                {getAvailableGrades(selectedOlympiad).map((classType: any) => (
+                  <div 
+                    key={classType.id}
+                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
+                      selectedClassType?.id === classType.id
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => setSelectedClassType(classType)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h5 className="font-semibold text-gray-900">
+                          {classType.classYear.replace('GRADE_', 'Grade ')}
+                        </h5>
+                        <p className="text-sm text-gray-600">
+                          {classType.questions.length} questions • Max Score: {classType.maxScore}
+                        </p>
+                      </div>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedClassType?.id === classType.id
+                          ? 'border-blue-500 bg-blue-500'
+                          : 'border-gray-300'
+                      }`}>
+                        {selectedClassType?.id === classType.id && (
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {classType.questions.length > 0 && (
+                      <div className="mt-3">
+                        <h6 className="text-sm font-medium text-gray-700 mb-1">Questions:</h6>
+                        <div className="space-y-1">
+                          {classType.questions.slice(0, 3).map((question: any) => (
+                            <div key={question.id} className="text-xs text-gray-600">
+                              • {question.questionName} ({question.maxScore} points)
+                            </div>
+                          ))}
+                          {classType.questions.length > 3 && (
+                            <div className="text-xs text-gray-500">
+                              ... and {classType.questions.length - 3} more questions
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {getAvailableGrades(selectedOlympiad).length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No available grades for your level.</p>
+                </div>
+              )}
+
+              <div className="flex space-x-3">
+                <button 
+                  onClick={() => setShowGradeSelectionModal(false)}
+                  className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => selectedClassType && handleGradeSelection(selectedClassType)}
+                  disabled={!selectedClassType || registering}
+                  className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {registering ? 'Registering...' : 'Register'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

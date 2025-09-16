@@ -52,3 +52,35 @@ query GetStudentsByClassType($classTypeId: ID!) {
     updatedAt
   }
 }
+
+query GetOlympiad($id: ID!) {
+  olympiad(id: $id) {
+    id
+    name
+    description
+    date
+    location
+    organizer {
+      id
+      organizationName
+      email
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsResults
+      olympiadId
+    }
+    scoreOfAward
+    status
+  }
+}

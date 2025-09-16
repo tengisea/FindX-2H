@@ -3,8 +3,8 @@
 import { useGetStudentQuery } from '@/generated';
 
 interface StudentSidebarProps {
-  activeTab: 'profile' | 'olympiads' | 'results' | 'achievements' | 'settings';
-  onTabChange: (tab: 'profile' | 'olympiads' | 'results' | 'achievements' | 'settings') => void;
+  activeTab: 'profile' | 'olympiads' | 'participated' | 'results' | 'achievements' | 'settings';
+  onTabChange: (tab: 'profile' | 'olympiads' | 'participated' | 'results' | 'achievements' | 'settings') => void;
   studentId: string;
 }
 
@@ -22,6 +22,12 @@ const getTabIcon = (tab: string, isActive: boolean) => {
       return (
         <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      );
+    case "participated":
+      return (
+        <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       );
     case "results":
@@ -138,12 +144,14 @@ export const StudentSidebar = ({ activeTab, onTabChange }: StudentSidebarProps) 
 
         {/* Participation Stats */}
         {student && (
-          <div className="bg-blue-800/50 rounded-xl p-4 border border-blue-600/30">
+          <button 
+            onClick={() => onTabChange('participated')}
+            className="w-full bg-blue-800/50 rounded-xl p-4 border border-blue-600/30 hover:bg-blue-700/50 transition-colors duration-200"
+          >
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-300">{student.participatedOlympiads || 0}</div>
               <div className="text-sm text-blue-200">Olympiads Participated</div>
             </div>
-          </div>
+          </button>
         )}
       </div>
 
@@ -153,13 +161,14 @@ export const StudentSidebar = ({ activeTab, onTabChange }: StudentSidebarProps) 
           {[
             { id: 'profile', label: 'Profile', description: 'View and edit profile' },
             { id: 'olympiads', label: 'Olympiads', description: 'Browse and register' },
+            { id: 'participated', label: 'Participated', description: 'Your registered olympiads' },
             { id: 'results', label: 'Results', description: 'View your scores' },
             { id: 'achievements', label: 'Achievements', description: 'Badges and medals' },
             { id: 'settings', label: 'Settings', description: 'Account preferences' }
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => onTabChange(tab.id as 'profile' | 'olympiads' | 'results' | 'achievements' | 'settings')}
+              onClick={() => onTabChange(tab.id as 'profile' | 'olympiads' | 'participated' | 'results' | 'achievements' | 'settings')}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'bg-blue-600 text-white shadow-lg'
