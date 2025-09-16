@@ -1,0 +1,54 @@
+mutation RegisterForOlympiad($input: RegisterForOlympiadInput!) {
+  registerForOlympiad(input: $input)
+}
+
+query getStudent($id: ID!) {
+  getStudent(id: $id) {
+    id
+    name
+    email
+    school
+    class
+    location
+    profilePicture
+    totalScore
+    piPoints
+    participatedOlympiads
+    createdAt
+    updatedAt
+  }
+}
+
+query GetAllStudents {
+  getAllStudent {
+    id
+    name
+    email
+    school
+    class
+    location
+    profilePicture
+    totalScore
+    piPoints
+    participatedOlympiads
+    createdAt
+    updatedAt
+  }
+}
+
+query GetStudentsByClassType($classTypeId: ID!) {
+  studentsByClassType(classTypeId: $classTypeId) {
+    id
+    name
+    email
+    school
+    class
+    location
+    profilePicture
+    totalScore
+    piPoints
+    participatedOlympiads
+    createdAt
+    updatedAt
+  }
+}

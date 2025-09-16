@@ -109,11 +109,13 @@ export type Mutation = {
   createQuestion: Question;
   createStudent: Student;
   createStudentAnswer: StudentAnswer;
+  createTestStudent: Student;
   deleteClassType: Scalars['Boolean']['output'];
   deleteOlympiad: Scalars['Boolean']['output'];
   deleteQuestion: Scalars['Boolean']['output'];
   deleteStudent: Scalars['Boolean']['output'];
   deleteStudentAnswer: Scalars['Boolean']['output'];
+  registerForOlympiad: Scalars['Boolean']['output'];
   requestOlympiad: Olympiad;
   updateClassType: ClassType;
   updateOlympiad: Olympiad;
@@ -185,6 +187,11 @@ export type MutationDeleteStudentArgs = {
 
 export type MutationDeleteStudentAnswerArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationRegisterForOlympiadArgs = {
+  input: RegisterForOlympiadInput;
 };
 
 
@@ -275,11 +282,11 @@ export type Query = {
   getOlympiadByClassYear: Array<Olympiad>;
   getOrganizer: Organizer;
   getPendingOlympiads: Array<Olympiad>;
+  getStudent?: Maybe<Student>;
   olympiad: Olympiad;
   participantsByClassType: Array<Scalars['ID']['output']>;
   question: Question;
   questionsByClassType: Array<Question>;
-  student?: Maybe<Student>;
   studentAnswer?: Maybe<StudentAnswer>;
   studentAnswersByClassType: Array<StudentAnswer>;
   studentsByClass: Array<Student>;
@@ -316,6 +323,11 @@ export type QueryGetOrganizerArgs = {
 };
 
 
+export type QueryGetStudentArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryOlympiadArgs = {
   id: Scalars['ID']['input'];
 };
@@ -333,11 +345,6 @@ export type QueryQuestionArgs = {
 
 export type QueryQuestionsByClassTypeArgs = {
   classTypeId: Scalars['ID']['input'];
-};
-
-
-export type QueryStudentArgs = {
-  id: Scalars['ID']['input'];
 };
 
 
@@ -386,6 +393,11 @@ export type Question = {
   id: Scalars['ID']['output'];
   maxScore: Scalars['Int']['output'];
   questionName: Scalars['String']['output'];
+};
+
+export type RegisterForOlympiadInput = {
+  classTypeId: Scalars['ID']['input'];
+  studentId: Scalars['ID']['input'];
 };
 
 export enum Response {
@@ -514,6 +526,32 @@ export type GetOrganizerQueryVariables = Exact<{
 
 
 export type GetOrganizerQuery = { __typename?: 'Query', getOrganizer: { __typename?: 'Organizer', id: string, organizationName: string, email: string, Olympiads?: Array<{ __typename?: 'Olympiad', id: string, name: string }> | null } };
+
+export type RegisterForOlympiadMutationVariables = Exact<{
+  input: RegisterForOlympiadInput;
+}>;
+
+
+export type RegisterForOlympiadMutation = { __typename?: 'Mutation', registerForOlympiad: boolean };
+
+export type GetStudentQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type GetStudentQuery = { __typename?: 'Query', getStudent?: { __typename?: 'Student', id: string, name: string, email: string, school: string, class: string, location: string, profilePicture: string, totalScore: number, piPoints: number, participatedOlympiads: Array<string>, createdAt: string, updatedAt: string } | null };
+
+export type GetAllStudentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllStudentsQuery = { __typename?: 'Query', getAllStudent: Array<{ __typename?: 'Student', id: string, name: string, email: string, school: string, class: string, location: string, profilePicture: string, totalScore: number, piPoints: number, participatedOlympiads: Array<string>, createdAt: string, updatedAt: string }> };
+
+export type GetStudentsByClassTypeQueryVariables = Exact<{
+  classTypeId: Scalars['ID']['input'];
+}>;
+
+
+export type GetStudentsByClassTypeQuery = { __typename?: 'Query', studentsByClassType: Array<{ __typename?: 'Student', id: string, name: string, email: string, school: string, class: string, location: string, profilePicture: string, totalScore: number, piPoints: number, participatedOlympiads: Array<string>, createdAt: string, updatedAt: string }> };
 
 
 export const RequestOlympiadDocument = gql`
@@ -1078,3 +1116,186 @@ export type GetOrganizerQueryHookResult = ReturnType<typeof useGetOrganizerQuery
 export type GetOrganizerLazyQueryHookResult = ReturnType<typeof useGetOrganizerLazyQuery>;
 export type GetOrganizerSuspenseQueryHookResult = ReturnType<typeof useGetOrganizerSuspenseQuery>;
 export type GetOrganizerQueryResult = Apollo.QueryResult<GetOrganizerQuery, GetOrganizerQueryVariables>;
+export const RegisterForOlympiadDocument = gql`
+    mutation RegisterForOlympiad($input: RegisterForOlympiadInput!) {
+  registerForOlympiad(input: $input)
+}
+    `;
+export type RegisterForOlympiadMutationFn = Apollo.MutationFunction<RegisterForOlympiadMutation, RegisterForOlympiadMutationVariables>;
+
+/**
+ * __useRegisterForOlympiadMutation__
+ *
+ * To run a mutation, you first call `useRegisterForOlympiadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterForOlympiadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerForOlympiadMutation, { data, loading, error }] = useRegisterForOlympiadMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRegisterForOlympiadMutation(baseOptions?: Apollo.MutationHookOptions<RegisterForOlympiadMutation, RegisterForOlympiadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterForOlympiadMutation, RegisterForOlympiadMutationVariables>(RegisterForOlympiadDocument, options);
+      }
+export type RegisterForOlympiadMutationHookResult = ReturnType<typeof useRegisterForOlympiadMutation>;
+export type RegisterForOlympiadMutationResult = Apollo.MutationResult<RegisterForOlympiadMutation>;
+export type RegisterForOlympiadMutationOptions = Apollo.BaseMutationOptions<RegisterForOlympiadMutation, RegisterForOlympiadMutationVariables>;
+export const GetStudentDocument = gql`
+    query getStudent($id: ID!) {
+  getStudent(id: $id) {
+    id
+    name
+    email
+    school
+    class
+    location
+    profilePicture
+    totalScore
+    piPoints
+    participatedOlympiads
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetStudentQuery__
+ *
+ * To run a query within a React component, call `useGetStudentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStudentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStudentQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetStudentQuery(baseOptions: Apollo.QueryHookOptions<GetStudentQuery, GetStudentQueryVariables> & ({ variables: GetStudentQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStudentQuery, GetStudentQueryVariables>(GetStudentDocument, options);
+      }
+export function useGetStudentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStudentQuery, GetStudentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStudentQuery, GetStudentQueryVariables>(GetStudentDocument, options);
+        }
+export function useGetStudentSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetStudentQuery, GetStudentQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetStudentQuery, GetStudentQueryVariables>(GetStudentDocument, options);
+        }
+export type GetStudentQueryHookResult = ReturnType<typeof useGetStudentQuery>;
+export type GetStudentLazyQueryHookResult = ReturnType<typeof useGetStudentLazyQuery>;
+export type GetStudentSuspenseQueryHookResult = ReturnType<typeof useGetStudentSuspenseQuery>;
+export type GetStudentQueryResult = Apollo.QueryResult<GetStudentQuery, GetStudentQueryVariables>;
+export const GetAllStudentsDocument = gql`
+    query GetAllStudents {
+  getAllStudent {
+    id
+    name
+    email
+    school
+    class
+    location
+    profilePicture
+    totalScore
+    piPoints
+    participatedOlympiads
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetAllStudentsQuery__
+ *
+ * To run a query within a React component, call `useGetAllStudentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllStudentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllStudentsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllStudentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllStudentsQuery, GetAllStudentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllStudentsQuery, GetAllStudentsQueryVariables>(GetAllStudentsDocument, options);
+      }
+export function useGetAllStudentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllStudentsQuery, GetAllStudentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllStudentsQuery, GetAllStudentsQueryVariables>(GetAllStudentsDocument, options);
+        }
+export function useGetAllStudentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllStudentsQuery, GetAllStudentsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllStudentsQuery, GetAllStudentsQueryVariables>(GetAllStudentsDocument, options);
+        }
+export type GetAllStudentsQueryHookResult = ReturnType<typeof useGetAllStudentsQuery>;
+export type GetAllStudentsLazyQueryHookResult = ReturnType<typeof useGetAllStudentsLazyQuery>;
+export type GetAllStudentsSuspenseQueryHookResult = ReturnType<typeof useGetAllStudentsSuspenseQuery>;
+export type GetAllStudentsQueryResult = Apollo.QueryResult<GetAllStudentsQuery, GetAllStudentsQueryVariables>;
+export const GetStudentsByClassTypeDocument = gql`
+    query GetStudentsByClassType($classTypeId: ID!) {
+  studentsByClassType(classTypeId: $classTypeId) {
+    id
+    name
+    email
+    school
+    class
+    location
+    profilePicture
+    totalScore
+    piPoints
+    participatedOlympiads
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetStudentsByClassTypeQuery__
+ *
+ * To run a query within a React component, call `useGetStudentsByClassTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStudentsByClassTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStudentsByClassTypeQuery({
+ *   variables: {
+ *      classTypeId: // value for 'classTypeId'
+ *   },
+ * });
+ */
+export function useGetStudentsByClassTypeQuery(baseOptions: Apollo.QueryHookOptions<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables> & ({ variables: GetStudentsByClassTypeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables>(GetStudentsByClassTypeDocument, options);
+      }
+export function useGetStudentsByClassTypeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables>(GetStudentsByClassTypeDocument, options);
+        }
+export function useGetStudentsByClassTypeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables>(GetStudentsByClassTypeDocument, options);
+        }
+export type GetStudentsByClassTypeQueryHookResult = ReturnType<typeof useGetStudentsByClassTypeQuery>;
+export type GetStudentsByClassTypeLazyQueryHookResult = ReturnType<typeof useGetStudentsByClassTypeLazyQuery>;
+export type GetStudentsByClassTypeSuspenseQueryHookResult = ReturnType<typeof useGetStudentsByClassTypeSuspenseQuery>;
+export type GetStudentsByClassTypeQueryResult = Apollo.QueryResult<GetStudentsByClassTypeQuery, GetStudentsByClassTypeQueryVariables>;
