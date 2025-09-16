@@ -13,6 +13,19 @@ export const challengeTypeDefs = gql`
     CANCELLED
   }
 
+  enum ChallengeAnswerFormat {
+    MULTIPLE_CHOICE
+    SHORT_TEXT
+  }
+
+  # New input types for multiple answer formats
+  input AnswerFormatDistribution {
+    easy: ChallengeAnswerFormat
+    medium: ChallengeAnswerFormat
+    hard: ChallengeAnswerFormat
+  }
+
+
   type Challenge {
     id: ID!
     topic: String!
@@ -23,6 +36,8 @@ export const challengeTypeDefs = gql`
     winner: ID
     piPoints: Int!
     status: Status!
+    tasks: [Task!]!
+    classType: String
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -32,6 +47,16 @@ export const challengeTypeDefs = gql`
     opponent: ID!
     topic: String!
     difficulty: Difficulty!
+    classType: String!
+    taskCount: Int!
+    answerFormatDistribution: AnswerFormatDistribution
+    taskDifficultyDistribution: AnswerFormatDistribution
+    piPoints: Int
+  }
+
+  input AssignTasksToChallengeInput {
+    challengeId: ID!
+    taskIds: [ID!]!
   }
 
   type Query {
@@ -41,5 +66,6 @@ export const challengeTypeDefs = gql`
 
   type Mutation {
     createChallenge(input: ChallengeInput!): ID!
+    assignTasksToChallenge(input: AssignTasksToChallengeInput!): Challenge!
   }
 `;

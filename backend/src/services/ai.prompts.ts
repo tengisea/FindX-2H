@@ -1,4 +1,4 @@
-import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, TaskClassType as GraphQLClassType } from "@/types/generated";
 import { AIGenerationRequest, TaskData, DifficultySpec, ClassSpec } from "./ai.types";
 import { AIMappers } from "./ai.mappers";
 
@@ -21,14 +21,38 @@ export class AIPrompts {
     const ageAppropriateTopic = AIMappers.getAgeAppropriateTopic(validatedTopic, request.classType);
     
     // Use specified answer format or determine based on topic and grade
-    const problemFormat = request.answerFormat 
-      ? this.getProblemFormatFromAnswerFormat(request.answerFormat)
-      : this.getProblemFormat(validatedTopic, request.classType);
+    let problemFormat: string;
+    if (request.answerFormat) {
+      problemFormat = this.getProblemFormatFromAnswerFormat(request.answerFormat);
+    } else {
+      problemFormat = this.getProblemFormat(validatedTopic, request.classType);
+    }
     
     return `
-Create a ${problemFormat} problem for a ${typeString.toLowerCase()} worth ${request.piPoints} PiPoints.
+Create a UNIQUE ${problemFormat} problem for a ${typeString.toLowerCase()} worth ${request.piPoints} PiPoints.
 
 CRITICAL: The problem MUST be about ${topicString} (${ageAppropriateTopic}) AND in ${problemFormat} format.
+
+UNIQUENESS REQUIREMENT: Make this problem completely different from any other problems you might generate. Use different numbers, different scenarios, different contexts, and different wording. Avoid generic titles like "Counting Apples" - be creative and specific.
+
+VARIATION SEED: ${request.variation || 'Default variation'}
+
+Use this variation seed to create a unique problem that's different from any other task. Think of different themes, contexts, and scenarios within the same topic.
+
+DIFFICULTY-SPECIFIC REQUIREMENTS:
+${this.getDifficultySpecificInstructions(request.difficulty, request.classType)}
+
+CREATIVITY REQUIREMENTS:
+- Use different real-world scenarios (e.g., if first task was about apples, use cars, toys, books, etc.)
+- Use different numbers and calculations
+- Use different characters or contexts (e.g., different people, places, situations)
+- Create a unique title that describes the specific scenario
+- Make the problem statement engaging and specific to the scenario
+
+Examples of unique titles for Math problems:
+- "Shopping at the Toy Store" (instead of "Counting Apples")
+- "Building Blocks Tower" (instead of "Basic Addition")
+- "Pizza Party Planning" (instead of "Simple Math")
 
 Topic: ${topicString} (adjusted for ${classString}: ${ageAppropriateTopic})
 Difficulty: ${difficultyString}
@@ -120,6 +144,124 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
   ]
 }
     `;
+  }
+
+  private static getDifficultySpecificInstructions(difficulty: GraphQLDifficulty, classType: GraphQLClassType): string {
+    const gradeLevel = this.getGradeLevel(classType);
+    
+    if (gradeLevel <= 3) {
+      // Early grades (1-3)
+      switch (difficulty) {
+        case GraphQLDifficulty.Easy:
+          return `EASY TASK REQUIREMENTS:
+- Use numbers 1-10 only
+- Single-step problems (count, add, or subtract)
+- Visual scenarios (toys, animals, food)
+- Very simple language
+- Direct counting or basic addition/subtraction
+- Examples: "Count the apples", "Add 2 + 3"`;
+
+        case GraphQLDifficulty.Medium:
+          return `MEDIUM TASK REQUIREMENTS:
+- Use numbers 1-20
+- Two-step problems (count then add, or combine operations)
+- Story scenarios with characters
+- Simple word problems
+- Basic reasoning required
+- Examples: "Sarah has 5 toys, gets 3 more, how many total?"`;
+
+        case GraphQLDifficulty.Hard:
+          return `HARD TASK REQUIREMENTS:
+- Use numbers 1-50
+- Multi-step problems (3+ operations)
+- Complex scenarios with multiple characters
+- Word problems requiring reading comprehension
+- Logical reasoning and problem-solving
+- Examples: "Tom has 10 stickers, gives away 3, gets 5 more, how many now?"`;
+
+        default:
+          return '';
+      }
+    } else if (gradeLevel <= 8) {
+      // Middle grades (4-8)
+      switch (difficulty) {
+        case GraphQLDifficulty.Easy:
+          return `EASY TASK REQUIREMENTS:
+- Basic arithmetic (addition, subtraction, multiplication, division)
+- Single-step calculations
+- Simple word problems
+- Numbers up to 100
+- Examples: "What is 15 × 4?", "Sarah has 25 marbles, gives away 8"`;
+
+        case GraphQLDifficulty.Medium:
+          return `MEDIUM TASK REQUIREMENTS:
+- Multi-step word problems
+- Fractions, decimals, percentages
+- Basic geometry concepts
+- Problem-solving with reasoning
+- Numbers up to 1000
+- Examples: "A pizza is cut into 8 slices, 3 are eaten, what fraction remains?"`;
+
+        case GraphQLDifficulty.Hard:
+          return `HARD TASK REQUIREMENTS:
+- Complex multi-step problems
+- Advanced math concepts (algebra, geometry)
+- Real-world applications
+- Critical thinking required
+- Numbers up to 10,000
+- Examples: "A rectangle has length 2x+3 and width x+1, find the area"`;
+
+        default:
+          return '';
+      }
+    } else {
+      // High school grades (9-12)
+      switch (difficulty) {
+        case GraphQLDifficulty.Easy:
+          return `EASY TASK REQUIREMENTS:
+- Basic algebra and geometry
+- Simple problem-solving
+- Single concept application
+- Examples: "Solve 2x + 5 = 13", "Find the area of a triangle"`;
+
+        case GraphQLDifficulty.Medium:
+          return `MEDIUM TASK REQUIREMENTS:
+- Multi-step algebra problems
+- Complex geometry
+- Real-world applications
+- Multiple concepts combined
+- Examples: "A quadratic equation with word problems", "Optimization problems"`;
+
+        case GraphQLDifficulty.Hard:
+          return `HARD TASK REQUIREMENTS:
+- Advanced calculus, trigonometry, or statistics
+- Complex problem-solving
+- Multiple solution approaches
+- Critical thinking and analysis
+- Examples: "Derivative applications", "Statistical analysis problems"`;
+
+        default:
+          return '';
+      }
+    }
+  }
+
+  private static getGradeLevel(classType: GraphQLClassType): number {
+    switch (classType) {
+      case GraphQLClassType.Grade_1: return 1;
+      case GraphQLClassType.Grade_2: return 2;
+      case GraphQLClassType.Grade_3: return 3;
+      case GraphQLClassType.Grade_4: return 4;
+      case GraphQLClassType.Grade_5: return 5;
+      case GraphQLClassType.Grade_6: return 6;
+      case GraphQLClassType.Grade_7: return 7;
+      case GraphQLClassType.Grade_8: return 8;
+      case GraphQLClassType.Grade_9: return 9;
+      case GraphQLClassType.Grade_10: return 10;
+      case GraphQLClassType.Grade_11: return 11;
+      case GraphQLClassType.Grade_12: return 12;
+      default: return 1;
+    }
   }
 
   private static getDifficultySpecs(): Record<GraphQLDifficulty, DifficultySpec> {
@@ -233,20 +375,15 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
   private static getProblemFormat(topic: GraphQLTopic, classType: GraphQLClassType): string {
     const gradeNumber = this.getGradeNumber(classType);
     
-    // Computer Science topics get LeetCode-style format only for higher grades
-    const isComputerScienceTopic = [
-      GraphQLTopic.ComputerScience,
-      GraphQLTopic.Algorithms,
-      GraphQLTopic.DataStructures,
-      GraphQLTopic.DynamicProgramming,
-      GraphQLTopic.Greedy,
-      GraphQLTopic.Graph,
-      GraphQLTopic.String,
-      GraphQLTopic.TextProcessing
+    // Advanced topics get more complex formats for higher grades
+    const isAdvancedTopic = [
+      GraphQLTopic.Math,
+      GraphQLTopic.Physics,
+      GraphQLTopic.Chemistry
     ].includes(topic);
 
-    // LeetCode format only for Computer Science topics in Grade 7+
-    if (isComputerScienceTopic && gradeNumber >= 7) {
+    // Advanced format for advanced topics in Grade 7+
+    if (isAdvancedTopic && gradeNumber >= 7) {
       return "competitive programming (LeetCode-style)";
     }
 
@@ -260,7 +397,7 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       // Grades 4-6: Moderate formats
       if (topic === GraphQLTopic.Math) return "math word problem";
       if (topic === GraphQLTopic.English) return "short text response question";
-      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return "multiple choice science question";
       }
       return "short answer question";
@@ -268,7 +405,7 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       // Grades 7-9: More complex formats
       if (topic === GraphQLTopic.Math) return "algebraic problem";
       if (topic === GraphQLTopic.English) return "essay question";
-      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return "short answer science question";
       }
       return "short answer question";
@@ -276,7 +413,7 @@ IMPORTANT: Return ONLY valid JSON in this exact format (no additional text, no m
       // Grades 10-12: Advanced formats
       if (topic === GraphQLTopic.Math) return "advanced math problem";
       if (topic === GraphQLTopic.English) return "analytical essay question";
-      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return "detailed explanation question";
       }
       return "detailed analysis question";

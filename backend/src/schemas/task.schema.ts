@@ -13,30 +13,16 @@ export const taskTypeDefs = gql`
   }
 
   enum Topic {
-    ALGORITHMS
-    DATA_STRUCTURES
     MATH
-    STRING
-    GRAPH
-    DYNAMIC_PROGRAMMING
-    GREEDY
     ENGLISH
-    TEXT_PROCESSING
-    SCIENCE
-    CHEMISTRY
+    HISTORY
     BIOLOGY
     PHYSICS
-    COMPUTER_SCIENCE
-    ASTRONOMY
-    EARTH_SCIENCE
+    CHEMISTRY
     LINGUISTICS
-    PHILOSOPHY
-    HISTORY
-    GEOGRAPHY
-    ECONOMICS
   }
 
-  enum ClassType {
+  enum TaskClassType {
     GRADE_1
     GRADE_2
     GRADE_3
@@ -89,7 +75,7 @@ export const taskTypeDefs = gql`
     topic: Topic!
     difficulty: Difficulty!
     type: TaskType!
-    classType: ClassType!
+    classType: TaskClassType!
     piPoints: Int!
     problemStatement: String!
     aiGenerated: Boolean!
@@ -116,7 +102,7 @@ export const taskTypeDefs = gql`
     topic: Topic!
     difficulty: Difficulty!
     type: TaskType!
-    classType: ClassType!
+    classType: TaskClassType!
     piPoints: Int!
     taskCount: Int
     answerFormat: AnswerFormat
@@ -131,7 +117,7 @@ export const taskTypeDefs = gql`
   input GenerateMultipleTasksInput {
     topic: Topic!
     type: TaskType!
-    classType: ClassType!
+    classType: TaskClassType!
     piPoints: Int!
     taskCount: Int!
     difficultyDistribution: DifficultyDistribution

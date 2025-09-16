@@ -1,4 +1,4 @@
-import { Topic as GraphQLTopic, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, TaskClassType as GraphQLClassType } from "@/types/generated";
 import { AnswerFormat } from "@/models/Answer.model";
 import { ClassType as ModelClassType } from "@/models/Task.model";
 import { AIService } from "./ai.service.new";
@@ -37,29 +37,15 @@ export class AnswerGeneratorService {
    * Converts model types to GraphQL types
    */
   static mapModelToGraphQLTypes(modelTopic: string, modelClassType: ModelClassType): { topic: GraphQLTopic; classType: GraphQLClassType } {
-    // Map topic string to GraphQL enum
+    // Map topic string to GraphQL enum (only allowed topics)
     const topicMap: Record<string, GraphQLTopic> = {
-      'ALGORITHMS': GraphQLTopic.Algorithms,
-      'DATA_STRUCTURES': GraphQLTopic.DataStructures,
       'MATH': GraphQLTopic.Math,
-      'STRING': GraphQLTopic.String,
-      'GRAPH': GraphQLTopic.Graph,
-      'DYNAMIC_PROGRAMMING': GraphQLTopic.DynamicProgramming,
-      'GREEDY': GraphQLTopic.Greedy,
       'ENGLISH': GraphQLTopic.English,
-      'TEXT_PROCESSING': GraphQLTopic.TextProcessing,
-      'SCIENCE': GraphQLTopic.Science,
-      'CHEMISTRY': GraphQLTopic.Chemistry,
+      'HISTORY': GraphQLTopic.History,
       'BIOLOGY': GraphQLTopic.Biology,
       'PHYSICS': GraphQLTopic.Physics,
-      'COMPUTER_SCIENCE': GraphQLTopic.ComputerScience,
-      'ASTRONOMY': GraphQLTopic.Astronomy,
-      'EARTH_SCIENCE': GraphQLTopic.EarthScience,
+      'CHEMISTRY': GraphQLTopic.Chemistry,
       'LINGUISTICS': GraphQLTopic.Linguistics,
-      'PHILOSOPHY': GraphQLTopic.Philosophy,
-      'HISTORY': GraphQLTopic.History,
-      'GEOGRAPHY': GraphQLTopic.Geography,
-      'ECONOMICS': GraphQLTopic.Economics,
     };
 
     // Map class type
@@ -89,20 +75,15 @@ export class AnswerGeneratorService {
   static getAnswerFormat(topic: GraphQLTopic, classType: GraphQLClassType): AnswerFormat {
     const gradeNumber = this.getGradeNumber(classType);
     
-    // Computer Science topics get LeetCode-style format only for higher grades
-    const isComputerScienceTopic = [
-      GraphQLTopic.ComputerScience,
-      GraphQLTopic.Algorithms,
-      GraphQLTopic.DataStructures,
-      GraphQLTopic.DynamicProgramming,
-      GraphQLTopic.Greedy,
-      GraphQLTopic.Graph,
-      GraphQLTopic.String,
-      GraphQLTopic.TextProcessing
+    // Advanced topics get more complex formats for higher grades
+    const isAdvancedTopic = [
+      GraphQLTopic.Math,
+      GraphQLTopic.Physics,
+      GraphQLTopic.Chemistry
     ].includes(topic);
 
-    // LeetCode format only for Computer Science topics in Grade 7+
-    if (isComputerScienceTopic && gradeNumber >= 7) {
+    // Advanced format for advanced topics in Grade 7+
+    if (isAdvancedTopic && gradeNumber >= 7) {
       return AnswerFormat.CODE_SOLUTION;
     }
 
@@ -116,7 +97,7 @@ export class AnswerGeneratorService {
       // Grades 4-6: Moderate formats
       if (topic === GraphQLTopic.Math) return AnswerFormat.SINGLE_NUMBER;
       if (topic === GraphQLTopic.English) return AnswerFormat.SHORT_TEXT;
-      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return AnswerFormat.MULTIPLE_CHOICE;
       }
       return AnswerFormat.SHORT_TEXT;
@@ -124,7 +105,7 @@ export class AnswerGeneratorService {
       // Grades 7-9: More complex formats
       if (topic === GraphQLTopic.Math) return AnswerFormat.SINGLE_NUMBER;
       if (topic === GraphQLTopic.English) return AnswerFormat.SHORT_TEXT;
-      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return AnswerFormat.SHORT_TEXT;
       }
       return AnswerFormat.SHORT_TEXT;
@@ -132,7 +113,7 @@ export class AnswerGeneratorService {
       // Grades 10-12: Advanced formats
       if (topic === GraphQLTopic.Math) return AnswerFormat.SINGLE_NUMBER;
       if (topic === GraphQLTopic.English) return AnswerFormat.LONG_TEXT;
-      if ([GraphQLTopic.Science, GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
+      if ([GraphQLTopic.Biology, GraphQLTopic.Chemistry, GraphQLTopic.Physics].includes(topic)) {
         return AnswerFormat.LONG_TEXT;
       }
       return AnswerFormat.LONG_TEXT;
@@ -198,7 +179,7 @@ Answer Format: ${format}
 CRITICAL INSTRUCTIONS:
 1. FIRST, identify the question format:
    - If you see "A) B) C) D)" options, this is MULTIPLE CHOICE
-   - If you see a math problem without options, this is SINGLE_NUMBER
+   - If you see a math problem without options, this is SINGLE_NUMBER or SHORT_TEXT
    - If you see drawing instructions, this is DRAWING
 
 2. FOR MULTIPLE CHOICE QUESTIONS:
@@ -210,13 +191,27 @@ CRITICAL INSTRUCTIONS:
    - Solve the math problem
    - Return just the number (e.g., "5")
 
-4. FOR DRAWING QUESTIONS:
+4. FOR SHORT_TEXT QUESTIONS:
+   - Solve the math problem step by step
+   - Return the final numeric answer (e.g., "23")
+   - If it's a word problem, return the answer to the question asked
+
+5. FOR DRAWING QUESTIONS:
    - Determine what should be drawn/calculated
    - Return the answer to the calculation part
+
+MATH PROBLEM SOLVING STEPS:
+- Read the problem carefully
+- Identify what numbers are given
+- Identify what operation(s) are needed
+- Solve step by step
+- Double-check your calculation
+- Return the final answer
 
 EXAMPLES:
 - "What is 3 + 2? A) 4 B) 5 C) 6 D) 7" → Answer: "B" (because 3+2=5, and B) 5)
 - "What is 3 + 2?" → Answer: "5" (just the number)
+- "Mia has 20 candies, eats 5, gets 8 more. How many now?" → Answer: "23" (20-5+8=23)
 - "Draw 5 circles + 3 triangles. How many total?" → Answer: "8"
 
 Return ONLY valid JSON in this exact format:
@@ -234,11 +229,17 @@ Return ONLY valid JSON in this exact format:
 
       const aiResponse = await AIService.generateAnswer(aiPrompt);
       
+      console.log('🤖 Raw AI Answer Response:', aiResponse);
+      
       // Clean the AI response (remove markdown code blocks)
       const cleanedResponse = this.cleanAIResponse(aiResponse);
       
+      console.log('🧹 Cleaned AI Answer Response:', cleanedResponse);
+      
       // Parse the AI response
       const answerData = JSON.parse(cleanedResponse);
+      
+      console.log('📋 Parsed Answer Data:', answerData);
       
       // Create answer validation based on the format
       let answerValidation: any = {

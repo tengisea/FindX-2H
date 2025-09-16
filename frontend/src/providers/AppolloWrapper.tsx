@@ -11,7 +11,7 @@ import { ReactNode } from "react";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: process.env.BACKEND_URL || "http://localhost:4000/api/graphql",
+  uri: process.env.BACKEND_URL || "http://localhost:8000/api/graphql",
 });
 
 export const ApolloWrapper = ({ children }: { children: ReactNode }) => {

@@ -1,15 +1,14 @@
 import { Model, model, models, Schema } from "mongoose";
 
 type OlympiadSchemaType = {
-  id: string;
   name: string;
   description: string;
   date: Date;
   location: string;
-  maxScore: number;
-  participants: Schema.Types.ObjectId[];
-  results: Schema.Types.ObjectId[];
   organizer: Schema.Types.ObjectId;
+  classtypes: Schema.Types.ObjectId[];
+  scoreOfAward?: number;
+  status: "PENDING" | "APPROVED";
 };
 
 const olympiadSchema = new Schema<OlympiadSchemaType>(
@@ -18,18 +17,10 @@ const olympiadSchema = new Schema<OlympiadSchemaType>(
     description: { type: String, required: true },
     date: { type: Date, required: true },
     location: { type: String, required: true },
-    maxScore: { type: Number, required: true },
-    participants: {
-      type: [Schema.Types.ObjectId],
-      ref: "Student",
-      required: true,
-    },
-    results: { type: [Schema.Types.ObjectId], ref: "Result", required: true },
-    organizer: {
-      type: Schema.Types.ObjectId,
-      ref: "Organizer",
-      required: true,
-    },
+    organizer: { type: Schema.Types.ObjectId, ref: "Organizer", required: true },
+    classtypes: [{ type: Schema.Types.ObjectId, ref: "ClassType" }],
+    scoreOfAward: { type: Number, default: null },
+    status: { type: String, enum: ["PENDING", "APPROVED"], default: "PENDING" },
   },
   { timestamps: true }
 );

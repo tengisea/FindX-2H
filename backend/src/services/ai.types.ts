@@ -1,4 +1,4 @@
-import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, ClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat } from "@/types/generated";
+import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, TaskClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat } from "@/types/generated";
 
 export interface AIGenerationRequest {
   topic: GraphQLTopic;
@@ -7,6 +7,7 @@ export interface AIGenerationRequest {
   classType: GraphQLClassType;
   piPoints: number;
   answerFormat?: GraphQLAnswerFormat;
+  variation?: string;
 }
 
 export interface GeneratedTaskResponse {

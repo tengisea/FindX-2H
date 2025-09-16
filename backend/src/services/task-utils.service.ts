@@ -1,6 +1,6 @@
 import { TaskModel } from "@/models/Task.model";
 import { TaskType as ModelTaskType, Difficulty as ModelDifficulty, ClassType as ModelClassType } from "@/models/Task.model";
-import { Task, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, Topic as GraphQLTopic, ClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat } from "@/types/generated";
+import { Task, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, Topic as GraphQLTopic, TaskClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat } from "@/types/generated";
 import { GeneratedTaskResponse } from "./ai.service.new";
 
 export interface TaskGenerationRequest {
@@ -87,48 +87,22 @@ export class TaskUtilsService {
 
   static mapTopicToString(topic: GraphQLTopic): string {
     switch (topic) {
-      case GraphQLTopic.Algorithms:
-        return 'algorithms';
-      case GraphQLTopic.DataStructures:
-        return 'data-structures';
       case GraphQLTopic.Math:
         return 'math';
-      case GraphQLTopic.String:
-        return 'string';
-      case GraphQLTopic.Graph:
-        return 'graph';
-      case GraphQLTopic.DynamicProgramming:
-        return 'dynamic-programming';
-      case GraphQLTopic.Greedy:
-        return 'greedy';
       case GraphQLTopic.English:
         return 'english';
-      case GraphQLTopic.TextProcessing:
-        return 'text-processing';
-      case GraphQLTopic.Chemistry:
-        return 'chemistry';
+      case GraphQLTopic.History:
+        return 'history';
       case GraphQLTopic.Biology:
         return 'biology';
       case GraphQLTopic.Physics:
         return 'physics';
-      case GraphQLTopic.ComputerScience:
-        return 'computer-science';
-      case GraphQLTopic.Astronomy:
-        return 'astronomy';
-      case GraphQLTopic.EarthScience:
-        return 'earth-science';
+      case GraphQLTopic.Chemistry:
+        return 'chemistry';
       case GraphQLTopic.Linguistics:
         return 'linguistics';
-      case GraphQLTopic.Philosophy:
-        return 'philosophy';
-      case GraphQLTopic.History:
-        return 'history';
-      case GraphQLTopic.Geography:
-        return 'geography';
-      case GraphQLTopic.Economics:
-        return 'economics';
       default:
-        return 'algorithms';
+        return 'math';
     }
   }
 
