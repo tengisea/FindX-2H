@@ -5,6 +5,11 @@ import { QuestionTypeDefs } from "./question.schema";
 import { StudentTypeDefs } from "./student.schema";
 import { OlympiadTypeDefs } from "./olympiad.schema";
 import { OrganizerTypeDefs } from "./organizer.schema";
+import { taskTypeDefs } from "./task.schema";
+import { challengeTypeDefs } from "./challenge.schema";
+import { challengeRoomTypeDefs } from "./challengeRoom.schema";
+import { challengeRoomResponseTypeDefs } from "./challengeRoomResponse.schema";
+import { matchRoomTypeDefs, piWardTypeDefs, tournamentTypeDefs } from "./tournement";
 
 
 export const typeDefs = [
@@ -15,4 +20,12 @@ export const typeDefs = [
   StudentAnswerTypeDefs,
   OlympiadTypeDefs,
   OrganizerTypeDefs,
+  commonTypeDefs,
+  challengeTypeDefs,
+  challengeRoomTypeDefs,
+  challengeRoomResponseTypeDefs,
+  taskTypeDefs,
+   matchRoomTypeDefs, 
+   tournamentTypeDefs,
+   piWardTypeDefs
 ];
