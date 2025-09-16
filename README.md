@@ -218,4 +218,4 @@ The system demonstrates strong technical implementation, innovative features, an
 
 ---
 
-**Built with ❤️ for the Pinequest judges**
+**Built with ❤️ for the Pinequest **
