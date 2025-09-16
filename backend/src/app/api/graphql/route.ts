@@ -30,4 +30,10 @@ export async function OPTIONS(request: NextRequest) {
 
 export const dynamic = "force-dynamic";
 
-export { handler as GET, handler as POST };
+export async function GET(request: NextRequest) {
+  return handler(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handler(request);
+}
