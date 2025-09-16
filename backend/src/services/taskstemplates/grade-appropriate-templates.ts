@@ -1,5 +1,5 @@
 import { TopicTemplates } from './index';
-import { ClassType as GraphQLClassType, Topic as GraphQLTopic } from "@/types/generated";
+import { TaskClassType as GraphQLClassType, Topic as GraphQLTopic } from "@/types/generated";
 
 // Simple grade-appropriate templates for allowed topics only
 export const gradeAppropriateTemplates: Record<string, Record<string, TopicTemplates>> = {

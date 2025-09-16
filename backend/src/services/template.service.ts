@@ -1,7 +1,7 @@
 import { getRandomTemplate } from "./taskstemplates";
 import { getGradeAppropriateTemplate } from "./taskstemplates/grade-appropriate-templates";
 import { GeneratedTaskResponse } from "./ai.service.new";
-import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskClassType as GraphQLClassType } from "@/types/generated";
 
 export interface TemplateGenerationRequest {
   topic: GraphQLTopic;

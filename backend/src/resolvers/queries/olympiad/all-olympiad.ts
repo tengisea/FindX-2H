@@ -26,7 +26,10 @@ export const allOlympiads = async () => {
       path: "questions",
       model: "Question"
     }
-  }).populate("organizer");
+  }).populate({
+    path: "organizer",
+    select: "organizationName email" // Only select specific fields to avoid circular reference
+  });
 
   // Transform the data to convert database values back to GraphQL enum values
   return olympiads.map(olympiad => ({
@@ -34,7 +37,8 @@ export const allOlympiads = async () => {
     id: olympiad._id.toString(),
     organizer: olympiad.organizer && typeof olympiad.organizer === 'object' && 'toObject' in olympiad.organizer ? {
       ...(olympiad.organizer as any).toObject(),
-      id: (olympiad.organizer as any)._id.toString()
+      id: (olympiad.organizer as any)._id.toString(),
+      Olympiads: undefined // Remove the circular reference
     } : null,
     classtypes: olympiad.classtypes.map((classType: any) => ({
       ...classType.toObject(),

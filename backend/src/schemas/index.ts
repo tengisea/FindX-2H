@@ -20,7 +20,6 @@ export const typeDefs = [
   StudentAnswerTypeDefs,
   OlympiadTypeDefs,
   OrganizerTypeDefs,
-  commonTypeDefs,
   challengeTypeDefs,
   challengeRoomTypeDefs,
   challengeRoomResponseTypeDefs,

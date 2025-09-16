@@ -45,12 +45,12 @@ export const challengeTypeDefs = gql`
   input ChallengeInput {
     challenger: ID!
     opponent: ID!
-    topic: Topic!
+    topic: String!
     difficulty: Difficulty!
-    classType: ClassType!
+    classType: String!
     taskCount: Int!
     answerFormatDistribution: AnswerFormatDistribution
-    taskDifficultyDistribution: DifficultyDistribution
+    taskDifficultyDistribution: AnswerFormatDistribution
     piPoints: Int
   }
 

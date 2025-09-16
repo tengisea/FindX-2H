@@ -1,4 +1,4 @@
-import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, TaskClassType as GraphQLClassType } from "@/types/generated";
 import { AIGenerationRequest, TaskData, DifficultySpec, ClassSpec } from "./ai.types";
 import { AIMappers } from "./ai.mappers";
 

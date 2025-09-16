@@ -1,4 +1,4 @@
-import { Topic as GraphQLTopic, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, TaskClassType as GraphQLClassType } from "@/types/generated";
 import { AnswerFormat } from "@/models/Answer.model";
 import { ClassType as ModelClassType } from "@/models/Task.model";
 import { AIService } from "./ai.service.new";

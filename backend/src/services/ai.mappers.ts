@@ -1,4 +1,4 @@
-import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, Difficulty as GraphQLDifficulty, TaskClassType as GraphQLClassType } from "@/types/generated";
 
 export class AIMappers {
   static mapTopicToString(topic: GraphQLTopic): string {

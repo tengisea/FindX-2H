@@ -26,7 +26,10 @@ export const olympiad = async (_: any, { id }: any) => {
       path: "questions",
       model: "Question"
     }
-  }).populate("organizer");
+  }).populate({
+    path: "organizer",
+    select: "organizationName email" // Only select specific fields to avoid circular reference
+  });
 
   if (!olympiad) {
     throw new Error("Olympiad not found");
@@ -38,7 +41,8 @@ export const olympiad = async (_: any, { id }: any) => {
     id: olympiad._id.toString(),
     organizer: olympiad.organizer && typeof olympiad.organizer === 'object' && 'toObject' in olympiad.organizer ? {
       ...(olympiad.organizer as any).toObject(),
-      id: (olympiad.organizer as any)._id.toString()
+      id: (olympiad.organizer as any)._id.toString(),
+      Olympiads: undefined // Remove the circular reference
     } : null,
     classtypes: olympiad.classtypes.map((classType: any) => ({
       ...classType.toObject(),

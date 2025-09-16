@@ -1,6 +1,6 @@
 import { TaskModel } from "@/models/Task.model";
 import { TaskType as ModelTaskType, Difficulty as ModelDifficulty, ClassType as ModelClassType } from "@/models/Task.model";
-import { Task, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, Topic as GraphQLTopic, ClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat } from "@/types/generated";
+import { Task, Difficulty as GraphQLDifficulty, TaskType as GraphQLTaskType, Topic as GraphQLTopic, TaskClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat } from "@/types/generated";
 import { GeneratedTaskResponse } from "./ai.service.new";
 
 export interface TaskGenerationRequest {

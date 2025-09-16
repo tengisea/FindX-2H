@@ -22,7 +22,7 @@ export const taskTypeDefs = gql`
     LINGUISTICS
   }
 
-  enum ClassType {
+  enum TaskClassType {
     GRADE_1
     GRADE_2
     GRADE_3
@@ -75,7 +75,7 @@ export const taskTypeDefs = gql`
     topic: Topic!
     difficulty: Difficulty!
     type: TaskType!
-    classType: ClassType!
+    classType: TaskClassType!
     piPoints: Int!
     problemStatement: String!
     aiGenerated: Boolean!
@@ -102,7 +102,7 @@ export const taskTypeDefs = gql`
     topic: Topic!
     difficulty: Difficulty!
     type: TaskType!
-    classType: ClassType!
+    classType: TaskClassType!
     piPoints: Int!
     taskCount: Int
     answerFormat: AnswerFormat
@@ -117,7 +117,7 @@ export const taskTypeDefs = gql`
   input GenerateMultipleTasksInput {
     topic: Topic!
     type: TaskType!
-    classType: ClassType!
+    classType: TaskClassType!
     piPoints: Int!
     taskCount: Int!
     difficultyDistribution: DifficultyDistribution

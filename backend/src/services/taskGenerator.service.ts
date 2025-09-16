@@ -1,4 +1,4 @@
-import { Task, Difficulty as GraphQLDifficulty, ClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat, AnswerFormatDistribution } from "@/types/generated";
+import { Task, Difficulty as GraphQLDifficulty, TaskClassType as GraphQLClassType, AnswerFormat as GraphQLAnswerFormat, AnswerFormatDistribution } from "@/types/generated";
 import { AIService, AIGenerationRequest, GeneratedTaskResponse } from "./ai.service.new";
 import { TemplateService, TemplateGenerationRequest } from "./template.service";
 import { TaskUtilsService, TaskGenerationRequest, MultipleTaskGenerationRequest } from "./task-utils.service";

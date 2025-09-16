@@ -2,7 +2,7 @@ import { TaskModel } from "@/models/Task.model";
 import { AnswerModel } from "@/models/Answer.model";
 import { AnswerGeneratorService } from "@/services/answer-generator.service";
 import { GraphQLError } from "graphql";
-import { Topic as GraphQLTopic, ClassType as GraphQLClassType } from "@/types/generated";
+import { Topic as GraphQLTopic, TaskClassType as GraphQLClassType } from "@/types/generated";
 
 export const generateTaskAnswer = async (
   _: unknown,
