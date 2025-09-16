@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": " PORT=8000 next dev --turbopack ",
+    "dev": "tsx -r tsconfig-paths/register src/server.ts",
     "predev": "graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js",
     "build": "next build --turbopack",
-    "start": "next start",
+    "start": "tsx -r tsconfig-paths/register src/server.ts",
+    "start:prod": "next start",
     "lint": "eslint",
     "codegen": "graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js"
   },
@@ -18,10 +19,13 @@
     "@graphql-codegen/typescript-resolvers": "^5.0.0",
     "graphql": "^16.11.0",
     "livekit-server-sdk": "^2.13.3",
+    "dotenv": "^17.0.0",
+    "tsconfig-paths": "^4.2.0",
     "mongoose": "^8.18.1",
     "next": "15.5.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "socket.io": "^4.7.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -32,6 +36,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }

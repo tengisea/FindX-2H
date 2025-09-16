@@ -27,3 +27,4 @@ export const getLiveKitToken = async (
 export const getLiveKitWsUrl = (): string => {
   return process.env.NEXT_PUBLIC_LIVEKIT_WS_URL || "ws://localhost:7880";
 };
+

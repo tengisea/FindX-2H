@@ -1,18 +1,29 @@
-import { typeDefs } from "@/schemas";
-import { resolvers } from "@/resolvers";
 import { NextRequest } from "next/server";
-import { connectDataBase } from "@/database";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
-connectDataBase();
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { Context, buildContext } from "@/types/context";
 
-const server = new ApolloServer({
-  resolvers,
-  typeDefs,
+// Import all your existing schemas and resolvers
+import { typeDefs } from "@/schemas";
+import { resolvers } from "@/resolvers";
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+// --- Apollo Server ---
+const apolloServer = new ApolloServer<Context>({
+  schema,
+  introspection: true,
 });
 
-const handler = startServerAndCreateNextHandler<NextRequest>(server);
+const apolloHandler = startServerAndCreateNextHandler(apolloServer, {
+  context: async (req) => buildContext(req as any),
+});
 
-// export const dynamic = "force-dynamic";
+export async function GET(req: NextRequest) {
+  return apolloHandler(req);
+}
 
-export { handler as GET, handler as POST };
+export async function POST(req: NextRequest) {
+  return apolloHandler(req);
+}

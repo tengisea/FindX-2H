@@ -77,3 +77,4 @@ export const useNotifications = (): UseNotificationsReturn => {
     clearAll,
   };
 };
+
