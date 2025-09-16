@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { StudentSidebar } from '@/components/student/StudentSidebar';
+import { RegisteredTournaments } from '@/components/student/RegisteredTournaments';
 import { useGetStudentQuery, useGetApprovedOlympiadsQuery, useRegisterForOlympiadMutation, useGetOlympiadQuery } from '@/generated';
+import { getCurrentStudentId } from '@/config/student';
 
 // Component for displaying participated olympiad table rows
 const ParticipatedOlympiadRow = ({ olympiadId, onViewDetails }: { olympiadId: string; onViewDetails: (olympiad: any) => void }) => {
@@ -49,16 +51,15 @@ const ParticipatedOlympiadRow = ({ olympiadId, onViewDetails }: { olympiadId: st
         {olympiad.location}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          olympiad.status === 'APPROVED' 
-            ? 'bg-green-100 text-green-800' 
-            : 'bg-yellow-100 text-yellow-800'
-        }`}>
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${olympiad.status === 'APPROVED'
+          ? 'bg-green-100 text-green-800'
+          : 'bg-yellow-100 text-yellow-800'
+          }`}>
           {olympiad.status}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-        <button 
+        <button
           onClick={() => onViewDetails(olympiad)}
           className="text-blue-600 hover:text-blue-900 mr-3"
         >
@@ -71,21 +72,21 @@ const ParticipatedOlympiadRow = ({ olympiadId, onViewDetails }: { olympiadId: st
 };
 
 const StudentPage = () => {
-  const [activeTab, setActiveTab] = useState<'profile' | 'olympiads' | 'participated' | 'results' | 'achievements' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'olympiads' | 'participated' | 'tournaments' | 'results' | 'achievements' | 'settings'>('profile');
   const [selectedOlympiad, setSelectedOlympiad] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showGradeSelectionModal, setShowGradeSelectionModal] = useState(false);
   const [selectedClassType, setSelectedClassType] = useState<any>(null);
-  
-  // For now, using a hardcoded student ID. In a real app, this would come from authentication
-  const studentId = '68c54f1d22ed3250680b05c5';
+
+  // Get student ID from centralized configuration
+  const studentId = getCurrentStudentId();
 
   const { data: studentData, loading: studentLoading, error: studentError } = useGetStudentQuery({
     variables: { id: studentId }
   });
 
   const { data: olympiadsData, loading: olympiadsLoading } = useGetApprovedOlympiadsQuery();
-  
+
   const [registerForOlympiad, { loading: registering }] = useRegisterForOlympiadMutation();
 
   const student = studentData?.getStudent;
@@ -111,7 +112,7 @@ const StudentPage = () => {
           }
         }
       });
-      
+
       alert('Successfully registered for the olympiad!');
       setShowGradeSelectionModal(false);
       setSelectedClassType(null);
@@ -143,7 +144,7 @@ const StudentPage = () => {
         return (
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Profile</h2>
-            
+
             {studentLoading ? (
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="animate-pulse">
@@ -163,9 +164,9 @@ const StudentPage = () => {
                   <div className="flex items-center space-x-6">
                     <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                       {student.profilePicture ? (
-                        <img 
-                          src={student.profilePicture} 
-                          alt={student.name} 
+                        <img
+                          src={student.profilePicture}
+                          alt={student.name}
                           className="w-20 h-20 rounded-full object-cover"
                         />
                       ) : (
@@ -268,7 +269,7 @@ const StudentPage = () => {
         return (
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Available Olympiads</h2>
-            
+
             {olympiadsLoading ? (
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="animate-pulse space-y-4">
@@ -301,11 +302,10 @@ const StudentPage = () => {
                           <h4 className="text-xl font-bold text-gray-900 mb-2">{olympiad.name}</h4>
                           <p className="text-gray-600 text-sm mb-3 line-clamp-2">{olympiad.description}</p>
                         </div>
-                        <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          olympiad.status === 'APPROVED' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <div className={`px-3 py-1 rounded-full text-xs font-semibold ${olympiad.status === 'APPROVED'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {olympiad.status}
                         </div>
                       </div>
@@ -317,7 +317,7 @@ const StudentPage = () => {
                           </svg>
                           {new Date(olympiad.date).toLocaleDateString()}
                         </div>
-                        
+
                         <div className="flex items-center text-sm text-gray-600">
                           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -339,13 +339,12 @@ const StudentPage = () => {
                         <h5 className="text-sm font-semibold text-gray-700 mb-2">Available Grades:</h5>
                         <div className="flex flex-wrap gap-2">
                           {olympiad.classtypes.map((classType) => (
-                            <span 
+                            <span
                               key={classType.id}
-                              className={`px-2 py-1 rounded text-xs font-medium ${
-                                classType.classYear === student?.class 
-                                  ? 'bg-blue-100 text-blue-800' 
-                                  : 'bg-gray-100 text-gray-600'
-                              }`}
+                              className={`px-2 py-1 rounded text-xs font-medium ${classType.classYear === student?.class
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-600'
+                                }`}
                             >
                               {classType.classYear.replace('GRADE_', 'Grade ')}
                             </span>
@@ -353,21 +352,21 @@ const StudentPage = () => {
                         </div>
                       </div>
                       <div className="flex space-x-3">
-                        <button 
+                        <button
                           onClick={() => handleViewDetails(olympiad)}
                           className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
                         >
                           View Details
                         </button>
                         {isStudentRegistered(olympiad) ? (
-                          <button 
+                          <button
                             className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed text-sm font-medium"
                             disabled
                           >
                             Registered
                           </button>
                         ) : (
-                          <button 
+                          <button
                             onClick={() => handleRegister(olympiad)}
                             disabled={registering}
                             className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -395,7 +394,7 @@ const StudentPage = () => {
         return (
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Participated Olympiads</h2>
-            
+
             {studentLoading ? (
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="animate-pulse">
@@ -438,8 +437,8 @@ const StudentPage = () => {
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         {student.participatedOlympiads.map((olympiadId: string) => (
-                          <ParticipatedOlympiadRow 
-                            key={olympiadId} 
+                          <ParticipatedOlympiadRow
+                            key={olympiadId}
                             olympiadId={olympiadId}
                             onViewDetails={handleViewDetails}
                           />
@@ -456,7 +455,7 @@ const StudentPage = () => {
                 </svg>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">No Participated Olympiads</h3>
                 <p className="text-gray-600">You haven't participated in any olympiads yet.</p>
-                <button 
+                <button
                   onClick={() => setActiveTab('olympiads')}
                   className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
                 >
@@ -466,11 +465,17 @@ const StudentPage = () => {
             )}
           </div>
         );
+      case 'tournaments':
+        return (
+          <div className="p-8">
+            <RegisteredTournaments studentId={studentId} />
+          </div>
+        );
       case 'results':
         return (
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Results & Performance</h2>
-            
+
             <div className="space-y-6">
               {/* Performance Overview */}
               <div className="bg-white rounded-xl shadow-lg p-6">
@@ -493,7 +498,7 @@ const StudentPage = () => {
                   <div className="text-center p-4 bg-yellow-50 rounded-lg">
                     <div className="text-2xl font-bold text-yellow-600">
                       {student?.totalScore && student?.participatedOlympiads && Array.isArray(student.participatedOlympiads) && student.participatedOlympiads.length > 0
-                        ? Math.round(student.totalScore / student.participatedOlympiads.length) 
+                        ? Math.round(student.totalScore / student.participatedOlympiads.length)
                         : 0}
                     </div>
                     <div className="text-sm text-yellow-600">Avg Score</div>
@@ -504,7 +509,7 @@ const StudentPage = () => {
               {/* Recent Results */}
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Results</h3>
-                
+
                 {/* Mock data - in real app, this would come from a results query */}
                 <div className="space-y-4">
                   {[
@@ -545,16 +550,15 @@ const StudentPage = () => {
                           <h4 className="font-semibold text-gray-900">{result.olympiadName}</h4>
                           <p className="text-sm text-gray-600">{new Date(result.date).toLocaleDateString()}</p>
                         </div>
-                        <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          result.grade === 'A+' ? 'bg-green-100 text-green-800' :
+                        <div className={`px-3 py-1 rounded-full text-sm font-semibold ${result.grade === 'A+' ? 'bg-green-100 text-green-800' :
                           result.grade === 'A' ? 'bg-blue-100 text-blue-800' :
-                          result.grade === 'B+' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
+                            result.grade === 'B+' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                          }`}>
                           {result.grade}
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
                           <span className="text-gray-600">Score:</span>
@@ -573,7 +577,7 @@ const StudentPage = () => {
                           <span className="ml-2 font-semibold">{Math.round((result.score / result.maxScore) * 100)}%</span>
                         </div>
                       </div>
-                      
+
                       {/* Progress Bar */}
                       <div className="mt-3">
                         <div className="flex justify-between text-xs text-gray-600 mb-1">
@@ -581,13 +585,12 @@ const StudentPage = () => {
                           <span>{Math.round((result.score / result.maxScore) * 100)}%</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              result.score >= 90 ? 'bg-green-500' :
+                          <div
+                            className={`h-2 rounded-full ${result.score >= 90 ? 'bg-green-500' :
                               result.score >= 80 ? 'bg-blue-500' :
-                              result.score >= 70 ? 'bg-yellow-500' :
-                              'bg-red-500'
-                            }`}
+                                result.score >= 70 ? 'bg-yellow-500' :
+                                  'bg-red-500'
+                              }`}
                             style={{ width: `${(result.score / result.maxScore) * 100}%` }}
                           ></div>
                         </div>
@@ -617,7 +620,7 @@ const StudentPage = () => {
         return (
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Achievements & Badges</h2>
-            
+
             <div className="space-y-6">
               {/* Achievement Stats */}
               <div className="bg-white rounded-xl shadow-lg p-6">
@@ -676,23 +679,20 @@ const StudentPage = () => {
                       date: null
                     }
                   ].map((badge) => (
-                    <div 
-                      key={badge.id} 
-                      className={`p-4 rounded-lg border-2 text-center transition-all duration-200 ${
-                        badge.earned 
-                          ? 'border-yellow-300 bg-yellow-50 hover:bg-yellow-100' 
-                          : 'border-gray-200 bg-gray-50 opacity-60'
-                      }`}
+                    <div
+                      key={badge.id}
+                      className={`p-4 rounded-lg border-2 text-center transition-all duration-200 ${badge.earned
+                        ? 'border-yellow-300 bg-yellow-50 hover:bg-yellow-100'
+                        : 'border-gray-200 bg-gray-50 opacity-60'
+                        }`}
                     >
                       <div className="text-4xl mb-2">{badge.icon}</div>
-                      <h4 className={`font-semibold mb-1 ${
-                        badge.earned ? 'text-gray-900' : 'text-gray-500'
-                      }`}>
+                      <h4 className={`font-semibold mb-1 ${badge.earned ? 'text-gray-900' : 'text-gray-500'
+                        }`}>
                         {badge.name}
                       </h4>
-                      <p className={`text-xs mb-2 ${
-                        badge.earned ? 'text-gray-600' : 'text-gray-400'
-                      }`}>
+                      <p className={`text-xs mb-2 ${badge.earned ? 'text-gray-600' : 'text-gray-400'
+                        }`}>
                         {badge.description}
                       </p>
                       {badge.earned && badge.date && (
@@ -751,7 +751,7 @@ const StudentPage = () => {
         return (
           <div className="p-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Settings</h2>
-            
+
             <div className="space-y-6">
               {/* Profile Settings */}
               <div className="bg-white rounded-xl shadow-lg p-6">
@@ -760,45 +760,45 @@ const StudentPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                      <input 
-                        type="text" 
-                        value={student?.name || ''} 
+                      <input
+                        type="text"
+                        value={student?.name || ''}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         readOnly
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                      <input 
-                        type="email" 
-                        value={student?.email || ''} 
+                      <input
+                        type="email"
+                        value={student?.email || ''}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         readOnly
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">School</label>
-                      <input 
-                        type="text" 
-                        value={student?.school || ''} 
+                      <input
+                        type="text"
+                        value={student?.school || ''}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         readOnly
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Grade</label>
-                      <input 
-                        type="text" 
-                        value={student?.class || ''} 
+                      <input
+                        type="text"
+                        value={student?.class || ''}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         readOnly
                       />
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                      <input 
-                        type="text" 
-                        value={student?.location || ''} 
+                      <input
+                        type="text"
+                        value={student?.location || ''}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         readOnly
                       />
@@ -877,8 +877,8 @@ const StudentPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <StudentSidebar 
-        activeTab={activeTab} 
+      <StudentSidebar
+        activeTab={activeTab}
         onTabChange={setActiveTab}
         studentId={studentId}
       />
@@ -893,20 +893,20 @@ const StudentPage = () => {
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl font-bold text-gray-900">{selectedOlympiad.name}</h3>
-                <button 
+                <button
                   onClick={() => setShowDetailsModal(false)}
                   className="text-gray-400 hover:text-gray-600 text-2xl"
                 >
                   ×
                 </button>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
                   <p className="text-gray-600">{selectedOlympiad.description}</p>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Date</h4>
@@ -922,11 +922,10 @@ const StudentPage = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Status</h4>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      selectedOlympiad.status === 'APPROVED' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${selectedOlympiad.status === 'APPROVED'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {selectedOlympiad.status}
                     </span>
                   </div>
@@ -936,13 +935,12 @@ const StudentPage = () => {
                   <h4 className="font-semibold text-gray-900 mb-2">Available Grades</h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedOlympiad.classtypes.map((classType: any) => (
-                      <span 
+                      <span
                         key={classType.id}
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          classType.classYear === student?.class 
-                            ? 'bg-blue-100 text-blue-800' 
-                            : 'bg-gray-100 text-gray-600'
-                        }`}
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${classType.classYear === student?.class
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-600'
+                          }`}
                       >
                         {classType.classYear.replace('GRADE_', 'Grade ')}
                       </span>
@@ -978,21 +976,21 @@ const StudentPage = () => {
               </div>
 
               <div className="mt-6 flex space-x-3">
-                <button 
+                <button
                   onClick={() => setShowDetailsModal(false)}
                   className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200"
                 >
                   Close
                 </button>
                 {isStudentRegistered(selectedOlympiad) ? (
-                  <button 
+                  <button
                     className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed"
                     disabled
                   >
                     Already Registered
                   </button>
                 ) : (
-                  <button 
+                  <button
                     onClick={() => {
                       setShowDetailsModal(false);
                       handleRegister(selectedOlympiad);
@@ -1016,14 +1014,14 @@ const StudentPage = () => {
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl font-bold text-gray-900">Select Grade Level</h3>
-                <button 
+                <button
                   onClick={() => setShowGradeSelectionModal(false)}
                   className="text-gray-400 hover:text-gray-600 text-2xl"
                 >
                   ×
                 </button>
               </div>
-              
+
               <div className="mb-4">
                 <h4 className="text-lg font-semibold text-gray-900 mb-2">{selectedOlympiad.name}</h4>
                 <p className="text-gray-600 text-sm">Choose the grade level you want to register for:</p>
@@ -1031,13 +1029,12 @@ const StudentPage = () => {
 
               <div className="space-y-3 mb-6">
                 {getAvailableGrades(selectedOlympiad).map((classType: any) => (
-                  <div 
+                  <div
                     key={classType.id}
-                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
-                      selectedClassType?.id === classType.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${selectedClassType?.id === classType.id
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
                     onClick={() => setSelectedClassType(classType)}
                   >
                     <div className="flex justify-between items-center">
@@ -1049,17 +1046,16 @@ const StudentPage = () => {
                           {classType.questions.length} questions • Max Score: {classType.maxScore}
                         </p>
                       </div>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                        selectedClassType?.id === classType.id
-                          ? 'border-blue-500 bg-blue-500'
-                          : 'border-gray-300'
-                      }`}>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedClassType?.id === classType.id
+                        ? 'border-blue-500 bg-blue-500'
+                        : 'border-gray-300'
+                        }`}>
                         {selectedClassType?.id === classType.id && (
                           <div className="w-2 h-2 bg-white rounded-full"></div>
                         )}
                       </div>
                     </div>
-                    
+
                     {classType.questions.length > 0 && (
                       <div className="mt-3">
                         <h6 className="text-sm font-medium text-gray-700 mb-1">Questions:</h6>
@@ -1088,13 +1084,13 @@ const StudentPage = () => {
               )}
 
               <div className="flex space-x-3">
-                <button 
+                <button
                   onClick={() => setShowGradeSelectionModal(false)}
                   className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => selectedClassType && handleGradeSelection(selectedClassType)}
                   disabled={!selectedClassType || registering}
                   className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"

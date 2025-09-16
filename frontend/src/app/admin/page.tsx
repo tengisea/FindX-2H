@@ -6,8 +6,9 @@ import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { OlympiadCard } from '@/components/admin/OlympiadCard';
 import { OlympiadModal } from '@/components/admin/OlympiadModal';
 import { OrganizerCard } from '@/components/admin/OrganizerCard';
+import { CreateTournament } from '@/components/admin/CreateTournament';
 
-type TabType = 'pending' | 'approved' | 'all' | 'organizers';
+type TabType = 'pending' | 'approved' | 'all' | 'organizers' | 'tournaments';
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('pending');
@@ -19,7 +20,7 @@ const AdminPage = () => {
   const { data: approvedData, loading: approvedLoading, refetch: refetchApproved } = useGetApprovedOlympiadsQuery();
   const { data: allData, loading: allLoading, refetch: refetchAll } = useGetAllOlympiadsQuery();
   const { data: organizersData, loading: organizersLoading } = useGetAllOrganizersQuery();
-  
+
   const [approveOlympiad] = useApproveOlympiadMutation({
     onCompleted: () => {
       refetchPending();
@@ -94,9 +95,9 @@ const AdminPage = () => {
       return (
         <div className="grid gap-8 lg:grid-cols-2">
           {pendingData.getPendingOlympiads.map((olympiad) => (
-            <OlympiadCard 
-              key={olympiad.id} 
-              olympiad={olympiad} 
+            <OlympiadCard
+              key={olympiad.id}
+              olympiad={olympiad}
               showApprove={true}
               onApprove={handleApprove}
               approveScore={approveScore[olympiad.id] || ''}
@@ -166,7 +167,7 @@ const AdminPage = () => {
           </div>
         );
       }
-      
+
       const sortedOlympiads = [...allData.allOlympiads].sort((a, b) => {
         const dateA = new Date(a.date).getTime();
         const dateB = new Date(b.date).getTime();
@@ -180,11 +181,11 @@ const AdminPage = () => {
               <h2 className="text-2xl font-bold text-gray-900">All Olympiads</h2>
               <p className="text-gray-600 mt-1">Sorted by date (newest first)</p>
             </div>
-            
+
             <div className="divide-y divide-gray-100">
               {sortedOlympiads.map((olympiad, index) => (
-                <div 
-                  key={olympiad.id} 
+                <div
+                  key={olympiad.id}
                   className="p-8 hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
                   onClick={() => handleOlympiadClick(olympiad)}
                 >
@@ -193,20 +194,18 @@ const AdminPage = () => {
                       <div className="flex items-center space-x-4 mb-3">
                         <span className="text-2xl font-bold text-gray-400">#{index + 1}</span>
                         <h3 className="text-2xl font-bold text-gray-900">{olympiad.name}</h3>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                          olympiad.status === 'APPROVED' 
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
-                            : 'bg-amber-100 text-amber-800 border border-amber-200'
-                        }`}>
-                          <div className={`w-2 h-2 rounded-full mr-2 ${
-                            olympiad.status === 'APPROVED' ? 'bg-emerald-500' : 'bg-amber-500'
-                          }`}></div>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${olympiad.status === 'APPROVED'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : 'bg-amber-100 text-amber-800 border border-amber-200'
+                          }`}>
+                          <div className={`w-2 h-2 rounded-full mr-2 ${olympiad.status === 'APPROVED' ? 'bg-emerald-500' : 'bg-amber-500'
+                            }`}></div>
                           {olympiad.status}
                         </span>
                       </div>
-                      
+
                       <p className="text-gray-600 mb-4 text-lg">{olympiad.description}</p>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div className="flex items-center space-x-2">
                           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +214,7 @@ const AdminPage = () => {
                           <span className="text-gray-500">Date:</span>
                           <span className="font-semibold text-gray-900">{new Date(olympiad.date).toLocaleDateString()}</span>
                         </div>
-                        
+
                         <div className="flex items-center space-x-2">
                           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -224,7 +223,7 @@ const AdminPage = () => {
                           <span className="text-gray-500">Location:</span>
                           <span className="font-semibold text-gray-900">{olympiad.location}</span>
                         </div>
-                        
+
                         <div className="flex items-center space-x-2">
                           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -233,7 +232,7 @@ const AdminPage = () => {
                           <span className="font-semibold text-gray-900">{olympiad.organizer?.organizationName || 'Unknown'}</span>
                         </div>
                       </div>
-                      
+
                       {olympiad.scoreOfAward && (
                         <div className="mt-3 flex items-center space-x-2">
                           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,7 +243,7 @@ const AdminPage = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="ml-6 text-right">
                       <div className="bg-gray-100 rounded-lg p-4">
                         <div className="text-sm text-gray-500 mb-1">Class Types</div>
@@ -274,7 +273,7 @@ const AdminPage = () => {
       }
 
       const organizers = organizersData?.getAllOrganizers || [];
-      
+
       if (organizers.length === 0) {
         return (
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-16 text-center">
@@ -292,7 +291,7 @@ const AdminPage = () => {
         );
       }
 
-      const sortedOrganizers = [...organizers].sort((a, b) => 
+      const sortedOrganizers = [...organizers].sort((a, b) =>
         a.organizationName.localeCompare(b.organizationName)
       );
 
@@ -312,7 +311,7 @@ const AdminPage = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
             {sortedOrganizers.map((organizer, index) => (
               <OrganizerCard
@@ -329,27 +328,29 @@ const AdminPage = () => {
           </div>
         </div>
       );
+    } else if (activeTab === "tournaments") {
+      return <CreateTournament />;
     }
     return null;
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <AdminSidebar 
+      <AdminSidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
         pendingCount={pendingData?.getPendingOlympiads?.length || 0}
         approvedCount={approvedData?.getAllApprovedOlympiads?.length || 0}
         allCount={allData?.allOlympiads?.length || 0}
       />
-      
+
       <div className="ml-80 p-8 relative overflow-hidden min-h-screen">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full blur-3xl transform translate-x-32 -translate-y-32"></div>
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-amber-400 to-pink-600 rounded-full blur-3xl transform -translate-x-24 translate-y-24"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto relative z-10">
           {/* Enhanced Header */}
           <div className="mb-12">
@@ -394,7 +395,7 @@ const AdminPage = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   {/* Stats Cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
@@ -410,7 +411,7 @@ const AdminPage = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-6 border border-emerald-200">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -424,7 +425,7 @@ const AdminPage = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -451,7 +452,7 @@ const AdminPage = () => {
         </div>
       </div>
 
-      <OlympiadModal 
+      <OlympiadModal
         olympiad={selectedOlympiad}
         isOpen={isModalOpen}
         onClose={closeModal}

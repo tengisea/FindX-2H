@@ -17,12 +17,17 @@ type MatchRoom {
   task: String!          # Тоглолтын нэр, жишээ: "Quarterfinals Match 1"
   round: String!         # Шатны нэр: "Quarterfinals", "Semifinals", "Finals"
   scheduleAt: String!    # Тоглолт эхлэх цаг
-  slotA: ID!        # Оролцогч A
-  slotB: ID!        # Оролцогч B
+  slotA: ID         # Оролцогч A
+  slotB: ID         # Оролцогч B
   winner: ID        # Ялагч (тоглолт дууссаны дараа fill хийнэ)
   loser: ID         # Хувьчин (тоглолт дууссаны дараа fill хийнэ)
-  tournamentId: ID!      # Хамаарах Tournament
+  tournament: ID!        # Хамаарах Tournament
   status: MatchStatus!   # Тоглолтын төлөв
+  # Populated student data for frontend use
+  slotAData: Student
+  slotBData: Student
+  winnerData: Student
+  loserData: Student
 }
 
 # 🔹 Input Types

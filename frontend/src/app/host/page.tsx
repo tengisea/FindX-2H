@@ -19,9 +19,9 @@ const HostPage = () => {
     description: '',
     date: '',
     location: '',
-    organizerId: '68c553d2dbdb1b5ed2b0e455', 
+    organizerId: '68c553d2dbdb1b5ed2b0e455',
   });
-  
+
   const [classTypes, setClassTypes] = useState<CreateClassTypeInput[]>([
     {
       classYear: ClassYear.Grade_5,
@@ -83,7 +83,7 @@ const HostPage = () => {
     setClassTypes([
       {
         classYear: ClassYear.Grade_5,
-        maxScore: 20, 
+        maxScore: 20,
         medalists: 3,
         questions: [
           { questionName: 'Question 1', maxScore: 5 },
@@ -142,7 +142,7 @@ const HostPage = () => {
       location: olympiad.location,
       organizerId: '68c553d2dbdb1b5ed2b0e455',
     });
-    
+
     const formattedClassTypes = olympiad.classtypes?.map((ct: any) => ({
       classYear: ct.classYear,
       maxScore: ct.maxScore,
@@ -162,7 +162,7 @@ const HostPage = () => {
         { questionName: 'Question 4', maxScore: 5 }
       ]
     }];
-    
+
     setClassTypes(formattedClassTypes);
     setEditingOlympiad(olympiad);
     setActiveTab('create');
@@ -190,15 +190,18 @@ const HostPage = () => {
   };
 
   const updateClassType = (index: number, field: string, value: any) => {
-    const updated = [...classTypes];
-    updated[index] = { ...updated[index], [field]: value };
+    const updated = classTypes.map((classType, i) =>
+      i === index
+        ? { ...classType, [field]: value }
+        : classType
+    );
     setClassTypes(updated);
   };
 
   const addClassType = () => {
     setClassTypes([...classTypes, {
       classYear: ClassYear.Grade_5,
-      maxScore: 10, 
+      maxScore: 10,
       medalists: 3,
       questions: [
         { questionName: 'Question 1', maxScore: 5 },
@@ -217,36 +220,43 @@ const HostPage = () => {
       questionName: `Question ${updated[classTypeIndex].questions.length + 1}`,
       maxScore: 5
     });
-    
+
     const totalMaxScore = updated[classTypeIndex].questions.reduce((sum: number, question: any) => {
       const score = Number(question.maxScore) || 0;
       return sum + score;
     }, 0);
     updated[classTypeIndex].maxScore = totalMaxScore;
-    
+
     setClassTypes(updated);
   };
 
   const removeQuestion = (classTypeIndex: number, questionIndex: number) => {
     const updated = [...classTypes];
     updated[classTypeIndex].questions = updated[classTypeIndex].questions.filter((_: any, i: number) => i !== questionIndex);
-    
+
     const totalMaxScore = updated[classTypeIndex].questions.reduce((sum: number, question: any) => {
       const score = Number(question.maxScore) || 0;
       return sum + score;
     }, 0);
     updated[classTypeIndex].maxScore = totalMaxScore;
-    
+
     setClassTypes(updated);
   };
 
   const updateQuestion = (classTypeIndex: number, questionIndex: number, field: string, value: any) => {
-    const updated = [...classTypes];
-    updated[classTypeIndex].questions[questionIndex] = {
-      ...updated[classTypeIndex].questions[questionIndex],
-      [field]: value
-    };
-    
+    const updated = classTypes.map((classType, ctIndex) =>
+      ctIndex === classTypeIndex
+        ? {
+          ...classType,
+          questions: classType.questions.map((question, qIndex) =>
+            qIndex === questionIndex
+              ? { ...question, [field]: value }
+              : question
+          )
+        }
+        : classType
+    );
+
     if (field === 'maxScore') {
       const totalMaxScore = updated[classTypeIndex].questions.reduce((sum, question) => {
         const score = Number(question.maxScore) || 0;
@@ -254,28 +264,28 @@ const HostPage = () => {
       }, 0);
       updated[classTypeIndex].maxScore = totalMaxScore;
     }
-    
+
     setClassTypes(updated);
   };
 
-  const myOlympiads = olympiadsData?.allOlympiads?.filter(olympiad => 
+  const myOlympiads = olympiadsData?.allOlympiads?.filter(olympiad =>
     olympiad.organizer?.id === '68c553d2dbdb1b5ed2b0e455'
   ) || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <HostSidebar 
+      <HostSidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
         olympiadCount={myOlympiads.length}
       />
-      
+
       <div className="ml-80 p-8 relative overflow-hidden min-h-screen">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full blur-3xl transform translate-x-32 -translate-y-32"></div>
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-amber-400 to-pink-600 rounded-full blur-3xl transform -translate-x-24 translate-y-24"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto relative z-10">
           {activeTab === 'create' ? (
             <OlympiadForm

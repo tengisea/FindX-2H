@@ -1,0 +1,143 @@
+query GetTournaments {
+  getTournaments {
+    id
+    name
+    description
+    date
+    size
+    maxScore
+    piPoints
+    piWards {
+      id
+      students {
+        studentId
+        points
+        place
+        studentName
+        studentClass
+        studentSchool
+        studentEmail
+      }
+    }
+    closedAt
+    participants
+    status
+    topic
+    createdAt
+    updatedAt
+    rounds {
+      id
+    }
+  }
+}
+
+query GetTournament($id: ID!) {
+  getTournament(id: $id) {
+    id
+    name
+    description
+    date
+    size
+    maxScore
+    piPoints
+    piWards {
+      id
+      students {
+        studentId
+        points
+        place
+        studentName
+        studentClass
+        studentSchool
+        studentEmail
+      }
+    }
+    closedAt
+    participants
+    status
+    topic
+    createdAt
+    updatedAt
+    rounds {
+      id
+    }
+  }
+}
+mutation CreateTournament($tournamentInput: TournamentInput!) {
+  createTournament(tournamentInput: $tournamentInput) {
+    success
+    message
+  }
+}
+mutation RegisterStudentToTournament($studentId: ID!, $tournamentId: ID!) {
+  registerStudentToTournament(studentId: $studentId, tournamentId: $tournamentId) {
+    success
+    message
+  }
+}
+
+mutation UpdateTournamentStatus($id: ID!, $status: Status!) {
+  updateTournamentStatus(id: $id, status: $status) {
+    success
+    message
+  }
+}
+
+query GetMatchRooms($tournamentId: ID!) {
+  getMatchRooms(tournamentId: $tournamentId) {
+    id
+    task
+    round
+    scheduleAt
+    slotA
+    slotB
+    winner
+    loser
+    tournament
+    status
+  }
+}
+
+query GetMatchRoom($id: ID!) {
+  getMatchRoom(id: $id) {
+    id
+    task
+    round
+    scheduleAt
+    slotA
+    slotB
+    winner
+    loser
+    tournament
+    status
+  }
+}
+
+mutation UpdateWinner($input: UpdateWinnerInput!) {
+  updateWinner(input: $input) {
+    success
+    message
+  }
+}
+
+query GetPiWard($tournamentId: ID!) {
+  getPiWard(tournamentId: $tournamentId) {
+    id
+    students {
+      studentId
+      points
+      place
+      studentName
+      studentClass
+      studentSchool
+      studentEmail
+    }
+  }
+}
+
+mutation CreatePiWard($tournamentId: ID!) {
+  createPiWard(tournamentId: $tournamentId) {
+    success
+    message
+  }
+}

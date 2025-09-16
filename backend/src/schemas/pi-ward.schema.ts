@@ -5,6 +5,10 @@ export const piWardTypeDefs = gql`
     studentId: ID!
     points: Int!
     place: Int!
+    studentName: String!
+    studentClass: String!
+    studentSchool: String!
+    studentEmail: String!
   }
 
   type PiWard {

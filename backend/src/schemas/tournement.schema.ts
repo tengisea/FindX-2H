@@ -15,7 +15,7 @@ type Tournament {
   size: Int!
   maxScore: Int!
   piPoints: Int!
-  piWards: [ID!]!        # PiWard-г ID-ээр харуулна
+  piWards: [PiWard!]!    # PiWard объектууд
   closedAt: String!
   rounds: [MatchRoom!]!
   participants: [ID!]!   # Student ID-ууд
