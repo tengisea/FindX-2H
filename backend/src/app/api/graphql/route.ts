@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDataBase } from "@/database";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
+
 connectDataBase();
 
 const server = new ApolloServer({
@@ -11,7 +12,9 @@ const server = new ApolloServer({
   typeDefs,
 });
 
-const handler = startServerAndCreateNextHandler<NextRequest>(server);
+const handler = startServerAndCreateNextHandler<NextRequest>(server, {
+  context: async (req) => ({ req }),
+});
 
 // Handle CORS preflight requests
 export async function OPTIONS(request: NextRequest) {
@@ -25,6 +28,6 @@ export async function OPTIONS(request: NextRequest) {
   });
 }
 
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 export { handler as GET, handler as POST };
