@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "predev": "graphql-codegen --config ./codegen.yml",
+    "prebuild": "graphql-codegen --config ./codegen.yml",
     "build": "next build --turbopack --no-lint",
     "start": "next start",
     "lint": "eslint"
