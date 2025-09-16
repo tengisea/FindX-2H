@@ -13,7 +13,6 @@ interface UseSocketIOReturn {
   sendMessage: (event: string, data?: any) => void;
   lastEvent: SocketIOEvent | null;
   error: string | null;
-  isDisabled: boolean;
   joinRoom: (roomName: string) => void;
   leaveRoom: () => void;
   sendRoomMessage: (roomName: string, message: string, data?: any) => void;
@@ -34,28 +33,14 @@ export const useSocketIO = (
   const [isConnected, setIsConnected] = useState(false);
   const [lastEvent, setLastEvent] = useState<SocketIOEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isDisabled, setIsDisabled] = useState(false);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const connect = useCallback(() => {
     try {
-      // Check if we're in a Vercel environment or if WebSocket is not supported
-      const isVercel = window.location.hostname.includes('vercel.app');
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      
-      // Only connect to Socket.IO if we're in localhost or have a proper WebSocket server
-      if (isVercel && !isLocalhost) {
-        console.warn("Socket.IO disabled on Vercel - WebSocket connections not supported in serverless functions");
-        setError("Socket.IO not available on Vercel deployment");
-        setIsDisabled(true);
-        return;
-      }
-
       const newSocket = io(serverUrl, {
         path: "/socket.io/",
-        transports: ["polling", "websocket"], // Try polling first, then websocket
+        transports: ["websocket", "polling"],
         autoConnect: true,
-        timeout: 5000, // Shorter timeout for faster fallback
       });
 
       // Connection events
@@ -185,20 +170,7 @@ export const useSocketIO = (
       if (socket && socket.connected) {
         socket.emit(event, data);
       } else {
-        console.warn("Socket.IO is not connected - using fallback API");
-        // Fallback to REST API for Vercel deployment
-        fetch('/api/socket', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: event,
-            data: data,
-          }),
-        }).catch(err => {
-          console.error('Fallback API call failed:', err);
-        });
+        console.warn("Socket.IO is not connected");
       }
     },
     [socket]
@@ -255,7 +227,6 @@ export const useSocketIO = (
     sendMessage,
     lastEvent,
     error,
-    isDisabled,
     joinRoom,
     leaveRoom,
     sendRoomMessage,
@@ -263,4 +234,3 @@ export const useSocketIO = (
     sendNotification,
   };
 };
-
