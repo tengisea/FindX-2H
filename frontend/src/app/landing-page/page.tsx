@@ -1,9 +1,10 @@
-import { Header } from "@/components/landingPage";
+import { Header, Section } from "@/components/landingPage";
 
 const LandingPage = () => {
   return (
-    <div>
+    <div className="flex flex-col">
       <Header />
+      <Section />
     </div>
   );
 };
