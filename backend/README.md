@@ -1,24 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FindX Backend API
+
+This is a Next.js backend API server with GraphQL support using Apollo Server.
+
+## Features
+
+- **GraphQL API** with Apollo Server integration
+- **MongoDB** database connection with Mongoose
+- **Next.js App Router** for API routes
+- **TypeScript** support with code generation
+- **CORS** enabled for cross-origin requests
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- MongoDB database
+- Environment variables configured
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory with:
+
+```env
+FindX_MONGODB_URL=mongodb://localhost:27017/findx
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+### Installation
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The server will start on [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### API Endpoints
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **GraphQL Playground**: [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql)
+- **GraphQL Endpoint**: `POST http://localhost:3000/api/graphql`
+
+### Code Generation
+
+The project uses GraphQL Code Generator to generate TypeScript types:
+
+```bash
+npm run codegen
+```
 
 ## Learn More
 
