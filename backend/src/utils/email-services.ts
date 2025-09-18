@@ -1,8 +1,8 @@
-import { GraphQLError } from 'graphql';
-import { StudentModel, ClassTypeModel, StudentAnswerModel } from '../models';
-import { ClassYear } from '../models/ClassType.model';
-import { transporter } from './email-transporter';
-import { mapClassYearToStudentFormat } from './class-year-mapper';
+import { GraphQLError } from "graphql";
+import { StudentModel, ClassTypeModel, StudentAnswerModel } from "../models";
+import { ClassYear } from "../models/ClassType.model";
+import { transporter } from "./email-transporter";
+import { mapClassYearToStudentFormat } from "./class-year-mappers";
 
 export const sendNewOlympiadNotificationToMatchingStudents = async (
   olympiadName: string,
@@ -12,27 +12,27 @@ export const sendNewOlympiadNotificationToMatchingStudents = async (
   location?: string
 ): Promise<{ sentCount: number; totalStudents: number }> => {
   try {
-    console.log('🎯 Starting new olympiad email notification...');
-    console.log('📚 Target class years:', classYears);
+    console.log("🎯 Starting new olympiad email notification...");
+    console.log("📚 Target class years:", classYears);
 
     const studentClassFormats = classYears.map(mapClassYearToStudentFormat);
-    console.log('🔄 Converted to student formats:', studentClassFormats);
+    console.log("🔄 Converted to student formats:", studentClassFormats);
 
     const matchingStudents = await StudentModel.find({
-      class: { $in: studentClassFormats }
-    }).select('email name class');
+      class: { $in: studentClassFormats },
+    }).select("email name class");
 
     console.log(`📧 Found ${matchingStudents.length} matching students`);
 
     if (matchingStudents.length === 0) {
-      console.log('ℹ️ No students found matching the target grades');
+      console.log("ℹ️ No students found matching the target grades");
       return { sentCount: 0, totalStudents: 0 };
     }
     let sentCount = 0;
     const emailPromises = matchingStudents.map(async (student) => {
       try {
         const mailOptions = {
-          from: process.env.SMTP_FROM || 'noreply@olympiad.com',
+          from: process.env.SMTP_FROM || "noreply@olympiad.com",
           to: student.email,
           subject: `New Olympiad Available for Your Grade: ${olympiadName}`,
           html: `
@@ -47,33 +47,47 @@ export const sendNewOlympiadNotificationToMatchingStudents = async (
                   Hello <strong>${student.name}</strong>,
                 </p>
                 <p style="color: #374151; margin-bottom: 30px; line-height: 1.6;">
-                  Exciting news! A new olympiad has been created specifically for your grade level (<strong>${student.class}</strong>). 
+                  Exciting news! A new olympiad has been created specifically for your grade level (<strong>${
+                    student.class
+                  }</strong>). 
                   This is a perfect opportunity for you to showcase your skills!
                 </p>
                 
                 <div style="background-color: white; padding: 25px; border-radius: 12px; border-left: 4px solid #1E40AF; margin: 30px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                   <h3 style="color: #1E40AF; margin: 0 0 15px 0; font-size: 24px;">${olympiadName}</h3>
-                  ${olympiadDescription ? `
+                  ${
+                    olympiadDescription
+                      ? `
                     <p style="color: #4B5563; margin-bottom: 20px; line-height: 1.6;">
                       ${olympiadDescription}
                     </p>
-                  ` : ''}
+                  `
+                      : ""
+                  }
                   
                   <div style="background-color: #F9FAFB; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <h4 style="color: #374151; margin: 0 0 10px 0; font-size: 16px;">📅 Important Information:</h4>
                     <p style="color: #1E40AF; margin: 5px 0; font-size: 14px; font-weight: bold;">
                       <strong>Your Grade:</strong> ${student.class} ✅
                     </p>
-                    ${olympiadDate ? `
+                    ${
+                      olympiadDate
+                        ? `
                       <p style="color: #6B7280; margin: 5px 0; font-size: 14px;">
                         <strong>Olympiad Date:</strong> ${olympiadDate}
                       </p>
-                    ` : ''}
-                    ${location ? `
+                    `
+                        : ""
+                    }
+                    ${
+                      location
+                        ? `
                       <p style="color: #6B7280; margin: 5px 0; font-size: 14px;">
                         <strong>Location:</strong> ${location}
                       </p>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                   </div>
                 </div>
                 
@@ -85,7 +99,9 @@ export const sendNewOlympiadNotificationToMatchingStudents = async (
                 
                 <div style="background-color: #FEF3C7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #F59E0B;">
                   <p style="color: #92400E; margin: 0; font-size: 14px; font-weight: 500;">
-                    💡 <strong>Why this is perfect for you:</strong> This olympiad is specifically designed for ${student.class} students like yourself. 
+                    💡 <strong>Why this is perfect for you:</strong> This olympiad is specifically designed for ${
+                      student.class
+                    } students like yourself. 
                     Don't miss this targeted opportunity to compete at your level!
                   </p>
                 </div>
@@ -94,7 +110,9 @@ export const sendNewOlympiadNotificationToMatchingStudents = async (
                   This olympiad matches your grade level perfectly. Register early to secure your spot!
                 </p>
                 <p style="color: #9CA3AF; font-size: 12px; line-height: 1.4; text-align: center;">
-                  You're receiving this because you're in ${student.class} and this olympiad is available for your grade.
+                  You're receiving this because you're in ${
+                    student.class
+                  } and this olympiad is available for your grade.
                 </p>
               </div>
               
@@ -107,29 +125,38 @@ export const sendNewOlympiadNotificationToMatchingStudents = async (
         };
 
         await transporter.sendMail(mailOptions);
-        console.log(`✅ New olympiad email sent to ${student.name} (${student.email}) - Grade: ${student.class}`);
+        console.log(
+          `✅ New olympiad email sent to ${student.name} (${student.email}) - Grade: ${student.class}`
+        );
         sentCount++;
       } catch (emailError) {
-        console.error(`❌ Failed to send email to ${student.email}:`, emailError);
+        console.error(
+          `❌ Failed to send email to ${student.email}:`,
+          emailError
+        );
       }
     });
 
     await Promise.allSettled(emailPromises);
 
-    console.log(`📊 New olympiad email summary: ${sentCount}/${matchingStudents.length} emails sent successfully`);
+    console.log(
+      `📊 New olympiad email summary: ${sentCount}/${matchingStudents.length} emails sent successfully`
+    );
 
     return {
       sentCount,
-      totalStudents: matchingStudents.length
+      totalStudents: matchingStudents.length,
     };
-
   } catch (error) {
-    console.error('Error sending new olympiad notifications to matching students:', error);
-    
-    throw new GraphQLError('Failed to send new olympiad notifications', {
+    console.error(
+      "Error sending new olympiad notifications to matching students:",
+      error
+    );
+
+    throw new GraphQLError("Failed to send new olympiad notifications", {
       extensions: {
-        code: 'EMAIL_SERVICE_ERROR',
-      }
+        code: "EMAIL_SERVICE_ERROR",
+      },
     });
   }
 };
@@ -139,44 +166,51 @@ export const sendOlympiadFinishedNotification = async (
   olympiadName: string
 ): Promise<{ sentCount: number; totalParticipants: number }> => {
   try {
-    console.log(`🏁 Olympiad ${olympiadName} has finished! Sending thank you emails...`);
+    console.log(
+      `🏁 Olympiad ${olympiadName} has finished! Sending thank you emails...`
+    );
 
-    const classTypes = await ClassTypeModel.find({ olympiadId }).select('_id participants');
-    
+    const classTypes = await ClassTypeModel.find({ olympiadId }).select(
+      "_id participants"
+    );
+
     if (!classTypes || classTypes.length === 0) {
-      console.log('ℹ️ No class types found for this olympiad');
+      console.log("ℹ️ No class types found for this olympiad");
       return { sentCount: 0, totalParticipants: 0 };
     }
 
-    const allParticipantIds = classTypes.flatMap(ct => ct.participants);
-    const uniqueParticipantIds = [...new Set(allParticipantIds.map(id => id.toString()))];
+    const allParticipantIds = classTypes.flatMap((ct) => ct.participants);
+    const uniqueParticipantIds = [
+      ...new Set(allParticipantIds.map((id) => id.toString())),
+    ];
 
     console.log(`👥 Found ${uniqueParticipantIds.length} unique participants`);
 
     if (uniqueParticipantIds.length === 0) {
-      console.log('ℹ️ No participants found for this olympiad');
+      console.log("ℹ️ No participants found for this olympiad");
       return { sentCount: 0, totalParticipants: 0 };
     }
 
     const participants = await StudentModel.find({
-      _id: { $in: uniqueParticipantIds }
-    }).select('email name class');
+      _id: { $in: uniqueParticipantIds },
+    }).select("email name class");
 
     let sentCount = 0;
     const emailPromises = participants.map(async (student) => {
       try {
-        const classTypeIds = classTypes.map(ct => ct._id);
+        const classTypeIds = classTypes.map((ct) => ct._id);
         const studentAnswers = await StudentAnswerModel.find({
           studentId: student._id,
-          classTypeId: { $in: classTypeIds }
+          classTypeId: { $in: classTypeIds },
         });
 
-        const totalScore = studentAnswers.reduce((sum, answer) => 
-          sum + (answer.totalScoreofOlympiad || 0), 0
+        const totalScore = studentAnswers.reduce(
+          (sum, answer) => sum + (answer.totalScoreofOlympiad || 0),
+          0
         );
 
         const mailOptions = {
-          from: process.env.SMTP_FROM || 'noreply@olympiad.com',
+          from: process.env.SMTP_FROM || "noreply@olympiad.com",
           to: student.email,
           subject: `Thank You for Participating in ${olympiadName}!`,
           html: `
@@ -249,29 +283,35 @@ export const sendOlympiadFinishedNotification = async (
         };
 
         await transporter.sendMail(mailOptions);
-        console.log(`✅ Thank you email sent to ${student.name} (${student.email}) - Score: ${totalScore}`);
+        console.log(
+          `✅ Thank you email sent to ${student.name} (${student.email}) - Score: ${totalScore}`
+        );
         sentCount++;
       } catch (emailError) {
-        console.error(`❌ Failed to send thank you email to ${student.email}:`, emailError);
+        console.error(
+          `❌ Failed to send thank you email to ${student.email}:`,
+          emailError
+        );
       }
     });
 
     await Promise.allSettled(emailPromises);
 
-    console.log(`📊 Thank you email summary: ${sentCount}/${participants.length} emails sent successfully`);
+    console.log(
+      `📊 Thank you email summary: ${sentCount}/${participants.length} emails sent successfully`
+    );
 
     return {
       sentCount,
-      totalParticipants: participants.length
+      totalParticipants: participants.length,
     };
-
   } catch (error) {
-    console.error('Error sending finished olympiad notifications:', error);
-    
-    throw new GraphQLError('Failed to send finished olympiad notifications', {
+    console.error("Error sending finished olympiad notifications:", error);
+
+    throw new GraphQLError("Failed to send finished olympiad notifications", {
       extensions: {
-        code: 'EMAIL_SERVICE_ERROR',
-      }
+        code: "EMAIL_SERVICE_ERROR",
+      },
     });
   }
 };

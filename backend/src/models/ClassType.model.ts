@@ -15,25 +15,60 @@ export enum ClassYear {
   GRADE_12 = "12р анги",
 }
 
+const bestMaterialSchema = new Schema(
+  {
+    studentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Student",
+      required: true,
+    },
+    materialImages: [String],
+    description: String,
+  },
+  { _id: false }
+);
+
 type ClassTypeSchemaType = {
   olympiadId: Schema.Types.ObjectId;
   classYear: ClassYear;
   maxScore: number;
   questions: Schema.Types.ObjectId[];
   participants: Schema.Types.ObjectId[];
-  studentsResults: Schema.Types.ObjectId[];
+  studentsAnswers: Schema.Types.ObjectId[];
   medalists: number;
+  gold: Schema.Types.ObjectId[];
+  silver: Schema.Types.ObjectId[];
+  bronze: Schema.Types.ObjectId[];
+  top10: Schema.Types.ObjectId[];
+  bestMaterials: {
+    studentId: Schema.Types.ObjectId;
+    materialImages: string[];
+    description: string;
+  }[];
 };
 
 const classTypeSchema = new Schema<ClassTypeSchemaType>(
   {
-    olympiadId: { type: Schema.Types.ObjectId, ref: "Olympiad", required: true },
+    olympiadId: {
+      type: Schema.Types.ObjectId,
+      ref: "Olympiad",
+      required: true,
+    },
     classYear: { type: String, enum: Object.values(ClassYear), required: true },
     maxScore: { type: Number, required: true },
     questions: [{ type: Schema.Types.ObjectId, ref: "Question" }],
-    participants: [{ type: Schema.Types.ObjectId, ref: "Student", default: [] }],
-    studentsResults: [{ type: Schema.Types.ObjectId, ref: "StudentAnswer", default: [] }],
+    participants: [
+      { type: Schema.Types.ObjectId, ref: "Student", default: [] },
+    ],
+    studentsAnswers: [
+      { type: Schema.Types.ObjectId, ref: "StudentAnswer", default: [] },
+    ],
     medalists: { type: Number, required: true },
+    gold: [{ type: Schema.Types.ObjectId, ref: "Student", default: [] }],
+    silver: [{ type: Schema.Types.ObjectId, ref: "Student", default: [] }],
+    bronze: [{ type: Schema.Types.ObjectId, ref: "Student", default: [] }],
+    top10: [{ type: Schema.Types.ObjectId, ref: "Student", default: [] }],
+    bestMaterials: [bestMaterialSchema],
   },
   { timestamps: true }
 );

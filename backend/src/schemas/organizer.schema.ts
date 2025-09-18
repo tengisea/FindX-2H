@@ -1,7 +1,6 @@
 import { gql } from "graphql-tag";
 
 export const OrganizerTypeDefs = gql`
-
   type Olympiad {
     id: ID!
     name: String!
@@ -19,9 +18,14 @@ export const OrganizerTypeDefs = gql`
     email: String!
   }
 
+  input UpdateOrganizerInput {
+    organizationName: String
+    email: String
+  }
+
   type Mutation {
     createOrganizer(input: CreateOrganizerInput!): Organizer!
-    updateOrganizer(id: ID!, input: CreateOrganizerInput!): Organizer!
+    updateOrganizer(id: ID!, input: UpdateOrganizerInput!): Organizer!
   }
 
   type Query {

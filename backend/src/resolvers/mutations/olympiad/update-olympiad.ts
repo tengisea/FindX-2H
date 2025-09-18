@@ -1,59 +1,94 @@
 import { OlympiadModel } from "@/models";
+import {
+  transformDocument,
+  transformNestedObject,
+  mapClassYearToGraphQL,
+} from "@/lib/enumUtils";
 
-// Reverse mapping from database values back to GraphQL enum values
-const mapClassYearToGraphQL = (dbValue: string): string => {
-  const reverseMapping: { [key: string]: string } = {
-    '1р анги': 'GRADE_1',
-    '2р анги': 'GRADE_2',
-    '3р анги': 'GRADE_3',
-    '4р анги': 'GRADE_4',
-    '5р анги': 'GRADE_5',
-    '6р анги': 'GRADE_6',
-    '7р анги': 'GRADE_7',
-    '8р анги': 'GRADE_8',
-    '9р анги': 'GRADE_9',
-    '10р анги': 'GRADE_10',
-    '11р анги': 'GRADE_11',
-    '12р анги': 'GRADE_12',
-  };
-  return reverseMapping[dbValue] || dbValue;
-};
-
-export const updateOlympiad = async (_:unknown, { id, input }: any) => {
-  const updatedOlympiad = await OlympiadModel.findByIdAndUpdate(
-    id,
-    { $set: input },
-    { new: true }
-  ).populate({
-    path: "classtypes",
-    populate: {
-      path: "questions",
-      model: "Question"
+export const updateOlympiad = async (_: unknown, { id, input }: any) => {
+  // If rankingType is being updated, we need to use save() to trigger pre-save middleware
+  if (input.rankingType) {
+    const olympiad = await OlympiadModel.findById(id);
+    if (!olympiad) {
+      throw new Error("Olympiad not found");
     }
-  }).populate("organizer");
 
-  if (!updatedOlympiad) {
-    throw new Error("Olympiad not found");
+    // Update the fields
+    Object.assign(olympiad, input);
+    await olympiad.save(); // This will trigger the pre-save middleware
+
+    // Now populate and return
+    const populatedOlympiad = await OlympiadModel.findById(id)
+      .populate({
+        path: "classtypes",
+        populate: {
+          path: "questions",
+          model: "Question",
+        },
+      })
+      .populate({
+        path: "organizer",
+        select: "organizationName email",
+      });
+
+    if (!populatedOlympiad) {
+      throw new Error("Failed to populate olympiad data");
+    }
+
+    const transformed = transformDocument(populatedOlympiad);
+
+    if (transformed.classtypes) {
+      transformed.classtypes = transformed.classtypes.map((classType: any) => ({
+        ...transformDocument(classType),
+        classYear: mapClassYearToGraphQL(classType.classYear),
+        questions: transformNestedObject(classType.questions),
+      }));
+    }
+
+    if (transformed.organizer) {
+      transformed.organizer = transformDocument(transformed.organizer);
+      delete transformed.organizer.Olympiads;
+    }
+
+    return transformed;
+  } else {
+    // For updates without rankingType, use findByIdAndUpdate
+    const updatedOlympiad = await OlympiadModel.findByIdAndUpdate(
+      id,
+      { $set: input },
+      { new: true }
+    )
+      .populate({
+        path: "classtypes",
+        populate: {
+          path: "questions",
+          model: "Question",
+        },
+      })
+      .populate({
+        path: "organizer",
+        select: "organizationName email",
+      });
+
+    if (!updatedOlympiad) {
+      throw new Error("Olympiad not found");
+    }
+
+    const transformed = transformDocument(updatedOlympiad);
+
+    if (transformed.classtypes) {
+      transformed.classtypes = transformed.classtypes.map((classType: any) => ({
+        ...transformDocument(classType),
+        classYear: mapClassYearToGraphQL(classType.classYear),
+        questions: transformNestedObject(classType.questions),
+      }));
+    }
+
+    if (transformed.organizer) {
+      transformed.organizer = transformDocument(transformed.organizer);
+      delete transformed.organizer.Olympiads;
+    }
+
+    return transformed;
   }
-
-  // Transform the data to convert database values back to GraphQL enum values
-  const transformedOlympiad = {
-    ...updatedOlympiad.toObject(),
-    id: updatedOlympiad._id.toString(),
-    organizer: updatedOlympiad.organizer && typeof updatedOlympiad.organizer === 'object' && 'toObject' in updatedOlympiad.organizer ? {
-      ...(updatedOlympiad.organizer as any).toObject(),
-      id: (updatedOlympiad.organizer as any)._id.toString()
-    } : null,
-    classtypes: updatedOlympiad.classtypes.map((classType: any) => ({
-      ...classType.toObject(),
-      id: classType._id.toString(),
-      classYear: mapClassYearToGraphQL(classType.classYear),
-      questions: classType.questions.map((question: any) => ({
-        ...question.toObject(),
-        id: question._id.toString()
-      }))
-    }))
-  };
-
-  return transformedOlympiad;
 };
