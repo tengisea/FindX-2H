@@ -1,88 +1,65 @@
-import { StudentAnswerModel } from "../../../../models";
+import { StudentAnswerModel, ClassTypeModel } from "../../../../models";
 import { GraphQLError } from "graphql";
-import { UpdateStudentAnswerInput } from "@/types/generated";
-import { Types } from "mongoose";
+import { transformDocument } from "@/lib/enumUtils";
 
 export const updateStudentAnswer = async (
   _: unknown,
-  { id, input }: { id: string; input: UpdateStudentAnswerInput }
+  { id, input }: { id: string; input: any }
 ) => {
   try {
-    console.log("🔧 updateStudentAnswer called with:", { id, input });
-    console.log("🔧 Input details:", {
-      id,
-      input,
-      answers: input.answers,
-      studentId: input.studentId,
-      classTypeId: input.classTypeId,
-      answersType: typeof input.answers,
-      answersIsArray: Array.isArray(input.answers),
-    });
-    const { answers, studentId, classTypeId } = input;
+    const { studentId, classTypeId, answers, totalScoreofOlympiad, image } =
+      input;
 
-    // Validate ObjectId format
-    if (!Types.ObjectId.isValid(id)) {
-      throw new GraphQLError("Invalid student answer ID format");
-    }
+    // If classTypeId is being updated, validate that the student is a participant
+    if (classTypeId) {
+      const classType = await ClassTypeModel.findById(classTypeId);
+      if (!classType) throw new GraphQLError("ClassType does not exist");
 
-    const existingStudentAnswer = await StudentAnswerModel.findById(id);
-    if (!existingStudentAnswer) {
-      throw new GraphQLError("Student answer does not exist");
-    }
-
-    // Validate other ObjectIds if provided
-    if (studentId && !Types.ObjectId.isValid(studentId)) {
-      throw new GraphQLError("Invalid student ID format");
-    }
-    if (classTypeId && !Types.ObjectId.isValid(classTypeId)) {
-      throw new GraphQLError("Invalid class type ID format");
-    }
-
-    // Validate answers array
-    if (answers && !Array.isArray(answers)) {
-      throw new GraphQLError("Answers must be an array");
-    }
-
-    // Validate each answer item
-    if (answers) {
-      for (const answer of answers) {
-        if (!answer.questionId || typeof answer.questionId !== "string") {
-          throw new GraphQLError(
-            "Each answer must have a valid questionId string"
-          );
-        }
-        if (typeof answer.score !== "number") {
-          throw new GraphQLError("Each answer must have a valid score number");
-        }
-        if (!Types.ObjectId.isValid(answer.questionId)) {
-          throw new GraphQLError("Invalid question ID format in answers");
-        }
+      if (studentId && !classType.participants.includes(studentId as any)) {
+        throw new GraphQLError("Student is not registered for this ClassType");
       }
     }
 
-    const totalScoreofOlympiad = Array.isArray(answers)
-      ? answers.reduce((sum: number, a: any) => sum + (a?.score ?? 0), 0)
-      : existingStudentAnswer.totalScoreofOlympiad ?? 0;
+    // Calculate total score if answers are provided
+    let calculatedTotalScore = totalScoreofOlympiad;
+    if (answers && Array.isArray(answers)) {
+      calculatedTotalScore = answers.reduce(
+        (sum: number, a: any) => sum + (a?.score ?? 0),
+        0
+      );
+    }
+
+    const updateData: any = {};
+    if (studentId !== undefined) updateData.studentId = studentId;
+    if (classTypeId !== undefined) updateData.classTypeId = classTypeId;
+    if (answers !== undefined) updateData.answers = answers;
+    if (calculatedTotalScore !== undefined)
+      updateData.totalScoreofOlympiad = calculatedTotalScore;
+    if (image !== undefined) updateData.image = image;
 
     const updatedStudentAnswer = await StudentAnswerModel.findByIdAndUpdate(
       id,
-      { answers, studentId, classTypeId, totalScoreofOlympiad },
+      { $set: updateData },
       { new: true }
-    ).lean();
+    );
 
     if (!updatedStudentAnswer) {
-      throw new GraphQLError("Failed to update student answer");
+      throw new GraphQLError("Student answer not found");
     }
 
-    const { _id, ...rest } = updatedStudentAnswer as any;
-    return { id: String(_id), ...rest } as any;
+    const transformed = transformDocument(updatedStudentAnswer);
+
+    // Transform answers array
+    if (transformed.answers) {
+      transformed.answers = transformed.answers.map((answer: any) => ({
+        questionId: answer.questionId?.toString() || answer.questionId,
+        score: answer.score,
+        description: answer.description,
+      }));
+    }
+
+    return transformed;
   } catch (error: any) {
-    console.error("❌ Error in updateStudentAnswer:", error);
-    console.error("❌ Error details:", {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-    });
     throw new GraphQLError(error.message);
   }
 };

@@ -16,6 +16,12 @@ export const ClassTypeTypeDefs = gql`
     GRADE_12
   }
 
+  type BestMaterial {
+    studentId: ID!
+    materialImages: [String!]!
+    description: String!
+  }
+
   type ClassType {
     id: ID!
     classYear: ClassYear!
@@ -23,8 +29,13 @@ export const ClassTypeTypeDefs = gql`
     questions: [Question!]!
     medalists: Int!
     participants: [ID!]!
-    studentsResults: [ID!]!
+    studentsAnswers: [ID!]!
     olympiadId: ID
+    bestMaterials: [BestMaterial!]!
+    gold: [ID!]!
+    silver: [ID!]!
+    bronze: [ID!]!
+    top10: [ID!]!
   }
 
   type Question {
@@ -39,6 +50,7 @@ export const ClassTypeTypeDefs = gql`
     maxScore: Int!
     questions: [CreateQuestionInput!]!
     medalists: Int!
+    olympiadId: ID
   }
 
   input CreateQuestionInput {
@@ -47,15 +59,42 @@ export const ClassTypeTypeDefs = gql`
   }
 
   input UpdateClassTypeInput {
-    classYear: ClassYear!
-    maxScore: Int!
-    medalists: Int!
+    classYear: ClassYear
+    maxScore: Int
+    medalists: Int
+    olympiadId: ID
+    bestMaterials: [BestMaterialInput!]
+    gold: [ID!]
+    silver: [ID!]
+    bronze: [ID!]
+    top10: [ID!]
+  }
+
+  input BestMaterialInput {
+    studentId: ID!
+    materialImages: [String!]!
+    description: String!
+  }
+
+  input CreateBestMaterialInput {
+    studentId: ID!
+    materialImages: [String!]!
+    description: String!
+  }
+
+  input UpdateBestMaterialInput {
+    studentId: ID!
+    materialImages: [String!]!
+    description: String!
   }
 
   type Mutation {
     createClassType(input: CreateClassTypeInput!): ClassType!
     updateClassType(id: ID!, input: UpdateClassTypeInput!): ClassType!
     deleteClassType(id: ID!): Boolean!
+    createBestMaterial(input: CreateBestMaterialInput!): BestMaterial!
+    updateBestMaterial(id: ID!, input: UpdateBestMaterialInput!): BestMaterial!
+    deleteBestMaterial(id: ID!): Boolean!
   }
 
   type Query {
@@ -66,5 +105,7 @@ export const ClassTypeTypeDefs = gql`
     participantsByClassType(classTypeId: ID!): [ID!]!
     studentsResultsByClassType(classTypeId: ID!): [ID!]!
     getStudentsByOlympiadId(olympiadId: ID!): [StudentAnswer!]!
+    bestMaterialsByClassType(classTypeId: ID!): [BestMaterial!]!
+    getAllBestMaterials: [BestMaterial!]!
   }
 `;

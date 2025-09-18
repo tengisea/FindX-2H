@@ -4,6 +4,7 @@ export const StudentAnswerTypeDefs = gql`
   type StudentAnswerItem {
     questionId: ID!
     score: Int!
+    description: String!
   }
 
   type StudentAnswer {
@@ -11,26 +12,31 @@ export const StudentAnswerTypeDefs = gql`
     studentId: ID!
     classTypeId: ID!
     answers: [StudentAnswerItem!]!
-    totalScoreofOlympiad: Int!
+    totalScoreofOlympiad: Int
     createdAt: String!
     updatedAt: String!
+    image: [String!]!
   }
 
   input StudentAnswerItemInput {
     questionId: ID!
     score: Int!
+    description: String!
   }
 
   input CreateStudentAnswerInput {
     studentId: ID!
     classTypeId: ID!
     answers: [StudentAnswerItemInput!]!
+    image: [String!]!
   }
 
   input UpdateStudentAnswerInput {
     studentId: ID
     classTypeId: ID
     answers: [StudentAnswerItemInput!]
+    totalScoreofOlympiad: Int
+    image: [String!]
   }
 
   type Mutation {
@@ -51,6 +57,7 @@ export const StudentAnswerTypeDefs = gql`
     studentAnswer(id: ID!): StudentAnswer
     allStudentAnswers: [StudentAnswer!]!
     studentAnswersByClassType(classTypeId: ID!): [StudentAnswer!]!
-    debugOlympiadData(olympiadId: ID!): String!
+    getStudentsByOlympiadId(olympiadId: ID!): [StudentAnswer!]!
+    getStudentsByStudentId(studentId: ID!): [StudentAnswer!]!
   }
 `;

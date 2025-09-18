@@ -10,9 +10,10 @@ export const createStudent = async (
     const {
       name,
       email,
+      province,
+      district,
       school,
       class: classYear,
-      location,
       profilePicture,
     } = input;
 
@@ -24,15 +25,28 @@ export const createStudent = async (
     const student = new StudentModel({
       name,
       email,
+      province,
+      district,
       school,
       class: classYear,
-      location,
       profilePicture,
     });
 
     await student.save();
 
-    return student;
+    const created = student.toObject();
+    const { _id, ...rest } = created as any;
+    return {
+      id: String(_id),
+      class: rest.class,
+      ...rest,
+      participatedOlympiads:
+        rest.participatedOlympiads?.map((id: any) => String(id)) || [],
+      gold: rest.gold?.map((id: any) => String(id)) || [],
+      silver: rest.silver?.map((id: any) => String(id)) || [],
+      bronze: rest.bronze?.map((id: any) => String(id)) || [],
+      top10: rest.top10?.map((id: any) => String(id)) || [],
+    };
   } catch (error: any) {
     throw new GraphQLError(error.message);
   }

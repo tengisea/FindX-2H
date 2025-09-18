@@ -1,15 +1,25 @@
 import { StudentModel } from "@/models";
 import { ClassTypeModel } from "@/models";
+import { OlympiadModel } from "@/models";
 import { GraphQLError } from "graphql";
 
 export const registerForOlympiad = async (
   _: unknown,
-  { input }: { input: { studentId: string; classTypeId: string } }
+  {
+    input,
+  }: { input: { studentId: string; classTypeId: string; olympiadId: string } }
 ) => {
+  const { studentId, classTypeId, olympiadId } = input;
   try {
-    const { studentId, classTypeId } = input;
+    // For now, we'll use the olympiadId directly since the schema changed
+    // You may need to adjust this logic based on your business requirements
 
-    console.log('🎯 Registering student:', studentId, 'for class type:', classTypeId);
+    console.log(
+      "🎯 Registering student:",
+      studentId,
+      "for olympiad:",
+      olympiadId
+    );
 
     // Check if student exists
     const student = await StudentModel.findById(studentId);
@@ -17,44 +27,74 @@ export const registerForOlympiad = async (
       throw new GraphQLError("Student not found");
     }
 
-    // Check if class type exists
+    // Check if student is already registered for this olympiad
+    if (student.participatedOlympiads.includes(olympiadId as any)) {
+      throw new GraphQLError("Student is already registered for this olympiad");
+    }
+
+    // Verify that the classType belongs to the olympiad
     const classType = await ClassTypeModel.findById(classTypeId);
     if (!classType) {
-      throw new GraphQLError("Class type not found");
+      throw new GraphQLError("ClassType not found");
+    }
+    if (classType.olympiadId.toString() !== olympiadId) {
+      throw new GraphQLError("ClassType does not belong to this olympiad");
     }
 
-    console.log('📊 Student:', student.name, 'Grade:', student.class);
-    console.log('📚 Class Type:', classType.classYear, 'Olympiad:', classType.olympiadId);
-
-    // Check if student is already registered for this class type
-    if (classType.participants.includes(studentId as any)) {
-      throw new GraphQLError("Student is already registered for this class type");
-    }
-
-    // Add student to participants array
-    const updatedClassType = await ClassTypeModel.findByIdAndUpdate(
-      classTypeId,
-      { $push: { participants: studentId } },
-      { new: true }
-    );
-
-    console.log('✅ Added student to participants. Total participants:', updatedClassType?.participants.length);
-
-    // Also add the olympiad to student's participatedOlympiads array
+    // Add the olympiad to student's participatedOlympiads array
     const updatedStudent = await StudentModel.findByIdAndUpdate(
       studentId,
-      { $addToSet: { participatedOlympiads: classType.olympiadId } },
+      { $addToSet: { participatedOlympiads: olympiadId } },
+      { new: true }
+    ).lean();
+
+    if (!updatedStudent) {
+      throw new GraphQLError("Failed to register student for olympiad");
+    }
+
+    // Add the student to the olympiad's participants array
+    await OlympiadModel.findByIdAndUpdate(
+      olympiadId,
+      { $addToSet: { participants: studentId } },
       { new: true }
     );
 
-    console.log('✅ Added olympiad to student. Total participated olympiads:', updatedStudent?.participatedOlympiads.length);
+    // Add the student to the ClassType's participants array
+    await ClassTypeModel.findByIdAndUpdate(
+      classTypeId,
+      { $addToSet: { participants: studentId } },
+      { new: true }
+    );
 
-    return true;
+    console.log(
+      "✅ Added olympiad to student. Total participated olympiads:",
+      updatedStudent?.participatedOlympiads.length
+    );
+
+    const { _id, ...rest } = updatedStudent as any;
+    return {
+      id: String(_id),
+      ...rest,
+      participatedOlympiads:
+        rest.participatedOlympiads?.map((id: any) => String(id)) || [],
+      gold: rest.gold?.map((id: any) => String(id)) || [],
+      silver: rest.silver?.map((id: any) => String(id)) || [],
+      bronze: rest.bronze?.map((id: any) => String(id)) || [],
+      top10: rest.top10?.map((id: any) => String(id)) || [],
+      rankingHistory:
+        rest.rankingHistory?.map((entry: any) => ({
+          ...entry,
+          changedBy: String(entry.changedBy),
+          olympiadId: entry.olympiadId ? String(entry.olympiadId) : null,
+        })) || [],
+    };
   } catch (error: any) {
-    console.error('❌ Registration error:', error);
+    console.error("❌ Registration error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
-    throw new GraphQLError(error.message || "Failed to register student for olympiad");
+    throw new GraphQLError(
+      error.message || "Failed to register student for olympiad"
+    );
   }
 };
