@@ -17,15 +17,17 @@
     "@graphql-codegen/cli": "^6.0.0",
     "@graphql-codegen/typescript": "^5.0.0",
     "@graphql-codegen/typescript-resolvers": "^5.0.0",
+    "@types/nodemailer": "^7.0.1",
+    "dotenv": "^17.0.0",
     "graphql": "^16.11.0",
     "livekit-server-sdk": "^2.13.3",
-    "dotenv": "^17.0.0",
-    "tsconfig-paths": "^4.2.0",
     "mongoose": "^8.18.1",
     "next": "15.5.3",
+    "nodemailer": "^7.0.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
