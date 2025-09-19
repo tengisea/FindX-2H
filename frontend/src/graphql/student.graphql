@@ -1,132 +1,183 @@
-mutation RegisterForOlympiad($input: RegisterForOlympiadInput!) {
-  registerForOlympiad(input: $input)
-}
-
-query getStudent($id: ID!) {
-  getStudent(id: $id) {
+mutation CreateStudent($input: CreateStudentInput!) {
+  createStudent(input: $input) {
     id
     name
     email
+    province
+    district
     school
     class
-    location
     profilePicture
-    totalScore
-    piPoints
+    ranking
     participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
     createdAt
     updatedAt
   }
 }
 
-query GetAllStudents {
+mutation DeleteStudent($deleteStudentId: ID!) {
+  deleteStudent(id: $deleteStudentId)
+}
+
+mutation UpdateStudent($updateStudentId: ID!, $input: UpdateStudentInput!) {
+  updateStudent(id: $updateStudentId, input: $input) {
+    id
+    name
+    email
+    province
+    district
+    school
+    class
+    profilePicture
+    ranking
+    participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+query GetAllStudent {
   getAllStudent {
     id
     name
     email
+    province
+    district
     school
     class
-    location
     profilePicture
-    totalScore
-    piPoints
+    ranking
     participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
     createdAt
     updatedAt
   }
 }
 
-query GetStudentsByClassType($classTypeId: ID!) {
-  studentsByClassType(classTypeId: $classTypeId) {
+query GetStudent($getStudentId: ID!) {
+  getStudent(id: $getStudentId) {
     id
     name
     email
+    province
+    district
     school
     class
-    location
     profilePicture
-    totalScore
-    piPoints
+    ranking
     participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
     createdAt
     updatedAt
   }
 }
 
-query GetOlympiad($id: ID!) {
-  olympiad(id: $id) {
+query GetStudentsByOlympiadId($olympiadId: ID!) {
+  getStudentsByOlympiadId(olympiadId: $olympiadId) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query GetStudentsByStudentId($studentId: ID!) {
+  getStudentsByStudentId(studentId: $studentId) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query Students($class: StudentClass, $school: String, $district: String, $province: String, $olympiadId: ID, $medal: MedalType) {
+  students(class: $class, school: $school, district: $district, province: $province, olympiadId: $olympiadId, medal: $medal) {
     id
     name
-    description
-    date
-    location
-    organizer {
-      id
-      organizationName
-      email
-    }
-    classtypes {
-      id
-      classYear
-      maxScore
-      questions {
-        id
-        classTypeId
-        questionName
-        maxScore
-      }
-      medalists
-      participants
-      studentsResults
+    email
+    province
+    district
+    school
+    class
+    profilePicture
+    ranking
+    participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
       olympiadId
+      date
+      pointsGained
     }
-    scoreOfAward
-    status
-  }
-}
-
-# Student Answer Queries and Mutations
-query GetStudentAnswersByClassType($classTypeId: ID!) {
-  studentAnswersByClassType(classTypeId: $classTypeId) {
-    id
-    studentId
-    classTypeId
-    answers {
-      questionId
-      score
-    }
-    totalScoreofOlympiad
     createdAt
     updatedAt
   }
 }
 
-mutation CreateStudentAnswer($input: CreateStudentAnswerInput!) {
-  createStudentAnswer(input: $input) {
-    id
-    studentId
-    classTypeId
-    answers {
-      questionId
-      score
-    }
-    totalScoreofOlympiad
-    createdAt
-    updatedAt
-  }
-}
-
-mutation UpdateStudentAnswer($id: ID!, $input: UpdateStudentAnswerInput!) {
-  updateStudentAnswer(id: $id, input: $input) {
-    id
-    studentId
-    classTypeId
-    answers {
-      questionId
-      score
-    }
-    totalScoreofOlympiad
-    createdAt
-    updatedAt
-  }
-}

@@ -1,0 +1,105 @@
+mutation CreateStudentAnswer($input: CreateStudentAnswerInput!) {
+  createStudentAnswer(input: $input) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+mutation DeleteStudentAnswer($deleteStudentAnswerId: ID!) {
+  deleteStudentAnswer(id: $deleteStudentAnswerId)
+}
+
+mutation UpdateStudentAnswer($updateStudentAnswerId: ID!, $input: UpdateStudentAnswerInput!) {
+  updateStudentAnswer(id: $updateStudentAnswerId, input: $input) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+mutation UpdateStudentAnswerScore($studentAnswerId: ID!, $questionId: ID!, $score: Int!) {
+  updateStudentAnswerScore(studentAnswerId: $studentAnswerId, questionId: $questionId, score: $score) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query AllStudentAnswers {
+  allStudentAnswers {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query StudentAnswer($studentAnswerId: ID!) {
+  studentAnswer(id: $studentAnswerId) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query StudentAnswersByClassType($classTypeId: ID!) {
+  studentAnswersByClassType(classTypeId: $classTypeId) {
+    id
+    studentId
+    classTypeId
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}

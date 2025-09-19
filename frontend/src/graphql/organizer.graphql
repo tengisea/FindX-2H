@@ -6,18 +6,95 @@ query GetAllOrganizers {
     Olympiads {
       id
       name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
     }
   }
 }
 
-query GetOrganizer($id: ID!) {
-  getOrganizer(id: $id) {
+query GetOrganizer($getOrganizerId: ID!) {
+  getOrganizer(id: $getOrganizerId) {
     id
     organizationName
     email
     Olympiads {
       id
       name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
     }
   }
 }
+
