@@ -5,9 +5,11 @@ import {
   StudentRanking,
 } from "@/components/landingPage";
 
+import LiquidChrome from "@/components/landingPage/LiquidChrome";
+
 const LandingPage = () => {
   return (
-    <div className="flex flex-col">
+    <div>
       <Header />
       <Section />
       <StudentRanking />
