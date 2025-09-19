@@ -1,0 +1,36 @@
+mutation CreateBestMaterial($input: CreateBestMaterialInput!) {
+  createBestMaterial(input: $input) {
+    studentId
+    materialImages
+    description
+  }
+}
+
+mutation DeleteBestMaterial($deleteBestMaterialId: ID!) {
+  deleteBestMaterial(id: $deleteBestMaterialId)
+}
+
+mutation UpdateBestMaterial($updateBestMaterialId: ID!, $input: UpdateBestMaterialInput!) {
+  updateBestMaterial(id: $updateBestMaterialId, input: $input) {
+    studentId
+    materialImages
+    description
+  }
+}
+
+query BestMaterialsByClassType($classTypeId: ID!) {
+  bestMaterialsByClassType(classTypeId: $classTypeId) {
+    studentId
+    materialImages
+    description
+  }
+}
+
+query GetAllBestMaterials {
+  getAllBestMaterials {
+    studentId
+    materialImages
+    description
+  }
+}
+
