@@ -2,7 +2,7 @@ import { GraphQLError } from "graphql";
 import { StudentModel, ClassTypeModel, StudentAnswerModel } from "../models";
 import { ClassYear } from "../models/ClassType.model";
 import { transporter } from "./email-transporter";
-import { mapClassYearToStudentFormat } from "./class-year-mappers";
+import { mapClassYearToStudentFormat } from "./class-year-mapper";
 
 export const sendNewOlympiadNotificationToMatchingStudents = async (
   olympiadName: string,
