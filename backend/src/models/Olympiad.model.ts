@@ -5,6 +5,9 @@ enum OlympiadRankingType {
   REGIONAL = "REGIONAL",
   DISTRICT = "DISTRICT",
   SCHOOL = "SCHOOL",
+  A_TIER = "A_TIER",
+  B_TIER = "B_TIER",
+  C_TIER = "C_TIER",
 }
 
 enum OlympiadStatus {
@@ -13,6 +16,7 @@ enum OlympiadStatus {
   FINISHED = "FINISHED",
   CANCELLED = "CANCELLED",
   DRAFT = "DRAFT",
+  UNDER_REVIEW = "UNDER_REVIEW",
 }
 
 type OlympiadSchemaType = {
@@ -66,16 +70,25 @@ olympiadSchema.pre("save", function (next) {
   if (this.isModified("rankingType") || this.isNew) {
     switch (this.rankingType) {
       case OlympiadRankingType.NATIONAL:
-        this.scoreOfAward = 100;
+        this.scoreOfAward = 400;
         break;
       case OlympiadRankingType.REGIONAL:
-        this.scoreOfAward = 75;
+        this.scoreOfAward = 200;
         break;
       case OlympiadRankingType.DISTRICT:
-        this.scoreOfAward = 50;
+        this.scoreOfAward = 100;
         break;
       case OlympiadRankingType.SCHOOL:
-        this.scoreOfAward = 25;
+        this.scoreOfAward = 20;
+        break;
+      case OlympiadRankingType.A_TIER:
+        this.scoreOfAward = 100;
+        break;
+      case OlympiadRankingType.B_TIER:
+        this.scoreOfAward = 50;
+        break;
+      case OlympiadRankingType.C_TIER:
+        this.scoreOfAward = 20;
         break;
       default:
         this.scoreOfAward = 0;
@@ -94,20 +107,8 @@ olympiadSchema.post("save", async function (doc) {
         "../utils/email-services"
       );
 
-      console.log(
-        `🏆 Automatically processing rankings for Olympiad: ${doc.name}`
-      );
       const result = await RankingService.processOlympiadRankings(
         doc._id.toString()
-      );
-
-      console.log(
-        `✅ Rankings processed: ${result.classTypesProcessed} class types, ${result.totalStudentsProcessed} students`
-      );
-
-      // Send thank you emails to participants
-      console.log(
-        `📧 Automatically sending thank you emails to participants of Olympiad: ${doc.name}`
       );
       try {
         const emailResult = await sendOlympiadFinishedNotification(

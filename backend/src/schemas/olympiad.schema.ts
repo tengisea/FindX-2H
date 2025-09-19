@@ -6,6 +6,9 @@ export const OlympiadTypeDefs = gql`
     REGIONAL
     DISTRICT
     SCHOOL
+    A_TIER
+    B_TIER
+    C_TIER
   }
 
   enum OlympiadStatus {
@@ -14,6 +17,7 @@ export const OlympiadTypeDefs = gql`
     FINISHED
     CANCELLED
     DRAFT
+    UNDER_REVIEW
   }
 
   type Olympiad {

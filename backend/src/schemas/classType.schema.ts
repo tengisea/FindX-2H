@@ -14,6 +14,10 @@ export const ClassTypeTypeDefs = gql`
     GRADE_10
     GRADE_11
     GRADE_12
+    C_CLASS
+    D_CLASS
+    E_CLASS
+    F_CLASS
   }
 
   type BestMaterial {

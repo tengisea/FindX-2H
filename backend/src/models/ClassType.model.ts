@@ -13,7 +13,13 @@ export enum ClassYear {
   GRADE_10 = "10р анги",
   GRADE_11 = "11р анги",
   GRADE_12 = "12р анги",
+  C_CLASS = "C_CLASS",
+  D_CLASS = "D_CLASS",
+  E_CLASS = "E_CLASS",
+  F_CLASS = "F_CLASS",
 }
+
+
 
 const bestMaterialSchema = new Schema(
   {

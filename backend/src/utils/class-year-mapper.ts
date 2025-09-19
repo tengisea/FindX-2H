@@ -1,21 +1,11 @@
-import { ClassYear } from '../models/ClassType.model';
+import { ClassYear } from "../models/ClassType.model";
+import { CLASS_YEAR_MAPPING } from "../lib/enumUtils";
 
 export const mapClassYearToStudentFormat = (classYear: ClassYear): string => {
-  const mapping: { [key in ClassYear]: string } = {
-    [ClassYear.GRADE_1]: '1р анги',
-    [ClassYear.GRADE_2]: '2р анги',
-    [ClassYear.GRADE_3]: '3р анги',
-    [ClassYear.GRADE_4]: '4р анги',
-    [ClassYear.GRADE_5]: '5р анги',
-    [ClassYear.GRADE_6]: '6р анги',
-    [ClassYear.GRADE_7]: '7р анги',
-    [ClassYear.GRADE_8]: '8р анги',
-    [ClassYear.GRADE_9]: '9р анги',
-    [ClassYear.GRADE_10]: '10р анги',
-    [ClassYear.GRADE_11]: '11р анги',
-    [ClassYear.GRADE_12]: '12р анги',
-  };
-  return mapping[classYear];
+  return (
+    CLASS_YEAR_MAPPING[classYear as keyof typeof CLASS_YEAR_MAPPING] ||
+    classYear
+  );
 };
 
 export const extractClassYearsFromOlympiad = (olympiad: any): ClassYear[] => {
