@@ -30,7 +30,7 @@ export const ClassTypeSection = ({
 }: ClassTypeSectionProps) => {
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
+      <div className="flex  sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
           Class Types & Questions
         </h3>
@@ -38,7 +38,7 @@ export const ClassTypeSection = ({
           <button
             type="button"
             onClick={onAddClassType}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-lg text-sm sm:text-base"
+            className="bg-[#4741A6] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl hover:bg-[#3A3580] transition-all duration-200 flex items-center space-x-2 shadow-lg text-sm sm:text-base"
           >
             <svg
               className="w-4 h-4 sm:w-5 sm:h-5"
@@ -126,7 +126,7 @@ export const ClassTypeSection = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Max Score (Auto-calculated)
+                Max Score
               </label>
               <input
                 type="number"
