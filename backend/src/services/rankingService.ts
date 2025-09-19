@@ -4,10 +4,10 @@ import { StudentModel } from "@/models";
 import { OlympiadModel } from "@/models";
 
 export interface RankingResult {
-  gold: string[];
-  silver: string[];
-  bronze: string[];
-  top10: string[];
+  gold: any[];
+  silver: any[];
+  bronze: any[];
+  top10: any[];
   processedStudents: number;
 }
 
@@ -26,6 +26,7 @@ export class RankingService {
         throw new Error("ClassType not found");
       }
 
+      // Get student answers sorted by totalScoreofOlympiad in descending order (highest first)
       const studentAnswers = await StudentAnswerModel.find({ classTypeId })
         .populate("studentId", "name email ranking")
         .sort({ totalScoreofOlympiad: -1 });
@@ -44,9 +45,18 @@ export class RankingService {
         };
       }
 
+      // Log student scores for debugging
+      console.log("📈 Student scores (highest to lowest):");
+      studentAnswers.forEach((answer, index) => {
+        const studentName = (answer.studentId as any)?.name || "Unknown";
+        const score = answer.totalScoreofOlympiad || 0;
+        console.log(`  ${index + 1}. ${studentName}: ${score} points`);
+      });
+
       const medalists = classType.medalists;
       const totalStudents = studentAnswers.length;
 
+      // Calculate medal counts based on total students and available medalists
       const goldCount = Math.min(Math.ceil(totalStudents * 0.1), medalists);
       const silverCount = Math.min(
         Math.ceil(totalStudents * 0.2),
@@ -62,20 +72,47 @@ export class RankingService {
         `🏆 Medal counts - Gold: ${goldCount}, Silver: ${silverCount}, Bronze: ${bronzeCount}, Top10: ${top10Count}`
       );
 
-      const gold: string[] = [];
-      const silver: string[] = [];
-      const bronze: string[] = [];
-      const top10: string[] = [];
+      const gold: any[] = [];
+      const silver: any[] = [];
+      const bronze: any[] = [];
+      const top10: any[] = [];
 
+      // Assign medals based on ranking (index 0 = highest score = gold)
       studentAnswers.forEach((answer, index) => {
-        const studentId = answer.studentId.toString();
+        // Extract the actual ObjectId from the populated student data
+        // When populated, studentId becomes an object with _id, otherwise it's just the ObjectId
+        const studentId = (answer.studentId as any)?._id || answer.studentId;
+        const studentName = (answer.studentId as any)?.name || "Unknown";
+        const score = answer.totalScoreofOlympiad || 0;
 
-        if (index < top10Count) top10.push(studentId);
+        // Add to top10 if applicable
+        if (index < top10Count) {
+          top10.push(studentId);
+        }
 
-        if (index < goldCount) gold.push(studentId);
-        else if (index < goldCount + silverCount) silver.push(studentId);
-        else if (index < goldCount + silverCount + bronzeCount)
+        // Assign medals based on position (highest scores get gold)
+        if (index < goldCount) {
+          gold.push(studentId);
+          console.log(
+            `🥇 Gold medal: ${studentName} (${score} points) - Position ${
+              index + 1
+            }`
+          );
+        } else if (index < goldCount + silverCount) {
+          silver.push(studentId);
+          console.log(
+            `🥈 Silver medal: ${studentName} (${score} points) - Position ${
+              index + 1
+            }`
+          );
+        } else if (index < goldCount + silverCount + bronzeCount) {
           bronze.push(studentId);
+          console.log(
+            `🥉 Bronze medal: ${studentName} (${score} points) - Position ${
+              index + 1
+            }`
+          );
+        }
       });
 
       await ClassTypeModel.findByIdAndUpdate(classTypeId, {

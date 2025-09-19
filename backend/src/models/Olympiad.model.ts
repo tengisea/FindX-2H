@@ -84,12 +84,15 @@ olympiadSchema.pre("save", function (next) {
   next();
 });
 
-// Post-save middleware to automatically process rankings when Olympiad is finished
+// Post-save middleware to automatically process rankings and send emails when Olympiad is finished
 olympiadSchema.post("save", async function (doc) {
   if (this.isModified("status") && doc.status === "FINISHED") {
     try {
       // Import here to avoid circular dependency
       const { RankingService } = await import("../services/rankingService");
+      const { sendOlympiadFinishedNotification } = await import(
+        "../utils/email-services"
+      );
 
       console.log(
         `🏆 Automatically processing rankings for Olympiad: ${doc.name}`
@@ -101,6 +104,26 @@ olympiadSchema.post("save", async function (doc) {
       console.log(
         `✅ Rankings processed: ${result.classTypesProcessed} class types, ${result.totalStudentsProcessed} students`
       );
+
+      // Send thank you emails to participants
+      console.log(
+        `📧 Automatically sending thank you emails to participants of Olympiad: ${doc.name}`
+      );
+      try {
+        const emailResult = await sendOlympiadFinishedNotification(
+          doc._id.toString(),
+          doc.name
+        );
+        console.log(
+          `✅ Thank you emails sent: ${emailResult.sentCount}/${emailResult.totalParticipants} participants notified`
+        );
+      } catch (emailError) {
+        console.error(
+          "❌ Error sending automatic thank you emails:",
+          emailError
+        );
+        // Don't throw error to avoid breaking the save operation
+      }
     } catch (error) {
       console.error("❌ Error processing automatic rankings:", error);
       // Don't throw error to avoid breaking the save operation
