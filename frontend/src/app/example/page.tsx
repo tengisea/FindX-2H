@@ -1,24 +1,24 @@
-"use client";
-import { motion, AnimatePresence } from "framer-motion";
+// "use client";
+// import { motion, AnimatePresence } from "framer-motion";
 
-const Animation = () => {
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ y: -100, scaleY: 0 }}
-        animate={{ y: 0, scaleY: 1 }}
-        exit={{ y: 100, scaleY: 0 }}
-        transition={{
-          duration: 1.0,
-          ease: "easeOut",
-        }}
-        style={{ transformOrigin: "top" }}
-        className="text-white"
-      >
-        <div className="bg-black h-screen w-full"></div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+// const Animation = () => {
+//   return (
+//     <AnimatePresence>
+//       <motion.div
+//         initial={{ y: -100, scaleY: 0 }}
+//         animate={{ y: 0, scaleY: 1 }}
+//         exit={{ y: 100, scaleY: 0 }}
+//         transition={{
+//           duration: 1.0,
+//           ease: "easeOut",
+//         }}
+//         style={{ transformOrigin: "top" }}
+//         className="text-white"
+//       >
+//         <div className="bg-black h-screen w-full"></div>
+//       </motion.div>
+//     </AnimatePresence>
+//   );
+// };
 
-export default Animation;
+// export default Animation;
