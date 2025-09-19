@@ -1,5 +1,0 @@
-export { default as AdminTournamentCard } from './AdminTournamentCard'
-export { default as StudentTournamentCard } from './StudentTournamentCard'
-export { default as CreateTournamentModal } from './CreateTournamentModal'
-export { default as UpdateTournamentStatusModal } from './UpdateTournamentStatusModal'
-export { default as CreateMatchingModal } from './CreateMatchingModal'
