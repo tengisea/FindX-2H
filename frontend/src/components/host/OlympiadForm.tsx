@@ -48,7 +48,7 @@ export const OlympiadForm = ({
   isSubmitting,
 }: OlympiadFormProps) => {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className=" w-full">
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-white/20 p-4 sm:p-6 lg:p-8">
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
@@ -62,75 +62,82 @@ export const OlympiadForm = ({
         </div>
 
         <form onSubmit={onSubmit} className="space-y-6 sm:space-y-8">
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Olympiad Name *
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => onUpdateFormData("name", e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-                placeholder="Enter olympiad name"
-                required
-              />
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            {/* Left Column - Basic Information */}
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Olympiad Details</h3>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Olympiad Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => onUpdateFormData("name", e.target.value)}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#4741A6] focus:border-transparent text-sm sm:text-base"
+                  placeholder="Enter olympiad name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date *
+                </label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => onUpdateFormData("date", e.target.value)}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#4741A6] focus:border-transparent text-sm sm:text-base"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description *
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => onUpdateFormData("description", e.target.value)}
+                  rows={4}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#4741A6] focus:border-transparent resize-none text-sm sm:text-base"
+                  placeholder="Describe the olympiad event..."
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location *
+                </label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => onUpdateFormData("location", e.target.value)}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#4741A6] focus:border-transparent text-sm sm:text-base"
+                  placeholder="Enter event location"
+                  required
+                />
+              </div>
             </div>
 
+            {/* Right Column - Class Types Section */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date *
-              </label>
-              <input
-                type="date"
-                value={formData.date}
-                onChange={(e) => onUpdateFormData("date", e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-                required
+              <ClassTypeSection
+                classTypes={classTypes}
+                onUpdateClassType={onUpdateClassType}
+                onAddClassType={onAddClassType}
+                onRemoveClassType={onRemoveClassType}
+                onAddQuestion={onAddQuestion}
+                onRemoveQuestion={onRemoveQuestion}
+                onUpdateQuestion={onUpdateQuestion}
+                editingOlympiad={editingOlympiad}
               />
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description *
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => onUpdateFormData("description", e.target.value)}
-              rows={4}
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base"
-              placeholder="Describe the olympiad event..."
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Location *
-            </label>
-            <input
-              type="text"
-              value={formData.location}
-              onChange={(e) => onUpdateFormData("location", e.target.value)}
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-              placeholder="Enter event location"
-              required
-            />
-          </div>
-
-          {/* Class Types Section */}
-          <ClassTypeSection
-            classTypes={classTypes}
-            onUpdateClassType={onUpdateClassType}
-            onAddClassType={onAddClassType}
-            onRemoveClassType={onRemoveClassType}
-            onAddQuestion={onAddQuestion}
-            onRemoveQuestion={onRemoveQuestion}
-            onUpdateQuestion={onUpdateQuestion}
-            editingOlympiad={editingOlympiad}
-          />
 
           {/* Form Actions */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 sm:pt-6 border-t border-gray-200 space-y-3 sm:space-y-0">
@@ -158,7 +165,7 @@ export const OlympiadForm = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="bg-[#4741A6] text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl hover:from-[#9BBBFC] hover:to-[#4741A6] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {isSubmitting ? (
                   <>
