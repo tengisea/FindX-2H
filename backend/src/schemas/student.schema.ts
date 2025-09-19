@@ -78,10 +78,11 @@ export const StudentTypeDefs = gql`
   }
 
   input RankingHistoryInput {
-    changedBy: ID!
+    changedBy: Int!
     changedTo: Int!
     reason: String!
     olympiadId: ID!
+    date: String!
   }
 
   type Mutation {
