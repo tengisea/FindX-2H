@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npm run codegen && next dev",
     "predev": "npm run codegen",
-    "codegen": "npx graphql-codegen --config codegen.yml && node scripts/fix-enum-order.js",
+    "codegen": "npx graphql-codegen --config codegen.yml",
     "build": "npm run codegen && next build --no-lint",
     "start": "next start",
     "start:prod": "npm run codegen && next start",
