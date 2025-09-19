@@ -7,10 +7,11 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export const Section = () => {
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-blue-100">
+    <div className="">
       <div className="container mx-auto px-4 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
@@ -55,13 +56,13 @@ export const Section = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg font-semibold rounded-lg flex items-center gap-2">
+              <Button className="bg-[#F9CE69] hover:bg-white text-black px-8 py-4 text-lg font-semibold rounded-lg flex items-center gap-2">
                 Get Started
                 <ArrowRight className="w-5 h-5" />
               </Button>
               <Button
                 variant="outline"
-                className="border-purple-600 text-purple-600 hover:bg-purple-50 px-8 py-4 text-lg font-semibold rounded-lg flex items-center gap-2"
+                className=" bg-[#F9CE69] text-black px-8 py-4 text-lg font-semibold rounded-lg flex items-center gap-2"
               >
                 <Trophy className="w-5 h-5" />
                 View Results
@@ -86,12 +87,7 @@ export const Section = () => {
 
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <div className="w-full h-[600px] bg-gradient-to-br from-amber-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center text-gray-600">
-                  <Users className="w-24 h-24 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg">Students collaborating</p>
-                </div>
-              </div>
+              <div className="w-full h-[600px] bg-gradient-to-br from-amber-100 to-orange-200 flex items-center justify-center"></div>
 
               <div className="absolute top-6 right-6 bg-yellow-400 rounded-xl px-4 py-3 shadow-lg">
                 <div className="flex items-center gap-2 text-yellow-900">

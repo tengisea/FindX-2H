@@ -4,14 +4,18 @@ import {
   Section,
   StudentRanking,
 } from "@/components/landingPage";
+import { OlympiadBackground } from "@/components/landingPage/LandingBackground";
 
 const LandingPage = () => {
   return (
-    <div className="flex flex-col">
-      <Header />
-      <Section />
-      <StudentRanking />
-      <CompleteRank />
+    <div className="min-h-screen relative">
+      <OlympiadBackground />
+      <div className="relative z-10">
+        <Header />
+        <Section />
+        <StudentRanking />
+        <CompleteRank />
+      </div>
     </div>
   );
 };
