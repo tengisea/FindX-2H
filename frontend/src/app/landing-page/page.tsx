@@ -4,16 +4,18 @@ import {
   Section,
   StudentRanking,
 } from "@/components/landingPage";
-
-import LiquidChrome from "@/components/landingPage/LiquidChrome";
+import { OlympiadBackground } from "@/components/landingPage/LandingBackground";
 
 const LandingPage = () => {
   return (
-    <div>
-      <Header />
-      <Section />
-      <StudentRanking />
-      <CompleteRank />
+    <div className="min-h-screen relative">
+      <OlympiadBackground />
+      <div className="relative z-10">
+        <Header />
+        <Section />
+        <StudentRanking />
+        <CompleteRank />
+      </div>
     </div>
   );
 };
