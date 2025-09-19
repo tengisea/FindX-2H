@@ -6,6 +6,7 @@ import {
   mapClassYearToGraphQL,
 } from "@/lib/enumUtils";
 import { RankingService } from "@/services/rankingService";
+import { sendOlympiadFinishedNotification } from "@/utils/email-services";
 
 export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
   try {
@@ -46,6 +47,23 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
       // Don't throw error to avoid breaking the finish operation
     }
 
+    // Send thank you emails to all participants
+    console.log(
+      `📧 Sending thank you emails to participants of Olympiad: ${updatedOlympiad.name}`
+    );
+    try {
+      const emailResult = await sendOlympiadFinishedNotification(
+        id,
+        updatedOlympiad.name
+      );
+      console.log(
+        `✅ Thank you emails sent: ${emailResult.sentCount}/${emailResult.totalParticipants} participants notified`
+      );
+    } catch (emailError) {
+      console.error("❌ Error sending thank you emails:", emailError);
+      // Don't throw error to avoid breaking the finish operation
+    }
+
     const transformed = transformDocument(updatedOlympiad);
 
     if (transformed.classtypes) {
@@ -76,7 +94,7 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
     return {
       success: true,
       message:
-        "Olympiad finished successfully. Rankings are being processed automatically.",
+        "Olympiad finished successfully. Rankings have been processed and thank you emails have been sent to all participants.",
       olympiad: transformed,
     };
   } catch (error: any) {
