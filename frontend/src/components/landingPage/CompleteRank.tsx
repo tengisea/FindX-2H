@@ -46,7 +46,7 @@ export const CompleteRank = () => {
   ];
 
   return (
-    <div className="bg-white p-8">
+    <div className=" p-8">
       <h1 className="text-3xl font-bold text-center text-black mb-8">
         Complete Rankings
       </h1>
@@ -55,7 +55,7 @@ export const CompleteRank = () => {
         {rankings.map((person) => (
           <div
             key={person.rank}
-            className="bg-white p-6  hover:shadow-md transition-shadow"
+            className=" p-6  hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
