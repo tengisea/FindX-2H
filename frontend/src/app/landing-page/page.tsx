@@ -1,10 +1,17 @@
-import { Header, Section } from "@/components/landingPage";
+import {
+  CompleteRank,
+  Header,
+  Section,
+  StudentRanking,
+} from "@/components/landingPage";
 
 const LandingPage = () => {
   return (
     <div className="flex flex-col">
       <Header />
       <Section />
+      <StudentRanking />
+      <CompleteRank />
     </div>
   );
 };
