@@ -19,7 +19,7 @@ export const CompleteRank = () => {
   };
 
   return (
-    <div className="bg-[#0A101A] min-h-screen p-8">
+    <div className="bg-black min-h-screen p-8">
       <h1 className="text-3xl font-bold text-center text-white mb-8">
         Complete Rankings
       </h1>

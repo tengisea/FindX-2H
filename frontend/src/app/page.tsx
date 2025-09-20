@@ -2,6 +2,7 @@ import {
   CompleteRank,
   Header,
   Section,
+  Footer,
   // StudentRanking,
 } from "@/components/landingPage";
 import { OlympiadBackground } from "@/components/landingPage/LandingBackground";
@@ -14,6 +15,7 @@ const LandingPage = () => {
         <Section />
         {/* <StudentRanking /> */}
         <CompleteRank />
+        <Footer />
       </div>
     </div>
   );
