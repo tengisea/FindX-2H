@@ -103,8 +103,8 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
   return (
     <div className="min-h-screen bg-background">
       <div className="content-wrapper container">
-        {/* Header with Back Button and Student Profile */}
-        <div className="flex items-center justify-between mb-12">
+        {/* Header with Back Button */}
+        <div className="flex items-center mb-12">
           <Button
             onClick={() => router.push("/")}
             variant="outline"
@@ -112,12 +112,6 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
-          </Button>
-          <Button
-            variant="outline"
-            className="text-foreground border-2 border-primary/20 rounded-xl px-6 py-2 font-medium cursor-default"
-          >
-            Student Profile
           </Button>
         </div>
 
