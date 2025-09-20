@@ -14,7 +14,7 @@ import { formatGrade } from "@/utils/gradeUtils";
 
 type StudentDetailProps = {
   studentId: string;
-}
+};
 
 export const StudentDetail = ({ studentId }: StudentDetailProps) => {
   const router = useRouter();
@@ -23,7 +23,6 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [studentId]);
-
 
   if (loading) {
     return (
@@ -79,12 +78,11 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
           <Card className="border-destructive/20 bg-destructive/10">
             <CardContent className="p-6">
               <p className="text-destructive text-center text-xl">
-                Error loading student data: {error?.message || "Student not found"}
+                Error loading student data:{" "}
+                {error?.message || "Student not found"}
               </p>
               <div className="text-center mt-4">
-                <Button onClick={() => router.push("/")}>
-                  Back to Home
-                </Button>
+                <Button onClick={() => router.push("/")}>Back to Home</Button>
               </div>
             </CardContent>
           </Card>
@@ -117,17 +115,14 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
 
         <div className="space-y-6">
           {/* Profile Header */}
-          <StudentProfileHeader 
-            student={student} 
-            totalMedals={totalMedals} 
-            formatGrade={formatGrade} 
+          <StudentProfileHeader
+            student={student}
+            totalMedals={totalMedals}
+            formatGrade={formatGrade}
           />
 
           {/* Stats Cards */}
-          <StudentStatsCards 
-            student={student} 
-            totalMedals={totalMedals} 
-          />
+          <StudentStatsCards student={student} totalMedals={totalMedals} />
 
           {/* Medal Achievements */}
           <StudentAchievements student={student} />

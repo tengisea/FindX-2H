@@ -15,6 +15,7 @@ const GET_STUDENTS_MINIMAL = gql`
       gold
       silver
       bronze
+      profilePicture
     }
   }
 `;
@@ -30,6 +31,7 @@ interface Student {
   gold: string[];
   silver: string[];
   bronze: string[];
+  profilePicture?: string;
 }
 
 interface GetAllStudentsQuery {
@@ -48,6 +50,10 @@ interface StudentRanking {
   silverCount: number;
   bronzeCount: number;
   participatedOlympiads: number;
+  gold: string[];
+  silver: string[];
+  bronze: string[];
+  profilePicture?: string;
 }
 
 interface UseStudentRankingResult {
@@ -123,6 +129,11 @@ export const useStudentRanking = (
         silverCount,
         bronzeCount,
         participatedOlympiads,
+        // Include the original medal arrays for the View functionality
+        gold: student.gold || [],
+        silver: student.silver || [],
+        bronze: student.bronze || [],
+        profilePicture: student.profilePicture,
       };
     });
 
