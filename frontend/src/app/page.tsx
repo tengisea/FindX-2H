@@ -2,18 +2,17 @@ import {
   CompleteRank,
   Header,
   Section,
-  StudentRanking,
+  // StudentRanking,
 } from "@/components/landingPage";
 import { OlympiadBackground } from "@/components/landingPage/LandingBackground";
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen relative">
-      <OlympiadBackground />
       <div className="relative z-10">
-        <Header />
+        {/* <Header /> */}
         <Section />
-        <StudentRanking />
+        {/* <StudentRanking /> */}
         <CompleteRank />
       </div>
     </div>
