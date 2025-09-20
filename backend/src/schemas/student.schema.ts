@@ -8,6 +8,48 @@ export const StudentTypeDefs = gql`
     TOP10
   }
 
+  enum StudentProvince {
+    ULAANBAATAR
+    ARKHANGAI
+    BAYAN_ULGII
+    BAGANUUR
+    BAGAHANGAI
+    BAYANGOL
+    BAYANZURKH
+    BAYANKHONGOR
+    BULGAN
+    GOVI_ALTAI
+    GOVISUMBER
+    DARHAN_UUL
+    DORNOD
+    DORNOGOVI
+    DUNDOGVI
+    ZAVKHAN
+    ORKHON
+    UVURKHANGAI
+    UMNUGOVI
+    NALAIKH
+    SONGINOKHAIRKHAN
+    SUKHBAATAR_DUUREG
+    SUKHBAATAR
+    SELENGE
+    TUV
+    UVS
+    KHOVD
+    KHAN_UUL
+    KHUVSGUL
+    KHENTI
+    CHINGELTEI
+  }
+
+  enum StudentRegion {
+    BARUUN
+    GOVI
+    TUV
+    ZUUN
+    ULAANBAATAR
+  }
+
   enum StudentClass {
     GRADE_1
     GRADE_2
@@ -36,7 +78,8 @@ export const StudentTypeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    province: String!
+    province: StudentProvince!
+    region: StudentRegion!
     district: String!
     school: String!
     class: StudentClass!
@@ -55,7 +98,7 @@ export const StudentTypeDefs = gql`
   input CreateStudentInput {
     name: String!
     email: String!
-    province: String!
+    province: StudentProvince!
     district: String!
     school: String!
     class: StudentClass!
@@ -67,7 +110,7 @@ export const StudentTypeDefs = gql`
     school: String
     class: StudentClass
     profilePicture: String
-    province: String
+    province: StudentProvince
     district: String
   }
 
@@ -108,7 +151,7 @@ export const StudentTypeDefs = gql`
     students(
       class: StudentClass
       school: String
-      province: String
+      province: StudentProvince
       district: String
       olympiadId: ID
       medal: MedalType

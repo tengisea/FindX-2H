@@ -1,6 +1,7 @@
 import { StudentModel } from "../../../models";
 import { GraphQLError } from "graphql";
 import { CreateStudentInput } from "@/types/generated";
+import { getRegionByProvince } from "../../../utils/province-region-mapper";
 
 export const createStudent = async (
   _: unknown,
@@ -22,10 +23,14 @@ export const createStudent = async (
       throw new GraphQLError("Student with this email already exists");
     }
 
+    // Automatically determine region based on province
+    const region = getRegionByProvince(province);
+
     const student = new StudentModel({
       name,
       email,
       province,
+      region,
       district,
       school,
       class: classYear,
