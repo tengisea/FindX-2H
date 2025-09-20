@@ -97,19 +97,60 @@ olympiadSchema.pre("save", function (next) {
   next();
 });
 
-// Post-save middleware to automatically process rankings and send emails when Olympiad is finished
+// Post-save middleware to automatically process rankings, send emails, and process invitations when Olympiad is finished
 olympiadSchema.post("save", async function (doc) {
   if (this.isModified("status") && doc.status === "FINISHED") {
     try {
       // Import here to avoid circular dependency
       const { RankingService } = await import("../services/rankingService");
+      const { InvitationService } = await import(
+        "../services/invitationService"
+      );
       const { sendOlympiadFinishedNotification } = await import(
         "../utils/email-services"
       );
 
+      // Process rankings first
       const result = await RankingService.processOlympiadRankings(
         doc._id.toString()
       );
+      console.log(
+        `✅ Rankings processed: ${result.classTypesProcessed} class types, ${result.totalStudentsProcessed} students`
+      );
+
+      // Process invitations for private olympiads
+      try {
+        const invitationResults = await InvitationService.processInvitations(
+          doc._id.toString()
+        );
+
+        if (invitationResults.length > 0) {
+          console.log(`🎯 Invitation processing completed for ${doc.name}:`);
+          invitationResults.forEach((result, index) => {
+            if (result.success) {
+              console.log(
+                `  ✅ Class ${index + 1}: ${
+                  result.invitedStudents
+                } students invited to ${result.targetOlympiadName}`
+              );
+            } else {
+              console.log(`  ⚠️ Class ${index + 1}: ${result.message}`);
+            }
+          });
+        } else {
+          console.log(
+            `ℹ️ No invitations processed for ${doc.name} (not a private olympiad or no target olympiads found)`
+          );
+        }
+      } catch (invitationError) {
+        console.error(
+          "❌ Error processing automatic invitations:",
+          invitationError
+        );
+        // Don't throw error to avoid breaking the save operation
+      }
+
+      // Send thank you emails
       try {
         const emailResult = await sendOlympiadFinishedNotification(
           doc._id.toString(),

@@ -3,3 +3,4 @@ export * from "./update-olympiad";
 export * from "./delete-olympiad";
 export * from "./finish-olympiad";
 export * from "./process-rankings";
+export * from "./process-invitations";
