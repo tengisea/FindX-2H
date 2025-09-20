@@ -1,15 +1,10 @@
 "use client";
 
-import { formatDate, safeFormatDate, formatClassYear } from "@/lib/dateUtils";
-import { GetStudentQuery } from "@/generated";
 import { RankingChart } from "@/components/student/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StudentRankingDisplay from "@/components/student/StudentRankingDisplay";
-import StudentLeaderboard from "@/components/student/StudentLeaderboard";
-import DebugRanking from "@/components/student/DebugRanking";
 import { getProvinceName } from "@/lib/province-utils";
 
-type Student = GetStudentQuery["getStudent"];
 
 interface ProfileTabProps {
   student: any;
