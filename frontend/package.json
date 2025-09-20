@@ -6,9 +6,10 @@
     "dev": "next dev --turbopack",
     "predev": "graphql-codegen --config ./codegen.yml",
     "prebuild": "graphql-codegen --config ./codegen.yml",
-    "build": "next build --turbopack --no-lint",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "vercel-build": "npm run prebuild && npm run build"
   },
   "dependencies": {
     "@apollo/client": "^3.11.10",
