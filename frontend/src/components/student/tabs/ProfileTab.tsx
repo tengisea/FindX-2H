@@ -3,6 +3,10 @@
 import { formatDate, safeFormatDate, formatClassYear } from "@/lib/dateUtils";
 import { GetStudentQuery } from "@/generated";
 import { RankingChart } from "@/components/student/charts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StudentRankingDisplay from "@/components/student/StudentRankingDisplay";
+import StudentLeaderboard from "@/components/student/StudentLeaderboard";
+import DebugRanking from "@/components/student/DebugRanking";
 
 type Student = GetStudentQuery["getStudent"];
 
@@ -15,18 +19,20 @@ interface ProfileTabProps {
 const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
   if (loading) {
     return (
-      <div className="p-8 max-w-5xl mx-auto">
-        <h2
-          className="text-3xl font-bold mb-6 text-center"
-          style={{ color: "#4741A6" }}
-        >
+      <div className="content-wrapper container">
+        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
           Profile
         </h2>
-        <div className="rounded-xl shadow-lg p-6 bg-white">
-          <div className="animate-pulse">
-            <div className="h-5 rounded w-1/4 mb-3 bg-blue-100"></div>
-            <div className="h-4 rounded w-1/2 mb-2 bg-blue-100"></div>
-            <div className="h-4 rounded w-1/3 bg-blue-100"></div>
+        <div className="card p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="flex items-center space-x-4">
+              <div className="w-24 h-24 rounded-full bg-muted"></div>
+              <div className="space-y-2 flex-1">
+                <div className="h-6 rounded w-1/3 bg-muted"></div>
+                <div className="h-4 rounded w-1/2 bg-muted"></div>
+                <div className="h-4 rounded w-1/4 bg-muted"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -35,249 +41,296 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
 
   if (error) {
     return (
-      <div className="p-8 max-w-5xl mx-auto">
-        <h2
-          className="text-3xl font-bold mb-6 text-center"
-          style={{ color: "#4741A6" }}
-        >
+      <div className="content-wrapper container">
+        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
           Profile
         </h2>
-        <div className="rounded-xl p-6 bg-yellow-100 border border-yellow-300">
-          <p className="text-black text-center">
-            Error loading student data: {error.message}
-          </p>
-        </div>
+        <Card className="border-destructive/20 bg-destructive/10">
+          <CardContent className="p-6">
+            <p className="text-destructive text-center text-xl">
+              Error loading student data: {error.message}
+            </p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (!student) {
     return (
-      <div className="p-8">
-        <h2 className="text-3xl font-bold mb-6" style={{ color: "#4741A6" }}>
+      <div className="content-wrapper container">
+        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
           Profile
         </h2>
-
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <p className="text-gray-600">No student data found.</p>
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-muted-foreground text-xl text-center">
+              No student data found.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
+  const totalMedals =
+    Array.isArray(student.gold) &&
+    Array.isArray(student.silver) &&
+    Array.isArray(student.bronze)
+      ? student.gold.length + student.silver.length + student.bronze.length
+      : 0;
+
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <h2
-        className="text-3xl font-bold mb-6 text-center"
-        style={{ color: "#4741A6" }}
-      >
+    <div className="content-wrapper container">
+      <h2 className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
         Profile
       </h2>
-      <div className="space-y-6">
-        {/* Profile Header */}
-        <div className="rounded-xl shadow-lg p-6 bg-white">
-          <div className="flex items-center space-x-6">
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "#4741A6" }}
-            >
-              {student.profilePicture ? (
-                <img
-                  src={student.profilePicture}
-                  alt={student.name}
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-              ) : (
-                <span className="font-bold text-2xl" style={{ color: "white" }}>
-                  {student.name.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold" style={{ color: "#4741A6" }}>
-                {student.name}
-              </h3>
-              <p style={{ color: "#9BBBFC" }}>{student.email}</p>
-              <p style={{ color: "#4741A6" }}>
-                {student.school} • Grade {student.class}
-              </p>
-              <p style={{ color: "#4741A6" }}>
-                {student.district}, {student.province}
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="rounded-xl shadow-lg p-6 bg-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-300">
-                  Current Ranking
-                </p>
-                <p className="text-3xl font-bold" style={{ color: "#4741A6" }}>
-                  {student.ranking || "N/A"}
-                </p>
+      <div className="space-y-8">
+        {/* Enhanced Profile Header */}
+        <Card>
+          <CardContent className="p-8">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
+              <div className="relative">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center bg-primary shadow-lg">
+                  {student.profilePicture ? (
+                    <img
+                      src={student.profilePicture}
+                      alt={student.name}
+                      className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="font-bold text-2xl sm:text-4xl text-white">
+                      {student.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                {student.ranking && (
+                  <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                    #{student.ranking}
+                  </div>
+                )}
               </div>
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  style={{ color: "#4741A6" }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
+              <div className="flex-1 text-center lg:text-left">
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+                  {student.name}
+                </h3>
+                <div className="space-y-2 mb-4">
+                  <p className="text-muted-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                      />
+                    </svg>
+                    <span className="truncate">{student.email}</span>
+                  </p>
+                  <p className="text-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                    <span className="truncate">
+                      {student.school} • Grade {student.class}
+                    </span>
+                  </p>
+                  <p className="text-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <span className="truncate">
+                      {student.district}, {student.province}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-base font-medium bg-primary/10 text-primary">
+                    <svg
+                      className="w-4 h-4 mr-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    {totalMedals} Medals
+                  </span>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-base font-medium bg-blue-500/10 text-blue-500">
+                    <svg
+                      className="w-4 h-4 mr-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                      />
+                    </svg>
+                    {Array.isArray(student.participatedOlympiads)
+                      ? student.participatedOlympiads.length
+                      : 0}{" "}
+                    Olympiads
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="rounded-xl shadow-lg p-6 bg-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-300">Medals</p>
-                <p className="text-3xl font-bold text-yellow-500">
-                  {Array.isArray(student.gold) &&
-                  Array.isArray(student.silver) &&
-                  Array.isArray(student.bronze)
-                    ? student.gold.length +
-                      student.silver.length +
-                      student.bronze.length 
-                    : 0}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100">
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  style={{ color: "#F9CE69" }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
+        {/* Enhanced Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Dynamic Ranking Card */}
+          <StudentRankingDisplay
+            studentId={student.id}
+            showDetails={true}
+            className="hover:shadow-lg transition-shadow duration-200"
+          />
 
-          <div className="rounded-xl shadow-lg p-6 bg-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-300">Olympiads</p>
-                <p className="text-3xl font-bold" style={{ color: "#4741A6" }}>
-                  {Array.isArray(student.participatedOlympiads)
-                    ? student.participatedOlympiads.length
-                    : 0}
-                </p>
+          <Card className="hover:shadow-lg transition-shadow duration-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-medium text-muted-foreground mb-1">
+                    Total Medals
+                  </p>
+                  <p className="text-4xl font-bold text-primary">
+                    {totalMedals}
+                  </p>
+                </div>
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-yellow-500/10">
+                  <svg
+                    className="w-7 h-7 text-yellow-500"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                </div>
               </div>
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  style={{ color: "#4741A6" }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
 
-        {/* Account Information */}
-        <div className="rounded-xl shadow-lg p-6 bg-white">
-          <h4
-            className="text-lg font-semibold mb-4 text-center"
-            style={{ color: "#4741A6" }}
-          >
-            Account Information
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* <div>
-              <label className="block text-xs font-medium text-blue-300">
-                Student ID
-              </label>
-              <p className="mt-1 text-sm" style={{ color: "#4741A6" }}>
-                {student.id}
-              </p>
-            </div> */}
-            <div>
-              <label className="block text-xs font-medium text-blue-300">
-                Member Since
-              </label>
-              <p className="mt-1 text-sm" style={{ color: "#4741A6" }}>
-                {safeFormatDate(student.createdAt)}
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-blue-300">
-                Last Updated
-              </label>
-              <p className="mt-1 text-sm" style={{ color: "#4741A6" }}>
-                {safeFormatDate(student.updatedAt)}
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-blue-300">
-                Current Grade
-              </label>
-              <p className="mt-1 text-sm" style={{ color: "#4741A6" }}>
-                {formatClassYear(student.class)}
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-blue-300">
-                District
-              </label>
-              <p className="mt-1 text-sm" style={{ color: "#4741A6" }}>
-                {student.district}
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-blue-300">
-                Province
-              </label>
-              <p className="mt-1 text-sm" style={{ color: "#4741A6" }}>
-                {student.province}
-              </p>
-            </div>
-          </div>
+          <Card className="hover:shadow-lg transition-shadow duration-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-medium text-muted-foreground mb-1">
+                    Olympiads
+                  </p>
+                  <p className="text-4xl font-bold text-primary">
+                    {Array.isArray(student.participatedOlympiads)
+                      ? student.participatedOlympiads.length
+                      : 0}
+                  </p>
+                </div>
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-blue-500/10">
+                  <svg
+                    className="w-7 h-7 text-blue-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Ranking History Chart */}
-        <div className="rounded-xl shadow-lg p-6 bg-white">
-          <h4
-            className="text-lg font-semibold mb-3 text-center"
-            style={{ color: "#4741A6" }}
-          >
-            Ranking History
-          </h4>
-          <p className="text-sm mb-4 text-center text-blue-300">
-            Track your ranking progress over time
-          </p>
-          <RankingChart
-            rankingHistory={student?.rankingHistory || []}
-            currentRanking={student?.ranking || 0}
-          />
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Ranking History</CardTitle>
+            <p className="text-center text-muted-foreground">
+              Track your ranking progress over time
+            </p>
+          </CardHeader>
+          <CardContent>
+            <RankingChart
+              rankingHistory={student?.rankingHistory || []}
+              currentRanking={student?.ranking || 0}
+            />
+
+            {/* Ranking Summary */}
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {student?.ranking || 0}
+                </div>
+                <div className="text-sm text-primary">Current Ranking</div>
+              </div>
+
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {student?.rankingHistory && student.rankingHistory.length > 0
+                    ? (() => {
+                        const lastEntry =
+                          student.rankingHistory[
+                            student.rankingHistory.length - 1
+                          ];
+                        const change = lastEntry.changedBy;
+                        return change > 0
+                          ? `+${change}`
+                          : change < 0
+                          ? `${change}`
+                          : "0";
+                      })()
+                    : "0"}
+                </div>
+                <div className="text-sm text-primary">Last Change</div>
+              </div>
+
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {student?.participatedOlympiads?.length || 0}
+                </div>
+                <div className="text-sm text-primary">
+                  Olympiads Participated
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

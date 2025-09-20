@@ -2,6 +2,7 @@
 
 import { formatDate, safeFormatDate } from "@/lib/dateUtils";
 import { GetAllApprovedOlympiadsQuery, GetStudentQuery } from "@/generated";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Student = GetStudentQuery["getStudent"];
 type Olympiad = GetAllApprovedOlympiadsQuery["getAllApprovedOlympiads"][0];
@@ -28,55 +29,63 @@ const OlympiadDetailsModal = ({
   if (!isOpen || !olympiad) return null;
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center z-50"
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-    >
-      <div
-        className="rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
-        style={{ backgroundColor: "white" }}
-      >
-        <div className="p-6">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-2xl font-bold" style={{ color: "#4741A6" }}>
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+      <Card className="rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <CardTitle className="text-3xl font-bold text-foreground">
               {olympiad.name}
-            </h3>
+            </CardTitle>
             <button
               onClick={onClose}
-              className="text-2xl hover:opacity-70"
-              style={{ color: "#4741A6" }}
+              className="text-3xl hover:opacity-70 text-foreground"
             >
               ×
             </button>
           </div>
-
+        </CardHeader>
+        <CardContent className="p-6">
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
-              <p className="text-gray-600">{olympiad.description}</p>
+              <h4 className="font-semibold text-foreground mb-2 text-lg">
+                Description
+              </h4>
+              <p className="text-muted-foreground text-base">
+                {olympiad.description}
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Date</h4>
-                <p className="text-gray-600">
+                <h4 className="font-semibold text-foreground mb-2 text-lg">
+                  Date
+                </h4>
+                <p className="text-muted-foreground text-base">
                   {safeFormatDate(olympiad.occurringDay)}
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Location</h4>
-                <p className="text-gray-600">{olympiad.location}</p>
+                <h4 className="font-semibold text-foreground mb-2 text-lg">
+                  Location
+                </h4>
+                <p className="text-muted-foreground text-base">
+                  {olympiad.location}
+                </p>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Organizer</h4>
-                <p className="text-gray-600">
+                <h4 className="font-semibold text-foreground mb-2 text-lg">
+                  Organizer
+                </h4>
+                <p className="text-muted-foreground text-base">
                   {olympiad.organizer?.organizationName || "Unknown"}
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Status</h4>
+                <h4 className="font-semibold text-foreground mb-2 text-lg">
+                  Status
+                </h4>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     olympiad.status === "APPROVED"
                       ? "bg-green-100 text-green-800"
                       : "bg-yellow-100 text-yellow-800"
@@ -88,7 +97,7 @@ const OlympiadDetailsModal = ({
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">
+              <h4 className="font-semibold text-foreground mb-2 text-lg">
                 Available Grades
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -97,8 +106,8 @@ const OlympiadDetailsModal = ({
                     key={classType.id}
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
                       String(classType.classYear) === String(student?.class)
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-gray-100 text-gray-600"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {classType.classYear.replace("GRADE_", "Grade ")}
@@ -108,30 +117,33 @@ const OlympiadDetailsModal = ({
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">
-                 Scoring
+              <h4 className="font-semibold text-foreground mb-2 text-lg">
+                Scoring
               </h4>
               <div className="space-y-2">
                 {olympiad.classtypes.map((classType: any) => (
-                  <div key={classType.id} className="bg-gray-50 p-3 rounded-lg">
+                  <div
+                    key={classType.id}
+                    className="bg-muted/30 p-3 rounded-lg"
+                  >
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">
+                      <span className="font-medium text-foreground text-base">
                         {classType.classYear.replace("GRADE_", "Grade ")}
                       </span>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-base text-muted-foreground">
                         {classType.questions.length} questions • Max Score:{" "}
                         {classType.maxScore}
                       </span>
                     </div>
                     <div className="mt-2">
-                      <h5 className="text-sm font-medium text-gray-700 mb-1">
+                      <h5 className="text-base font-medium text-foreground mb-1">
                         Questions:
                       </h5>
                       <div className="space-y-1">
                         {classType.questions.map((question: any) => (
                           <div
                             key={question.id}
-                            className="text-sm text-gray-600"
+                            className="text-base text-muted-foreground"
                           >
                             • {question.questionName} ({question.maxScore}{" "}
                             points)
@@ -148,13 +160,13 @@ const OlympiadDetailsModal = ({
           <div className="mt-6 flex space-x-3">
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200"
+              className="flex-1 bg-muted text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted/80 transition-colors duration-200"
             >
               Close
             </button>
             {isStudentRegistered ? (
               <button
-                className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed"
+                className="flex-1 bg-muted text-muted-foreground px-4 py-2 rounded-lg cursor-not-allowed"
                 disabled
               >
                 Already Registered
@@ -163,14 +175,14 @@ const OlympiadDetailsModal = ({
               <button
                 onClick={onRegister}
                 disabled={registering}
-                className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Select Grade & Register
               </button>
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

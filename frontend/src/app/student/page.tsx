@@ -205,7 +205,7 @@ const StudentPage = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#D9EFF7" }}>
+    <div className="min-h-screen bg-background">
       {/* StaggeredMenu Navigation */}
       <StaggeredMenu
         position="left"
@@ -213,11 +213,11 @@ const StudentPage = () => {
         socialItems={socialItems}
         displaySocials={false}
         displayItemNumbering={true}
-        menuButtonColor="white"
-        openMenuButtonColor="white"
+        menuButtonColor="#ff8400"
+        openMenuButtonColor="#ffffff"
         changeMenuColorOnOpen={true}
-        colors={["#4741A6", "#9BBBFC"]}
-        accentColor="#F9CE69"
+        colors={["var(--card)", "var(--card)"]}
+        accentColor="#ff8400"
         onMenuOpen={() => console.log("Student menu opened")}
         onMenuClose={() => console.log("Student menu closed")}
         onMenuItemClick={handleMenuClick}
@@ -233,9 +233,7 @@ const StudentPage = () => {
       </div>
 
       {/* Main content with left margin for left-positioned StaggeredMenu */}
-      <div className="w-full pl-20" style={{ backgroundColor: "#D9EFF7" }}>
-        {renderContent()}
-      </div>
+      <div className="w-full pl-20 bg-background">{renderContent()}</div>
 
       {/* Modals */}
       <OlympiadDetailsModal

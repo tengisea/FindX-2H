@@ -42,9 +42,9 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   menuButtonColor = "#fff",
   openMenuButtonColor = "#fff",
   changeMenuColorOnOpen = true,
-  colors = ["#B19EEF", "#5227FF"],
+  colors = ["var(--card)", "var(--card)"],
   logoUrl,
-  accentColor = "#ff6b6b",
+  accentColor = "#ff8400",
   onMenuOpen,
   onMenuClose,
   onMenuItemClick,
@@ -165,10 +165,10 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
             changeMenuColorOnOpen && isOpen
               ? openMenuButtonColor
               : menuButtonColor,
-          color: isOpen ? "#4741A6" : "#4741A6",
-          borderColor: "#4741A6",
-          minWidth: "56px",
-          minHeight: "56px",
+          color: isOpen ? "#ff8400" : "#ffffff",
+          borderColor: "#ff8400",
+          minWidth: "48px",
+          minHeight: "48px",
         }}
         onClick={(e) => {
           e.preventDefault();
@@ -256,7 +256,7 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 >
                   <Link
                     href={item.link}
-                    className="flex items-center justify-start space-x-4 text-white text-2xl font-medium hover:text-gray-200 transition-colors duration-200"
+                    className="flex items-center justify-start space-x-4 text-foreground text-2xl font-medium hover:text-muted-foreground transition-colors duration-200"
                     aria-label={item.ariaLabel}
                     onClick={(e) => {
                       if (onMenuItemClick) {

@@ -48,8 +48,8 @@ const RankingChart: React.FC<RankingChartProps> = ({
           {
             label: "Ranking",
             data: [currentRanking, currentRanking],
-            borderColor: "rgb(71, 65, 166)",
-            backgroundColor: "rgba(71, 65, 166, 0.1)",
+            borderColor: "rgb(255, 132, 0)",
+            backgroundColor: "rgba(255, 132, 0, 0.1)",
             tension: 0.4,
             fill: true,
           },
@@ -82,9 +82,9 @@ const RankingChart: React.FC<RankingChartProps> = ({
         {
           label: "Ranking",
           data,
-          borderColor: "rgb(71, 65, 166)",
-          backgroundColor: "rgba(71, 65, 166, 0.1)",
-          pointBackgroundColor: "rgb(71, 65, 166)",
+          borderColor: "rgb(255, 132, 0)",
+          backgroundColor: "rgba(255, 132, 0, 0.1)",
+          pointBackgroundColor: "rgb(255, 132, 0)",
           pointBorderColor: "#ffffff",
           pointBorderWidth: 2,
           pointRadius: 6,
@@ -108,7 +108,7 @@ const RankingChart: React.FC<RankingChartProps> = ({
         backgroundColor: "rgba(0, 0, 0, 0.8)",
         titleColor: "#ffffff",
         bodyColor: "#ffffff",
-        borderColor: "rgb(71, 65, 166)",
+        borderColor: "rgb(255, 132, 0)",
         borderWidth: 1,
         cornerRadius: 8,
         displayColors: false,
@@ -172,11 +172,11 @@ const RankingChart: React.FC<RankingChartProps> = ({
 
   if (!rankingHistory?.length) {
     return (
-      <div className="h-56 flex items-center justify-center bg-gray-50 rounded-lg">
-        <div className="text-center text-gray-500">
-          <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="h-56 flex items-center justify-center bg-muted rounded-lg">
+        <div className="text-center text-muted-foreground">
+          <div className="w-14 h-14 bg-muted-foreground/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -189,10 +189,10 @@ const RankingChart: React.FC<RankingChartProps> = ({
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             No Ranking History
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Your ranking history will appear here once you participate in
             olympiads.
           </p>

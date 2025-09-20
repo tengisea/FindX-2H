@@ -28,9 +28,9 @@ export default function NavigationDemo() {
         menuButtonColor="#fff"
         openMenuButtonColor="#fff"
         changeMenuColorOnOpen={true}
-        colors={["#B19EEF", "#5227FF"]}
+        colors={["#ff8400", "#ffa500"]}
         logoUrl="/path-to-your-logo.svg"
-        accentColor="#ff6b6b"
+        accentColor="#ff8400"
         onMenuOpen={() => console.log("Menu opened")}
         onMenuClose={() => console.log("Menu closed")}
       />
