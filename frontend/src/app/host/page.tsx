@@ -6,6 +6,7 @@ import { OlympiadForm } from "@/components/host/OlympiadForm";
 import { OlympiadList } from "@/components/host/OlympiadList";
 import { ManageResults } from "@/components/host/ManageResults";
 import HostSidebar from "@/components/host/HostSidebar";
+import StaggeredMenu from "@/components/ui/StaggeredMenu";
 
 type TabType = "create" | "manage" | "results";
 
@@ -18,9 +19,12 @@ const HostPage = () => {
     const [formData, setFormData] = useState({
         name: "",
         description: "",
-        date: "",
+        closeDay: "",
+        occurringDay: "",
         location: "",
         organizerId: "68c553d2dbdb1b5ed2b0e455",
+        invitation: false,
+        rankingType: "SCHOOL" as any,
     });
 
     const [classTypes, setClassTypes] = useState<any[]>([
@@ -63,9 +67,12 @@ const HostPage = () => {
         setFormData({
             name: "",
             description: "",
-            date: "",
+            closeDay: "",
+            occurringDay: "",
             location: "",
             organizerId: "68c553d2dbdb1b5ed2b0e455",
+            invitation: false,
+            rankingType: "SCHOOL" as any,
         });
         setClassTypes([
             {
@@ -98,9 +105,12 @@ const HostPage = () => {
         setFormData({
             name: olympiad.name,
             description: olympiad.description,
-            date: olympiad.date,
+            closeDay: olympiad.closeDay || "",
+            occurringDay: olympiad.occurringDay || olympiad.date,
             location: olympiad.location,
             organizerId: "68c553d2dbdb1b5ed2b0e455",
+            invitation: olympiad.invitation || false,
+            rankingType: olympiad.rankingType || "SCHOOL",
         });
         setEditingOlympiad(olympiad);
         setActiveTab("create");
@@ -117,7 +127,7 @@ const HostPage = () => {
         }, 1000);
     };
 
-    const updateFormData = (field: string, value: string) => {
+    const updateFormData = (field: string, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -242,135 +252,201 @@ const HostPage = () => {
         // Add your view results logic here
     };
 
+    // StaggeredMenu configuration
+    const menuItems = [
+        { label: "Create Olympiad", ariaLabel: "Create new olympiad", link: "#create" },
+        { label: "Manage Olympiads", ariaLabel: "Manage existing olympiads", link: "#manage" },
+        { label: "Manage Results", ariaLabel: "Manage olympiad results", link: "#results" },
+        { label: "Quick Create", ariaLabel: "Quick create new olympiad", link: "#quick-create" },
+    ];
+
+    const socialItems: any[] = [];
+
+    // Handle menu item clicks to switch tabs
+    const handleMenuClick = (link: string) => {
+        switch (link) {
+            case "#create":
+                setActiveTab("create");
+                break;
+            case "#manage":
+                setActiveTab("manage");
+                break;
+            case "#results":
+                setActiveTab("results");
+                break;
+            case "#quick-create":
+                handleQuickCreate();
+                break;
+            default:
+                break;
+        }
+    };
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case "create":
+                return (
+                    <OlympiadForm
+                        formData={formData}
+                        classTypes={classTypes}
+                        editingOlympiad={editingOlympiad}
+                        onSubmit={handleSubmit}
+                        onUpdateFormData={updateFormData}
+                        onUpdateClassType={updateClassType}
+                        onAddClassType={addClassType}
+                        onRemoveClassType={removeClassType}
+                        onAddQuestion={addQuestion}
+                        onRemoveQuestion={removeQuestion}
+                        onUpdateQuestion={updateQuestion}
+                        onResetForm={resetForm}
+                        isSubmitting={isSubmitting}
+                    />
+                );
+            case "manage":
+                return (
+                    <OlympiadList
+                        olympiads={myOlympiads}
+                        loading={false}
+                        onEditOlympiad={handleEditOlympiad}
+                        onDeleteOlympiad={handleDeleteOlympiad}
+                        isDeleting={isDeleting}
+                    />
+                );
+            case "results":
+                return (
+                    <ManageResults
+                        olympiads={myOlympiads}
+                        onExportResults={handleExportResults}
+                        onViewResults={handleViewResults}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-[#D9EFF7]">
-            {/* Host Sidebar */}
-            <HostSidebar
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-                onExportData={handleExportData}
-                onQuickCreate={handleQuickCreate}
-                olympiadCount={myOlympiads.length}
+        <div className="min-h-screen bg-background">
+            {/* StaggeredMenu Navigation */}
+            <StaggeredMenu
+                position="left"
+                items={menuItems}
+                socialItems={socialItems}
+                displaySocials={false}
+                displayItemNumbering={true}
+                menuButtonColor="#ff8400"
+                openMenuButtonColor="#ffffff"
+                changeMenuColorOnOpen={true}
+                colors={["var(--card)", "var(--card)"]}
+                accentColor="#ff8400"
+                onMenuOpen={() => console.log("Host menu opened")}
+                onMenuClose={() => console.log("Host menu closed")}
+                onMenuItemClick={handleMenuClick}
             />
 
-            <div className="max-w-7xl mx-auto p-8">
-                {/* Header */}
-                <div className="mb-8">
-                    <div className="flex items-center space-x-4 mb-4">
-                        <span className="text-gray-500">Home</span>
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                        <span className="text-gray-900 font-medium">
+            {/* Original HostSidebar (hidden but kept for reference) */}
+            <div className="hidden">
+                <HostSidebar
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    onExportData={handleExportData}
+                    onQuickCreate={handleQuickCreate}
+                    olympiadCount={myOlympiads.length}
+                />
+            </div>
+
+            {/* Main content with left margin for left-positioned StaggeredMenu */}
+            <div className="w-full pl-20 bg-[#27272a]">
+                <div className="max-w-7xl mx-auto p-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <div className="flex items-center space-x-4 mb-4">
+                            <span className="text-muted-foreground">Home</span>
+                            <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                            <span className="text-foreground font-medium">
+                                {activeTab === 'create' && 'Create Olympiad'}
+                                {activeTab === 'manage' && 'Manage Olympiads'}
+                                {activeTab === 'results' && 'Manage Results'}
+                            </span>
+                        </div>
+
+                        <h1 className="text-4xl font-bold mb-2 text-foreground">
                             {activeTab === 'create' && 'Create Olympiad'}
                             {activeTab === 'manage' && 'Manage Olympiads'}
                             {activeTab === 'results' && 'Manage Results'}
-                        </span>
+                        </h1>
+                        <p className="text-lg text-muted-foreground">
+                            {activeTab === 'create' && 'Create and submit new olympiad requests for approval'}
+                            {activeTab === 'manage' && 'View, edit, and manage your existing olympiads'}
+                            {activeTab === 'results' && 'View, export, and manage results for your olympiads'}
+                        </p>
                     </div>
 
-                    <h1 className="text-4xl font-bold mb-2 text-gray-900">
-                        {activeTab === 'create' && 'Create Olympiad'}
-                        {activeTab === 'manage' && 'Manage Olympiads'}
-                        {activeTab === 'results' && 'Manage Results'}
-                    </h1>
-                    <p className="text-lg text-gray-600">
-                        {activeTab === 'create' && 'Create and submit new olympiad requests for approval'}
-                        {activeTab === 'manage' && 'View, edit, and manage your existing olympiads'}
-                        {activeTab === 'results' && 'View, export, and manage results for your olympiads'}
-                    </p>
-                </div>
-
-                {/* Metrics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-[#D9EFF7] rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-[#4741A6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                                </svg>
+                    {/* Metrics Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.length}</div>
+                                    <div className="text-sm text-muted-foreground">Total Olympiads</div>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-3xl font-bold text-gray-900">{myOlympiads.length}</div>
-                                <div className="text-sm text-gray-600">Total Olympiads</div>
+                        </div>
+
+                        <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-foreground">1</div>
+                                    <div className="text-sm text-muted-foreground">Host Organization</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === 'pending').length}</div>
+                                    <div className="text-sm text-muted-foreground">Pending Approvals</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === 'approved').length}</div>
+                                    <div className="text-sm text-muted-foreground">Active Competitions</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-[#D9EFF7] rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-[#4741A6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold text-gray-900">1</div>
-                                <div className="text-sm text-gray-600">Host Organization</div>
-                            </div>
-                        </div>
+                    {/* Content */}
+                    <div className="relative">
+                        {renderContent()}
                     </div>
-
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-[#D9EFF7] rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-[#F9CE69]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold text-gray-900">{myOlympiads.filter(o => o.status === 'pending').length}</div>
-                                <div className="text-sm text-gray-600">Pending Approvals</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-[#D9EFF7] rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-[#4741A6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold text-gray-900">{myOlympiads.filter(o => o.status === 'approved').length}</div>
-                                <div className="text-sm text-gray-600">Active Competitions</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* Content */}
-                <div className="relative">
-                    {activeTab === "create" ? (
-                        <OlympiadForm
-                            formData={formData}
-                            classTypes={classTypes}
-                            editingOlympiad={editingOlympiad}
-                            onSubmit={handleSubmit}
-                            onUpdateFormData={updateFormData}
-                            onUpdateClassType={updateClassType}
-                            onAddClassType={addClassType}
-                            onRemoveClassType={removeClassType}
-                            onAddQuestion={addQuestion}
-                            onRemoveQuestion={removeQuestion}
-                            onUpdateQuestion={updateQuestion}
-                            onResetForm={resetForm}
-                            isSubmitting={isSubmitting}
-                        />
-                    ) : activeTab === "manage" ? (
-                        <OlympiadList
-                            olympiads={myOlympiads}
-                            loading={false}
-                            onEditOlympiad={handleEditOlympiad}
-                            onDeleteOlympiad={handleDeleteOlympiad}
-                            isDeleting={isDeleting}
-                        />
-                    ) : (
-                        <ManageResults
-                            olympiads={myOlympiads}
-                            onExportResults={handleExportResults}
-                            onViewResults={handleViewResults}
-                        />
-                    )}
                 </div>
             </div>
         </div>
