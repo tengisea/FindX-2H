@@ -1,5 +1,7 @@
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Users } from "lucide-react";
 
 export const CompleteRank = () => {
   const rankings = [
@@ -9,82 +11,53 @@ export const CompleteRank = () => {
       institution: "Lincoln High School",
       points: 2450,
       change: { type: "up", value: 12 },
-      profilePicture: "🏔️",
-    },
-    {
-      rank: 2,
-      name: "Marcus Johnson",
-      institution: "Roosevelt Academy",
-      points: 2380,
-      change: { type: "up", value: 8 },
-      profilePicture: "👨",
-    },
-    {
-      rank: 3,
-      name: "Emma Rodriguez",
-      institution: "Washington Prep",
-      points: 2320,
-      change: { type: "up", value: 15 },
-      profilePicture: "👩",
-    },
-    {
-      rank: 4,
-      name: "David Kim",
-      institution: "Jefferson Institute",
-      points: 2280,
-      change: { type: "down", value: 3 },
-      profilePicture: "👨‍💼",
-    },
-    {
-      rank: 5,
-      name: "Aisha Patel",
-      institution: "Madison High",
-      points: 2250,
-      change: { type: "up", value: 7 },
-      profilePicture: "👩‍💼",
+      profilePicture: "/images/photo.avif",
     },
   ];
 
   return (
-    <div className=" p-8">
-      <h1 className="text-3xl font-bold text-center text-black mb-8">
+    <div className="bg-[#0A101A] min-h-screen p-8">
+      <h1 className="text-3xl font-bold text-center text-white mb-8">
         Complete Rankings
       </h1>
 
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {rankings.map((person) => (
           <div
             key={person.rank}
-            className=" p-6  hover:shadow-md transition-shadow"
+            className=" cursor-pointer         hover:shadow-md 
+"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${
-                    person.rank <= 3 ? "bg-yellow-400" : "bg-gray-400"
-                  }`}
-                >
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg bg-gray-600">
                   {person.rank}
                 </div>
 
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl">
-                  {person.profilePicture}
+                <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={person.profilePicture}
+                    alt="profile"
+                    width={64}
+                    height={64}
+                    className="rounded-full object-cover"
+                  />
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-black">
+                  <h3 className="text-lg font-bold text-white">
                     {person.name}
                   </h3>
-                  <p className="text-gray-500 text-sm">{person.institution}</p>
+                  <p className="text-gray-400 text-sm">{person.institution}</p>
                 </div>
               </div>
 
               <div className="flex items-center space-x-8">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600">
+                  <div className="text-3xl font-bold text-orange-500">
                     {person.points.toLocaleString()}
                   </div>
-                  <p className="text-gray-500 text-sm">points</p>
+                  <p className="text-gray-400 text-sm">points</p>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -100,12 +73,12 @@ export const CompleteRank = () => {
                         : "text-orange-500"
                     }`}
                   >
-                    {person.change.type === "up" ? "Up" : "Down"}
+                    {person.change.type === "up"}
                     {person.change.value}
                   </span>
                 </div>
 
-                <Button className="text-gray-600 bg-white font-medium text-sm hover:bg-blue-600 hover:text-white">
+                <Button className="text-white bg-transparent border-0 font-medium text-sm hover:bg-transparent hover:text-gray-300">
                   View &gt;
                 </Button>
               </div>
@@ -115,8 +88,8 @@ export const CompleteRank = () => {
       </div>
 
       <div className="text-center mt-8">
-        <Button className="inline-flex bg-white items-center space-x-2 text-blue-600 font-medium">
-          <span>👥</span>
+        <Button className="inline-flex bg-transparent border border-gray-600 items-center space-x-2 text-white font-medium hover:bg-gray-700">
+          <Users className="w-4 h-4" />
           <span>View All Rankings</span>
         </Button>
       </div>
