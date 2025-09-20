@@ -1,19 +1,22 @@
+"use client";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown, Users } from "lucide-react";
+import { useStudentRanking } from "@/hooks/useStudentRanking";
 
 export const CompleteRank = () => {
-  const rankings = [
-    {
-      rank: 1,
-      name: "Sarah Chen",
-      institution: "Lincoln High School",
-      points: 2450,
-      change: { type: "up", value: 12 },
-      profilePicture: "/images/photo.avif",
-    },
-  ];
+  const { allStudents } = useStudentRanking();
+
+  const router = useRouter();
+
+  const handleViewProfile = (id: string) => {
+    router.push(`/student/${id}`);
+  };
+
+  const handleClickViewAllRankings = () => {
+    router.push("/students-rankings");
+  };
 
   return (
     <div className="bg-[#0A101A] min-h-screen p-8">
@@ -22,25 +25,25 @@ export const CompleteRank = () => {
       </h1>
 
       <div className="max-w-7xl mx-auto space-y-6">
-        {rankings.map((person) => (
+        {allStudents.slice(0, 5).map((person, index) => (
           <div
-            key={person.rank}
-            className=" cursor-pointer         hover:shadow-md 
-"
+            key={person.id}
+            className=" hover:shadow-md cursor-pointer"
+            onClick={() => handleViewProfile(person.id)}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg bg-gray-600">
-                  {person.rank}
+                  {index + 1}
                 </div>
 
                 <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
                   <Image
-                    src={person.profilePicture}
+                    src="/images/photo.avif"
                     alt="profile"
                     width={64}
                     height={64}
-                    className="rounded-full object-cover"
+                    className="rounded-full object-cover w-full h-full"
                   />
                 </div>
 
@@ -48,37 +51,40 @@ export const CompleteRank = () => {
                   <h3 className="text-lg font-bold text-white">
                     {person.name}
                   </h3>
-                  <p className="text-gray-400 text-sm">{person.institution}</p>
+                  <p className="text-gray-400 text-sm">Student</p>
                 </div>
               </div>
 
               <div className="flex items-center space-x-8">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-orange-500">
-                    {person.points.toLocaleString()}
+                    {person.ranking.toLocaleString()}
                   </div>
                   <p className="text-gray-400 text-sm">points</p>
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  {person.change.type === "up" ? (
-                    <TrendingUp className="text-green-500 text-lg" />
+                  {person.totalMedals > 0 ? (
+                    <>
+                      <TrendingUp className="text-green-500 text-lg" />
+                      <span className="text-sm font-medium text-green-500">
+                        ↑ {person.totalMedals}
+                      </span>
+                    </>
                   ) : (
-                    <TrendingDown className="text-orange-500 text-lg" />
+                    <>
+                      <TrendingDown className="text-orange-500 text-lg" />
+                      <span className="text-sm font-medium text-orange-500">
+                        ↓ 0
+                      </span>
+                    </>
                   )}
-                  <span
-                    className={`text-sm font-medium ${
-                      person.change.type === "up"
-                        ? "text-green-500"
-                        : "text-orange-500"
-                    }`}
-                  >
-                    {person.change.type === "up"}
-                    {person.change.value}
-                  </span>
                 </div>
 
-                <Button className="text-white bg-transparent border-0 font-medium text-sm hover:bg-transparent hover:text-gray-300">
+                <Button
+                  onClick={() => handleViewProfile(person.id)}
+                  className="text-white bg-transparent border-0 font-medium text-sm hover:bg-transparent hover:text-gray-300 cursor-pointer"
+                >
                   View &gt;
                 </Button>
               </div>
@@ -88,7 +94,10 @@ export const CompleteRank = () => {
       </div>
 
       <div className="text-center mt-8">
-        <Button className="inline-flex bg-transparent border border-gray-600 items-center space-x-2 text-white font-medium hover:bg-gray-700">
+        <Button
+          onClick={handleClickViewAllRankings}
+          className="inline-flex bg-transparent border border-gray-600 items-center space-x-2 text-white font-medium hover:bg-gray-700"
+        >
           <Users className="w-4 h-4" />
           <span>View All Rankings</span>
         </Button>
