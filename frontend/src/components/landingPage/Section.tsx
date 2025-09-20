@@ -5,7 +5,7 @@ import { Trophy, ArrowRight, Lock, Shield, Users } from "lucide-react";
 
 export const Section = () => {
   return (
-    <div className="bg-[#00040a] min-h-screen px-6 py-16">
+    <div className="bg-black min-h-screen px-6 py-16">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">

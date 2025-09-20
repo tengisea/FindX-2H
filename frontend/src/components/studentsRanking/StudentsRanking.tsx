@@ -314,7 +314,7 @@ export const StudentsRanking = () => {
                     <td className="px-6 py-4">{getTierIcon(user.ranking)}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full overflow-hidden">
+                        {/* <div className="w-10 h-10 rounded-full overflow-hidden">
                           {user.profilePicture ? (
                             <Image
                               src={user.profilePicture}
@@ -328,7 +328,7 @@ export const StudentsRanking = () => {
                               </span>
                             </div>
                           )}
-                        </div>
+                        </div> */}
                         <span className="font-medium text-gray-900">
                           {user.name}
                         </span>
