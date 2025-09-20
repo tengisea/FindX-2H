@@ -152,12 +152,13 @@ query GetStudentsByStudentId($studentId: ID!) {
   }
 }
 
-query Students($class: StudentClass, $school: String, $district: String, $province: String, $olympiadId: ID, $medal: MedalType) {
-  students(class: $class, school: $school, district: $district, province: $province, olympiadId: $olympiadId, medal: $medal) {
+query Students {
+  students {
     id
     name
     email
     province
+    region
     district
     school
     class
@@ -180,4 +181,3 @@ query Students($class: StudentClass, $school: String, $district: String, $provin
     updatedAt
   }
 }
-

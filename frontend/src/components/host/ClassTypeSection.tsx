@@ -29,16 +29,16 @@ export const ClassTypeSection = ({
   editingOlympiad,
 }: ClassTypeSectionProps) => {
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="flex  sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+    <div className="space-y-4">
+      <div className="flex sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
+        <h3 className="text-lg font-bold text-foreground">
           Class Types & Questions
         </h3>
         {!editingOlympiad && (
           <button
             type="button"
             onClick={onAddClassType}
-            className="bg-[#4741A6] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl hover:bg-[#3A3580] transition-all duration-200 flex items-center space-x-2 shadow-lg text-sm sm:text-base"
+            className="bg-primary text-primary-foreground px-3 py-2 rounded-lg hover:bg-primary/90 transition-all duration-200 flex items-center space-x-2 text-sm"
           >
             <svg
               className="w-4 h-4 sm:w-5 sm:h-5"
@@ -61,17 +61,17 @@ export const ClassTypeSection = ({
       {classTypes.map((classType, classTypeIndex) => (
         <div
           key={classTypeIndex}
-          className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-white/20 p-4 sm:p-6 lg:p-8"
+          className="bg-card rounded-lg shadow-lg border border-border p-4"
         >
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h4 className="text-lg sm:text-xl font-semibold text-gray-900">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-base font-semibold text-foreground">
               Class Type {classTypeIndex + 1}
             </h4>
             {!editingOlympiad && classTypes.length > 1 && (
               <button
                 type="button"
                 onClick={() => onRemoveClassType(classTypeIndex)}
-                className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                className="text-destructive hover:text-destructive/80 p-2 rounded-lg hover:bg-destructive/10 transition-colors"
                 title="Remove class type"
               >
                 <svg
@@ -92,9 +92,9 @@ export const ClassTypeSection = ({
           </div>
 
           {/* Class Type Details */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Class Year
               </label>
               <select
@@ -106,7 +106,7 @@ export const ClassTypeSection = ({
                     e.target.value as ClassYear
                   )
                 }
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
                 disabled={!!editingOlympiad}
               >
                 <option value={ClassYear.Grade_1}>Grade 1</option>
@@ -125,20 +125,20 @@ export const ClassTypeSection = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Max Score
               </label>
               <input
                 type="number"
                 value={classType.maxScore || 0}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed text-sm sm:text-base"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-muted text-muted-foreground cursor-not-allowed text-sm"
                 disabled={true}
                 title="Max score is automatically calculated from the sum of all question scores"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Medalists
               </label>
               <input
@@ -149,7 +149,7 @@ export const ClassTypeSection = ({
                   const numValue = value === "" ? 0 : parseInt(value) || 0;
                   onUpdateClassType(classTypeIndex, "medalists", numValue);
                 }}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
                 disabled={!!editingOlympiad}
                 min="0"
               />
@@ -158,15 +158,15 @@ export const ClassTypeSection = ({
 
           {/* Questions */}
           <div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
-              <h5 className="text-base sm:text-lg font-semibold text-gray-900">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 space-y-2 sm:space-y-0">
+              <h5 className="text-sm font-semibold text-foreground">
                 Questions
               </h5>
               {!editingOlympiad && (
                 <button
                   type="button"
                   onClick={() => onAddQuestion(classTypeIndex)}
-                  className="bg-blue-100 text-blue-600 px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+                  className="bg-primary/10 text-primary px-2 py-1 rounded-lg hover:bg-primary/20 transition-colors flex items-center space-x-1 text-xs"
                 >
                   <svg
                     className="w-4 h-4"
@@ -186,11 +186,11 @@ export const ClassTypeSection = ({
               )}
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
               {classType.questions.map((question, questionIndex) => (
                 <div
                   key={questionIndex}
-                  className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl"
+                  className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 p-2 bg-muted rounded-lg"
                 >
                   <div className="flex-1">
                     <input
@@ -204,12 +204,12 @@ export const ClassTypeSection = ({
                           e.target.value
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                      className="w-full px-2 py-1 border border-border rounded focus:ring-1 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
                       placeholder="Question name"
                       disabled={!!editingOlympiad}
                     />
                   </div>
-                  <div className="w-full sm:w-24">
+                  <div className="w-full sm:w-16">
                     <input
                       type="number"
                       value={question.maxScore || 0}
@@ -224,7 +224,7 @@ export const ClassTypeSection = ({
                           numValue
                         );
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                      className="w-full px-2 py-1 border border-border rounded focus:ring-1 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
                       placeholder="Score"
                       disabled={!!editingOlympiad}
                       min="0"
@@ -236,11 +236,11 @@ export const ClassTypeSection = ({
                       onClick={() =>
                         onRemoveQuestion(classTypeIndex, questionIndex)
                       }
-                      className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                      className="text-destructive hover:text-destructive/80 p-1 rounded hover:bg-destructive/10 transition-colors"
                       title="Remove question"
                     >
                       <svg
-                        className="w-4 h-4"
+                        className="w-3 h-3"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

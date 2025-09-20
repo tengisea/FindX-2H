@@ -109,6 +109,31 @@ export const OlympiadTypeDefs = gql`
     olympiad: Olympiad!
   }
 
+  type InvitationResult {
+    success: Boolean!
+    message: String!
+    invitedStudents: Int!
+    targetOlympiadId: ID
+    targetOlympiadName: String
+    errors: [String!]
+  }
+
+  type InvitationStats {
+    totalInvited: Int!
+    byClass: [ClassInvitationStats!]!
+    byRegion: [RegionInvitationStats!]!
+  }
+
+  type ClassInvitationStats {
+    classYear: String!
+    count: Int!
+  }
+
+  type RegionInvitationStats {
+    region: String!
+    count: Int!
+  }
+
   type Mutation {
     createOlympiad(input: CreateOlympiadRequestInput!): Olympiad!
     updateOlympiad(id: ID!, input: UpdateOlympiadInput!): Olympiad!
@@ -117,6 +142,7 @@ export const OlympiadTypeDefs = gql`
     processClassTypeRankings(classTypeId: ID!): ProcessRankingResponse!
     processOlympiadRankings(olympiadId: ID!): ProcessOlympiadRankingResponse!
     getClassTypeRankingStats(classTypeId: ID!): ClassTypeRankingStats!
+    processInvitations(olympiadId: ID!): [InvitationResult!]!
   }
 
   type Query {
@@ -125,5 +151,6 @@ export const OlympiadTypeDefs = gql`
     getPendingOlympiads: [Olympiad!]!
     getAllApprovedOlympiads: [Olympiad!]!
     getOlympiadByClassYear(classYear: ClassYear!): [Olympiad!]!
+    getInvitationStats(olympiadId: ID!): InvitationStats!
   }
 `;

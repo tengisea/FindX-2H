@@ -8,10 +8,14 @@ const GET_STUDENTS_MINIMAL = gql`
       id
       name
       ranking
+      class
+      province
+      district
       participatedOlympiads
       gold
       silver
       bronze
+      profilePicture
     }
   }
 `;
@@ -20,10 +24,14 @@ interface Student {
   id: string;
   name: string;
   ranking: number;
+  class: string;
+  province: string;
+  district: string;
   participatedOlympiads: string[];
   gold: string[];
   silver: string[];
   bronze: string[];
+  profilePicture?: string;
 }
 
 interface GetAllStudentsQuery {
@@ -34,11 +42,18 @@ interface StudentRanking {
   id: string;
   name: string;
   ranking: number;
+  class: string;
+  province: string;
+  district: string;
   totalMedals: number;
   goldCount: number;
   silverCount: number;
   bronzeCount: number;
   participatedOlympiads: number;
+  gold: string[];
+  silver: string[];
+  bronze: string[];
+  profilePicture?: string;
 }
 
 interface UseStudentRankingResult {
@@ -106,11 +121,19 @@ export const useStudentRanking = (
         id: student.id,
         name: student.name?.trim() || "Unknown Student",
         ranking: student.ranking || 0,
+        class: student.class || "",
+        province: student.province || "",
+        district: student.district || "",
         totalMedals,
         goldCount,
         silverCount,
         bronzeCount,
         participatedOlympiads,
+        // Include the original medal arrays for the View functionality
+        gold: student.gold || [],
+        silver: student.silver || [],
+        bronze: student.bronze || [],
+        profilePicture: student.profilePicture,
       };
     });
 

@@ -1,19 +1,9 @@
 import { Model, model, models, Schema } from "mongoose";
-
-enum StudentClass {
-  GRADE_1 = "1р анги",
-  GRADE_2 = "2р анги",
-  GRADE_3 = "3р анги",
-  GRADE_4 = "4р анги",
-  GRADE_5 = "5р анги",
-  GRADE_6 = "6р анги",
-  GRADE_7 = "7р анги",
-  GRADE_8 = "8р анги",
-  GRADE_9 = "9р анги",
-  GRADE_10 = "10р анги",
-  GRADE_11 = "11р анги",
-  GRADE_12 = "12р анги",
-}
+import {
+  StudentClass,
+  StudentProvince,
+  StudentRegion,
+} from "@/types/generated";
 
 type StudentSchemaType = {
   school: string;
@@ -21,7 +11,8 @@ type StudentSchemaType = {
   name: string;
   profilePicture: string;
   email: string;
-  province: string;
+  province: StudentProvince;
+  region: StudentRegion;
   district: string;
   ranking: number;
   participatedOlympiads: Schema.Types.ObjectId[];
@@ -42,7 +33,16 @@ const studentSchema = new Schema<StudentSchemaType>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    province: { type: String, required: true },
+    province: {
+      type: String,
+      enum: Object.values(StudentProvince),
+      required: true,
+    },
+    region: {
+      type: String,
+      enum: Object.values(StudentRegion),
+      required: true,
+    },
     district: { type: String, required: true },
     school: { type: String, required: true },
     class: { type: String, enum: Object.values(StudentClass), required: true },

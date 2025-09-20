@@ -1,6 +1,7 @@
 import { StudentModel } from "../../../models";
 import { GraphQLError } from "graphql";
 import { Types } from "mongoose";
+import { getRegionByProvince } from "../../../utils/province-region-mapper";
 
 export const updateStudent = async (
   _: unknown,
@@ -17,9 +18,19 @@ export const updateStudent = async (
       throw new GraphQLError("Student does not exist");
     }
 
-    const updatedStudent = await StudentModel.findByIdAndUpdate(id, input, {
-      new: true,
-    }).lean();
+    // If province is being updated, automatically set the region
+    const updateData = { ...input };
+    if (input.province) {
+      updateData.region = getRegionByProvince(input.province);
+    }
+
+    const updatedStudent = await StudentModel.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true,
+      }
+    ).lean();
 
     if (!updatedStudent) {
       throw new GraphQLError("Failed to update student");

@@ -40,12 +40,12 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
     return (
         <div className="w-full">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-white/20 p-4 sm:p-6 lg:p-8">
+            <div className="bg-card rounded-2xl sm:rounded-3xl shadow-xl border border-border p-4 sm:p-6 lg:p-8">
                 <div className="mb-6 sm:mb-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
                         Manage Results
                     </h2>
-                    <p className="text-gray-600 text-sm sm:text-base">
+                    <p className="text-muted-foreground text-sm sm:text-base">
                         View, export, and manage results for your olympiads
                     </p>
                 </div>
@@ -54,13 +54,13 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                 <div className="mb-6">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-foreground mb-2">
                                 Filter by Status
                             </label>
                             <select
                                 value={filterStatus}
                                 onChange={(e) => setFilterStatus(e.target.value)}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#4741A6] focus:border-transparent text-sm sm:text-base"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base bg-background text-foreground"
                             >
                                 <option value="all">All Olympiads</option>
                                 <option value="approved">Approved</option>
@@ -70,13 +70,13 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                         </div>
 
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-foreground mb-2">
                                 Select Olympiad
                             </label>
                             <select
                                 value={selectedOlympiad}
                                 onChange={(e) => handleOlympiadSelect(e.target.value)}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#4741A6] focus:border-transparent text-sm sm:text-base"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base bg-background text-foreground"
                             >
                                 <option value="">Choose an olympiad...</option>
                                 {filteredOlympiads.map((olympiad) => (
@@ -92,22 +92,22 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                 {/* Results Summary */}
                 {selectedOlympiad && (
                     <div className="mb-6">
-                        <div className="bg-gradient-to-r from-[#D9EFF7] to-[#9BBBFC] rounded-xl p-6 border border-[#9BBBFC]/20">
-                            <h3 className="text-lg font-semibold text-[#4741A6] mb-4">
+                        <div className="bg-primary/10 rounded-xl p-6 border border-primary/20">
+                            <h3 className="text-lg font-semibold text-primary mb-4">
                                 Results Summary
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="bg-white/80 rounded-lg p-4">
-                                    <div className="text-2xl font-bold text-[#4741A6]">156</div>
-                                    <div className="text-sm text-gray-600">Total Participants</div>
+                                <div className="bg-card rounded-lg p-4">
+                                    <div className="text-2xl font-bold text-primary">156</div>
+                                    <div className="text-sm text-muted-foreground">Total Participants</div>
                                 </div>
-                                <div className="bg-white/80 rounded-lg p-4">
-                                    <div className="text-2xl font-bold text-[#F9CE69]">12</div>
-                                    <div className="text-sm text-gray-600">Medal Winners</div>
+                                <div className="bg-card rounded-lg p-4">
+                                    <div className="text-2xl font-bold text-yellow-600">12</div>
+                                    <div className="text-sm text-muted-foreground">Medal Winners</div>
                                 </div>
-                                <div className="bg-white/80 rounded-lg p-4">
-                                    <div className="text-2xl font-bold text-[#4741A6]">89.5%</div>
-                                    <div className="text-sm text-gray-600">Average Score</div>
+                                <div className="bg-card rounded-lg p-4">
+                                    <div className="text-2xl font-bold text-primary">89.5%</div>
+                                    <div className="text-sm text-muted-foreground">Average Score</div>
                                 </div>
                             </div>
                         </div>
@@ -119,27 +119,27 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                     {filteredOlympiads.map((olympiad) => (
                         <div
                             key={olympiad.id}
-                            className={`bg-white rounded-xl shadow-lg border-2 p-6 cursor-pointer transition-all duration-200 ${selectedOlympiad === olympiad.id
-                                ? "border-[#4741A6] shadow-[#4741A6]/20"
-                                : "border-gray-200 hover:border-[#9BBBFC]"
+                            className={`bg-card rounded-xl shadow-lg border-2 p-6 cursor-pointer transition-all duration-200 ${selectedOlympiad === olympiad.id
+                                ? "border-primary shadow-primary/20"
+                                : "border-border hover:border-primary/50"
                                 }`}
                             onClick={() => handleOlympiadSelect(olympiad.id)}
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex-1">
-                                    <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                    <h4 className="text-lg font-semibold text-foreground mb-2">
                                         {olympiad.name}
                                     </h4>
-                                    <p className="text-sm text-gray-600 mb-2">
+                                    <p className="text-sm text-muted-foreground mb-2">
                                         {olympiad.description}
                                     </p>
-                                    <div className="flex items-center space-x-2 text-sm text-gray-500">
+                                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         <span>{olympiad.date}</span>
                                     </div>
-                                    <div className="flex items-center space-x-2 text-sm text-gray-500 mt-1">
+                                    <div className="flex items-center space-x-2 text-sm text-muted-foreground mt-1">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -151,17 +151,17 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                                     ? 'bg-green-100 text-green-800'
                                     : olympiad.status === 'pending'
                                         ? 'bg-yellow-100 text-yellow-800'
-                                        : 'bg-gray-100 text-gray-800'
+                                        : 'bg-muted text-muted-foreground'
                                     }`}>
                                     {olympiad.status}
                                 </div>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-muted-foreground">
                                     <span className="font-medium">Participants:</span> 156
                                 </div>
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-muted-foreground">
                                     <span className="font-medium">Results:</span> Available
                                 </div>
                             </div>
@@ -171,10 +171,10 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
                 {/* Action Buttons */}
                 {selectedOlympiad && (
-                    <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border">
                         <button
                             onClick={handleViewResults}
-                            className="flex-1 bg-[#4741A6] text-white px-6 py-3 rounded-xl hover:bg-[#3A3580] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg"
+                            className="flex-1 bg-primary text-primary-foreground px-6 py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -185,7 +185,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
                         <button
                             onClick={handleExportResults}
-                            className="flex-1 bg-[#D9EFF7] text-[#4741A6] px-6 py-3 rounded-xl hover:bg-[#9BBBFC] transition-colors flex items-center justify-center space-x-2 border border-[#9BBBFC]"
+                            className="flex-1 bg-primary/10 text-primary px-6 py-3 rounded-xl hover:bg-primary/20 transition-colors flex items-center justify-center space-x-2 border border-primary/20"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -197,13 +197,13 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
                 {!selectedOlympiad && (
                     <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-[#D9EFF7] rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-[#4741A6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Select an Olympiad</h3>
-                        <p className="text-gray-600">Choose an olympiad from the dropdown above to view and manage its results.</p>
+                        <h3 className="text-lg font-medium text-foreground mb-2">Select an Olympiad</h3>
+                        <p className="text-muted-foreground">Choose an olympiad from the dropdown above to view and manage its results.</p>
                     </div>
                 )}
             </div>
