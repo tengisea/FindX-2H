@@ -16,7 +16,7 @@ import {
   OlympiadsTab,
   ParticipatedTab,
   ResultsTab,
-  // AchievementsTab,
+  AchievementsTab,
   SettingsTab,
 } from "@/components/student/tabs";
 import {
@@ -195,8 +195,9 @@ const StudentPage = () => {
             loading={studentAnswersLoading}
           />
         );
+
       case "achievements":
-      // return <AchievementsTab student={student} loading={studentLoading} />;
+        return <AchievementsTab />;
       case "settings":
         return <SettingsTab student={student} loading={studentLoading} />;
       default:

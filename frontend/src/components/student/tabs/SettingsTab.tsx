@@ -30,6 +30,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getProvinceName } from "@/lib/province-utils";
 
 interface SettingsTabProps {
   student: any;
@@ -103,7 +104,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
         school: student.school,
         grade: formatClassYear(student.class),
         district: student.district,
-        province: student.province,
+        province: getProvinceName(student.province),
         memberSince: new Date().getFullYear(),
       },
       statistics: {
@@ -331,7 +332,9 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   <Input
                     type="text"
                     value={
-                      isEditing ? editData.province : student?.province || ""
+                      isEditing
+                        ? editData.province
+                        : getProvinceName(student?.province || "")
                     }
                     onChange={(e) =>
                       setEditData((prev) => ({
