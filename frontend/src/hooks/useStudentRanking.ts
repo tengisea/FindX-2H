@@ -8,6 +8,9 @@ const GET_STUDENTS_MINIMAL = gql`
       id
       name
       ranking
+      class
+      province
+      district
       participatedOlympiads
       gold
       silver
@@ -20,6 +23,9 @@ interface Student {
   id: string;
   name: string;
   ranking: number;
+  class: string;
+  province: string;
+  district: string;
   participatedOlympiads: string[];
   gold: string[];
   silver: string[];
@@ -34,6 +40,9 @@ interface StudentRanking {
   id: string;
   name: string;
   ranking: number;
+  class: string;
+  province: string;
+  district: string;
   totalMedals: number;
   goldCount: number;
   silverCount: number;
@@ -106,6 +115,9 @@ export const useStudentRanking = (
         id: student.id,
         name: student.name?.trim() || "Unknown Student",
         ranking: student.ranking || 0,
+        class: student.class || "",
+        province: student.province || "",
+        district: student.district || "",
         totalMedals,
         goldCount,
         silverCount,
