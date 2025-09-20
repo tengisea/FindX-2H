@@ -2,6 +2,7 @@
 
 import { useGetStudentQuery } from "@/generated";
 import { getCurrentStudentId } from "@/config/student";
+import { getProvinceName } from "@/lib/province-utils";
 
 interface StudentSidebarProps {
   activeTab:
@@ -248,7 +249,7 @@ export const StudentSidebar = ({
                   {student.school} • Grade {student.class}
                 </p>
                 <p className="text-xs text-muted-foreground/80 truncate">
-                  {student.district}, {student.province}
+                  {student.district}, {getProvinceName(student.province)}
                 </p>
               </div>
             </div>

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StudentRankingDisplay from "@/components/student/StudentRankingDisplay";
 import StudentLeaderboard from "@/components/student/StudentLeaderboard";
 import DebugRanking from "@/components/student/DebugRanking";
+import { getProvinceName } from "@/lib/province-utils";
 
 type Student = GetStudentQuery["getStudent"];
 
@@ -87,7 +88,6 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
       </h2>
 
       <div className="space-y-8">
-        {/* Enhanced Profile Header */}
         <Card>
           <CardContent className="p-8">
             <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
@@ -147,7 +147,8 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       />
                     </svg>
                     <span className="truncate">
-                      {student.school} • Grade {student.class}
+                      {student.school} • Grade{" "}
+                      {student.class.replace("GRADE_", "")}
                     </span>
                   </p>
                   <p className="text-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
@@ -171,7 +172,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       />
                     </svg>
                     <span className="truncate">
-                      {student.district}, {student.province}
+                      {student.region} {getProvinceName(student.province)}
                     </span>
                   </p>
                 </div>
