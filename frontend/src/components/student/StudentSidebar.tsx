@@ -27,7 +27,7 @@ interface StudentSidebarProps {
 
 const getTabIcon = (tab: string, isActive: boolean) => {
   const iconClass = `w-5 h-5 transition-colors duration-200 ${
-    isActive ? "text-white" : "text-gray-400"
+    isActive ? "text-primary-foreground" : "text-muted-foreground"
   }`;
 
   switch (tab) {
@@ -174,11 +174,11 @@ export const StudentSidebar = ({
   const student = studentData?.getStudent;
 
   return (
-    <div className="w-80 bg-gradient-to-b from-blue-900 to-blue-800 text-white flex flex-col h-screen fixed left-0 top-0 z-50">
+    <div className="w-80 bg-card border-r border-border text-card-foreground flex flex-col h-screen fixed left-0 top-0 z-50">
       {/* Header */}
       <div className="p-8 pb-6">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -200,30 +200,34 @@ export const StudentSidebar = ({
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Student Portal</h1>
-            <p className="text-blue-200 text-sm">Olympiad Dashboard</p>
+            <h1 className="text-2xl font-bold text-card-foreground">
+              Student Portal
+            </h1>
+            <p className="text-muted-foreground text-sm">Olympiad Dashboard</p>
           </div>
         </div>
 
         {/* Student Info */}
         {studentLoading ? (
-          <div className="bg-blue-800/50 rounded-xl p-4 mb-4">
+          <div className="bg-muted rounded-xl p-4 mb-4">
             <div className="animate-pulse">
-              <div className="h-4 bg-blue-700 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-blue-700 rounded w-1/2"></div>
+              <div className="h-4 bg-muted-foreground/20 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-muted-foreground/20 rounded w-1/2"></div>
             </div>
           </div>
         ) : studentError ? (
-          <div className="bg-red-800/50 rounded-xl p-4 mb-4 border border-red-600/30">
-            <p className="text-sm text-red-300">Error loading student data</p>
-            <p className="text-xs text-red-400 mt-1">
+          <div className="bg-destructive/10 rounded-xl p-4 mb-4 border border-destructive/20">
+            <p className="text-sm text-destructive">
+              Error loading student data
+            </p>
+            <p className="text-xs text-destructive/80 mt-1">
               Please try refreshing the page
             </p>
           </div>
         ) : student ? (
-          <div className="bg-blue-800/50 rounded-xl p-4 mb-4 border border-blue-600/30">
+          <div className="bg-muted rounded-xl p-4 mb-4 border border-border">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                 {student.profilePicture ? (
                   <img
                     src={student.profilePicture}
@@ -231,27 +235,27 @@ export const StudentSidebar = ({
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 ) : (
-                  <span className="text-white font-bold text-lg">
+                  <span className="text-primary-foreground font-bold text-lg">
                     {student.name.charAt(0).toUpperCase()}
                   </span>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold text-white truncate">
+                <h3 className="text-sm font-semibold text-card-foreground truncate">
                   {student.name}
                 </h3>
-                <p className="text-xs text-blue-200 truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   {student.school} • Grade {student.class}
                 </p>
-                <p className="text-xs text-blue-300 truncate">
+                <p className="text-xs text-muted-foreground/80 truncate">
                   {student.district}, {student.province}
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="bg-blue-800/50 rounded-xl p-4 mb-4">
-            <p className="text-sm text-blue-300">
+          <div className="bg-muted rounded-xl p-4 mb-4">
+            <p className="text-sm text-muted-foreground">
               Student information not available
             </p>
           </div>
@@ -260,22 +264,24 @@ export const StudentSidebar = ({
         {/* Stats */}
         {student && (
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-blue-800/50 rounded-xl p-3 border border-blue-600/30">
+            <div className="bg-muted rounded-xl p-3 border border-border">
               <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-400">
+                <div className="text-2xl font-bold text-primary">
                   {student.ranking || "N/A"}
                 </div>
-                <div className="text-xs text-blue-200">Current Ranking</div>
+                <div className="text-xs text-muted-foreground">
+                  Current Ranking
+                </div>
               </div>
             </div>
-            <div className="bg-blue-800/50 rounded-xl p-3 border border-blue-600/30">
+            <div className="bg-muted rounded-xl p-3 border border-border">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-400">
+                <div className="text-2xl font-bold text-primary">
                   {Array.isArray(student.participatedOlympiads)
                     ? student.participatedOlympiads.length
                     : 0}
                 </div>
-                <div className="text-xs text-blue-200">Olympiads</div>
+                <div className="text-xs text-muted-foreground">Olympiads</div>
               </div>
             </div>
           </div>
@@ -285,10 +291,10 @@ export const StudentSidebar = ({
         {student && (
           <button
             onClick={() => onTabChange("participated")}
-            className="w-full bg-blue-800/50 rounded-xl p-4 border border-blue-600/30 hover:bg-blue-700/50 transition-colors duration-200"
+            className="w-full bg-muted rounded-xl p-4 border border-border hover:bg-accent transition-colors duration-200"
           >
             <div className="text-center">
-              <div className="text-sm text-blue-200">
+              <div className="text-sm text-muted-foreground">
                 Olympiads Participated
               </div>
             </div>
@@ -352,8 +358,8 @@ export const StudentSidebar = ({
               }
               className={`w-full flex items-center justify-start space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 activeTab === tab.id
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "text-blue-200 hover:bg-blue-700/50 hover:text-white"
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               }`}
             >
               {getTabIcon(tab.id, activeTab === tab.id)}
@@ -361,7 +367,9 @@ export const StudentSidebar = ({
                 <div className="font-medium">{tab.label}</div>
                 <div
                   className={`text-xs ${
-                    activeTab === tab.id ? "text-blue-100" : "text-blue-300"
+                    activeTab === tab.id
+                      ? "text-primary-foreground/80"
+                      : "text-muted-foreground/80"
                   }`}
                 >
                   {tab.description}
@@ -373,10 +381,12 @@ export const StudentSidebar = ({
       </nav>
 
       {/* Footer */}
-      <div className="p-8 pt-6 border-t border-blue-700">
+      <div className="p-8 pt-6 border-t border-border">
         <div className="text-center">
-          <p className="text-blue-300 text-sm">FindX Olympiad System</p>
-          <p className="text-blue-400 text-xs mt-1">Student Portal v1.0.0</p>
+          <p className="text-muted-foreground text-sm">FindX Olympiad System</p>
+          <p className="text-muted-foreground/80 text-xs mt-1">
+            Student Portal v1.0.0
+          </p>
         </div>
       </div>
     </div>

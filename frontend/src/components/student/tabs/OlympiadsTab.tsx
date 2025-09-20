@@ -1,7 +1,21 @@
 "use client";
 
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { formatDate, safeFormatDate } from "@/lib/dateUtils";
 import { GetAllApprovedOlympiadsQuery, GetStudentQuery } from "@/generated";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter, X } from "lucide-react";
 
 type Student = GetStudentQuery["getStudent"];
 type Olympiad = GetAllApprovedOlympiadsQuery["getAllApprovedOlympiads"][0];
@@ -25,231 +39,631 @@ const OlympiadsTab = ({
   isStudentRegistered,
   registering,
 }: OlympiadsTabProps) => {
+  const [showAllGrades, setShowAllGrades] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRankingType, setSelectedRankingType] = useState<string>("all");
+  const [selectedGrade, setSelectedGrade] = useState<string>("all");
+  const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Helper function to get grade number from class string
+  const getGradeNumber = (classString: string) => {
+    const match = classString.match(/GRADE_(\d+)/);
+    return match ? parseInt(match[1]) : 0;
+  };
+
+  // Get unique values for filter options
+  const uniqueRankingTypes = useMemo(() => {
+    const types = new Set<string>();
+    olympiads.forEach((olympiad) => {
+      if (olympiad.rankingType) {
+        types.add(olympiad.rankingType);
+      }
+    });
+    return Array.from(types).sort();
+  }, [olympiads]);
+
+  const uniqueGrades = useMemo(() => {
+    const grades = new Set<string>();
+    olympiads.forEach((olympiad) => {
+      olympiad.classtypes.forEach((classType: any) => {
+        grades.add(classType.classYear);
+      });
+    });
+    return Array.from(grades).sort((a, b) => {
+      const gradeA = getGradeNumber(a);
+      const gradeB = getGradeNumber(b);
+      return gradeA - gradeB;
+    });
+  }, [olympiads]);
+
+  const uniqueRegions = useMemo(() => {
+    const regions = new Set<string>();
+    olympiads.forEach((olympiad) => {
+      if (olympiad.location) {
+        // Extract region from location (assuming format like "Ulaanbaatar, Mongolia")
+        const region =
+          olympiad.location.split(",")[1]?.trim() || olympiad.location;
+        regions.add(region);
+      }
+    });
+    return Array.from(regions).sort();
+  }, [olympiads]);
+
+  // Filter olympiads based on all filter criteria
+  const filteredOlympiads = useMemo(() => {
+    let filtered = olympiads;
+
+    // Grade filter (student's grade and higher)
+    if (!showAllGrades && student?.class) {
+      const studentGrade = getGradeNumber(student.class);
+      filtered = filtered.filter((olympiad) => {
+        return olympiad.classtypes.some((classType: any) => {
+          const classTypeGrade = getGradeNumber(classType.classYear);
+          return classTypeGrade >= studentGrade;
+        });
+      });
+    }
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter((olympiad) =>
+        olympiad.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Ranking type filter
+    if (selectedRankingType !== "all") {
+      filtered = filtered.filter(
+        (olympiad) => olympiad.rankingType === selectedRankingType
+      );
+    }
+
+    // Grade filter (specific grade selection)
+    if (selectedGrade !== "all") {
+      filtered = filtered.filter((olympiad) =>
+        olympiad.classtypes.some(
+          (classType: any) => classType.classYear === selectedGrade
+        )
+      );
+    }
+
+    // Region filter
+    if (selectedRegion !== "all") {
+      filtered = filtered.filter((olympiad) => {
+        if (!olympiad.location) return false;
+        const region =
+          olympiad.location.split(",")[1]?.trim() || olympiad.location;
+        return region === selectedRegion;
+      });
+    }
+
+    return filtered;
+  }, [
+    olympiads,
+    student?.class,
+    showAllGrades,
+    searchTerm,
+    selectedRankingType,
+    selectedGrade,
+    selectedRegion,
+  ]);
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setSelectedRankingType("all");
+    setSelectedGrade("all");
+    setSelectedRegion("all");
+    setShowAllGrades(false);
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters =
+    searchTerm ||
+    selectedRankingType !== "all" ||
+    selectedGrade !== "all" ||
+    selectedRegion !== "all" ||
+    !showAllGrades;
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+    },
+    hover: {
+      scale: 1.02,
+    },
+  };
+
+  const filterVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+      opacity: 1,
+      height: "auto",
+    },
+    exit: {
+      opacity: 0,
+      height: 0,
+    },
+  };
   if (loading) {
     return (
-      <div className="p-8 max-w-7xl mx-auto">
-        <h2
-          className="text-3xl font-bold mb-6 text-center"
-          style={{ color: "#4741A6" }}
-        >
+      <div className="content-wrapper container">
+        <h2 className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
           Available Olympiads
         </h2>
-        <div className="rounded-xl shadow-lg p-6 bg-white">
-          <div className="animate-pulse space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="border rounded-lg p-3 border-blue-200">
-                <div className="h-4 rounded w-3/4 mb-2 bg-blue-100"></div>
-                <div className="h-3 rounded w-1/2 bg-blue-100"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (olympiads.length === 0) {
-    return (
-      <div className="p-8 max-w-7xl mx-auto">
-        <h2
-          className="text-3xl font-bold mb-6 text-center"
-          style={{ color: "#4741A6" }}
-        >
-          Available Olympiads
-        </h2>
-        <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-          <svg
-            className="w-12 h-12 text-gray-400 mx-auto mb-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-            />
-          </svg>
-          <h3 className="text-base font-semibold text-gray-900 mb-2">
-            No Olympiads Available
-          </h3>
-          <p className="text-sm text-gray-600">
-            There are currently no approved olympiads available for
-            registration.
-          </p>
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            <div className="animate-pulse space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="border rounded-lg p-3 border-border">
+                  <div className="h-4 rounded w-3/4 mb-2 bg-muted"></div>
+                  <div className="h-3 rounded w-1/2 bg-muted"></div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h2
-        className="text-2xl font-bold mb-4 text-center"
-        style={{ color: "#4741A6" }}
+    <motion.div
+      className="content-wrapper container"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.3, staggerChildren: 0.1 }}
+    >
+      <motion.h2
+        className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20"
+        variants={itemVariants}
+        transition={{ duration: 0.4 }}
       >
         Available Olympiads
-      </h2>
-      <div className="space-y-4">
-        <div className="rounded-xl shadow-lg p-6 bg-white">
-          <div className="flex items-center justify-between mb-3">
-            <h3
-              className="text-base font-semibold text-center"
-              style={{ color: "#4741A6" }}
-            >
-              {olympiads.length} Olympiad{olympiads.length !== 1 ? "s" : ""}{" "}
-              Available
-            </h3>
-            <div className="text-xs text-blue-300">
-              Filter by grade: {student?.class || "All"}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {olympiads.map((olympiad) => (
-            <div
-              key={olympiad.id}
-              className="rounded-xl shadow-lg p-6 bg-white hover:shadow-xl transition-shadow duration-200"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <h4
-                    className="text-lg font-bold mb-1"
-                    style={{ color: "#4741A6" }}
-                  >
-                    {olympiad.name}
-                  </h4>
-                  <p className="text-xs mb-2 line-clamp-2 text-blue-300">
-                    {olympiad.description}
-                  </p>
-                </div>
-                <div
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    olympiad.status === "OPEN"
-                      ? "bg-blue-100 text-blue-600"
-                      : "bg-yellow-100 text-yellow-600"
-                  }`}
+      </motion.h2>
+      <motion.div className="space-y-8" variants={containerVariants}>
+        {/* Search and Filter Controls */}
+        <motion.div variants={itemVariants}>
+          <Card>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                {/* Search Bar */}
+                <motion.div
+                  className="relative"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
                 >
-                  {olympiad.status}
-                </div>
-              </div>
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                  <Input
+                    placeholder="Search olympiads by name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 focus-visible:ring-0 focus-visible:border-primary focus:ring-0 focus:border-primary focus:outline-none"
+                  />
+                  <AnimatePresence>
+                    {searchTerm && (
+                      <motion.button
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        onClick={() => setSearchTerm("")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="w-4 h-4" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
 
-              <div className="space-y-2 mb-3">
-                <div className="flex items-center text-xs text-blue-300">
-                  <svg
-                    className="w-3 h-3 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    style={{ color: "#4741A6" }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  {safeFormatDate(olympiad.occurringDay)}
-                </div>
-                <div className="flex items-center text-xs text-blue-300">
-                  <svg
-                    className="w-3 h-3 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    style={{ color: "#4741A6" }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  {olympiad.location}
-                </div>
-
-                <div className="flex items-center text-xs text-blue-300">
-                  <svg
-                    className="w-3 h-3 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    style={{ color: "#4741A6" }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                  {olympiad.organizer?.organizationName || "Unknown Organizer"}
-                </div>
-              </div>
-
-              {/* Class Types */}
-              <div className="mb-3">
-                <h5
-                  className="text-xs font-semibold mb-2 text-center"
-                  style={{ color: "#4741A6" }}
+                {/* Filter Toggle and Clear */}
+                <motion.div
+                  className="flex items-center justify-between"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
                 >
-                  Available Grades:
-                </h5>
-                <div className="flex flex-wrap gap-1 justify-center">
-                  {olympiad.classtypes.map((classType: any) => (
-                    <span
-                      key={classType.id}
-                      className={`px-2 py-1 rounded text-xs font-medium ${
-                        String(classType.classYear) === String(student?.class)
-                          ? "bg-blue-100 text-blue-600"
-                          : "bg-yellow-100 text-yellow-600"
-                      }`}
+                  <div className="flex items-center gap-3">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      {classType.classYear.replace("GRADE_", "Grade ")}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowFilters(!showFilters)}
+                        className="flex items-center gap-2"
+                      >
+                        <Filter className="w-4 h-4" />
+                        Filters
+                      </Button>
+                    </motion.div>
+                    <AnimatePresence>
+                      {hasActiveFilters && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearAllFilters}
+                            className="text-muted-foreground hover:text-foreground"
+                          >
+                            Clear All
+                          </Button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  <motion.div
+                    className="text-base text-muted-foreground"
+                    key={filteredOlympiads.length}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {filteredOlympiads.length} of {olympiads.length} olympiads
+                  </motion.div>
+                </motion.div>
 
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => onViewDetails(olympiad)}
-                  className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-xs font-medium bg-blue-600 text-white hover:bg-blue-400"
-                >
-                  View Details
-                </button>
-                {isStudentRegistered(olympiad) ? (
-                  <button
-                    className="flex-1 px-3 py-2 rounded-lg cursor-not-allowed text-xs font-medium bg-blue-100 text-blue-600"
-                    disabled
-                  >
-                    Registered
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => onRegister(olympiad)}
-                    disabled={registering}
-                    className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-yellow-400 text-black hover:bg-yellow-300"
-                  >
-                    {registering ? "Registering..." : "Register"}
-                  </button>
-                )}
+                {/* Advanced Filters */}
+                <AnimatePresence>
+                  {showFilters && (
+                    <motion.div
+                      className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-border"
+                      variants={filterVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      transition={{ duration: 0.3 }}
+                    >
+                      {/* Ranking Type Filter */}
+                      <motion.div
+                        className="space-y-2"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <Label className="text-sm font-medium">
+                          Ranking Type
+                        </Label>
+                        <Select
+                          value={selectedRankingType}
+                          onValueChange={setSelectedRankingType}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="All ranking types" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            {uniqueRankingTypes.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </motion.div>
+
+                      {/* Grade Filter */}
+                      <motion.div
+                        className="space-y-2"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <Label className="text-sm font-medium">
+                          Grade Level
+                        </Label>
+                        <Select
+                          value={selectedGrade}
+                          onValueChange={setSelectedGrade}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="All grades" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Grades</SelectItem>
+                            {uniqueGrades.map((grade) => (
+                              <SelectItem key={grade} value={grade}>
+                                {grade.replace("GRADE_", "Grade ")}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </motion.div>
+
+                      {/* Region Filter */}
+                      <motion.div
+                        className="space-y-2"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <Label className="text-sm font-medium">Region</Label>
+                        <Select
+                          value={selectedRegion}
+                          onValueChange={setSelectedRegion}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="All regions" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Regions</SelectItem>
+                            {uniqueRegions.map((region) => (
+                              <SelectItem key={region} value={region}>
+                                {region}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {filteredOlympiads.length === 0 ? (
+          <motion.div variants={itemVariants}>
+            <Card>
+              <CardContent className="p-6 text-center">
+                <svg
+                  className="w-12 h-12 text-muted-foreground mx-auto mb-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  No Olympiads Available
+                </h3>
+                <p className="text-muted-foreground text-lg">
+                  {hasActiveFilters
+                    ? "No olympiads match your current filters. Try adjusting your search criteria."
+                    : "There are currently no approved olympiads available for registration."}
+                </p>
+                {hasActiveFilters && (
+                  <Button
+                    variant="outline"
+                    onClick={clearAllFilters}
+                    className="mt-4"
+                  >
+                    Clear All Filters
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+            variants={containerVariants}
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredOlympiads.map((olympiad, index) => (
+                <motion.div
+                  key={olympiad.id}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  whileHover="hover"
+                  layout
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <Card className="hover:shadow-lg transition-shadow duration-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h4 className="text-xl font-bold mb-1 text-primary">
+                            {olympiad.name}
+                          </h4>
+                          <p className="text-base mb-2 line-clamp-2 text-muted-foreground">
+                            {olympiad.description}
+                          </p>
+                        </div>
+                        <div
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            olympiad.status === "OPEN"
+                              ? "bg-primary/10 text-primary"
+                              : "bg-yellow-100 text-yellow-600"
+                          }`}
+                        >
+                          {olympiad.status}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 mb-3">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <svg
+                            className="w-4 h-4 mr-2 text-primary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          {safeFormatDate(olympiad.occurringDay)}
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <svg
+                            className="w-4 h-4 mr-2 text-primary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          {olympiad.location}
+                        </div>
+
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <svg
+                            className="w-4 h-4 mr-2 text-primary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                            />
+                          </svg>
+                          {olympiad.organizer?.organizationName ||
+                            "Unknown Organizer"}
+                        </div>
+                      </div>
+
+                      {/* Class Types */}
+                      <div className="mb-3">
+                        <h5 className="text-base font-semibold mb-2 text-center text-foreground">
+                          Available Grades:
+                        </h5>
+                        <div className="flex flex-wrap gap-1 justify-center">
+                          {olympiad.classtypes.map((classType: any) => {
+                            const classTypeGrade = getGradeNumber(
+                              classType.classYear
+                            );
+                            const studentGrade = student?.class
+                              ? getGradeNumber(student.class)
+                              : 0;
+                            const isStudentGrade =
+                              String(classType.classYear) ===
+                              String(student?.class);
+                            const isHigherGrade = classTypeGrade > studentGrade;
+                            const isLowerGrade = classTypeGrade < studentGrade;
+
+                            return (
+                              <span
+                                key={classType.id}
+                                className={`px-2 py-1 rounded text-sm font-medium ${
+                                  isStudentGrade
+                                    ? "bg-primary/10 text-primary border border-primary/20"
+                                    : isHigherGrade
+                                    ? "bg-green-100 text-green-700 border border-green-200"
+                                    : isLowerGrade
+                                    ? "bg-gray-100 text-gray-500 border border-gray-200"
+                                    : "bg-muted text-muted-foreground"
+                                }`}
+                                title={
+                                  isStudentGrade
+                                    ? "Your current grade"
+                                    : isHigherGrade
+                                    ? "Higher grade (available for registration)"
+                                    : isLowerGrade
+                                    ? "Lower grade (not available for registration)"
+                                    : "Available grade"
+                                }
+                              >
+                                {classType.classYear.replace(
+                                  "GRADE_",
+                                  "Grade "
+                                )}
+                                {isStudentGrade && " (You)"}
+                                {isHigherGrade && " ↑"}
+                                {isLowerGrade && " ↓"}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <motion.div
+                        className="flex space-x-2"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => onViewDetails(olympiad)}
+                          className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+                        >
+                          View Details
+                        </motion.button>
+                        {isStudentRegistered(olympiad) ? (
+                          <motion.button
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex-1 px-3 py-2 rounded-lg cursor-not-allowed text-base font-medium bg-muted text-muted-foreground"
+                            disabled
+                          >
+                            Registered
+                          </motion.button>
+                        ) : (
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => onRegister(olympiad)}
+                            disabled={registering}
+                            className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-yellow-500 text-white hover:bg-yellow-600"
+                          >
+                            {registering ? "Registering..." : "Register"}
+                          </motion.button>
+                        )}
+                      </motion.div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </motion.div>
+    </motion.div>
   );
 };
 
