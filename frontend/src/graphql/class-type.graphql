@@ -1,8 +1,156 @@
+# Get All ClassTypes Query
+query AllClassTypes {
+  allClassTypes {
+    id
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
+      description
+    }
+    gold
+    silver
+    bronze
+    top10
+  }
+}
+
+# Get ClassType by ID Query
+query GetClassType($id: ID!) {
+  classType(id: $id) {
+    id
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
+      description
+    }
+    gold
+    silver
+    bronze
+    top10
+  }
+}
+
+# Get ClassTypes by Class Year Query
+query GetClassTypesByClassYear($classYear: ClassYear!) {
+  classTypesByClassYear(classYear: $classYear) {
+    id
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
+      description
+    }
+    gold
+    silver
+    bronze
+    top10
+  }
+}
+
+# Get ClassTypes by Olympiad Query
+query GetClassTypesByOlympiad($olympiadId: ID!) {
+  classTypesByOlympiad(olympiadId: $olympiadId) {
+    id
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
+      description
+    }
+    gold
+    silver
+    bronze
+    top10
+  }
+}
+
+# Create ClassType Mutation
 mutation CreateClassType($input: CreateClassTypeInput!) {
   createClassType(input: $input) {
     id
     classYear
     maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
     questions {
       id
       classTypeId
@@ -25,15 +173,19 @@ mutation CreateClassType($input: CreateClassTypeInput!) {
   }
 }
 
-mutation DeleteClassType($deleteClassTypeId: ID!) {
-  deleteClassType(id: $deleteClassTypeId)
-}
-
-mutation UpdateClassType($updateClassTypeId: ID!, $input: UpdateClassTypeInput!) {
-  updateClassType(id: $updateClassTypeId, input: $input) {
+# Update ClassType Mutation
+mutation UpdateClassType($id: ID!, $input: UpdateClassTypeInput!) {
+  updateClassType(id: $id, input: $input) {
     id
     classYear
     maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
     questions {
       id
       classTypeId
@@ -56,94 +208,7 @@ mutation UpdateClassType($updateClassTypeId: ID!, $input: UpdateClassTypeInput!)
   }
 }
 
-query ClassType($classTypeId: ID!) {
-  classType(id: $classTypeId) {
-    id
-    classYear
-    maxScore
-    questions {
-      id
-      classTypeId
-      questionName
-      maxScore
-    }
-    medalists
-    participants
-    studentsAnswers
-    olympiadId
-    bestMaterials {
-      studentId
-      materialImages
-      description
-    }
-    gold
-    silver
-    bronze
-    top10
-  }
+# Delete ClassType Mutation
+mutation DeleteClassType($id: ID!) {
+  deleteClassType(id: $id)
 }
-
-query ClassTypesByClassYear($classYear: ClassYear!) {
-  classTypesByClassYear(classYear: $classYear) {
-    id
-    classYear
-    maxScore
-    questions {
-      id
-      classTypeId
-      questionName
-      maxScore
-    }
-    medalists
-    participants
-    studentsAnswers
-    olympiadId
-    bestMaterials {
-      studentId
-      materialImages
-      description
-    }
-    gold
-    silver
-    bronze
-    top10
-  }
-}
-
-query ClassTypesByOlympiad($olympiadId: ID!) {
-  classTypesByOlympiad(olympiadId: $olympiadId) {
-    id
-    classYear
-    maxScore
-    questions {
-      id
-      classTypeId
-      questionName
-      maxScore
-    }
-    medalists
-    participants
-    studentsAnswers
-    olympiadId
-    bestMaterials {
-      studentId
-      materialImages
-      description
-    }
-    gold
-    silver
-    bronze
-    top10
-  }
-}
-
-query Query($classTypeId: ID!, $questionsByClassTypeClassTypeId2: ID!) {
-  participantsByClassType(classTypeId: $classTypeId)
-  questionsByClassType(classTypeId: $questionsByClassTypeClassTypeId2) {
-    id
-    classTypeId
-    questionName
-    maxScore
-  }
-}
-

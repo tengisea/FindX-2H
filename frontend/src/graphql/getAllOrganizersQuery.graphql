@@ -19,7 +19,7 @@ query GetAllOrganizers {
         classYear
         maxScore
         occurringTime
-        classRoom {
+        rooms {
           id
           roomNumber
         }
