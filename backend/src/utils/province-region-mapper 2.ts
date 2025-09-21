@@ -37,7 +37,6 @@ export const getRegionByProvince = (
     [StudentProvince.Khenti]: StudentRegion.Zuun,
 
     // ULAANBAATAR region
-    [StudentProvince.Ulaanbaatar]: StudentRegion.Ulaanbaatar,
     [StudentProvince.Baganuur]: StudentRegion.Ulaanbaatar,
     [StudentProvince.Bayangol]: StudentRegion.Ulaanbaatar,
     [StudentProvince.Bayanzurkh]: StudentRegion.Ulaanbaatar,

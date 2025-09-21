@@ -68,19 +68,62 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
 
     if (transformed.classtypes) {
       transformed.classtypes = transformed.classtypes.map((classType: any) => {
+        // If classType is just an ObjectId string, we need to handle it differently
+        if (typeof classType === "string") {
+          console.error("❌ ClassType is just an ObjectId string:", classType);
+          return {
+            id: classType,
+            classYear: "GRADE_1",
+            maxScore: 0,
+            questions: [],
+            participants: [],
+            studentsAnswers: [],
+            medalists: 0,
+            gold: [],
+            silver: [],
+            bronze: [],
+            top10: [],
+            bestMaterials: [],
+            rooms: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+        }
+
         const transformedQuestions = transformNestedObject(classType.questions);
-        const validQuestions = transformedQuestions.filter((question: any) => {
-          return (
-            question &&
-            question.id &&
-            question.id !== null &&
-            question.id !== undefined
-          );
-        });
+        const validQuestions =
+          transformedQuestions && Array.isArray(transformedQuestions)
+            ? transformedQuestions.filter((question: any) => {
+                return (
+                  question &&
+                  question.id &&
+                  question.id !== null &&
+                  question.id !== undefined
+                );
+              })
+            : [];
+
+        const transformedClassType = transformDocument(classType);
+
+        // Ensure id is never null
+        if (!transformedClassType.id) {
+          console.error("❌ ClassType missing id:", classType);
+          transformedClassType.id =
+            classType._id?.toString() || classType.id || "unknown";
+        }
+
+        // Ensure classYear is never null
+        console.log("🔍 Original classYear:", classType.classYear);
+        const mappedClassYear = classType.classYear
+          ? mapClassYearToGraphQL(classType.classYear)
+          : null;
+        console.log("🔍 Mapped classYear:", mappedClassYear);
+        const classYear = mappedClassYear || "GRADE_1";
+        console.log("🔍 Final classYear:", classYear);
 
         return {
-          ...transformDocument(classType),
-          classYear: mapClassYearToGraphQL(classType.classYear),
+          ...transformedClassType,
+          classYear: classYear,
           questions: validQuestions,
         };
       });

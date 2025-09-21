@@ -1,18 +1,24 @@
 import { gql } from "graphql-tag";
 
 export const ClassRoomTypeDefs = gql`
+
   type ClassRoom {
     id: ID!
     roomNumber: String!
-    mandatNumber: [StudentAnswer!]!
+    maxStudents: Int!
+    mandatNumber: [String!]!
   }
 
   input CreateClassRoomInput {
     roomNumber: String!
+    classTypeId: ID!
+    maxStudents: Int!
   }
 
   input UpdateClassRoomInput {
     roomNumber: String
+    maxStudents: Int
+    mandatNumber: [String!]
   }
 
   type Mutation {
@@ -24,5 +30,7 @@ export const ClassRoomTypeDefs = gql`
   type Query {
     classRoom(id: ID!): ClassRoom
     allClassRooms: [ClassRoom!]!
+    getClassRoomByClassTypeId(classTypeId: ID!): [ClassRoom!]!
+    getClassRoomByMandatNumber(mandatNumber: String!): ClassRoom!
   }
 `;

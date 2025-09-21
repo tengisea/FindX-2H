@@ -11,13 +11,14 @@ export const QuestionTypeDefs = gql`
   input CreateQuestionInput {
     questionName: String!
     maxScore: Int!
+    classTypeId: ID
   }
 
   input UpdateQuestionInput {
     questionName: String!
     maxScore: Int!
   }
-  
+
   type Mutation {
     createQuestion(input: CreateQuestionInput!): Question!
     updateQuestion(id: ID!, input: UpdateQuestionInput!): Question!

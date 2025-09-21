@@ -13,7 +13,6 @@ type StudentSchemaType = {
   email: string;
   province: StudentProvince;
   region: StudentRegion;
-  district: string;
   ranking: number;
   participatedOlympiads: Schema.Types.ObjectId[];
   gold: Schema.Types.ObjectId[];
@@ -43,7 +42,6 @@ const studentSchema = new Schema<StudentSchemaType>(
       enum: Object.values(StudentRegion),
       required: true,
     },
-    district: { type: String, required: true },
     school: { type: String, required: true },
     class: { type: String, enum: Object.values(StudentClass), required: true },
     profilePicture: { type: String, required: true },

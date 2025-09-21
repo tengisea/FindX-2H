@@ -8,22 +8,11 @@ export const allClassRooms = async () => {
     return classRooms.map((classRoom) => ({
       id: classRoom._id.toString(),
       roomNumber: classRoom.roomNumber,
-      mandatNumber: classRoom.mandatNumber.map((studentAnswer: any) => ({
-        id: studentAnswer._id.toString(),
-        studentId: studentAnswer.studentId.toString(),
-        classTypeId: studentAnswer.classTypeId.toString(),
-        mandatNumber: studentAnswer.mandatNumber,
-        answers: studentAnswer.answers,
-        totalScoreofOlympiad: studentAnswer.totalScoreofOlympiad,
-        image: studentAnswer.image,
-        createdAt: studentAnswer.createdAt.toISOString(),
-        updatedAt: studentAnswer.updatedAt.toISOString(),
-      })),
+      maxStudents: classRoom.maxStudents,
+      mandatNumber: classRoom.mandatNumber.map((id: any) => id.toString()),
     }));
   } catch (error: any) {
     console.error("❌ Get all class rooms error:", error);
-    throw new GraphQLError(
-      error.message || "Failed to get all class rooms"
-    );
+    throw new GraphQLError(error.message || "Failed to get all class rooms");
   }
 };

@@ -8,12 +8,25 @@ export const updateClassRoom = async (
     input,
   }: {
     id: string;
-    input: { roomNumber?: string };
+    input: {
+      roomNumber?: string;
+      maxStudents?: number;
+      mandatNumber?: string[];
+    };
   }
 ) => {
-  const { roomNumber } = input;
+  const { roomNumber, maxStudents, mandatNumber } = input;
 
   try {
+    // Input validation
+    if (maxStudents !== undefined && maxStudents <= 0) {
+      throw new GraphQLError("maxStudents must be greater than 0");
+    }
+
+    if (roomNumber !== undefined && (!roomNumber || roomNumber.trim() === "")) {
+      throw new GraphQLError("roomNumber cannot be empty");
+    }
+
     // Check if room number already exists (excluding current room)
     if (roomNumber) {
       const existingRoom = await ClassRoomModel.findOne({
@@ -21,13 +34,22 @@ export const updateClassRoom = async (
         _id: { $ne: id },
       });
       if (existingRoom) {
-        throw new GraphQLError("Room number already exists");
+        throw new GraphQLError(`Room number ${roomNumber} already exists`);
       }
+    }
+
+    // Prepare update object
+    const updateData: any = {};
+    if (roomNumber !== undefined) updateData.roomNumber = roomNumber;
+    if (maxStudents !== undefined) updateData.maxStudents = maxStudents;
+    if (mandatNumber !== undefined) {
+      // Convert string IDs to ObjectIds
+      updateData.mandatNumber = mandatNumber.map((id) => id as any);
     }
 
     const updatedClassRoom = await ClassRoomModel.findByIdAndUpdate(
       id,
-      { roomNumber },
+      updateData,
       { new: true }
     );
 
@@ -40,6 +62,7 @@ export const updateClassRoom = async (
     return {
       id: updatedClassRoom._id.toString(),
       roomNumber: updatedClassRoom.roomNumber,
+      maxStudents: updatedClassRoom.maxStudents,
       mandatNumber: updatedClassRoom.mandatNumber.map((id) => id.toString()),
     };
   } catch (error: any) {
@@ -47,8 +70,6 @@ export const updateClassRoom = async (
     if (error instanceof GraphQLError) {
       throw error;
     }
-    throw new GraphQLError(
-      error.message || "Failed to update class room"
-    );
+    throw new GraphQLError(error.message || "Failed to update class room");
   }
 };
