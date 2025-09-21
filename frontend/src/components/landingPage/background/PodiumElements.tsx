@@ -1,7 +1,7 @@
 // FindX-2H/frontend/src/components/landingPage/background/PodiumElements.tsx
 "use client";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 export const PodiumElements = () => {
   return (

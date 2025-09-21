@@ -88,6 +88,7 @@ export const StudentsRanking = () => {
   const [selectedCity, setSelectedCity] = useState("All Classes");
   const [selectedOrg, setSelectedOrg] = useState("All Provinces");
   const [selectedOlympiads, setSelectedOlympiads] = useState<any[]>([]);
+  const [displayCount, setDisplayCount] = useState(10);
 
   const router = useRouter();
 
@@ -156,6 +157,11 @@ export const StudentsRanking = () => {
 
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchStudentsName(event.target.value);
+    setDisplayCount(10); // Reset display count when searching
+  };
+
+  const handleLoadMore = () => {
+    setDisplayCount((prev) => prev + 10);
   };
 
   const filteredUsers = allStudents
@@ -172,6 +178,9 @@ export const StudentsRanking = () => {
     })
     .sort((a, b) => b.totalMedals - a.totalMedals); // Sort by points (total medals) descending
 
+  const displayedUsers = filteredUsers.slice(0, displayCount);
+  const hasMoreUsers = displayCount < filteredUsers.length;
+
   const medalStats = getMedalStats(filteredUsers);
 
   const uniqueClasses = Array.from(
@@ -182,7 +191,7 @@ export const StudentsRanking = () => {
   ).filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className=" bg-white p-6">
       <div className="max-w-6xl mx-auto ">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
@@ -220,7 +229,13 @@ export const StudentsRanking = () => {
           <div className="flex gap-4 text-black">
             <div className="flex items-center gap-2">
               <School className="w-4 h-4" />
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <Select
+                value={selectedCity}
+                onValueChange={(value) => {
+                  setSelectedCity(value);
+                  setDisplayCount(10); // Reset display count when filter changes
+                }}
+              >
                 <SelectTrigger className="w-48 bg-white text-black border border-gray-300">
                   <SelectValue placeholder="Select class" />
                 </SelectTrigger>
@@ -246,7 +261,13 @@ export const StudentsRanking = () => {
 
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
-              <Select value={selectedOrg} onValueChange={setSelectedOrg}>
+              <Select
+                value={selectedOrg}
+                onValueChange={(value) => {
+                  setSelectedOrg(value);
+                  setDisplayCount(10); // Reset display count when filter changes
+                }}
+              >
                 <SelectTrigger className="w-48 bg-white text-black border border-gray-300">
                   <SelectValue placeholder="Select province" />
                 </SelectTrigger>
@@ -301,7 +322,7 @@ export const StudentsRanking = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user, index) => (
+                {displayedUsers.map((user, index) => (
                   <tr
                     key={user.id}
                     className="hover:bg-gray-50 transition-colors cursor-pointer"
@@ -314,25 +335,52 @@ export const StudentsRanking = () => {
                     </td>
                     <td className="px-6 py-4">{getTierIcon(user.ranking)}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {/* <div className="w-10 h-10 rounded-full overflow-hidden">
-                          {user.profilePicture ? (
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                          {user.profilePicture &&
+                          user.profilePicture.trim() !== "" &&
+                          user.profilePicture !== ".////" &&
+                          (user.profilePicture.startsWith("http") ||
+                            user.profilePicture.startsWith("/") ||
+                            user.profilePicture.startsWith("data:")) ? (
                             <Image
                               src={user.profilePicture}
                               alt={user.name}
+                              width={48}
+                              height={48}
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Hide the image and show fallback on error
+                                e.currentTarget.style.display = "none";
+                                e.currentTarget.nextElementSibling?.classList.remove(
+                                  "hidden"
+                                );
+                              }}
                             />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <span className="text-gray-600 font-medium">
-                                {user.name?.charAt(0)?.toUpperCase()}
-                              </span>
-                            </div>
-                          )}
-                        </div> */}
-                        <span className="font-medium text-gray-900">
-                          {user.name}
-                        </span>
+                          ) : null}
+                          <span
+                            className={`text-gray-600 font-semibold text-lg ${
+                              user.profilePicture &&
+                              user.profilePicture.trim() !== "" &&
+                              user.profilePicture !== ".////" &&
+                              (user.profilePicture.startsWith("http") ||
+                                user.profilePicture.startsWith("/") ||
+                                user.profilePicture.startsWith("data:"))
+                                ? "hidden"
+                                : ""
+                            }`}
+                          >
+                            {user.name?.charAt(0)?.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-gray-900 text-lg">
+                            {user.name}
+                          </span>
+                          <span className="text-gray-500 text-sm">
+                            {user.class || "Grade Unknown"}
+                          </span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-600">-</td>
@@ -426,11 +474,17 @@ export const StudentsRanking = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center">
-          <Button variant="outline" className="px-6 py-2 bg-black text-white">
-            Load More
-          </Button>
-        </div>
+        {hasMoreUsers && (
+          <div className="mt-6 flex justify-center">
+            <Button
+              variant="outline"
+              className="px-6 py-2 bg-black text-white hover:bg-gray-800"
+              onClick={handleLoadMore}
+            >
+              Load More
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

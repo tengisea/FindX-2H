@@ -36,8 +36,6 @@ interface StaggeredMenuProps {
 const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   position = "right",
   items,
-  socialItems = [],
-  displaySocials = false,
   displayItemNumbering = false,
   menuButtonColor = "#fff",
   openMenuButtonColor = "#fff",
@@ -102,38 +100,6 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       transition: {
         duration: 0.3,
         ease: "easeOut",
-      },
-    },
-  };
-
-  const socialVariants = {
-    closed: {
-      opacity: 0,
-      y: 20,
-      transition: {
-        duration: 0.3,
-      },
-    },
-    open: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const socialItemVariants = {
-    closed: {
-      opacity: 0,
-      scale: 0.8,
-    },
-    open: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.2,
       },
     },
   };

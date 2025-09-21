@@ -2,9 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { formatDate, safeFormatDate } from "@/lib/dateUtils";
-import { GetAllApprovedOlympiadsQuery, GetStudentQuery } from "@/generated";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { safeFormatDate } from "@/lib/dateUtils";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,9 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, Filter, X } from "lucide-react";
-
-type Student = GetStudentQuery["getStudent"];
-type Olympiad = GetAllApprovedOlympiadsQuery["getAllApprovedOlympiads"][0];
 
 interface OlympiadsTabProps {
   olympiads: any[];
@@ -108,14 +104,14 @@ const OlympiadsTab = ({
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter((olympiad) =>
-        olympiad.name.toLowerCase().includes(searchTerm.toLowerCase())
+        olympiad.name.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // Ranking type filter
     if (selectedRankingType !== "all") {
       filtered = filtered.filter(
-        (olympiad) => olympiad.rankingType === selectedRankingType
+        (olympiad) => olympiad.rankingType === selectedRankingType,
       );
     }
 
@@ -123,8 +119,8 @@ const OlympiadsTab = ({
     if (selectedGrade !== "all") {
       filtered = filtered.filter((olympiad) =>
         olympiad.classtypes.some(
-          (classType: any) => classType.classYear === selectedGrade
-        )
+          (classType: any) => classType.classYear === selectedGrade,
+        ),
       );
     }
 
@@ -574,7 +570,7 @@ const OlympiadsTab = ({
                         <div className="flex flex-wrap gap-1 justify-center">
                           {olympiad.classtypes.map((classType: any) => {
                             const classTypeGrade = getGradeNumber(
-                              classType.classYear
+                              classType.classYear,
                             );
                             const studentGrade = student?.class
                               ? getGradeNumber(student.class)
@@ -609,7 +605,7 @@ const OlympiadsTab = ({
                               >
                                 {classType.classYear.replace(
                                   "GRADE_",
-                                  "Grade "
+                                  "Grade ",
                                 )}
                                 {isStudentGrade && " (You)"}
                                 {isHigherGrade && " ↑"}

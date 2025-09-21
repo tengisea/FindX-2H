@@ -3,16 +3,16 @@
 
 export const STUDENT_CONFIG = {
     // Default student ID - in a real app, this would come from authentication context
-    DEFAULT_STUDENT_ID: '68c54f3c22ed3250680b05cb',
+    DEFAULT_STUDENT_ID: "68c54f3c22ed3250680b05cb",
 
     // Alternative student ID for testing different scenarios (unregistered student)
-    TEST_STUDENT_ID: '68c54f3c22ed3250680b05cb',
+    TEST_STUDENT_ID: "68c54f3c22ed3250680b05cb",
 
     // Unregistered student ID for testing registration flow
-    UNREGISTERED_STUDENT_ID: '68c54f3c22ed3250680b05cb',
+    UNREGISTERED_STUDENT_ID: "68c54f3c22ed3250680b05cb",
 
     // Completely different student ID for testing unregistered scenarios
-    NEW_UNREGISTERED_STUDENT_ID: '68c54f3c22ed3250680b05cb',
+    NEW_UNREGISTERED_STUDENT_ID: "68c54f3c22ed3250680b05cb",
 } as const;
 
 // Helper function to get the current student ID

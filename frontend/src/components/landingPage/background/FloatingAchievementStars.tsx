@@ -1,7 +1,7 @@
 // FindX-2H/frontend/src/components/landingPage/background/FloatingAchievementStars.tsx
 "use client";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 
 export const FloatingAchievementStars = () => {
@@ -17,7 +17,7 @@ export const FloatingAchievementStars = () => {
     { top: 48.37, left: 40.80, size: 14.42, duration: 7.6, delay: 3.1 },
     { top: 27.96, left: 41.88, size: 19.91, duration: 8.8, delay: 1.9 },
     { top: 19.54, left: 74.38, size: 19.72, duration: 6.7, delay: 4.6 },
-    { top: 80.78, left: 66.58, size: 18.21, duration: 9.3, delay: 2.1 }
+    { top: 80.78, left: 66.58, size: 18.21, duration: 9.3, delay: 2.1 },
   ];
 
   return (
@@ -34,13 +34,13 @@ export const FloatingAchievementStars = () => {
             y: [-10, 10, -10],
             rotate: [0, 180, 360],
             scale: [0.8, 1.2, 0.8],
-            opacity: [0.2, 0.6, 0.2]
+            opacity: [0.2, 0.6, 0.2],
           }}
           transition={{
             duration: star.duration,
             repeat: Infinity,
             delay: star.delay,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           <Star size={star.size} className="text-yellow-400/40" />

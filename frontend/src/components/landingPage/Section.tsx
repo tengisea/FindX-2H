@@ -1,9 +1,45 @@
 "use client";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Trophy, ArrowRight, Lock, Shield, Users } from "lucide-react";
+import { Trophy, Lock, Shield, Users } from "lucide-react";
+import {
+  useGetAllStudentQuery,
+  useAllOlympiadsQuery,
+  useGetAllOrganizersQuery,
+} from "@/generated";
+import { useMemo } from "react";
 
 export const Section = () => {
+  const { data: studentsData } = useGetAllStudentQuery();
+  const { data: olympiadsData } = useAllOlympiadsQuery();
+  const { data: organizersData } = useGetAllOrganizersQuery();
+
+  const stats = useMemo(() => {
+    const students = studentsData?.getAllStudent || [];
+    const olympiads = olympiadsData?.allOlympiads || [];
+    const organizers = organizersData?.getAllOrganizers || [];
+
+    // Calculate total competitions held (olympiads with status "FINISHED" or "CLOSED")
+    const competitionsHeld = olympiads.filter(
+      (olympiad) =>
+        olympiad.status === "FINISHED" || olympiad.status === "CLOSED"
+    ).length;
+
+    // Get top performer (student with highest ranking)
+    const topPerformer =
+      students.length > 0
+        ? students.reduce((top, student) =>
+            student.ranking < top.ranking ? student : top
+          )
+        : null;
+
+    return {
+      activeStudents: students.length,
+      hostOrganizations: organizers.length,
+      competitionsHeld,
+      topPerformer,
+    };
+  }, [studentsData, olympiadsData, organizersData]);
+
   return (
     <div className="bg-black min-h-screen px-6 py-16">
       <div className="max-w-7xl mx-auto">
@@ -28,32 +64,24 @@ export const Section = () => {
 
             <div className="grid grid-cols-3 gap-8 py-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">2,500+</div>
+                <div className="text-3xl font-bold text-orange-500">
+                  {stats.activeStudents.toLocaleString()}
+                </div>
                 <div className="text-sm text-gray-400">Active Students</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">150+</div>
+                <div className="text-3xl font-bold text-orange-500">
+                  {stats.hostOrganizations.toLocaleString()}
+                </div>
                 <div className="text-sm text-gray-400">Host Organizations</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">500+</div>
+                <div className="text-3xl font-bold text-orange-500">
+                  {stats.competitionsHeld.toLocaleString()}
+                </div>
                 <div className="text-sm text-gray-400">Competitions Held</div>
               </div>
             </div>
-
-            {/* <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold rounded-lg flex items-center gap-2">
-                Get Started
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-              <Button
-                variant="outline"
-                className="border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800 px-8 py-4 text-lg font-semibold rounded-lg flex items-center gap-2"
-              >
-                <Trophy className="w-5 h-5" />
-                View Results
-              </Button>
-            </div> */}
 
             <div className="flex flex-wrap gap-6 pt-8">
               <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -89,7 +117,9 @@ export const Section = () => {
                   <div>
                     <div className="font-bold text-sm">Top Performer</div>
                     <div className="text-xs text-gray-300">
-                      Sarah Chen - 2,450 pts
+                      {stats.topPerformer
+                        ? `${stats.topPerformer.name} - Rank #${stats.topPerformer.ranking}`
+                        : "No data available"}
                     </div>
                   </div>
                 </div>
@@ -98,17 +128,19 @@ export const Section = () => {
               <div className="absolute bottom-6 left-6 bg-gray-800/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-700">
                 <div className="flex items-center gap-4 text-white">
                   <div className="text-center">
-                    <div className="font-bold text-lg text-orange-500">98%</div>
-                    <div className="text-xs text-gray-300">Success Rate</div>
+                    <div className="font-bold text-lg text-orange-500">
+                      {stats.activeStudents > 0 ? "100%" : "0%"}
+                    </div>
+                    <div className="text-xs text-gray-300">Active Rate</div>
                   </div>
                   <div className="w-px h-8 bg-gray-600"></div>
                   <div className="text-center">
                     <div className="flex items-center gap-1">
                       <span className="font-bold text-lg text-orange-500">
-                        4.9
+                        {stats.competitionsHeld > 0 ? "5.0" : "0.0"}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-300">Rating</div>
+                    <div className="text-xs text-gray-300">Platform Rating</div>
                   </div>
                 </div>
               </div>

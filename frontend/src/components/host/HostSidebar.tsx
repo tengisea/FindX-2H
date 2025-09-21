@@ -207,7 +207,7 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
               key={tab.id}
               onClick={() =>
                 onTabChange(
-                  tab.id as "create" | "manage" | "results"
+                  tab.id as "create" | "manage" | "results",
                 )
               }
               className={`w-full flex items-center justify-start space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${activeTab === tab.id

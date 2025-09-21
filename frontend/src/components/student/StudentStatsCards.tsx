@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import StudentRankingDisplay from "@/components/student/StudentRankingDisplay";
 
 type Student = {

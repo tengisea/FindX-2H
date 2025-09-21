@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
 interface AdminSidebarProps {
-  activeTab: 'pending' | 'approved' | 'all' | 'organizers' | 'tournaments';
-  onTabChange: (tab: 'pending' | 'approved' | 'all' | 'organizers' | 'tournaments') => void;
+  activeTab: "pending" | "approved" | "all" | "organizers" | "tournaments";
+  onTabChange: (tab: "pending" | "approved" | "all" | "organizers" | "tournaments") => void;
   pendingCount: number;
   approvedCount: number;
   allCount: number;
 }
 
 const getTabIcon = (tab: string, isActive: boolean) => {
-  const iconClass = `w-5 h-5 transition-colors duration-200 ${isActive ? 'text-white' : 'text-gray-400'}`;
+  const iconClass = `w-5 h-5 transition-colors duration-200 ${isActive ? "text-white" : "text-gray-400"}`;
 
   switch (tab) {
     case "pending":
@@ -68,18 +68,18 @@ export const AdminSidebar = ({ activeTab, onTabChange, pendingCount, approvedCou
     <nav className="flex-1 px-8 pb-8 overflow-y-auto">
       <div className="space-y-2">
         {[
-          { id: 'pending', label: 'Pending Olympiads', count: pendingCount },
-          { id: 'approved', label: 'Approved Olympiads', count: approvedCount },
-          { id: 'all', label: 'All Olympiads', count: allCount },
-          { id: 'organizers', label: 'Organizers', count: 0 },
-          { id: 'tournaments', label: 'Tournaments', count: 0 }
+          { id: "pending", label: "Pending Olympiads", count: pendingCount },
+          { id: "approved", label: "Approved Olympiads", count: approvedCount },
+          { id: "all", label: "All Olympiads", count: allCount },
+          { id: "organizers", label: "Organizers", count: 0 },
+          { id: "tournaments", label: "Tournaments", count: 0 },
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => onTabChange(tab.id as 'pending' | 'approved' | 'all' | 'organizers' | 'tournaments')}
+            onClick={() => onTabChange(tab.id as "pending" | "approved" | "all" | "organizers" | "tournaments")}
             className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${activeTab === tab.id
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                ? "bg-blue-600 text-white shadow-lg"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white"
               }`}
           >
             <div className="flex items-center space-x-3">
@@ -88,8 +88,8 @@ export const AdminSidebar = ({ activeTab, onTabChange, pendingCount, approvedCou
             </div>
             {tab.count > 0 && (
               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${activeTab === tab.id
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-600 text-gray-300'
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-600 text-gray-300"
                 }`}>
                 {tab.count}
               </span>

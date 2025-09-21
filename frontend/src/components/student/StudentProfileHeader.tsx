@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { useQuery, gql } from "@apollo/client";
 
 const GET_OLYMPIADS = gql`
@@ -11,7 +10,6 @@ const GET_OLYMPIADS = gql`
     }
   }
 `;
-
 type Student = {
   id: string;
   name: string;
@@ -45,7 +43,7 @@ type StudentProfileHeaderProps = {
 export const StudentProfileHeader = ({ 
   student, 
   totalMedals, 
-  formatGrade 
+  formatGrade, 
 }: StudentProfileHeaderProps) => {
   // Fetch all olympiads to get names
   const { data: olympiadsData } = useQuery(GET_OLYMPIADS);
@@ -61,16 +59,15 @@ export const StudentProfileHeader = ({
   
   // Helper function to safely format dates
   const formatDate = (dateString: string) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Invalid Date';
+      if (isNaN(date.getTime())) return "Invalid Date";
       return date.toLocaleDateString();
     } catch (error) {
-      return 'Invalid Date';
+      return "Invalid Date";
     }
   };
-
   return (
     <div className="bg-gradient-to-r from-card to-card/80 rounded-xl border border-border/30 p-5">
       <div className="flex items-center justify-between">
@@ -99,7 +96,6 @@ export const StudentProfileHeader = ({
               ) : null;
             })()}
           </div>
-          
           <div>
             <h3 className="text-lg font-bold text-foreground">{student.name}</h3>
             <div className="flex items-center space-x-4 text-sm text-gray-500">
@@ -119,8 +115,6 @@ export const StudentProfileHeader = ({
             </div>
           </div>
         </div>
-
-        {/* Center: Stats */}
         <div className="flex items-center space-x-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">{totalMedals}</div>
@@ -133,8 +127,6 @@ export const StudentProfileHeader = ({
             <div className="text-xs text-gray-500">Olympiads</div>
           </div>
         </div>
-
-        {/* Right: Recent Activity */}
         {recentActivity.length > 0 && (
           <div className="relative group">
             <div className="text-right">
