@@ -24,6 +24,32 @@ import {
 
 import { useAllOlympiadsQuery } from "@/generated";
 
+const formatClassYear = (classYear: string | null | undefined) => {
+  if (!classYear) return "Unknown";
+  
+  // Mapping from English enum values to Mongolian display format
+  const classYearMapping: { [key: string]: string } = {
+    'GRADE_1': '1р анги',
+    'GRADE_2': '2р анги',
+    'GRADE_3': '3р анги',
+    'GRADE_4': '4р анги',
+    'GRADE_5': '5р анги',
+    'GRADE_6': '6р анги',
+    'GRADE_7': '7р анги',
+    'GRADE_8': '8р анги',
+    'GRADE_9': '9р анги',
+    'GRADE_10': '10р анги',
+    'GRADE_11': '11р анги',
+    'GRADE_12': '12р анги',
+    'C_CLASS': 'C анги',
+    'D_CLASS': 'D анги',
+    'E_CLASS': 'E анги',
+    'F_CLASS': 'F анги',
+  };
+  
+  return classYearMapping[classYear] || classYear;
+};
+
 const formatDate = (dateString: string) => {
   try {
     const date = new Date(dateString);
@@ -40,12 +66,14 @@ const formatDate = (dateString: string) => {
 export const Olympiad = () => {
   const [selectedRankingType, setSelectedRankingType] = useState("all");
 
-  const { data, loading, error } = useAllOlympiadsQuery();
+  const { data, loading, error } = useAllOlympiadsQuery({
+    errorPolicy: 'ignore' // Ignore GraphQL errors and still try to render data
+  });
 
   const olympiads = data?.allOlympiads || [];
 
   const rankingTypes = Array.from(
-    new Set(olympiads.map((olympiad) => olympiad.rankingType))
+    new Set(olympiads.map((olympiad) => olympiad.rankingType).filter(Boolean))
   ).filter((type) => type !== "A_TIER");
 
   const filteredOlympiads =
@@ -70,7 +98,7 @@ export const Olympiad = () => {
     );
   }
 
-  if (error) {
+  if (error && !data) {
     return (
       <div className="w-full max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
@@ -137,7 +165,7 @@ export const Olympiad = () => {
               key={rankingType}
               variant={isSelected ? "default" : "outline"}
               size="lg"
-              onClick={() => setSelectedRankingType(rankingType)}
+              onClick={() => setSelectedRankingType(rankingType || "")}
               className={`
                 flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
                 ${
@@ -201,7 +229,7 @@ export const Olympiad = () => {
                   </div>
                   <div className="text-white font-semibold">
                     {olympiad.classtypes
-                      .map((classtype) => classtype.classYear)
+                      .map((classtype) => formatClassYear(classtype.classYear))
                       .join(", ")}
                   </div>
                 </div>
