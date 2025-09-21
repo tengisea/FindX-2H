@@ -1,13 +1,27 @@
-import { OlympiadModel, ClassTypeModel, QuestionModel, ClassRoomModel } from "@/models";
-import { transformDocument, mapClassYearToDB, mapClassYearToGraphQL } from "@/lib/enumUtils";
+import {
+  OlympiadModel,
+  ClassTypeModel,
+  QuestionModel,
+  ClassRoomModel,
+} from "@/models";
+import {
+  transformDocument,
+  mapClassYearToDB,
+  mapClassYearToGraphQL,
+} from "@/lib/enumUtils";
 import { GraphQLError } from "graphql";
 
-export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any) => {
+export const updateOlympiadComprehensive = async (
+  _: unknown,
+  { id, input }: any
+) => {
   console.log(`🔄 Starting comprehensive update for olympiad: ${id}`);
   try {
     const olympiad = await OlympiadModel.findById(id);
     if (!olympiad) {
-      throw new GraphQLError("Olympiad not found", { extensions: { code: "NOT_FOUND" } });
+      throw new GraphQLError("Olympiad not found", {
+        extensions: { code: "NOT_FOUND" },
+      });
     }
 
     // Update top-level Olympiad fields
@@ -17,7 +31,8 @@ export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any
     if (input.location !== undefined) olympiad.location = input.location;
     if (input.rankingType) olympiad.rankingType = input.rankingType;
     if (input.invitation !== undefined) olympiad.invitation = input.invitation;
-    if (input.occurringDay !== undefined) olympiad.occurringDay = input.occurringDay;
+    if (input.occurringDay !== undefined)
+      olympiad.occurringDay = input.occurringDay;
     if (input.status) olympiad.status = input.status;
 
     await olympiad.save(); // Save to trigger any pre-save middleware
@@ -28,22 +43,34 @@ export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any
         if (classTypeInput.id) {
           const classType = await ClassTypeModel.findById(classTypeInput.id);
           if (classType) {
-            if (classTypeInput.classYear) classType.classYear = mapClassYearToDB(classTypeInput.classYear);
-            if (classTypeInput.maxScore !== undefined) classType.maxScore = classTypeInput.maxScore;
-            if (classTypeInput.occurringTime !== undefined) classType.occurringTime = classTypeInput.occurringTime;
-            if (classTypeInput.classRoom !== undefined) classType.classRoom = classTypeInput.classRoom;
-            if (classTypeInput.medalists !== undefined) classType.medalists = classTypeInput.medalists;
+            if (classTypeInput.classYear)
+              classType.classYear = mapClassYearToDB(
+                classTypeInput.classYear
+              ) as any;
+            if (classTypeInput.maxScore !== undefined)
+              classType.maxScore = classTypeInput.maxScore;
+            if (classTypeInput.occurringTime !== undefined)
+              classType.occurringTime = classTypeInput.occurringTime;
+            if (classTypeInput.medalists !== undefined)
+              classType.medalists = classTypeInput.medalists;
             await classType.save();
             console.log(`✅ Updated ClassType: ${classType.id}`);
 
             // Update Questions within this ClassType
-            if (classTypeInput.questions && classTypeInput.questions.length > 0) {
+            if (
+              classTypeInput.questions &&
+              classTypeInput.questions.length > 0
+            ) {
               for (const questionInput of classTypeInput.questions) {
                 if (questionInput.id) {
-                  const question = await QuestionModel.findById(questionInput.id);
+                  const question = await QuestionModel.findById(
+                    questionInput.id
+                  );
                   if (question) {
-                    if (questionInput.questionName) question.questionName = questionInput.questionName;
-                    if (questionInput.maxScore !== undefined) question.maxScore = questionInput.maxScore;
+                    if (questionInput.questionName)
+                      question.questionName = questionInput.questionName;
+                    if (questionInput.maxScore !== undefined)
+                      question.maxScore = questionInput.maxScore;
                     await question.save();
                     console.log(`✅ Updated Question: ${question.id}`);
                   }
@@ -99,7 +126,8 @@ export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any
         if (classRoomInput.id) {
           const classRoom = await ClassRoomModel.findById(classRoomInput.id);
           if (classRoom) {
-            if (classRoomInput.roomNumber) classRoom.roomNumber = classRoomInput.roomNumber;
+            if (classRoomInput.roomNumber)
+              classRoom.roomNumber = classRoomInput.roomNumber;
             await classRoom.save();
             console.log(`✅ Updated ClassRoom: ${classRoom.id}`);
           }
@@ -128,7 +156,9 @@ export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any
       });
 
     if (!populatedOlympiad) {
-      throw new GraphQLError("Failed to retrieve updated olympiad data", { extensions: { code: "INTERNAL_SERVER_ERROR" } });
+      throw new GraphQLError("Failed to retrieve updated olympiad data", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      });
     }
 
     const transformed = transformDocument(populatedOlympiad);
@@ -137,8 +167,12 @@ export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any
       transformed.classtypes = transformed.classtypes.map((classType: any) => ({
         ...transformDocument(classType),
         classYear: mapClassYearToGraphQL(classType.classYear),
-        questions: classType.questions ? classType.questions.map((q: any) => transformDocument(q)) : [],
-        classRoom: classType.classRoom ? transformDocument(classType.classRoom) : null,
+        questions: classType.questions
+          ? classType.questions.map((q: any) => transformDocument(q))
+          : [],
+        classRoom: classType.classRoom
+          ? transformDocument(classType.classRoom)
+          : null,
       }));
     }
 
@@ -153,8 +187,11 @@ export const updateOlympiadComprehensive = async (_: unknown, { id, input }: any
     if (error instanceof GraphQLError) {
       throw error;
     }
-    throw new GraphQLError(error.message || "Failed to perform comprehensive olympiad update", {
-      extensions: { code: "INTERNAL_SERVER_ERROR" },
-    });
+    throw new GraphQLError(
+      error.message || "Failed to perform comprehensive olympiad update",
+      {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      }
+    );
   }
 };
