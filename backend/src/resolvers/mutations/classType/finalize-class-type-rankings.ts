@@ -51,7 +51,10 @@ export const finalizeClassTypeRankings = async (
     );
 
     // Assign medals based on rankings
-    const goldWinners = studentAnswers.slice(0, Math.min(classType.medalists, studentAnswers.length));
+    const goldWinners = studentAnswers.slice(
+      0,
+      Math.min(classType.medalists, studentAnswers.length)
+    );
     const silverWinners = studentAnswers.slice(
       classType.medalists,
       Math.min(classType.medalists * 2, studentAnswers.length)
@@ -60,7 +63,10 @@ export const finalizeClassTypeRankings = async (
       classType.medalists * 2,
       Math.min(classType.medalists * 3, studentAnswers.length)
     );
-    const top10Winners = studentAnswers.slice(0, Math.min(10, studentAnswers.length));
+    const top10Winners = studentAnswers.slice(
+      0,
+      Math.min(10, studentAnswers.length)
+    );
 
     // Update class type with medal winners
     await ClassTypeModel.findByIdAndUpdate(classTypeId, {
@@ -137,17 +143,19 @@ export const finalizeClassTypeRankings = async (
       classYear: updatedClassType.classYear,
       maxScore: updatedClassType.maxScore,
       occurringTime: updatedClassType.occurringTime,
-      classRoom: updatedClassType.classRoom,
+      rooms: updatedClassType.rooms,
       questions: updatedClassType.questions,
       medalists: updatedClassType.medalists,
-      participants: updatedClassType.participants.map((id) => id.toString()),
-      studentsAnswers: updatedClassType.studentsAnswers.map((id) => id.toString()),
+      participants:
+        updatedClassType.participants?.map((id) => id.toString()) || [],
+      studentsAnswers:
+        updatedClassType.studentsAnswers?.map((id) => id.toString()) || [],
       olympiadId: updatedClassType.olympiadId?.toString(),
       bestMaterials: updatedClassType.bestMaterials,
-      gold: updatedClassType.gold.map((id) => id.toString()),
-      silver: updatedClassType.silver.map((id) => id.toString()),
-      bronze: updatedClassType.bronze.map((id) => id.toString()),
-      top10: updatedClassType.top10.map((id) => id.toString()),
+      gold: updatedClassType.gold?.map((id) => id.toString()) || [],
+      silver: updatedClassType.silver?.map((id) => id.toString()) || [],
+      bronze: updatedClassType.bronze?.map((id) => id.toString()) || [],
+      top10: updatedClassType.top10?.map((id) => id.toString()) || [],
     };
   } catch (error: any) {
     console.error("❌ Finalize rankings error:", error);

@@ -27,6 +27,18 @@ export const generateMandatNumber = (
     [ClassYear.D_CLASS]: "14",
     [ClassYear.E_CLASS]: "15",
     [ClassYear.F_CLASS]: "16",
+    [ClassYear.ANGI_1]: "17",
+    [ClassYear.ANGI_2]: "18",
+    [ClassYear.ANGI_3]: "19",
+    [ClassYear.ANGI_4]: "20",
+    [ClassYear.ANGI_5]: "21",
+    [ClassYear.ANGI_6]: "22",
+    [ClassYear.ANGI_7]: "23",
+    [ClassYear.ANGI_8]: "24",
+    [ClassYear.ANGI_9]: "25",
+    [ClassYear.ANGI_10]: "26",
+    [ClassYear.ANGI_11]: "27",
+    [ClassYear.ANGI_12]: "28",
   };
 
   const classTypeNumber = classYearToNumber[classYear];

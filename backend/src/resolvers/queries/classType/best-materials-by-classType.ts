@@ -12,7 +12,7 @@ export const bestMaterialsByClassType = async (
     throw new Error("ClassType not found");
   }
 
-  return classType.bestMaterials.map((bestMaterial: any) => ({
+  return classType.bestMaterials?.map((bestMaterial: any) => ({
     studentId: bestMaterial.studentId.toString(),
     materialImages: bestMaterial.materialImages,
     description: bestMaterial.description,

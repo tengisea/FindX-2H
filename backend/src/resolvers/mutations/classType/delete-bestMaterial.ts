@@ -12,12 +12,12 @@ export const deleteBestMaterial = async (
     }
 
     // Remove the bestMaterial by studentId (assuming id is studentId)
-    const initialLength = classType.bestMaterials.length;
-    classType.bestMaterials = classType.bestMaterials.filter(
+    const initialLength = classType.bestMaterials?.length;
+    classType.bestMaterials = classType.bestMaterials?.filter(
       (bm: any) => bm.studentId.toString() !== id
     );
 
-    if (classType.bestMaterials.length === initialLength) {
+    if (classType.bestMaterials?.length === initialLength) {
       throw new Error("BestMaterial not found");
     }
 
