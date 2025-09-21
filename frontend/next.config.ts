@@ -8,6 +8,15 @@ const nextConfig: NextConfig = {
         hostname: "randomuser.me",
         port: "",
         pathname: "/api/portraits/**",
+<<<<<<< HEAD
+=======
+      },
+      {
+        protocol: "http",
+        hostname: "avatar.png",
+        port: "",
+        pathname: "/**",
+>>>>>>> b0c5bc1 (header and ranks fixed)
       },
     ],
   },
