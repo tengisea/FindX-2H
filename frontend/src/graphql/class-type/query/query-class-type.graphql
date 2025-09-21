@@ -1,4 +1,3 @@
-# Get All ClassTypes Query
 query AllClassTypes {
   allClassTypes {
     id
@@ -33,9 +32,8 @@ query AllClassTypes {
   }
 }
 
-# Get ClassType by ID Query
-query GetClassType($id: ID!) {
-  classType(id: $id) {
+query ClassType($classTypeId: ID!) {
+  classType(id: $classTypeId) {
     id
     classYear
     maxScore
@@ -68,8 +66,7 @@ query GetClassType($id: ID!) {
   }
 }
 
-# Get ClassTypes by Class Year Query
-query GetClassTypesByClassYear($classYear: ClassYear!) {
+query ClassTypesByClassYear($classYear: ClassYear!) {
   classTypesByClassYear(classYear: $classYear) {
     id
     classYear
@@ -103,8 +100,7 @@ query GetClassTypesByClassYear($classYear: ClassYear!) {
   }
 }
 
-# Get ClassTypes by Olympiad Query
-query GetClassTypesByOlympiad($olympiadId: ID!) {
+query ClassTypesByOlympiad($olympiadId: ID!) {
   classTypesByOlympiad(olympiadId: $olympiadId) {
     id
     classYear
@@ -138,77 +134,10 @@ query GetClassTypesByOlympiad($olympiadId: ID!) {
   }
 }
 
-# Create ClassType Mutation
-mutation CreateClassType($input: CreateClassTypeInput!) {
-  createClassType(input: $input) {
-    id
-    classYear
-    maxScore
-    occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
-    questions {
-      id
-      classTypeId
-      questionName
-      maxScore
-    }
-    medalists
-    participants
-    studentsAnswers
-    olympiadId
-    bestMaterials {
-      studentId
-      materialImages
-      description
-    }
-    gold
-    silver
-    bronze
-    top10
-  }
+query GetParticipantsByClassType($classTypeId: ID!) {
+  participantsByClassType(classTypeId: $classTypeId)
 }
 
-# Update ClassType Mutation
-mutation UpdateClassType($id: ID!, $input: UpdateClassTypeInput!) {
-  updateClassType(id: $id, input: $input) {
-    id
-    classYear
-    maxScore
-    occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
-    questions {
-      id
-      classTypeId
-      questionName
-      maxScore
-    }
-    medalists
-    participants
-    studentsAnswers
-    olympiadId
-    bestMaterials {
-      studentId
-      materialImages
-      description
-    }
-    gold
-    silver
-    bronze
-    top10
-  }
-}
-
-# Delete ClassType Mutation
-mutation DeleteClassType($id: ID!) {
-  deleteClassType(id: $id)
+query GetStudentsResultsByClassType($classTypeId: ID!) {
+  studentsResultsByClassType(classTypeId: $classTypeId)
 }

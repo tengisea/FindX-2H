@@ -1,0 +1,35 @@
+query AllClassRooms {
+  allClassRooms {
+    id
+    roomNumber
+    maxStudents
+    mandatNumber
+  }
+}
+
+query ClassRoom($classRoomId: ID!) {
+  classRoom(id: $classRoomId) {
+    id
+    roomNumber
+    maxStudents
+    mandatNumber
+  }
+}
+
+query GetClassRoomByClassTypeId($classTypeId: ID!) {
+  getClassRoomByClassTypeId(classTypeId: $classTypeId) {
+    id
+    roomNumber
+    maxStudents
+    mandatNumber
+  }
+}
+
+query GetClassRoomByMandatNumber($mandatNumber: String!) {
+  getClassRoomByMandatNumber(mandatNumber: $mandatNumber) {
+    id
+    roomNumber
+    maxStudents
+    mandatNumber
+  }
+}

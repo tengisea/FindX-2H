@@ -1,0 +1,91 @@
+mutation CreateStudent($input: CreateStudentInput!) {
+  createStudent(input: $input) {
+    id
+    name
+    email
+    province
+    region
+    school
+    class
+    profilePicture
+    ranking
+    participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation DeleteStudent($deleteStudentId: ID!) {
+  deleteStudent(id: $deleteStudentId)
+}
+
+mutation UpdateStudent($updateStudentId: ID!, $input: UpdateStudentInput!) {
+  updateStudent(id: $updateStudentId, input: $input) {
+    id
+    name
+    email
+    province
+    region
+    school
+    class
+    profilePicture
+    ranking
+    participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation RegisterForOlympiad($input: RegisterForOlympiadInput!) {
+  registerForOlympiad(input: $input) {
+    id
+    name
+    email
+    province
+    region
+    school
+    class
+    profilePicture
+    ranking
+    participatedOlympiads
+    gold
+    silver
+    bronze
+    top10
+    rankingHistory {
+      changedBy
+      changedTo
+      reason
+      olympiadId
+      date
+      pointsGained
+    }
+    createdAt
+    updatedAt
+  }
+}
+

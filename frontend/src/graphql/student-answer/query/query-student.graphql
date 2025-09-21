@@ -1,0 +1,95 @@
+query StudentAnswer($studentAnswerId: ID!) {
+  studentAnswer(id: $studentAnswerId) {
+    id
+    studentId
+    classTypeId
+    mandatNumber
+    roomNumber
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query AllStudentAnswers {
+  allStudentAnswers {
+    id
+    studentId
+    classTypeId
+    mandatNumber
+    roomNumber
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query StudentAnswersByClassType($classTypeId: ID!) {
+  studentAnswersByClassType(classTypeId: $classTypeId) {
+    id
+    studentId
+    classTypeId
+    mandatNumber
+    roomNumber
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query GetStudentsByOlympiadId($olympiadId: ID!) {
+  getStudentsByOlympiadId(olympiadId: $olympiadId) {
+    id
+    studentId
+    classTypeId
+    mandatNumber
+    roomNumber
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+
+query GetStudentsByStudentId($studentId: ID!) {
+  getStudentsByStudentId(studentId: $studentId) {
+    id
+    studentId
+    classTypeId
+    mandatNumber
+    roomNumber
+    answers {
+      questionId
+      score
+      description
+    }
+    totalScoreofOlympiad
+    createdAt
+    updatedAt
+    image
+  }
+}
+

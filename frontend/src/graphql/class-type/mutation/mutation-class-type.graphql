@@ -1,0 +1,71 @@
+mutation CreateClassType($input: CreateClassTypeInput!) {
+  createClassType(input: $input) {
+    id
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
+      description
+    }
+    gold
+    silver
+    bronze
+    top10
+  }
+}
+
+mutation UpdateClassType($updateClassTypeId: ID!, $input: UpdateClassTypeInput!) {
+  updateClassType(id: $updateClassTypeId, input: $input) {
+    id
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
+      description
+    }
+    gold
+    silver
+    bronze
+    top10
+  }
+}
+
+mutation DeleteClassType($deleteClassTypeId: ID!) {
+  deleteClassType(id: $deleteClassTypeId)
+}

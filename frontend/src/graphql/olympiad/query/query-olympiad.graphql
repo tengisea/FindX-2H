@@ -1,0 +1,209 @@
+query AllOlympiads {
+  allOlympiads {
+    id
+    name
+    description
+    closeDay
+    location
+    organizer {
+      id
+      organizationName
+      email
+      Olympiads {
+        id
+        name
+        description
+        closeDay
+        location
+        participants
+        scoreOfAward
+        status
+        rankingType
+        invitation
+        occurringDay
+      }
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      occurringTime
+      rooms {
+        id
+        roomNumber
+        maxStudents
+        mandatNumber
+      }
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsAnswers
+      olympiadId
+      bestMaterials {
+        studentId
+        materialImages
+        description
+      }
+      gold
+      silver
+      bronze
+      top10
+    }
+    participants
+    scoreOfAward
+    status
+    rankingType
+    invitation
+    occurringDay
+  }
+}
+# STATUS NI OPEN BAIGAA OLYMPIADUUD
+query GetAllApprovedOlympiads { 
+  getAllApprovedOlympiads {
+    id
+    name
+    description
+    closeDay
+    location
+    organizer {
+      id
+      organizationName
+      email
+      Olympiads {
+        id
+        name
+        description
+        closeDay
+        location
+        participants
+        scoreOfAward
+        status
+        rankingType
+        invitation
+        occurringDay
+      }
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      occurringTime
+      rooms {
+        id
+        roomNumber
+        maxStudents
+        mandatNumber
+      }
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsAnswers
+      olympiadId
+      bestMaterials {
+        studentId
+        materialImages
+        description
+      }
+      gold
+      silver
+      bronze
+      top10
+    }
+    participants
+    scoreOfAward
+    status
+    rankingType
+    invitation
+    occurringDay
+  }
+}
+
+query GetOlympiadByClassYear($classYear: ClassYear!) {
+  getOlympiadByClassYear(classYear: $classYear) {
+    id
+    name
+    description
+    closeDay
+    location
+    organizer {
+      id
+      organizationName
+      email
+      Olympiads {
+        id
+        name
+        description
+        closeDay
+        location
+        participants
+        scoreOfAward
+        status
+        rankingType
+        invitation
+        occurringDay
+      }
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      occurringTime
+      rooms {
+        id
+        roomNumber
+        maxStudents
+        mandatNumber
+      }
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsAnswers
+      olympiadId
+      bestMaterials {
+        studentId
+        materialImages
+        description
+      }
+      gold
+      silver
+      bronze
+      top10
+    }
+    participants
+    scoreOfAward
+    status
+    rankingType
+    invitation
+    occurringDay
+  }
+}
+
+query GetInvitationStats($olympiadId: ID!) {
+  getInvitationStats(olympiadId: $olympiadId) {
+    totalInvited
+    byClass {
+      classYear
+      count
+    }
+    byRegion {
+      region
+      count
+    }
+  }
+}
+
