@@ -1,4 +1,9 @@
-import { CompleteRank, Section, Footer } from "@/components/landingPage";
+import {
+  CompleteRank,
+  Section,
+  Footer,
+  Olympiad,
+} from "@/components/landingPage";
 
 const LandingPage = () => {
   return (
@@ -6,6 +11,7 @@ const LandingPage = () => {
       <div className="relative z-10">
         <Section />
         <CompleteRank />
+        <Olympiad />
         <Footer />
       </div>
     </div>

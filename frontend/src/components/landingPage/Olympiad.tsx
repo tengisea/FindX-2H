@@ -11,22 +11,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import {
   Calendar,
   Trophy,
   MapPin,
   Clock,
   Building,
-  Users,
   Eye,
   Star,
-  Info,
 } from "lucide-react";
+
 import { useAllOlympiadsQuery } from "@/generated";
 
 const formatDate = (dateString: string) => {
@@ -42,18 +37,6 @@ const formatDate = (dateString: string) => {
   }
 };
 
-const formatClassYears = (classYears: string[]) => {
-  return classYears
-    .map((year) => {
-      const numYear = parseInt(year);
-      if (!isNaN(numYear)) {
-        return `${numYear} дугаар анги`;
-      }
-      return year;
-    })
-    .join(", ");
-};
-
 export const Olympiad = () => {
   const [selectedRankingType, setSelectedRankingType] = useState("all");
 
@@ -63,7 +46,7 @@ export const Olympiad = () => {
 
   const rankingTypes = Array.from(
     new Set(olympiads.map((olympiad) => olympiad.rankingType))
-  );
+  ).filter((type) => type !== "A_TIER");
 
   const filteredOlympiads =
     selectedRankingType === "all"
@@ -71,6 +54,51 @@ export const Olympiad = () => {
       : olympiads.filter(
           (olympiad) => olympiad.rankingType === selectedRankingType
         );
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Featured Olympiad Competitions
+          </h2>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            Loading olympiads...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Featured Olympiad Competitions
+          </h2>
+          <p className="text-lg text-red-400 max-w-2xl mx-auto">
+            Error loading olympiads: {error.message}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (olympiads.length === 0) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Featured Olympiad Competitions
+          </h2>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            No olympiads available at the moment. Please check back later.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-16">
@@ -132,7 +160,7 @@ export const Olympiad = () => {
             <div className="relative h-48 bg-gradient-to-br from-blue-900 to-purple-900 overflow-hidden">
               {olympiad.rankingType === "NATIONAL" && (
                 <div className="absolute top-4 left-4 z-10">
-                  <Badge className="bg-gray-600 text-white border-0 flex items-center gap-1">
+                  <Badge className="bg-white text-black border-0 flex items-center gap-1">
                     <Star className="w-3 h-3" />
                     Featured
                   </Badge>
