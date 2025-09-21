@@ -57,7 +57,7 @@ export const createClassRoom = async (
     if (!classType.rooms) {
       classType.rooms = [];
     }
-    classType.rooms.push(savedClassRoom._id);
+    classType.rooms.push(savedClassRoom._id as any);
     await classType.save();
 
     // Automatically assign students to this room

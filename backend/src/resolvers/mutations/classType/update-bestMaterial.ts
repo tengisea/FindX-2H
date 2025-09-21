@@ -12,7 +12,7 @@ export const updateBestMaterial = async (_: unknown, { id, input }: any) => {
   }
 
   // Find and update the bestMaterial by studentId (assuming id is studentId)
-  const bestMaterialIndex = classType.bestMaterials.findIndex(
+  const bestMaterialIndex = classType.bestMaterials?.findIndex(
     (bm: any) => bm.studentId.toString() === id
   );
 
@@ -21,11 +21,17 @@ export const updateBestMaterial = async (_: unknown, { id, input }: any) => {
   }
 
   // Update the bestMaterial
-  classType.bestMaterials[bestMaterialIndex] = {
-    studentId,
-    materialImages,
-    description,
-  };
+  if (
+    classType.bestMaterials &&
+    bestMaterialIndex !== -1 &&
+    bestMaterialIndex !== undefined
+  ) {
+    classType.bestMaterials[bestMaterialIndex] = {
+      studentId,
+      materialImages,
+      description,
+    };
+  }
 
   await classType.save();
 
@@ -59,10 +65,11 @@ export const updateBestMaterial = async (_: unknown, { id, input }: any) => {
   }
 
   // Return the updated bestMaterial
-  const updatedBestMaterial = classType.bestMaterials[bestMaterialIndex];
+  const updatedBestMaterial =
+    classType.bestMaterials?.[bestMaterialIndex as any];
   return {
-    studentId: updatedBestMaterial.studentId.toString(),
-    materialImages: updatedBestMaterial.materialImages,
-    description: updatedBestMaterial.description,
+    studentId: updatedBestMaterial?.studentId.toString(),
+    materialImages: updatedBestMaterial?.materialImages,
+    description: updatedBestMaterial?.description,
   };
 };

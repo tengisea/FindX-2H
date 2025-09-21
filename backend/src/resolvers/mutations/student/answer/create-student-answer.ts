@@ -21,7 +21,7 @@ export const createStudentAnswer = async (
     const classType = await ClassTypeModel.findById(classTypeId);
     if (!classType) throw new GraphQLError("ClassType does not exist");
 
-    if (!classType.participants.includes(studentId as any)) {
+    if (!classType.participants?.includes(studentId as any)) {
       throw new GraphQLError("Student is not registered for this ClassType");
     }
 
@@ -32,7 +32,7 @@ export const createStudentAnswer = async (
     // Generate mandat number if not provided
     let finalMandatNumber = mandatNumber;
     if (!finalMandatNumber) {
-      const participantIndex = classType.participants.length;
+      const participantIndex = classType.participants?.length;
       finalMandatNumber = generateMandatNumber(classType.classYear, participantIndex);
     }
 

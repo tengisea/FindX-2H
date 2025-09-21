@@ -9,7 +9,7 @@ export const participantsByClassType = async (_: any, { classTypeId }: any) => {
     throw new Error("ClassType not found");
   }
 
-  return classType.participants.map((participantId: any) =>
+  return classType.participants?.map((participantId: any) =>
     participantId.toString()
   );
 };

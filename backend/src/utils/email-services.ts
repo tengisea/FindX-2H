@@ -181,7 +181,7 @@ export const sendOlympiadFinishedNotification = async (
 
     const allParticipantIds = classTypes.flatMap((ct) => ct.participants);
     const uniqueParticipantIds = [
-      ...new Set(allParticipantIds.map((id) => id.toString())),
+      ...new Set(allParticipantIds.map((id) => id?.toString())),
     ];
 
     console.log(`👥 Found ${uniqueParticipantIds.length} unique participants`);

@@ -15,7 +15,7 @@ export const updateStudentAnswer = async (
       const classType = await ClassTypeModel.findById(classTypeId);
       if (!classType) throw new GraphQLError("ClassType does not exist");
 
-      if (studentId && !classType.participants.includes(studentId as any)) {
+      if (studentId && !classType.participants?.includes(studentId as any)) {
         throw new GraphQLError("Student is not registered for this ClassType");
       }
     }
