@@ -1,0 +1,113 @@
+mutation CreateOrganizer($input: CreateOrganizerInput!) {
+  createOrganizer(input: $input) {
+    id
+    organizationName
+    email
+    Olympiads {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms {
+          id
+          roomNumber
+          maxStudents
+          mandatNumber
+        }
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+  }
+}
+
+mutation UpdateOrganizer($updateOrganizerId: ID!, $input: UpdateOrganizerInput!) {
+  updateOrganizer(id: $updateOrganizerId, input: $input) {
+    id
+    organizationName
+    email
+    Olympiads {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms {
+          id
+          roomNumber
+          maxStudents
+          mandatNumber
+        }
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+  }
+}

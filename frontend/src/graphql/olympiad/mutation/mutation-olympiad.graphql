@@ -1,0 +1,272 @@
+mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
+  createOlympiad(input: $input) {
+    id
+    name
+    description
+    closeDay
+    location
+    organizer {
+      id
+      organizationName
+      email
+      Olympiads {
+        id
+        name
+        description
+        closeDay
+        location
+        participants
+        scoreOfAward
+        status
+        rankingType
+        invitation
+        occurringDay
+      }
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      occurringTime
+      rooms {
+        id
+        roomNumber
+        maxStudents
+        mandatNumber
+      }
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsAnswers
+      olympiadId
+      bestMaterials {
+        studentId
+        materialImages
+        description
+      }
+      gold
+      silver
+      bronze
+      top10
+    }
+    participants
+    scoreOfAward
+    status
+    rankingType
+    invitation
+    occurringDay
+  }
+}
+
+mutation DeleteOlympiad($deleteOlympiadId: ID!) {
+  deleteOlympiad(id: $deleteOlympiadId)
+}
+
+mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
+  updateOlympiad(id: $updateOlympiadId, input: $input) {
+    id
+    name
+    description
+    closeDay
+    location
+    organizer {
+      id
+      organizationName
+      email
+      Olympiads {
+        id
+        name
+        description
+        closeDay
+        location
+        participants
+        scoreOfAward
+        status
+        rankingType
+        invitation
+        occurringDay
+      }
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      occurringTime
+      rooms {
+        id
+        roomNumber
+        maxStudents
+        mandatNumber
+      }
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsAnswers
+      olympiadId
+      bestMaterials {
+        studentId
+        materialImages
+        description
+      }
+      gold
+      silver
+      bronze
+      top10
+    }
+    participants
+    scoreOfAward
+    status
+    rankingType
+    invitation
+    occurringDay
+  }
+}
+
+mutation UpdateOlympiadComprehensive($updateOlympiadComprehensiveId: ID!, $input: UpdateOlympiadComprehensiveInput!) {
+  updateOlympiadComprehensive(id: $updateOlympiadComprehensiveId, input: $input) {
+    id
+    name
+    description
+    closeDay
+    location
+    organizer {
+      id
+      organizationName
+      email
+      Olympiads {
+        id
+        name
+        description
+        closeDay
+        location
+        participants
+        scoreOfAward
+        status
+        rankingType
+        invitation
+        occurringDay
+      }
+    }
+    classtypes {
+      id
+      classYear
+      maxScore
+      occurringTime
+      rooms {
+        id
+        roomNumber
+        maxStudents
+        mandatNumber
+      }
+      questions {
+        id
+        classTypeId
+        questionName
+        maxScore
+      }
+      medalists
+      participants
+      studentsAnswers
+      olympiadId
+      bestMaterials {
+        studentId
+        materialImages
+        description
+      }
+      gold
+      silver
+      bronze
+      top10
+    }
+    participants
+    scoreOfAward
+    status
+    rankingType
+    invitation
+    occurringDay
+  }
+}
+
+mutation DeleteOlympiad($deleteOlympiadId: ID!) {
+  deleteOlympiad(id: $deleteOlympiadId)
+}
+
+mutation FinishOlympiad($finishOlympiadId: ID!) {
+  finishOlympiad(id: $finishOlympiadId) {
+    success
+    message
+    olympiad {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+        Olympiads {
+          id
+          name
+          description
+          closeDay
+          location
+          participants
+          scoreOfAward
+          status
+          rankingType
+          invitation
+          occurringDay
+        }
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms {
+          id
+          roomNumber
+          maxStudents
+          mandatNumber
+        }
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+  }
+}
+

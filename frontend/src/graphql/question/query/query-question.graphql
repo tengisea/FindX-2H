@@ -1,0 +1,17 @@
+query Question($questionId: ID!) {
+  question(id: $questionId) {
+    id
+    classTypeId
+    questionName
+    maxScore
+  }
+}
+
+query QuestionsByClassType($classTypeId: ID!) {
+  questionsByClassType(classTypeId: $classTypeId) {
+    id
+    classTypeId
+    questionName
+    maxScore
+  }
+}

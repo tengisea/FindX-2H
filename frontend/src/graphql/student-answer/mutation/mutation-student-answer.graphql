@@ -3,6 +3,8 @@ mutation CreateStudentAnswer($input: CreateStudentAnswerInput!) {
     id
     studentId
     classTypeId
+    mandatNumber
+    roomNumber
     answers {
       questionId
       score
@@ -15,15 +17,13 @@ mutation CreateStudentAnswer($input: CreateStudentAnswerInput!) {
   }
 }
 
-mutation DeleteStudentAnswer($deleteStudentAnswerId: ID!) {
-  deleteStudentAnswer(id: $deleteStudentAnswerId)
-}
-
 mutation UpdateStudentAnswer($updateStudentAnswerId: ID!, $input: UpdateStudentAnswerInput!) {
   updateStudentAnswer(id: $updateStudentAnswerId, input: $input) {
     id
     studentId
     classTypeId
+    mandatNumber
+    roomNumber
     answers {
       questionId
       score
@@ -41,6 +41,8 @@ mutation UpdateStudentAnswerScore($studentAnswerId: ID!, $questionId: ID!, $scor
     id
     studentId
     classTypeId
+    mandatNumber
+    roomNumber
     answers {
       questionId
       score
@@ -53,11 +55,17 @@ mutation UpdateStudentAnswerScore($studentAnswerId: ID!, $questionId: ID!, $scor
   }
 }
 
-query AllStudentAnswers {
-  allStudentAnswers {
+mutation DeleteStudentAnswer($deleteStudentAnswerId: ID!) {
+  deleteStudentAnswer(id: $deleteStudentAnswerId)
+}
+
+mutation AddStudentResult($input: AddStudentResultInput!) {
+  addStudentResult(input: $input) {
     id
     studentId
     classTypeId
+    mandatNumber
+    roomNumber
     answers {
       questionId
       score
@@ -70,36 +78,36 @@ query AllStudentAnswers {
   }
 }
 
-query StudentAnswer($studentAnswerId: ID!) {
-  studentAnswer(id: $studentAnswerId) {
+mutation FinalizeClassTypeRankings($classTypeId: ID!) {
+  finalizeClassTypeRankings(classTypeId: $classTypeId) {
     id
-    studentId
-    classTypeId
-    answers {
-      questionId
-      score
+    classYear
+    maxScore
+    occurringTime
+    rooms {
+      id
+      roomNumber
+      maxStudents
+      mandatNumber
+    }
+    questions {
+      id
+      classTypeId
+      questionName
+      maxScore
+    }
+    medalists
+    participants
+    studentsAnswers
+    olympiadId
+    bestMaterials {
+      studentId
+      materialImages
       description
     }
-    totalScoreofOlympiad
-    createdAt
-    updatedAt
-    image
-  }
-}
-
-query StudentAnswersByClassType($classTypeId: ID!) {
-  studentAnswersByClassType(classTypeId: $classTypeId) {
-    id
-    studentId
-    classTypeId
-    answers {
-      questionId
-      score
-      description
-    }
-    totalScoreofOlympiad
-    createdAt
-    updatedAt
-    image
+    gold
+    silver
+    bronze
+    top10
   }
 }

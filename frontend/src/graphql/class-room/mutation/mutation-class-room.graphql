@@ -1,0 +1,21 @@
+mutation CreateClassRoom($input: CreateClassRoomInput!) {
+  createClassRoom(input: $input) {
+    id
+    roomNumber
+    maxStudents
+    mandatNumber
+  }
+}
+
+mutation DeleteClassRoom($deleteClassRoomId: ID!) {
+  deleteClassRoom(id: $deleteClassRoomId)
+}
+
+mutation UpdateClassRoom($updateClassRoomId: ID!, $input: UpdateClassRoomInput!) {
+  updateClassRoom(id: $updateClassRoomId, input: $input) {
+    id
+    roomNumber
+    maxStudents
+    mandatNumber
+  }
+}
