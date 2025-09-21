@@ -4,7 +4,6 @@ mutation CreateStudent($input: CreateStudentInput!) {
     name
     email
     province
-    district
     school
     class
     profilePicture
@@ -37,7 +36,6 @@ mutation UpdateStudent($updateStudentId: ID!, $input: UpdateStudentInput!) {
     name
     email
     province
-    district
     school
     class
     profilePicture
@@ -66,7 +64,6 @@ query GetAllStudent {
     name
     email
     province
-    district
     school
     class
     profilePicture
@@ -95,7 +92,6 @@ query GetStudent($getStudentId: ID!) {
     name
     email
     province
-    district
     school
     class
     profilePicture
@@ -159,7 +155,6 @@ query Students {
     email
     province
     region
-    district
     school
     class
     profilePicture
