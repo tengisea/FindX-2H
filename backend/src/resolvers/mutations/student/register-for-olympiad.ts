@@ -73,10 +73,10 @@ export const registerForOlympiad = async (
     }
 
     // Generate mandat number based on class year and participant index
-    const participantIndex = updatedClassType.participants.length;
+    const participantIndex = updatedClassType.participants?.length;
     const mandatNumber = generateMandatNumber(
       updatedClassType.classYear,
-      participantIndex
+      participantIndex as number
     );
 
     // Create StudentAnswer record

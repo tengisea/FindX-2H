@@ -15,7 +15,10 @@ import { ClassYear } from "@/models/ClassType.model";
 
 // import { extractClassYearsFromOlympiad } from "@/utils/class-year-mappers";
 
-export const createOlympiad = async (_: unknown, { input }: {input: CreateOlympiadRequestInput}) => {
+export const createOlympiad = async (
+  _: unknown,
+  { input }: { input: CreateOlympiadRequestInput }
+) => {
   const {
     organizerId,
     name,
@@ -46,14 +49,12 @@ export const createOlympiad = async (_: unknown, { input }: {input: CreateOlympi
   const classYears = [];
 
   for (const classTypeInput of classtypes) {
-    const { classYear, maxScore, medalists, questions, occurringTime, classRoom } = classTypeInput;
+    const { classYear, maxScore, medalists, questions } = classTypeInput;
 
     const classType = new ClassTypeModel({
       olympiadId: olympiad._id,
       classYear: mapClassYearToDB(classYear),
       maxScore,
-      occurringTime,
-      classRoom,
       medalists,
     });
     await classType.save();

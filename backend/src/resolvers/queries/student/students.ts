@@ -8,14 +8,12 @@ export const students = async (
     class: classYear,
     school,
     province,
-    district,
     olympiadId,
     medal,
   }: {
     class?: string;
     school?: string;
     province?: string;
-    district?: string;
     olympiadId?: string;
     medal?: string;
   }
@@ -32,9 +30,6 @@ export const students = async (
     }
     if (province) {
       query.province = province;
-    }
-    if (district) {
-      query.district = district;
     }
     if (olympiadId) {
       if (!Types.ObjectId.isValid(olympiadId)) {

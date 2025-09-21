@@ -1,0 +1,50 @@
+query GetAllOrganizers {
+  getAllOrganizers {
+    id
+    organizationName
+    email
+    Olympiads {
+      id
+      name
+      description
+      closeDay
+      location
+      status
+      scoreOfAward
+      rankingType
+      invitation
+      occurringDay
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms {
+          id
+          roomNumber
+        }
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+    }
+  }
+}
+

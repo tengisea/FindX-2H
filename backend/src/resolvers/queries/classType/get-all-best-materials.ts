@@ -6,7 +6,7 @@ export const getAllBestMaterials = async () => {
   const allBestMaterials: any[] = [];
 
   classTypes.forEach((classType) => {
-    classType.bestMaterials.forEach((bestMaterial: any) => {
+    classType.bestMaterials?.forEach((bestMaterial: any) => {
       allBestMaterials.push({
         studentId: bestMaterial.studentId.toString(),
         materialImages: bestMaterial.materialImages,

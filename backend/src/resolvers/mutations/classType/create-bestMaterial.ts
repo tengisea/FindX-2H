@@ -44,10 +44,10 @@ export const createBestMaterial = async (_: unknown, { input }: any) => {
 
   // Return the newly created bestMaterial
   const newBestMaterial =
-    updatedClassType.bestMaterials[updatedClassType.bestMaterials.length - 1];
+    updatedClassType.bestMaterials?.[updatedClassType.bestMaterials.length - 1];
   return {
-    studentId: newBestMaterial.studentId.toString(),
-    materialImages: newBestMaterial.materialImages,
-    description: newBestMaterial.description,
+    studentId: newBestMaterial?.studentId.toString(),
+    materialImages: newBestMaterial?.materialImages,
+    description: newBestMaterial?.description,
   };
 };

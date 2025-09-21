@@ -32,7 +32,7 @@ query GetOrganizer($id: ID!) {
         classYear
         maxScore
         occurringTime
-        classRoom {
+        rooms {
           id
           roomNumber
         }

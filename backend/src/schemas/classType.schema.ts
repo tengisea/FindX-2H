@@ -18,6 +18,18 @@ export const ClassTypeTypeDefs = gql`
     D_CLASS
     E_CLASS
     F_CLASS
+    ANGI_1
+    ANGI_2
+    ANGI_3
+    ANGI_4
+    ANGI_5
+    ANGI_6
+    ANGI_7
+    ANGI_8
+    ANGI_9
+    ANGI_10
+    ANGI_11
+    ANGI_12
   }
 
   type BestMaterial {
@@ -31,7 +43,7 @@ export const ClassTypeTypeDefs = gql`
     classYear: ClassYear!
     maxScore: Int!
     occurringTime: String
-    classRoom: ClassRoom
+    rooms: [ClassRoom!]
     questions: [Question!]!
     medalists: Int!
     participants: [ID!]
@@ -55,7 +67,6 @@ export const ClassTypeTypeDefs = gql`
     classYear: ClassYear!
     maxScore: Int!
     occurringTime: String
-    classRoom: ID
     questions: [CreateQuestionInput!]!
     medalists: Int!
     olympiadId: ID
@@ -72,6 +83,7 @@ export const ClassTypeTypeDefs = gql`
     occurringTime: String
     classRoom: ID
     medalists: Int
+    rooms: [ID!]
     olympiadId: ID
     bestMaterials: [BestMaterialInput!]
     gold: [ID!]

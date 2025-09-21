@@ -47,7 +47,7 @@ export class InvitationService {
       }
 
       // Only process invitations for olympiads that have next levels (SCHOOL, DISTRICT, REGIONAL)
-      if (!this.shouldProcessInvitations(finishedOlympiad.rankingType)) {
+      if (!this.shouldProcessInvitations(finishedOlympiad.rankingType as string)) {
         console.log(
           `ℹ️ Skipping invitations for olympiad without next level: ${finishedOlympiad.rankingType}`
         );
@@ -71,7 +71,7 @@ export class InvitationService {
       for (const classType of classTypes) {
         const topPerformers = await this.getTopPerformers(
           classType._id.toString(),
-          finishedOlympiad.rankingType
+          finishedOlympiad.rankingType as string
         );
 
         if (topPerformers.length === 0) {
@@ -83,25 +83,25 @@ export class InvitationService {
 
         // Find the target olympiad for invitations
         const targetOlympiad = await this.findTargetOlympiad(
-          finishedOlympiad.rankingType,
+          finishedOlympiad.rankingType as string,
           classType.classYear
         );
 
         if (!targetOlympiad) {
           console.log(
             `⚠️ No target olympiad found for ${
-              finishedOlympiad.rankingType
-            } -> ${this.getNextLevel(finishedOlympiad.rankingType)}`
+              finishedOlympiad.rankingType as string
+            } -> ${this.getNextLevel(finishedOlympiad.rankingType as string)}`
           );
           results.push({
             success: false,
             message: `No target olympiad found for ${this.getNextLevel(
-              finishedOlympiad.rankingType
+              finishedOlympiad.rankingType as string
             )} level`,
             invitedStudents: 0,
             errors: [
               `No ${this.getNextLevel(
-                finishedOlympiad.rankingType
+                finishedOlympiad.rankingType as string
               )} olympiad found for class ${classType.classYear}`,
             ],
           });

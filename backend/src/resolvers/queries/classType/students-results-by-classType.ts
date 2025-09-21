@@ -12,5 +12,5 @@ export const studentsResultsByClassType = async (
     throw new Error("ClassType not found");
   }
 
-  return classType.studentsAnswers.map((answerId: any) => answerId.toString());
+  return classType.studentsAnswers?.map((answerId: any) => answerId.toString());
 };

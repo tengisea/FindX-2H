@@ -9,7 +9,6 @@ export const StudentTypeDefs = gql`
   }
 
   enum StudentProvince {
-    ULAANBAATAR
     ARKHANGAI
     BAYAN_ULGII
     BAGANUUR
@@ -63,6 +62,18 @@ export const StudentTypeDefs = gql`
     GRADE_10
     GRADE_11
     GRADE_12
+    ANGI_1
+    ANGI_2
+    ANGI_3
+    ANGI_4
+    ANGI_5
+    ANGI_6
+    ANGI_7
+    ANGI_8
+    ANGI_9
+    ANGI_10
+    ANGI_11
+    ANGI_12
   }
 
   type RankingHistory {
@@ -80,7 +91,6 @@ export const StudentTypeDefs = gql`
     email: String!
     province: StudentProvince!
     region: StudentRegion!
-    district: String!
     school: String!
     class: StudentClass!
     profilePicture: String!
@@ -99,7 +109,7 @@ export const StudentTypeDefs = gql`
     name: String!
     email: String!
     province: StudentProvince!
-    district: String!
+    region: StudentRegion!
     school: String!
     class: StudentClass!
     profilePicture: String!
@@ -111,7 +121,7 @@ export const StudentTypeDefs = gql`
     class: StudentClass
     profilePicture: String
     province: StudentProvince
-    district: String
+    region: StudentRegion
   }
 
   input RegisterForOlympiadInput {
@@ -152,7 +162,6 @@ export const StudentTypeDefs = gql`
       class: StudentClass
       school: String
       province: StudentProvince
-      district: String
       olympiadId: ID
       medal: MedalType
     ): [Student!]!
