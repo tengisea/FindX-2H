@@ -77,7 +77,7 @@ export const OlympiadTypeDefs = gql`
     classYear: ClassYear
     maxScore: Int
     occurringTime: String
-    classRoom: ID
+    rooms: [ID!]
     medalists: Int
     questions: [UpdateQuestionInput!]
   }
@@ -172,7 +172,10 @@ export const OlympiadTypeDefs = gql`
   type Mutation {
     createOlympiad(input: CreateOlympiadRequestInput!): Olympiad!
     updateOlympiad(id: ID!, input: UpdateOlympiadInput!): Olympiad!
-    updateOlympiadComprehensive(id: ID!, input: UpdateOlympiadComprehensiveInput!): Olympiad!
+    updateOlympiadComprehensive(
+      id: ID!
+      input: UpdateOlympiadComprehensiveInput!
+    ): Olympiad!
     deleteOlympiad(id: ID!): Boolean!
     finishOlympiad(id: ID!): FinishOlympiadResponse!
     processClassTypeRankings(classTypeId: ID!): ProcessRankingResponse!

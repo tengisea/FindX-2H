@@ -16,7 +16,7 @@ export const classTypesByOlympiad = async (_: any, { olympiadId }: any) => {
       select: "name",
     })
     .populate({
-      path: "classRoom",
+      path: "rooms",
       model: "ClassRoom",
     });
 

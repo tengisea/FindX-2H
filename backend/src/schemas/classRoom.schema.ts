@@ -1,18 +1,16 @@
 import { gql } from "graphql-tag";
 
 export const ClassRoomTypeDefs = gql`
-
   type ClassRoom {
     id: ID!
     roomNumber: String!
     maxStudents: Int!
     mandatNumber: [String!]!
-    classTypeId: ID!
+    classTypeId: ID
   }
 
   input CreateClassRoomInput {
     roomNumber: String!
-    classTypeId: ID!
     maxStudents: Int!
     classTypeId: ID!
   }

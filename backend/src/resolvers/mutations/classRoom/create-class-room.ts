@@ -1,99 +1,82 @@
 import { ClassRoomModel, ClassTypeModel, StudentAnswerModel } from "@/models";
-import { GraphQLError } from "graphql";
 import { assignStudentsToRoom } from "@/utils/room-assignment";
+import { withTransaction } from "@/utils/transactionHelper";
+import {
+  createGraphQLError,
+  ErrorCodes,
+  handleAsyncError,
+} from "@/utils/errorHandler";
+import { validateClassRoomInput } from "@/utils/validationHelper";
 
 export const createClassRoom = async (
   _: unknown,
   {
     input,
-  }: { input: { roomNumber: string; classTypeId: string; maxStudents: number } }
+  }: { input: { roomNumber: string; maxStudents: number; classTypeId: string } }
 ) => {
-  const { roomNumber, classTypeId, maxStudents } = input;
+  const { roomNumber, maxStudents, classTypeId } = input;
 
-  try {
-    // Input validation
-    if (maxStudents <= 0) {
-      throw new GraphQLError("maxStudents must be greater than 0");
-    }
+  return await handleAsyncError(async () => {
+    // Validate input
+    validateClassRoomInput(input);
 
-    if (!roomNumber || roomNumber.trim() === "") {
-      throw new GraphQLError("roomNumber is required");
-    }
-
-    // Validate classType exists
-    const classType = await ClassTypeModel.findById(classTypeId);
-    if (!classType) {
-      throw new GraphQLError("ClassType not found");
-    }
-
-    // Check if room number already exists in this classType
-    const roomNumberInt = parseInt(roomNumber);
-    if (isNaN(roomNumberInt)) {
-      throw new GraphQLError("roomNumber must be a valid number");
-    }
-
-    // Check if a room with this number already exists in this ClassType
-    const existingRoomInClassType = await ClassRoomModel.findOne({
-      _id: { $in: classType.rooms || [] },
-      roomNumber: roomNumber,
-    });
-
-    if (existingRoomInClassType) {
-      throw new GraphQLError(
-        `Room number ${roomNumber} already exists in this ClassType`
+    return await withTransaction(async (session) => {
+      // Validate classType exists
+      const classType = await ClassTypeModel.findById(classTypeId).session(
+        session
       );
-    }
+      if (!classType) {
+        throw createGraphQLError("ClassType not found", ErrorCodes.NOT_FOUND);
+      }
 
-    // Create the ClassRoom document
-    const classRoom = new ClassRoomModel({
-      roomNumber,
-      maxStudents,
-      mandatNumber: [],
-      classTypeId,
-    });
+      // Check if room number already exists in this classType
+      const roomNumberInt = parseInt(roomNumber);
+      if (isNaN(roomNumberInt)) {
+        throw createGraphQLError(
+          "roomNumber must be a valid number",
+          ErrorCodes.VALIDATION_ERROR
+        );
+      }
 
-    const savedClassRoom = await classRoom.save();
+      // Check if a room with this number already exists in this ClassType
+      const existingRoom = await ClassRoomModel.findOne({
+        classTypeId: classTypeId,
+        roomNumber: roomNumber,
+      }).session(session);
 
-    // Add the room to the ClassType's rooms array
-    if (!classType.rooms) {
-      classType.rooms = [];
-    }
-    classType.rooms.push(savedClassRoom._id as any);
-    await classType.save();
+      if (existingRoom) {
+        throw createGraphQLError(
+          `Room number ${roomNumber} already exists in this ClassType`,
+          ErrorCodes.CONFLICT
+        );
+      }
 
-    // Automatically assign students to this room
-    try {
-      const assignedStudentIds = await assignStudentsToRoom(
+      // Create the ClassRoom document
+      const classRoom = new ClassRoomModel({
+        roomNumber,
+        maxStudents,
         classTypeId,
-        roomNumberInt
-      );
-      console.log(
-        `✅ Automatically assigned ${assignedStudentIds.length} students to room ${roomNumber} (ClassType: ${classTypeId})`
-      );
-    } catch (assignmentError) {
-      console.warn(
-        `⚠️ Failed to auto-assign students to room ${roomNumber} (ClassType: ${classTypeId}):`,
-        assignmentError instanceof Error
-          ? assignmentError.message
-          : assignmentError
-      );
-      // Don't throw error here, room creation should still succeed
-    }
+        mandatNumber: [],
+      });
 
-    console.log(`✅ Class room created: ${roomNumber}`);
+      const savedClassRoom = await classRoom.save({ session });
 
-    return {
-      id: savedClassRoom._id.toString(),
-      roomNumber: savedClassRoom.roomNumber,
-      maxStudents: savedClassRoom.maxStudents,
-      mandatNumber: savedClassRoom.mandatNumber.map((id) => id.toString()),
-      classTypeId: savedClassRoom.classTypeId.toString(),
-    };
-  } catch (error: any) {
-    console.error("❌ Create class room error:", error);
-    if (error instanceof GraphQLError) {
-      throw error;
-    }
-    throw new GraphQLError(error.message || "Failed to create class room");
-  }
+      // Add the room to the ClassType's rooms array
+      await ClassTypeModel.findByIdAndUpdate(
+        classTypeId,
+        { $addToSet: { rooms: savedClassRoom._id } },
+        { session }
+      );
+
+      console.log(`✅ Class room created: ${roomNumber}`);
+
+      return {
+        id: savedClassRoom._id.toString(),
+        roomNumber: savedClassRoom.roomNumber,
+        maxStudents: savedClassRoom.maxStudents,
+        mandatNumber: savedClassRoom.mandatNumber.map((id) => id.toString()),
+        classTypeId: savedClassRoom.classTypeId.toString(),
+      };
+    });
+  }, "Failed to create class room");
 };

@@ -10,8 +10,8 @@ export const deleteClassRoom = async (_: unknown, { id }: { id: string }) => {
       throw new GraphQLError("Class room not found");
     }
 
-    // Check if any class types are using this room
-    const classTypesUsingRoom = await ClassTypeModel.find({ classRoom: id });
+    // Check if any class types are using this room in their rooms array
+    const classTypesUsingRoom = await ClassTypeModel.find({ rooms: id });
     if (classTypesUsingRoom.length > 0) {
       throw new GraphQLError(
         "Cannot delete class room that is being used by class types"

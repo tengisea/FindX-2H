@@ -96,7 +96,7 @@ export const updateOlympiadComprehensive = async (
             classYear: mapClassYearToDB(classTypeInput.classYear),
             maxScore: classTypeInput.maxScore,
             occurringTime: classTypeInput.occurringTime,
-            classRoom: classTypeInput.classRoom,
+            rooms: classTypeInput.rooms || [],
             medalists: classTypeInput.medalists,
           });
           await newClassType.save();
@@ -147,7 +147,7 @@ export const updateOlympiadComprehensive = async (
         path: "classtypes",
         populate: [
           { path: "questions", model: "Question" },
-          { path: "classRoom", model: "ClassRoom" },
+          { path: "rooms", model: "ClassRoom" },
         ],
       })
       .populate({
@@ -170,9 +170,9 @@ export const updateOlympiadComprehensive = async (
         questions: classType.questions
           ? classType.questions.map((q: any) => transformDocument(q))
           : [],
-        classRoom: classType.classRoom
-          ? transformDocument(classType.classRoom)
-          : null,
+        rooms: classType.rooms
+          ? classType.rooms.map((room: any) => transformDocument(room))
+          : [],
       }));
     }
 

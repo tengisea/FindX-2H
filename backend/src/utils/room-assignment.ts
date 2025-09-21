@@ -35,7 +35,7 @@ export const assignStudentsToRoom = async (
     // Get all student answers for this classType that don't have a room assigned
     const unassignedStudentAnswers = await StudentAnswerModel.find({
       classTypeId,
-      $or: [{ roomNumber: { $exists: false } }, { roomNumber: null }],
+      $or: [{ classRoom: { $exists: false } }, { classRoom: null }],
     });
 
     if (unassignedStudentAnswers.length === 0) {
@@ -56,7 +56,7 @@ export const assignStudentsToRoom = async (
 
     await StudentAnswerModel.updateMany(
       { _id: { $in: studentIds } },
-      { roomNumber }
+      { classRoom: room._id }
     );
 
     // Add mandat numbers to the ClassRoom document
@@ -104,7 +104,7 @@ export const assignStudentsToMultipleRooms = async (
     // Get all unassigned students for this classType
     const unassignedStudentAnswers = await StudentAnswerModel.find({
       classTypeId,
-      $or: [{ roomNumber: { $exists: false } }, { roomNumber: null }],
+      $or: [{ classRoom: { $exists: false } }, { classRoom: null }],
     });
 
     if (unassignedStudentAnswers.length === 0) {
@@ -140,7 +140,7 @@ export const assignStudentsToMultipleRooms = async (
         // Update student answers
         await StudentAnswerModel.updateMany(
           { _id: { $in: studentIds } },
-          { roomNumber }
+          { classRoom: room._id }
         );
 
         // Add student answer IDs to room
@@ -177,7 +177,7 @@ export const getUnassignedStudents = async (classTypeId: string) => {
   try {
     return await StudentAnswerModel.find({
       classTypeId,
-      $or: [{ roomNumber: { $exists: false } }, { roomNumber: null }],
+      $or: [{ classRoom: { $exists: false } }, { classRoom: null }],
     }).populate("studentId", "name email class");
   } catch (error) {
     console.error("Error getting unassigned students:", error);
@@ -196,9 +196,25 @@ export const getStudentsInRoom = async (
   roomNumber: number
 ) => {
   try {
+    // First find the ClassRoom with the given roomNumber
+    const classType = await ClassTypeModel.findById(classTypeId);
+    if (!classType) {
+      throw new Error("ClassType not found");
+    }
+
+    const room = await ClassRoomModel.findOne({
+      _id: { $in: classType.rooms || [] },
+      roomNumber: roomNumber.toString(),
+    });
+
+    if (!room) {
+      return [];
+    }
+
+    // Then find all StudentAnswers assigned to this room
     return await StudentAnswerModel.find({
       classTypeId,
-      roomNumber,
+      classRoom: room._id,
     }).populate("studentId", "name email class");
   } catch (error) {
     console.error("Error getting students in room:", error);
