@@ -10,6 +10,115 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // Global ignores - must be at the top level
+  {
+    ignores: [
+      // Dependencies
+      "node_modules/",
+      "node_modules/**",
+
+      // Next.js build output
+      ".next/",
+      ".next/**",
+      ".next/**/*",
+      "**/.next/**",
+      "**/.next/**/*",
+
+      // Build outputs
+      "out/",
+      "out/**",
+      "build/",
+      "build/**",
+      "dist/",
+      "dist/**",
+
+      // Generated files
+      "**/generated/**",
+
+      // Config files
+      "**/*.config.js",
+      "**/*.config.mjs",
+      "**/*.config.ts",
+
+      // Environment files
+      "next-env.d.ts",
+      "**/next-env.d.ts",
+
+      // Logs
+      "**/*.log",
+      "npm-debug.log*",
+      "yarn-debug.log*",
+      "yarn-error.log*",
+
+      // Runtime data
+      "pids",
+      "**/*.pid",
+      "**/*.seed",
+      "**/*.pid.lock",
+
+      // Coverage directory
+      "coverage/",
+      "coverage/**",
+
+      // nyc test coverage
+      ".nyc_output",
+      ".nyc_output/**",
+
+      // Dependency directories
+      "jspm_packages/",
+      "jspm_packages/**",
+
+      // Optional npm cache directory
+      ".npm",
+      ".npm/**",
+
+      // Optional REPL history
+      ".node_repl_history",
+
+      // Output of 'npm pack'
+      "**/*.tgz",
+
+      // Yarn Integrity file
+      ".yarn-integrity",
+
+      // dotenv environment variables file
+      ".env",
+      ".env.local",
+      ".env.development.local",
+      ".env.test.local",
+      ".env.production.local",
+
+      // parcel-bundler cache
+      ".cache",
+      ".cache/**",
+      ".parcel-cache",
+      ".parcel-cache/**",
+
+      // nuxt.js build output
+      ".nuxt",
+      ".nuxt/**",
+
+      // vuepress build output
+      ".vuepress/dist",
+      ".vuepress/dist/**",
+
+      // Serverless directories
+      ".serverless",
+      ".serverless/**",
+
+      // FuseBox cache
+      ".fusebox/",
+      ".fusebox/**",
+
+      // DynamoDB Local files
+      ".dynamodb/",
+      ".dynamodb/**",
+
+      // TernJS port file
+      ".tern-port",
+    ],
+  },
+  // Main configuration
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
@@ -50,23 +159,7 @@ const eslintConfig = [
       "comma-dangle": ["warn", "always-multiline"],
       "object-curly-spacing": ["warn", "always"],
       "array-bracket-spacing": ["warn", "never"],
-      
     },
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      ".next/**/*",
-      "**/.next/**",
-      "**/.next/**/*",
-      "out/**",
-      "build/**",
-      "dist/**",
-      "next-env.d.ts",
-      "**/generated/**", // Exclude generated files
-      "**/*.config.js",
-      "**/*.config.mjs",
-      "**/*.config.ts",
-    ],
   },
   // Separate config for generated files
   {
@@ -77,9 +170,12 @@ const eslintConfig = [
       "no-console": "off",
     },
   },
-  // Completely ignore .next directory files
+  // Specific rules for Next.js generated files
   {
-    ignores: [".next/**", ".next/**/*", "**/.next/**", "**/.next/**/*"],
+    files: ["next-env.d.ts", "**/next-env.d.ts"],
+    rules: {
+      "@typescript-eslint/triple-slash-reference": "off",
+    },
   },
 ];
 

@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Trophy, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const Header = () => {
   const router = useRouter();
@@ -25,18 +26,18 @@ export const Header = () => {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors no-underline"
           >
             <Home className="w-4 h-4" /> Home
-          </a>
-          <a
+          </Link>
+          <Link
             href="/students-rankings"
             className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors no-underline"
           >
             <Trophy className="w-4 h-4" /> Student Ranking
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
