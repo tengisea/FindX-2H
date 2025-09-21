@@ -50,7 +50,7 @@ const HostPage = () => {
             date: "2024-03-15",
             location: "Ulaanbaatar",
             status: "approved",
-            classtypes: []
+            classtypes: [],
         },
         {
             id: "2",
@@ -59,8 +59,8 @@ const HostPage = () => {
             date: "2024-04-20",
             location: "Darkhan",
             status: "pending",
-            classtypes: []
-        }
+            classtypes: [],
+        },
     ];
 
     const resetForm = () => {
@@ -133,7 +133,7 @@ const HostPage = () => {
 
     const updateClassType = (index: number, field: string, value: any) => {
         const updated = classTypes.map((classType, i) =>
-            i === index ? { ...classType, [field]: value } : classType
+            i === index ? { ...classType, [field]: value } : classType,
         );
         setClassTypes(updated);
     };
@@ -169,7 +169,7 @@ const HostPage = () => {
                 const score = Number(question.maxScore) || 0;
                 return sum + score;
             },
-            0
+            0,
         );
         updated[classTypeIndex].maxScore = totalMaxScore;
 
@@ -187,7 +187,7 @@ const HostPage = () => {
                 const score = Number(question.maxScore) || 0;
                 return sum + score;
             },
-            0
+            0,
         );
         updated[classTypeIndex].maxScore = totalMaxScore;
 
@@ -198,7 +198,7 @@ const HostPage = () => {
         classTypeIndex: number,
         questionIndex: number,
         field: string,
-        value: any
+        value: any,
     ) => {
         const updated = classTypes.map((classType, ctIndex) =>
             ctIndex === classTypeIndex
@@ -207,10 +207,10 @@ const HostPage = () => {
                     questions: classType.questions.map((question: any, qIndex: number) =>
                         qIndex === questionIndex
                             ? { ...question, [field]: value }
-                            : question
+                            : question,
                     ),
                 }
-                : classType
+                : classType,
         );
 
         if (field === "maxScore") {
@@ -219,7 +219,7 @@ const HostPage = () => {
                     const score = Number(question.maxScore) || 0;
                     return sum + score;
                 },
-                0
+                0,
             );
             updated[classTypeIndex].maxScore = totalMaxScore;
         }
@@ -366,21 +366,21 @@ const HostPage = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
                             <span className="text-foreground font-medium">
-                                {activeTab === 'create' && 'Create Olympiad'}
-                                {activeTab === 'manage' && 'Manage Olympiads'}
-                                {activeTab === 'results' && 'Manage Results'}
+                                {activeTab === "create" && "Create Olympiad"}
+                                {activeTab === "manage" && "Manage Olympiads"}
+                                {activeTab === "results" && "Manage Results"}
                             </span>
                         </div>
 
                         <h1 className="text-4xl font-bold mb-2 text-foreground">
-                            {activeTab === 'create' && 'Create Olympiad'}
-                            {activeTab === 'manage' && 'Manage Olympiads'}
-                            {activeTab === 'results' && 'Manage Results'}
+                            {activeTab === "create" && "Create Olympiad"}
+                            {activeTab === "manage" && "Manage Olympiads"}
+                            {activeTab === "results" && "Manage Results"}
                         </h1>
                         <p className="text-lg text-muted-foreground">
-                            {activeTab === 'create' && 'Create and submit new olympiad requests for approval'}
-                            {activeTab === 'manage' && 'View, edit, and manage your existing olympiads'}
-                            {activeTab === 'results' && 'View, export, and manage results for your olympiads'}
+                            {activeTab === "create" && "Create and submit new olympiad requests for approval"}
+                            {activeTab === "manage" && "View, edit, and manage your existing olympiads"}
+                            {activeTab === "results" && "View, export, and manage results for your olympiads"}
                         </p>
                     </div>
 
@@ -422,7 +422,7 @@ const HostPage = () => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === 'pending').length}</div>
+                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === "pending").length}</div>
                                     <div className="text-sm text-muted-foreground">Pending Approvals</div>
                                 </div>
                             </div>
@@ -436,7 +436,7 @@ const HostPage = () => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === 'approved').length}</div>
+                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === "approved").length}</div>
                                     <div className="text-sm text-muted-foreground">Active Competitions</div>
                                 </div>
                             </div>

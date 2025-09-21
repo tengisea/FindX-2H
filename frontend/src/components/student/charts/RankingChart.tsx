@@ -19,7 +19,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Tooltip,
-  Filler
+  Filler,
 );
 
 interface RankingHistory {
@@ -58,7 +58,7 @@ const RankingChart: React.FC<RankingChartProps> = ({
     }
 
     const sortedHistory = [...rankingHistory].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
     const labels = ["Initial"];
     const data = [sortedHistory[0]?.changedBy || currentRanking];
@@ -120,7 +120,7 @@ const RankingChart: React.FC<RankingChartProps> = ({
             if (index > 0 && rankingHistory?.length) {
               const sortedHistory = [...rankingHistory].sort(
                 (a, b) =>
-                  new Date(a.date).getTime() - new Date(b.date).getTime()
+                  new Date(a.date).getTime() - new Date(b.date).getTime(),
               );
               const entry = sortedHistory[index - 1];
               if (entry) {

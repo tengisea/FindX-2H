@@ -4,7 +4,7 @@
  * Format class year to readable grade name
  */
 export const formatClassYear = (
-  classYear: string | number | null | undefined
+  classYear: string | number | null | undefined,
 ): string => {
   if (!classYear) return "Unknown Grade";
 
@@ -24,7 +24,7 @@ export const formatClassYear = (
 };
 
 export const formatDate = (
-  date: string | Date | number | null | undefined
+  date: string | Date | number | null | undefined,
 ): string => {
   if (!date || date === null || date === undefined) return "N/A";
 
@@ -286,7 +286,7 @@ export const debugDate = (date: string | Date): void => {
 
 // Safe date formatter that handles all edge cases
 export const safeFormatDate = (
-  date: string | Date | number | null | undefined
+  date: string | Date | number | null | undefined,
 ): string => {
   // Handle null, undefined, empty string
   if (!date || date === null || date === undefined || date === "") {

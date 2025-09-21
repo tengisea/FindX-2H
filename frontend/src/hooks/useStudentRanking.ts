@@ -1,6 +1,5 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
 import { useMemo } from "react";
-import { gql } from "@apollo/client";
 
 const GET_STUDENTS_MINIMAL = gql`
   query GetAllStudent {
@@ -66,14 +65,14 @@ interface UseStudentRankingResult {
 }
 
 export const useStudentRanking = (
-  currentStudentId?: string
+  currentStudentId?: string,
 ): UseStudentRankingResult => {
   const { data, loading, error } = useQuery<GetAllStudentsQuery>(
     GET_STUDENTS_MINIMAL,
     {
       errorPolicy: "all",
       notifyOnNetworkStatusChange: true,
-    }
+    },
   );
 
   const result = useMemo(() => {
@@ -174,7 +173,7 @@ export const useStudentRanking = (
 
     if (currentStudentId) {
       const currentStudentIndex = sortedStudents.findIndex(
-        (student) => student.id === currentStudentId
+        (student) => student.id === currentStudentId,
       );
 
       if (currentStudentIndex !== -1) {

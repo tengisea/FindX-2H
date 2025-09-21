@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from "react";
+"use client";
 
 interface OlympiadListProps {
     olympiads: any[];
@@ -86,10 +84,10 @@ export const OlympiadList = ({
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
         });
     };
 
@@ -125,7 +123,7 @@ export const OlympiadList = ({
                     </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">No Olympiads Yet</h3>
-                <p className="text-muted-foreground">You haven't created any olympiad requests yet.</p>
+                <p className="text-muted-foreground">You haven&apos;t created any olympiad requests yet.</p>
             </div>
         );
     }

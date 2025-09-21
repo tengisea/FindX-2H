@@ -64,8 +64,6 @@ const StudentLeaderboard: React.FC<StudentLeaderboardProps> = ({
   }
 
   const topStudents = allStudents.slice(0, showTop);
-  const currentStudentInTop =
-    currentStudentId && currentStudentRank && currentStudentRank <= showTop;
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return "🥇";
@@ -106,7 +104,7 @@ const StudentLeaderboard: React.FC<StudentLeaderboardProps> = ({
               >
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${getRankColor(
-                    rank
+                    rank,
                   )}`}
                 >
                   {getRankIcon(rank)}

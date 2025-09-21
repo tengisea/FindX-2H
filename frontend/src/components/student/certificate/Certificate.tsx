@@ -1,18 +1,7 @@
 "use client";
-import React, { useRef, useState, useMemo, Suspense, useEffect } from "react";
+import React, { useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  Html,
-  OrbitControls,
-  RoundedBox,
-  Float,
-  Sparkles,
-  Environment,
-  ContactShadows,
-  Text3D,
-  Center,
-  useTexture,
-} from "@react-three/drei";
+import { Html, OrbitControls, Float, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 
 interface Props {
@@ -28,56 +17,6 @@ interface Props {
   variant?: "classic" | "modern" | "elegant";
   onBack?: () => void;
   showBackButton?: boolean;
-}
-
-// Enhanced particle system for ambient effects
-function ParticleSystem({
-  count,
-  color,
-  speed,
-}: {
-  count: number;
-  color: string;
-  speed: number;
-}) {
-  const mesh = useRef<THREE.InstancedMesh>(null!);
-  const temp = useMemo(() => new THREE.Object3D(), []);
-
-  const particles = useMemo(() => {
-    return new Array(count).fill(0).map(() => ({
-      position: [
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 20,
-      ] as [number, number, number],
-      rotation: [0, 0, 0] as [number, number, number],
-      scale: Math.random() * 0.5 + 0.1,
-    }));
-  }, [count]);
-
-  useFrame((state) => {
-    if (mesh.current) {
-      particles.forEach((particle, i) => {
-        particle.position[1] +=
-          Math.sin(state.clock.elapsedTime * speed + i) * 0.01;
-        particle.rotation[1] += 0.01;
-
-        temp.position.set(...particle.position);
-        temp.rotation.set(...particle.rotation);
-        temp.scale.setScalar(particle.scale);
-        temp.updateMatrix();
-        mesh.current.setMatrixAt(i, temp.matrix);
-      });
-      mesh.current.instanceMatrix.needsUpdate = true;
-    }
-  });
-
-  return (
-    <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-      <sphereGeometry args={[0.02, 8, 8]} />
-      <meshBasicMaterial color={color} transparent opacity={0.6} />
-    </instancedMesh>
-  );
 }
 
 // Enhanced lighting component
@@ -108,7 +47,6 @@ function CardMesh({
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [animationPhase, setAnimationPhase] = useState(0);
-  const [touchStartTime, setTouchStartTime] = useState(0);
 
   // Enhanced rotation and floating animation with multiple phases
   useFrame((state, delta) => {
@@ -125,33 +63,33 @@ function CardMesh({
         ref.current.rotation.y = THREE.MathUtils.lerp(
           ref.current.rotation.y,
           Math.sin(time * 0.8) * 0.15 + Math.cos(time * 0.3) * 0.05,
-          3 * delta
+          3 * delta,
         );
         ref.current.rotation.x = THREE.MathUtils.lerp(
           ref.current.rotation.x,
           Math.sin(time * 0.6) * 0.05,
-          2 * delta
+          2 * delta,
         );
         ref.current.rotation.z = THREE.MathUtils.lerp(
           ref.current.rotation.z,
           Math.sin(time * 0.4) * 0.02,
-          1.5 * delta
+          1.5 * delta,
         );
       } else {
         ref.current.rotation.y = THREE.MathUtils.lerp(
           ref.current.rotation.y,
           0,
-          2 * delta
+          2 * delta,
         );
         ref.current.rotation.x = THREE.MathUtils.lerp(
           ref.current.rotation.x,
           0,
-          2 * delta
+          2 * delta,
         );
         ref.current.rotation.z = THREE.MathUtils.lerp(
           ref.current.rotation.z,
           0,
-          1.5 * delta
+          1.5 * delta,
         );
       }
 
@@ -160,7 +98,7 @@ function CardMesh({
       const currentScale = THREE.MathUtils.lerp(
         ref.current.scale.x,
         targetScale,
-        3 * delta
+        3 * delta,
       );
       ref.current.scale.setScalar(currentScale);
 
@@ -173,9 +111,7 @@ function CardMesh({
 
   const rankColor =
     rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
-  const rankColorDark =
-    rank === "gold" ? "#B8860B" : rank === "silver" ? "#A9A9A9" : "#8B4513";
-
+ 
   // Certificate variant styles
   const getVariantStyles = () => {
     switch (variant) {
@@ -216,14 +152,6 @@ function CardMesh({
   };
 
   const variantStyles = getVariantStyles();
-
-  const issueDate =
-    date ||
-    new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
 
   const certId =
     certificateId ||
@@ -531,9 +459,7 @@ function FallbackCertificate(props: Props) {
 
   const rankColor =
     rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
-  const rankColorDark =
-    rank === "gold" ? "#B8860B" : rank === "silver" ? "#A9A9A9" : "#8B4513";
-
+    
   const getVariantStyles = () => {
     switch (variant) {
       case "modern":
@@ -911,12 +837,9 @@ function FallbackCertificate(props: Props) {
 }
 
 export default function Certificate(props: Props) {
-  const { rank, variant = "classic", onBack, showBackButton = false } = props;
+  const { variant = "classic", onBack, showBackButton = false } = props;
   const [webglError, setWebglError] = useState(false);
   const [contextLossCount, setContextLossCount] = useState(0);
-
-  const rankColor =
-    rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
 
   // Dynamic background based on variant
   const getBackgroundStyle = () => {
@@ -978,14 +901,14 @@ export default function Certificate(props: Props) {
       const newCount = contextLossCount + 1;
       setContextLossCount(newCount);
       console.warn(
-        `WebGL context lost (${newCount} times), switching to fallback`
+        `WebGL context lost (${newCount} times), switching to fallback`,
       );
       setWebglError(true);
 
       // Force fallback after 2 context losses
       if (newCount >= 2) {
         console.warn(
-          "Multiple WebGL context losses detected, forcing 2D fallback mode"
+          "Multiple WebGL context losses detected, forcing 2D fallback mode",
         );
         localStorage.setItem("forceWebGLFallback", "true");
       }
@@ -1110,14 +1033,14 @@ export default function Certificate(props: Props) {
                 const newCount = contextLossCount + 1;
                 setContextLossCount(newCount);
                 console.warn(
-                  `WebGL context lost (${newCount} times), switching to fallback`
+                  `WebGL context lost (${newCount} times), switching to fallback`,
                 );
                 setWebglError(true);
 
                 // Force fallback after 2 context losses
                 if (newCount >= 2) {
                   console.warn(
-                    "Multiple WebGL context losses detected, forcing 2D fallback mode"
+                    "Multiple WebGL context losses detected, forcing 2D fallback mode",
                   );
                   localStorage.setItem("forceWebGLFallback", "true");
                 }

@@ -170,7 +170,7 @@ export const debugDate = (date: string | Date): void => {
 
 // Safe date formatter that handles all edge cases
 export const safeFormatDate = (
-    date: string | Date | null | undefined
+    date: string | Date | null | undefined,
 ): string => {
     // Handle null, undefined, empty string
     if (!date || date === null || date === undefined || date === "") {

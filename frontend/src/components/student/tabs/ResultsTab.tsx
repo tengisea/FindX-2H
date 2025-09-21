@@ -2,17 +2,12 @@
 
 import React, { useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { formatDate, formatClassYear, safeFormatDate } from "@/lib/dateUtils";
+import { formatClassYear, safeFormatDate } from "@/lib/dateUtils";
 import {
-  GetStudentQuery,
-  GetStudentsByStudentIdQuery,
   useClassTypeQuery,
 } from "@/generated";
 import { RankingChart } from "@/components/student/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-type Student = GetStudentQuery["getStudent"];
-type StudentAnswersData = GetStudentsByStudentIdQuery;
 
 interface ResultsTabProps {
   student: any;
@@ -77,7 +72,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
         [classTypeId]: maxScore,
       }));
     },
-    []
+    [],
   );
 
   const toggleExpanded = (resultId: string) => {
@@ -237,7 +232,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                               onMaxScoreChange={(maxScore) =>
                                 handleMaxScoreChange(
                                   studentAnswer.classTypeId,
-                                  maxScore
+                                  maxScore,
                                 )
                               }
                             />
@@ -390,7 +385,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                                   </p>
                                                 )}
                                               </motion.div>
-                                            )
+                                            ),
                                           )}
                                         </div>
                                       </motion.div>
@@ -442,7 +437,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                   No Results Yet
                 </h3>
                 <p className="text-muted-foreground">
-                  You haven't completed any olympiads yet. Results will appear
+                  You haven&apos;t completed any olympiads yet. Results will appear
                   here once you participate in olympiads.
                 </p>
               </div>

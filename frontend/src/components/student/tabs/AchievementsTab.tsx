@@ -41,18 +41,8 @@ const PDFCertificate = React.forwardRef<
   }
 >(
   (
-    {
-      name,
-      event,
-      rank,
-      rankLabel,
-      score,
-      category,
-      completionTime,
-      certificateId,
-      date,
-    },
-    ref
+    { name, event, rank, rankLabel, score, category, certificateId, date },
+    ref,
   ) => {
     const rankColor =
       rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
@@ -151,7 +141,7 @@ const PDFCertificate = React.forwardRef<
         </div>
       </div>
     );
-  }
+  },
 );
 
 PDFCertificate.displayName = "PDFCertificate";
@@ -159,7 +149,7 @@ PDFCertificate.displayName = "PDFCertificate";
 const AchievementsTab = () => {
   const [selectedMedalType, setSelectedMedalType] = useState<string>("all");
   const [selectedStudent, setSelectedStudent] = useState<MedalWinner | null>(
-    null
+    null,
   );
   const [searchTerm, setSearchTerm] = useState("");
   const certificateRef = useRef<HTMLDivElement>(null);
@@ -175,7 +165,7 @@ const AchievementsTab = () => {
       (student: any) =>
         student.gold.length > 0 ||
         student.silver.length > 0 ||
-        student.bronze.length > 0
+        student.bronze.length > 0,
     ) as MedalWinner[];
   }, [studentsData]);
 
@@ -226,7 +216,7 @@ const AchievementsTab = () => {
       score,
       category: `Grade ${student.class.replace(
         "GRADE_",
-        ""
+        "",
       )} - ${getProvinceName(student.province)}`,
       completionTime: "60 minutes",
       certificateId: `CERT-${student.id.slice(-8).toUpperCase()}`,
