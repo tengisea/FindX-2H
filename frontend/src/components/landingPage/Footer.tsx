@@ -487,7 +487,7 @@ export default function Footer() {
         <div className="pt-3">
           <div className="text-center">
             <div className="text-gray-400 text-sm">
-              © 2024 FindX. All rights reserved. | Built with passion for education.
+              © 2025 FindX. All rights reserved. | Built with passion for education.
             </div>
           </div>
         </div>
