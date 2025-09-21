@@ -97,7 +97,7 @@ query GetOlympiad($id: ID!) {
     rankingType
     invitation
     occurringDay
-  }
+  }}
 }
 
 mutation RegisterForOlympiad($input: RegisterForOlympiadInput!) {
