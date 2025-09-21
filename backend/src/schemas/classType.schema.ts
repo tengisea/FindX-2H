@@ -30,21 +30,23 @@ export const ClassTypeTypeDefs = gql`
     id: ID!
     classYear: ClassYear!
     maxScore: Int!
+    occurringTime: String
+    classRoom: ClassRoom
     questions: [Question!]!
     medalists: Int!
-    participants: [ID!]!
-    studentsAnswers: [ID!]!
+    participants: [ID!]
+    studentsAnswers: [ID!]
     olympiadId: ID
-    bestMaterials: [BestMaterial!]!
-    gold: [ID!]!
-    silver: [ID!]!
-    bronze: [ID!]!
-    top10: [ID!]!
+    bestMaterials: [BestMaterial!]
+    gold: [ID!]
+    silver: [ID!]
+    bronze: [ID!]
+    top10: [ID!]
   }
 
   type Question {
     id: ID!
-    classTypeId: ID!
+    classTypeId: ID
     questionName: String!
     maxScore: Int!
   }
@@ -52,6 +54,8 @@ export const ClassTypeTypeDefs = gql`
   input CreateClassTypeInput {
     classYear: ClassYear!
     maxScore: Int!
+    occurringTime: String
+    classRoom: ID
     questions: [CreateQuestionInput!]!
     medalists: Int!
     olympiadId: ID
@@ -65,6 +69,8 @@ export const ClassTypeTypeDefs = gql`
   input UpdateClassTypeInput {
     classYear: ClassYear
     maxScore: Int
+    occurringTime: String
+    classRoom: ID
     medalists: Int
     olympiadId: ID
     bestMaterials: [BestMaterialInput!]

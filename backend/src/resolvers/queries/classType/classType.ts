@@ -14,6 +14,10 @@ export const classType = async (_: any, { id }: any) => {
     .populate({
       path: "olympiadId",
       select: "name",
+    })
+    .populate({
+      path: "classRoom",
+      model: "ClassRoom",
     });
 
   if (!classType) {

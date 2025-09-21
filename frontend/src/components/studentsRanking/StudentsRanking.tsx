@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useStudentRanking } from "@/hooks/useStudentRanking";
 import { useAllOlympiadsQuery } from "@/generated";
+import { getRankingTypeDisplayName } from "@/utils/rankingUtils";
 import {
   Popover,
   PopoverContent,
@@ -404,7 +405,7 @@ export const StudentsRanking = () => {
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <Award className="w-3 h-3" />
-                                      <span>{olympiad.rankingType}</span>
+                                      <span>{getRankingTypeDisplayName(olympiad.rankingType)}</span>
                                     </div>
                                   </div>
                                 </div>

@@ -1,7 +1,9 @@
 import { StudentModel } from "@/models";
 import { ClassTypeModel } from "@/models";
 import { OlympiadModel } from "@/models";
+import { StudentAnswerModel } from "@/models";
 import { GraphQLError } from "graphql";
+import { generateMandatNumber } from "@/utils/mandat-number-generator";
 
 export const registerForOlympiad = async (
   _: unknown,
@@ -60,9 +62,39 @@ export const registerForOlympiad = async (
     );
 
     // Add the student to the ClassType's participants array
-    await ClassTypeModel.findByIdAndUpdate(
+    const updatedClassType = await ClassTypeModel.findByIdAndUpdate(
       classTypeId,
       { $addToSet: { participants: studentId } },
+      { new: true }
+    );
+
+    if (!updatedClassType) {
+      throw new GraphQLError("Failed to add student to class type");
+    }
+
+    // Generate mandat number based on class year and participant index
+    const participantIndex = updatedClassType.participants.length;
+    const mandatNumber = generateMandatNumber(
+      updatedClassType.classYear,
+      participantIndex
+    );
+
+    // Create StudentAnswer record
+    const studentAnswer = new StudentAnswerModel({
+      studentId,
+      classTypeId,
+      mandatNumber,
+      answers: [], // Empty initially, will be filled after olympiad
+      totalScoreofOlympiad: 0,
+      image: [], // Empty initially, will be filled after olympiad
+    });
+
+    const savedStudentAnswer = await studentAnswer.save();
+
+    // Add the StudentAnswer to the ClassType's studentsAnswers array
+    await ClassTypeModel.findByIdAndUpdate(
+      classTypeId,
+      { $addToSet: { studentsAnswers: savedStudentAnswer._id } },
       { new: true }
     );
 

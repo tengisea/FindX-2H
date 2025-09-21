@@ -14,6 +14,10 @@ export const allClassTypes = async () => {
     .populate({
       path: "olympiadId",
       select: "name",
+    })
+    .populate({
+      path: "classRoom",
+      model: "ClassRoom",
     });
 
   return classTypes.map((classType) => {

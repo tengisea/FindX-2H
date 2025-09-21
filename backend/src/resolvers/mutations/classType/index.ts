@@ -1,3 +1,4 @@
 export * from "./create-classType";
 export * from "./update-classType";
 export * from "./delete-classType";
+export * from "./finalize-class-type-rankings";

@@ -92,7 +92,7 @@ export const ClassTypeSection = ({
           </div>
 
           {/* Class Type Details */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
             <div>
               <label className="block text-xs font-medium text-foreground mb-1">
                 Class Year
@@ -121,7 +121,27 @@ export const ClassTypeSection = ({
                 <option value={ClassYear.Grade_10}>Grade 10</option>
                 <option value={ClassYear.Grade_11}>Grade 11</option>
                 <option value={ClassYear.Grade_12}>Grade 12</option>
+                <option value={ClassYear.CClass}>C Class</option>
+                <option value={ClassYear.DClass}>D Class</option>
+                <option value={ClassYear.EClass}>E Class</option>
+                <option value={ClassYear.FClass}>F Class</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1">
+                Occurring Time *
+              </label>
+              <input
+                type="time"
+                value={classType.occurringTime || "09:00"}
+                onChange={(e) =>
+                  onUpdateClassType(classTypeIndex, "occurringTime", e.target.value)
+                }
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
+                disabled={!!editingOlympiad}
+                required
+              />
             </div>
 
             <div>

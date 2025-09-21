@@ -8,12 +8,14 @@ import {
 } from "@/lib/enumUtils";
 
 export const createClassType = async (_: unknown, { input }: any) => {
-  const { classYear, maxScore, questions, medalists, olympiadId } = input;
+  const { classYear, maxScore, occurringTime, classRoom, questions, medalists, olympiadId } = input;
 
   const classType = new ClassTypeModel({
     olympiadId,
     classYear: mapClassYearToDB(classYear),
     maxScore,
+    occurringTime,
+    classRoom,
     medalists, // Int, not array
     questions: [],
   });

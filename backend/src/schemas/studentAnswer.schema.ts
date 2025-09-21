@@ -11,6 +11,7 @@ export const StudentAnswerTypeDefs = gql`
     id: ID!
     studentId: ID!
     classTypeId: ID!
+    mandatNumber: String!
     answers: [StudentAnswerItem!]!
     totalScoreofOlympiad: Int
     createdAt: String!
@@ -27,6 +28,7 @@ export const StudentAnswerTypeDefs = gql`
   input CreateStudentAnswerInput {
     studentId: ID!
     classTypeId: ID!
+    mandatNumber: String!
     answers: [StudentAnswerItemInput!]!
     image: [String!]!
   }
@@ -34,9 +36,21 @@ export const StudentAnswerTypeDefs = gql`
   input UpdateStudentAnswerInput {
     studentId: ID
     classTypeId: ID
+    mandatNumber: String
     answers: [StudentAnswerItemInput!]
     totalScoreofOlympiad: Int
     image: [String!]
+  }
+
+  input AddStudentResultInput {
+    studentAnswerId: ID!
+    answers: [StudentAnswerItemInput!]!
+    image: [String!]!
+  }
+
+  input AssignMedalInput {
+    studentAnswerId: ID!
+    medalType: String! # "gold", "silver", "bronze", "top10"
   }
 
   type Mutation {
@@ -51,6 +65,9 @@ export const StudentAnswerTypeDefs = gql`
       score: Int!
     ): StudentAnswer!
     deleteStudentAnswer(id: ID!): Boolean!
+    addStudentResult(input: AddStudentResultInput!): StudentAnswer!
+    assignMedal(input: AssignMedalInput!): StudentAnswer!
+    finalizeClassTypeRankings(classTypeId: ID!): ClassType!
   }
 
   type Query {

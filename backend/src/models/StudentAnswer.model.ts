@@ -3,6 +3,7 @@ import { Model, model, models, Schema } from "mongoose";
 type StudentAnswerSchemaType = {
   studentId: Schema.Types.ObjectId;
   classTypeId: Schema.Types.ObjectId;
+  mandatNumber: String;
   answers: {
     questionId: Schema.Types.ObjectId;
     score: number;
@@ -10,6 +11,8 @@ type StudentAnswerSchemaType = {
   }[];
   totalScoreofOlympiad?: number;
   image: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 const studentAnswerSchema = new Schema<StudentAnswerSchemaType>(
@@ -20,6 +23,7 @@ const studentAnswerSchema = new Schema<StudentAnswerSchemaType>(
       ref: "ClassType",
       required: true,
     },
+    mandatNumber: { type: String, required: true },
     answers: [
       {
         questionId: {

@@ -24,16 +24,16 @@ export const OlympiadTypeDefs = gql`
     id: ID!
     name: String!
     description: String!
-    closeDay: DateTime!
+    closeDay: DateTime
     location: String!
     organizer: Organizer
     classtypes: [ClassType!]!
-    participants: [ID!]!
+    participants: [ID!]
     scoreOfAward: Int
     status: OlympiadStatus!
-    rankingType: OlympiadRankingType!
-    invitation: Boolean!
-    occurringDay: DateTime!
+    rankingType: OlympiadRankingType
+    invitation: Boolean
+    occurringDay: DateTime
   }
 
   type Organizer {
@@ -47,12 +47,12 @@ export const OlympiadTypeDefs = gql`
     organizerId: ID!
     name: String!
     description: String!
-    closeDay: DateTime!
+    closeDay: DateTime
     location: String!
     classtypes: [CreateClassTypeInput!]!
-    rankingType: OlympiadRankingType!
-    invitation: Boolean!
-    occurringDay: DateTime!
+    rankingType: OlympiadRankingType
+    invitation: Boolean
+    occurringDay: DateTime
   }
 
   input UpdateOlympiadInput {

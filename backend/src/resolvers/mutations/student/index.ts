@@ -5,3 +5,5 @@ export * from "./register-for-olympiad";
 export * from "./update-medals";
 export * from "./update-ranking";
 export * from "./answer";
+export * from "./add-student-result";
+export * from "./assign-medal";

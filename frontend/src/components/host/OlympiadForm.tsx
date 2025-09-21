@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Stepper, { Step } from "../ui/Stepper";
 import { ClassTypeSection } from "./ClassTypeSection";
+import { DateTimePicker } from "../ui/date-picker";
 import {
   type CreateClassTypeInput,
   type CreateOlympiadRequestInput,
@@ -13,8 +14,8 @@ import {
 interface FormData {
   name: string;
   description: string;
-  closeDay: string;
-  occurringDay: string;
+  closeDay: Date | undefined;
+  occurringDay: Date | undefined;
   location: string;
   organizerId: string;
   invitation: boolean;
@@ -26,7 +27,7 @@ interface OlympiadFormProps {
   classTypes: CreateClassTypeInput[];
   editingOlympiad?: any;
   onSubmit: (e: React.FormEvent) => void;
-  onUpdateFormData: (field: string, value: string | boolean) => void;
+  onUpdateFormData: (field: string, value: string | boolean | Date | undefined) => void;
   onUpdateClassType: (index: number, field: string, value: any) => void;
   onAddClassType: () => void;
   onRemoveClassType: (index: number) => void;
@@ -40,6 +41,7 @@ interface OlympiadFormProps {
   ) => void;
   onResetForm: () => void;
   isSubmitting: boolean;
+  onRefetch?: () => void;
 }
 
 export const OlympiadForm = ({
@@ -56,13 +58,14 @@ export const OlympiadForm = ({
   onUpdateQuestion,
   onResetForm,
   isSubmitting,
+  onRefetch,
 }: OlympiadFormProps) => {
   const [createOlympiad, { loading: mutationLoading, error: mutationError }] = useCreateOlympiadMutation();
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleFinalSubmit = async () => {
     // Validate required fields
-    if (!formData.name || !formData.description || !formData.location || !formData.closeDay || !formData.occurringDay) {
+    if (!formData.name || !formData.description || !formData.location) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -84,8 +87,8 @@ export const OlympiadForm = ({
       const input: CreateOlympiadRequestInput = {
         name: formData.name,
         description: formData.description,
-        closeDay: new Date(formData.closeDay).toISOString(),
-        occurringDay: new Date(formData.occurringDay).toISOString(),
+        closeDay: formData.closeDay?.toISOString() || null,
+        occurringDay: formData.occurringDay?.toISOString() || null,
         location: formData.location,
         organizerId: formData.organizerId,
         invitation: formData.invitation,
@@ -103,6 +106,10 @@ export const OlympiadForm = ({
         alert("Olympiad created successfully!");
         onResetForm();
         setCurrentStep(1);
+        // Refetch data to show the new olympiad
+        if (onRefetch) {
+          onRefetch();
+        }
       }
     } catch (error) {
       console.error("Error creating olympiad:", error);
@@ -189,27 +196,23 @@ export const OlympiadForm = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Registration Close Date *
+                  Registration Close Date
                 </label>
-                <input
-                  type="datetime-local"
+                <DateTimePicker
                   value={formData.closeDay}
-                  onChange={(e) => onUpdateFormData("closeDay", e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
-                  required
+                  onChange={(date) => onUpdateFormData("closeDay", date)}
+                  placeholder="Select registration close date and time"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Olympiad Date *
+                  Olympiad Date
                 </label>
-                <input
-                  type="datetime-local"
+                <DateTimePicker
                   value={formData.occurringDay}
-                  onChange={(e) => onUpdateFormData("occurringDay", e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
-                  required
+                  onChange={(date) => onUpdateFormData("occurringDay", date)}
+                  placeholder="Select olympiad date and time"
                 />
               </div>
             </div>
@@ -229,6 +232,9 @@ export const OlympiadForm = ({
                   <option value={OlympiadRankingType.District}>District Level</option>
                   <option value={OlympiadRankingType.Regional}>Regional Level</option>
                   <option value={OlympiadRankingType.National}>National Level</option>
+                  <option value={OlympiadRankingType.ATier}>A Tier</option>
+                  <option value={OlympiadRankingType.BTier}>B Tier</option>
+                  <option value={OlympiadRankingType.CTier}>C Tier</option>
                 </select>
               </div>
 
@@ -291,11 +297,11 @@ export const OlympiadForm = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Registration Closes:</span>
-                  <span className="text-foreground font-medium">{new Date(formData.closeDay).toLocaleString()}</span>
+                  <span className="text-foreground font-medium">{formData.closeDay?.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Olympiad Date:</span>
-                  <span className="text-foreground font-medium">{new Date(formData.occurringDay).toLocaleString()}</span>
+                  <span className="text-foreground font-medium">{formData.occurringDay?.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Class Types:</span>

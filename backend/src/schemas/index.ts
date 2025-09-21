@@ -5,6 +5,7 @@ import { QuestionTypeDefs } from "./question.schema";
 import { StudentTypeDefs } from "./student.schema";
 import { OlympiadTypeDefs } from "./olympiad.schema";
 import { OrganizerTypeDefs } from "./organizer.schema";
+import { ClassRoomTypeDefs } from "./classRoom.schema";
 
 export const typeDefs = [
   commonTypeDefs,
@@ -14,4 +15,5 @@ export const typeDefs = [
   StudentAnswerTypeDefs,
   OlympiadTypeDefs,
   OrganizerTypeDefs,
+  ClassRoomTypeDefs,
 ];
