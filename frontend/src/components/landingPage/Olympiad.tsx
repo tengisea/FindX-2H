@@ -27,7 +27,7 @@ import {
   Star,
   Info,
 } from "lucide-react";
-import { useAllOlympiadsQuery } from "@/generated";
+import { useGetAllOlympiadsQuery } from "@/generated";
 
 const formatDate = (dateString: string) => {
   try {
@@ -57,7 +57,7 @@ const formatClassYears = (classYears: string[]) => {
 export const Olympiad = () => {
   const [selectedRankingType, setSelectedRankingType] = useState("all");
 
-  const { data, loading, error } = useAllOlympiadsQuery();
+  const { data, loading, error } = useGetAllOlympiadsQuery();
 
   const olympiads = data?.allOlympiads || [];
 

@@ -1,3 +1,16 @@
+query GetAllOrganizers {
+  getAllOrganizers {
+    id
+    organizationName
+    email
+    Olympiads {
+      id
+      name
+      status
+    }
+  }
+}
+
 query GetOrganizer($id: ID!) {
   getOrganizer(id: $id) {
     id

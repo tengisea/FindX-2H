@@ -1,6 +1,6 @@
 "use client";
 
-import { useOlympiadQuery } from "@/generated";
+import { useGetOlympiadQuery } from "@/generated";
 import { safeFormatDate } from "@/lib/dateUtils";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -17,8 +17,8 @@ const ParticipatedOlympiadRow = ({
     data: olympiadData,
     loading,
     error,
-  } = useOlympiadQuery({
-    variables: { olympiadId: olympiadId },
+  } = useGetOlympiadQuery({
+    variables: { id: olympiadId },
   });
 
   if (loading) {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@apollo/client";
 
 import { OlympiadForm } from "@/components/host/OlympiadForm";
-import { OlympiadList } from "@/components/host/OlympiadList";
+import { ManageOlympiads } from "@/components/host/ManageOlympiads";
 import { ManageResults } from "@/components/host/ManageResults";
 import HostSidebar from "@/components/host/HostSidebar";
 import StaggeredMenu from "@/components/ui/StaggeredMenu";
@@ -46,10 +46,10 @@ const HostPage = () => {
             occurringTime: "9:00",
             classRoom: null,
             questions: [
-                { questionName: "Question 1", maxScore: 5 },
-                { questionName: "Question 2", maxScore: 5 },
-                { questionName: "Question 3", maxScore: 5 },
-                { questionName: "Question 4", maxScore: 5 },
+                { questionName: "Question1", maxScore: 5 },
+                { questionName: "Question2", maxScore: 5 },
+                { questionName: "Question3", maxScore: 5 },
+                { questionName: "Question4", maxScore: 5 },
             ],
         },
     ]);
@@ -76,10 +76,10 @@ const HostPage = () => {
                 occurringTime: "9:00",
                 classRoom: null,
                 questions: [
-                    { questionName: "Question 1", maxScore: 5 },
-                    { questionName: "Question 2", maxScore: 5 },
-                    { questionName: "Question 3", maxScore: 5 },
-                    { questionName: "Question 4", maxScore: 5 },
+                    { questionName: "Question1", maxScore: 5 },
+                    { questionName: "Question2", maxScore: 5 },
+                    { questionName: "Question3", maxScore: 5 },
+                    { questionName: "Question4", maxScore: 5 },
                 ],
             },
         ]);
@@ -99,20 +99,6 @@ const HostPage = () => {
         }, 1000);
     };
 
-    const handleEditOlympiad = (olympiad: any) => {
-        setFormData({
-            name: olympiad.name,
-            description: olympiad.description,
-            closeDay: olympiad.closeDay ? new Date(olympiad.closeDay) : undefined,
-            occurringDay: olympiad.occurringDay ? new Date(olympiad.occurringDay) : (olympiad.date ? new Date(olympiad.date) : undefined),
-            location: olympiad.location,
-            organizerId: ORGANIZER_ID,
-            invitation: olympiad.invitation || false,
-            rankingType: olympiad.rankingType || "SCHOOL",
-        });
-        setEditingOlympiad(olympiad);
-        setActiveTab("create");
-    };
 
     const handleDeleteOlympiad = async (id: string) => {
         if (!confirm("Are you sure you want to delete this olympiad?")) {
@@ -148,8 +134,8 @@ const HostPage = () => {
                 occurringTime: "9:00",
                 classRoom: null,
                 questions: [
-                    { questionName: "Question 1", maxScore: 5 },
-                    { questionName: "Question 2", maxScore: 5 },
+                    { questionName: "Question1", maxScore: 5 },
+                    { questionName: "Question2", maxScore: 5 },
                 ],
             },
         ]);
@@ -162,7 +148,7 @@ const HostPage = () => {
     const addQuestion = (classTypeIndex: number) => {
         const updated = [...classTypes];
         updated[classTypeIndex].questions.push({
-            questionName: `Question ${updated[classTypeIndex].questions.length + 1}`,
+            questionName: `Question${updated[classTypeIndex].questions.length + 1}`,
             maxScore: 5,
         });
 
@@ -303,12 +289,8 @@ const HostPage = () => {
                 );
             case "manage":
                 return (
-                    <OlympiadList
-                        olympiads={myOlympiads}
-                        loading={organizerLoading}
-                        onEditOlympiad={handleEditOlympiad}
-                        onDeleteOlympiad={handleDeleteOlympiad}
-                        isDeleting={isDeleting}
+                    <ManageOlympiads
+                        organizerId={ORGANIZER_ID}
                     />
                 );
             case "results":
@@ -325,6 +307,7 @@ const HostPage = () => {
     };
 
     return (
+        <>
         <div className="min-h-screen bg-background">
             {/* StaggeredMenu Navigation */}
             <StaggeredMenu
@@ -475,6 +458,7 @@ const HostPage = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
