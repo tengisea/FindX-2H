@@ -5,8 +5,7 @@ import { StudentSidebar } from "@/components/student/StudentSidebar";
 import StaggeredMenu from "@/components/ui/StaggeredMenu";
 import {
   useGetStudentQuery,
-  useGetAllApprovedOlympiadsQuery,
-  useRegisterForOlympiadMutation,
+  useGetAllOlympiadsQuery,
   useGetStudentsByStudentIdQuery,
 } from "@/generated";
 import { getCurrentStudentId } from "@/config/student";
@@ -93,18 +92,15 @@ const StudentPage = () => {
   });
 
   const { data: olympiadsData, loading: olympiadsLoading } =
-    useGetAllApprovedOlympiadsQuery();
+    useGetAllOlympiadsQuery();
 
   const { data: studentAnswersData, loading: studentAnswersLoading } =
     useGetStudentsByStudentIdQuery({
       variables: { studentId: studentId },
     });
 
-  const [registerForOlympiad, { loading: registering }] =
-    useRegisterForOlympiadMutation();
-
   const student = studentData?.getStudent;
-  const olympiads = olympiadsData?.getAllApprovedOlympiads || [];
+  const olympiads = olympiadsData?.allOlympiads || [];
 
   const handleViewDetails = (olympiad: any) => {
     setSelectedOlympiad(olympiad);
@@ -118,15 +114,16 @@ const StudentPage = () => {
 
   const handleGradeSelection = async (classType: any) => {
     try {
-      await registerForOlympiad({
-        variables: {
-          input: {
-            studentId: studentId,
-            classTypeId: classType.id,
-            olympiadId: selectedOlympiad.id,
-          },
-        },
-      });
+      // TODO: Implement registerForOlympiad mutation
+      // await registerForOlympiad({
+      //   variables: {
+      //     input: {
+      //       studentId: studentId,
+      //       classTypeId: classType.id,
+      //       olympiadId: selectedOlympiad.id,
+      //     },
+      //   },
+      // });
 
       alert("Successfully registered for the olympiad!");
       setShowGradeSelectionModal(false);
@@ -172,7 +169,7 @@ const StudentPage = () => {
             onViewDetails={handleViewDetails}
             onRegister={handleRegister}
             isStudentRegistered={isStudentRegistered}
-            registering={registering}
+            registering={false}
           />
         );
       case "participated":
@@ -249,7 +246,7 @@ const StudentPage = () => {
           setShowDetailsModal(false);
           handleRegister(selectedOlympiad);
         }}
-        registering={registering}
+        registering={false}
       />
 
       <GradeSelectionModal
@@ -264,7 +261,7 @@ const StudentPage = () => {
         onRegister={() =>
           selectedClassType && handleGradeSelection(selectedClassType)
         }
-        registering={registering}
+        registering={false}
       />
     </div>
   );

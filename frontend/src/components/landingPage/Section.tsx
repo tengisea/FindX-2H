@@ -3,14 +3,14 @@ import Image from "next/image";
 import { Trophy, Lock, Shield, Users } from "lucide-react";
 import {
   useGetAllStudentQuery,
-  useAllOlympiadsQuery,
+  useGetAllOlympiadsQuery,
   useGetAllOrganizersQuery,
 } from "@/generated";
 import { useMemo } from "react";
 
 export const Section = () => {
   const { data: studentsData } = useGetAllStudentQuery();
-  const { data: olympiadsData } = useAllOlympiadsQuery();
+  const { data: olympiadsData } = useGetAllOlympiadsQuery();
   const { data: organizersData } = useGetAllOrganizersQuery();
 
   const stats = useMemo(() => {

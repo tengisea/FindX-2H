@@ -1,292 +1,375 @@
 "use client";
 
+import { useState } from "react";
+import { 
+  useUpdateOlympiadComprehensiveMutation,
+  useDeleteOlympiadMutation,
+  useGetAllClassRoomsQuery,
+  Olympiad,
+  ClassYear,
+  OlympiadStatus,
+  OlympiadRankingType
+} from "@/generated";
+import { getRankingTypeDisplayName } from "@/utils/rankingUtils";
+
 interface OlympiadListProps {
-    olympiads: any[];
-    loading: boolean;
-    onEditOlympiad: (olympiad: any) => void;
-    onDeleteOlympiad: (id: string) => void;
-    isDeleting: boolean;
+  olympiads: any[];
+  loading: boolean;
+  onEditOlympiad: (olympiad: any) => void;
+  onDeleteOlympiad: (id: string) => void;
+  isDeleting: boolean;
+  onRefetch: () => void;
 }
 
 export const OlympiadList = ({
-    olympiads,
-    loading,
-    onEditOlympiad,
-    onDeleteOlympiad,
-    isDeleting,
+  olympiads,
+  loading,
+  onEditOlympiad,
+  onDeleteOlympiad,
+  isDeleting,
+  onRefetch,
 }: OlympiadListProps) => {
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "pending":
-                return "bg-yellow-100 text-yellow-800 border-yellow-200";
-            case "approved":
-                return "bg-green-100 text-green-800 border-green-200";
-            case "rejected":
-                return "bg-destructive/10 text-destructive border-destructive/20";
-            default:
-                return "bg-muted text-muted-foreground border-border";
-        }
-    };
+  const [editingOlympiad, setEditingOlympiad] = useState<Olympiad | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [rankingFilter, setRankingFilter] = useState<string>("all");
 
-    const getStatusIcon = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "pending":
-                return (
-                    <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
-                );
-            case "approved":
-                return (
-                    <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
-                );
-            case "rejected":
-                return (
-                    <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                        />
-                    </svg>
-                );
-            default:
-                return null;
-        }
-    };
+  const [updateOlympiadComprehensive] = useUpdateOlympiadComprehensiveMutation();
+  const [deleteOlympiad] = useDeleteOlympiadMutation();
+  const { data: classRoomsData } = useGetAllClassRoomsQuery();
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
+  const getStatusColor = (status: OlympiadStatus) => {
+    switch (status) {
+      case OlympiadStatus.Draft:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+      case OlympiadStatus.UnderReview:
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case OlympiadStatus.Open:
+        return "bg-green-100 text-green-800 border-green-200";
+      case OlympiadStatus.Closed:
+        return "bg-red-100 text-red-800 border-red-200";
+      case OlympiadStatus.Finished:
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      default:
+        return "bg-muted text-muted-foreground border-border";
+    }
+  };
+
+  const getStatusIcon = (status: OlympiadStatus) => {
+    switch (status) {
+      case OlympiadStatus.Draft:
+        return "📝";
+      case OlympiadStatus.UnderReview:
+        return "⏳";
+      case OlympiadStatus.Open:
+        return "✅";
+      case OlympiadStatus.Closed:
+        return "❌";
+      case OlympiadStatus.Finished:
+        return "🏆";
+      default:
+        return "❓";
+    }
+  };
+
+  const formatDate = (dateString?: string | null) => {
+    if (!dateString) return "Not set";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const getClassYearDisplay = (classYear: ClassYear) => {
+    const yearMap: { [key in ClassYear]: string } = {
+      [ClassYear.Grade_1]: "Grade 1",
+      [ClassYear.Grade_2]: "Grade 2",
+      [ClassYear.Grade_3]: "Grade 3",
+      [ClassYear.Grade_4]: "Grade 4",
+      [ClassYear.Grade_5]: "Grade 5",
+      [ClassYear.Grade_6]: "Grade 6",
+      [ClassYear.Grade_7]: "Grade 7",
+      [ClassYear.Grade_8]: "Grade 8",
+      [ClassYear.Grade_9]: "Grade 9",
+      [ClassYear.Grade_10]: "Grade 10",
+      [ClassYear.Grade_11]: "Grade 11",
+      [ClassYear.Grade_12]: "Grade 12",
+      [ClassYear.CClass]: "C Class",
+      [ClassYear.DClass]: "D Class",
+      [ClassYear.EClass]: "E Class",
+      [ClassYear.FClass]: "F Class",
+    };
+    return yearMap[classYear] || classYear;
+  };
+
+  const filteredOlympiads = olympiads.filter((olympiad) => {
+    const matchesSearch = 
+      olympiad.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      olympiad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (olympiad.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
+    
+    const matchesStatus = statusFilter === "all" || olympiad.status === statusFilter;
+    const matchesRanking = rankingFilter === "all" || olympiad.rankingType === rankingFilter;
+    
+    return matchesSearch && matchesStatus && matchesRanking;
+  });
+
+  const handleQuickUpdate = async (olympiadId: string, field: string, value: any) => {
+    try {
+      // Find the olympiad to get its current location
+      const olympiad = olympiads.find(o => o.id === olympiadId);
+      if (!olympiad) return;
+
+      await updateOlympiadComprehensive({
+        variables: {
+          id: olympiadId,
+          input: { 
+            [field]: value,
+            ...(olympiad.location && { location: olympiad.location }) // Only include location if it exists
+          }
+        }
+      });
+      onRefetch();
+    } catch (error) {
+      console.error("Update failed:", error);
+    }
+  };
+
+  const handleDelete = async (olympiadId: string) => {
+    if (window.confirm("Are you sure you want to delete this olympiad?")) {
+      try {
+        await deleteOlympiad({
+          variables: { id: olympiadId }
         });
-    };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center py-20">
-                <div className="bg-card rounded-2xl shadow-xl border border-border p-12 text-center">
-                    <div className="animate-spin w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full mx-auto mb-4"></div>
-                    <div className="text-muted-foreground font-medium">
-                        Loading your olympiads...
-                    </div>
-                </div>
-            </div>
-        );
+        onRefetch();
+      } catch (error) {
+        console.error("Delete failed:", error);
+      }
     }
+  };
 
-    if (!olympiads || olympiads.length === 0) {
-        return (
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-8 text-center">
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg
-                        className="w-8 h-8 text-muted-foreground"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                        />
-                    </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">No Olympiads Yet</h3>
-                <p className="text-muted-foreground">You haven&apos;t created any olympiad requests yet.</p>
-            </div>
-        );
-    }
-
+  if (loading) {
     return (
-        <div className="space-y-6">
-            {/* Search and Filter Section */}
-            <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
-                <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex-1">
-                        <input
-                            type="text"
-                            placeholder="Search olympiads, locations, or descriptions..."
-                            className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
-                        />
-                    </div>
-                    <div className="flex gap-4">
-                        <select className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground">
-                            <option>All Status</option>
-                            <option>Pending</option>
-                            <option>Approved</option>
-                            <option>Rejected</option>
-                        </select>
-                        <select className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground">
-                            <option>All Priorities</option>
-                            <option>High</option>
-                            <option>Medium</option>
-                            <option>Low</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+      <div className="flex justify-center items-center py-20">
+        <div className="bg-card rounded-2xl shadow-xl border border-border p-12 text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full mx-auto mb-4"></div>
+          <div className="text-muted-foreground font-medium">
+            Loading your olympiads...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-            {/* Request List Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                    <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="w-4 h-4 text-primary rounded" />
-                        <span className="text-sm text-muted-foreground">Select all {olympiads.length} olympiads</span>
-                    </label>
+  if (!olympiads || olympiads.length === 0) {
+    return (
+      <div className="bg-card rounded-2xl shadow-xl border border-border p-8 text-center">
+        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg
+            className="w-8 h-8 text-muted-foreground"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
+          </svg>
+        </div>
+        <h3 className="text-2xl font-bold text-foreground mb-2">No Olympiads Yet</h3>
+        <p className="text-muted-foreground">You haven&apos;t created any olympiad requests yet.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Search and Filter Section */}
+      <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Search olympiads, locations, or descriptions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+            />
+          </div>
+          <div className="flex gap-4">
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+            >
+              <option value="all">All Status</option>
+              <option value={OlympiadStatus.Draft}>Draft</option>
+              <option value={OlympiadStatus.UnderReview}>Under Review</option>
+              <option value={OlympiadStatus.Open}>Open</option>
+              <option value={OlympiadStatus.Closed}>Closed</option>
+              <option value={OlympiadStatus.Finished}>Finished</option>
+            </select>
+            <select 
+              value={rankingFilter}
+              onChange={(e) => setRankingFilter(e.target.value)}
+              className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+            >
+              <option value="all">All Rankings</option>
+              <option value={OlympiadRankingType.School}>School Level</option>
+              <option value={OlympiadRankingType.District}>District Level</option>
+              <option value={OlympiadRankingType.Regional}>Regional Level</option>
+              <option value={OlympiadRankingType.National}>National Level</option>
+              <option value={OlympiadRankingType.ATier}>A Tier</option>
+              <option value={OlympiadRankingType.BTier}>B Tier</option>
+              <option value={OlympiadRankingType.CTier}>C Tier</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Results Header */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          Showing {filteredOlympiads.length} of {olympiads.length} olympiads
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {filteredOlympiads.length > 0 && (
+            <span className="text-primary font-medium">
+              {filteredOlympiads.filter(o => o.status === OlympiadStatus.Open).length} active
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Olympiad Cards */}
+      <div className="space-y-4">
+        {filteredOlympiads.map((olympiad) => (
+          <div
+            key={olympiad.id}
+            className="bg-card rounded-2xl shadow-lg border border-border p-6 hover:shadow-xl transition-all duration-300"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <span className="text-2xl">🏆</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-foreground mb-1">
+                    {olympiad.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {olympiad.description}
+                  </p>
+                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <span className="flex items-center space-x-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>{olympiad.location || "No location set"}</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>Close: {formatDate(olympiad.closeDay)}</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>Event: {formatDate(olympiad.occurringDay)}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(olympiad.status)}`}>
+                    {getStatusIcon(olympiad.status)} {olympiad.status.replace('_', ' ')}
+                  </span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                    Showing {olympiads.length} of {olympiads.length} olympiads
+                  <div className="mb-1">
+                    <span className="font-medium">Ranking:</span> {getRankingTypeDisplayName(olympiad.rankingType)}
+                  </div>
+                  <div className="mb-1">
+                    <span className="font-medium">Classes:</span> {olympiad.classtypes?.length || 0}
+                  </div>
+                  <div>
+                    <span className="font-medium">Questions:</span> {olympiad.classtypes?.reduce((total: number, ct: any) => total + (ct.questions?.length || 0), 0) || 0}
+                  </div>
                 </div>
+              </div>
             </div>
 
-            {/* Olympiad Cards */}
-            <div className="space-y-4">
-                {olympiads.map((olympiad) => (
+            {/* Class Types Summary */}
+            {olympiad.classtypes && olympiad.classtypes.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-foreground mb-2">Class Types:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {olympiad.classtypes.map((classType: any) => (
                     <div
-                        key={olympiad.id}
-                        className="bg-card rounded-2xl shadow-lg border border-border p-6 hover:shadow-xl transition-all duration-300"
+                      key={classType.id}
+                      className="bg-muted/50 rounded-lg px-3 py-1 text-sm"
                     >
-                        <div className="flex items-start space-x-4">
-                            <input type="checkbox" className="w-4 h-4 text-primary rounded mt-1" />
-
-                            <div className="flex-1">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-                                            <svg className="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-foreground">{olympiad.name}</h3>
-                                            <p className="text-sm text-muted-foreground">Olympiad Competition</p>
-                                            <div className="flex items-center space-x-4 mt-2 text-sm text-muted-foreground">
-                                                <span className="flex items-center space-x-1">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                    <span>Applied {formatDate(olympiad.date)}</span>
-                                                </span>
-                                                <span className="flex items-center space-x-1">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg>
-                                                    <span>{olympiad.location}</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-right">
-                                        <div className="text-sm text-muted-foreground mb-2">
-                                            <span className="flex items-center space-x-1">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                                                </svg>
-                                                <span>0 students</span>
-                                            </span>
-                                        </div>
-                                        <div className="text-sm text-muted-foreground mb-2">
-                                            <span className="flex items-center space-x-1">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                                </svg>
-                                                <span>1 competition/year</span>
-                                            </span>
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">
-                                            <span className="flex items-center space-x-1">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                                </svg>
-                                                <span>Experience: 1 year</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex items-center space-x-2">
-                                            <span className="text-sm text-muted-foreground">Priority:</span>
-                                            <select className="text-sm border-none bg-transparent text-destructive font-medium">
-                                                <option>high priority</option>
-                                                <option>medium priority</option>
-                                                <option>low priority</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center space-x-4">
-                                        <div className="text-sm text-muted-foreground">
-                                            <span className="flex items-center space-x-1">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span>Pending for 7 days</span>
-                                            </span>
-                                        </div>
-
-                                        <div className="flex space-x-2">
-                                            <button
-                                                onClick={() => onDeleteOlympiad(olympiad.id)}
-                                                disabled={isDeleting}
-                                                className="px-4 py-2 bg-background border border-border text-foreground rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                                Reject
-                                            </button>
-                                            <button
-                                                onClick={() => onEditOlympiad(olympiad)}
-                                                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-                                            >
-                                                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                Approve
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                      <span className="font-medium">{getClassYearDisplay(classType.classYear)}</span>
+                      <span className="text-muted-foreground ml-2">
+                        ({classType.questions?.length || 0} questions, {classType.maxScore} pts)
+                      </span>
                     </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between pt-4 border-t border-border">
+              <div className="flex items-center space-x-2">
+                <select
+                  value={olympiad.status}
+                  onChange={(e) => handleQuickUpdate(olympiad.id, 'status', e.target.value)}
+                  className="text-sm border border-border rounded-lg px-3 py-1 bg-background text-foreground"
+                >
+                  <option value={OlympiadStatus.Draft}>Draft</option>
+                  <option value={OlympiadStatus.UnderReview}>Under Review</option>
+                  <option value={OlympiadStatus.Open}>Open</option>
+                  <option value={OlympiadStatus.Closed}>Closed</option>
+                  <option value={OlympiadStatus.Finished}>Finished</option>
+                </select>
+              </div>
+
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => onEditOlympiad(olympiad)}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Edit</span>
+                </button>
+                <button
+                  onClick={() => handleDelete(olympiad.id)}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  <span>Delete</span>
+                </button>
+              </div>
             </div>
-        </div>
-    );
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };

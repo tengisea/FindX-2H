@@ -1,37 +1,33 @@
-mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
-  createOlympiad(input: $input) {
+query GetAllOlympiads {
+  allOlympiads {
     id
     name
     description
     closeDay
     location
+    status
+    rankingType
+    invitation
+    occurringDay
     organizer {
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
       classYear
       maxScore
+      occurringTime
+      classRoom {
+        id
+        roomNumber
+      }
       questions {
         id
-        classTypeId
         questionName
         maxScore
+        classTypeId
       }
       medalists
       participants
@@ -49,48 +45,34 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
     }
     participants
     scoreOfAward
-    status
-    rankingType
-    invitation
-    occurringDay
   }
 }
 
-mutation DeleteOlympiad($deleteOlympiadId: ID!) {
-  deleteOlympiad(id: $deleteOlympiadId)
-}
-
-mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
-  updateOlympiad(id: $updateOlympiadId, input: $input) {
+query GetOlympiad($id: ID!) {
+  olympiad(id: $id) {
     id
     name
     description
     closeDay
     location
+    status
+    rankingType
+    invitation
+    occurringDay
     organizer {
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
       classYear
       maxScore
-      questions {
+      occurringTime
+      classRoom {
         id
+        roomNumber
+        mandatNumber {
         classTypeId
         questionName
         maxScore
@@ -179,69 +161,18 @@ mutation FinishOlympiad($finishOlympiadId: ID!) {
         classYear
         maxScore
         questions {
+
           id
-          classTypeId
-          questionName
-          maxScore
-        }
-        medalists
-        participants
-        studentsAnswers
-        olympiadId
-        bestMaterials {
           studentId
-          materialImages
-          description
+          classTypeId
+          mandatNumber
         }
-        gold
-        silver
-        bronze
-        top10
       }
-      participants
-      scoreOfAward
-      status
-      rankingType
-      invitation
-      occurringDay
-    }
-  }
-}
-
-query AllOlympiads {
-  allOlympiads {
-    id
-    name
-    description
-    closeDay
-    location
-    organizer {
-      id
-      organizationName
-      email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
-    }
-    classtypes {
-      id
-      classYear
-      maxScore
       questions {
         id
-        classTypeId
         questionName
         maxScore
+        classTypeId
       }
       medalists
       participants
@@ -259,47 +190,39 @@ query AllOlympiads {
     }
     participants
     scoreOfAward
-    status
-    rankingType
-    invitation
-    occurringDay
   }
 }
 
-query GetOlympiadByClassYear($classYear: ClassYear!) {
-  getOlympiadByClassYear(classYear: $classYear) {
+mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
+  createOlympiad(input: $input) {
     id
     name
     description
     closeDay
     location
+    status
+    rankingType
+    invitation
+    occurringDay
     organizer {
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
       classYear
       maxScore
+      occurringTime
+      classRoom {
+        id
+        roomNumber
+      }
       questions {
         id
-        classTypeId
         questionName
         maxScore
+        classTypeId
       }
       medalists
       participants
@@ -317,47 +240,45 @@ query GetOlympiadByClassYear($classYear: ClassYear!) {
     }
     participants
     scoreOfAward
-    status
-    rankingType
-    invitation
-    occurringDay
   }
 }
 
-query GetAllApprovedOlympiads {
-  getAllApprovedOlympiads {
+mutation UpdateOlympiadComprehensive($id: ID!, $input: UpdateOlympiadComprehensiveInput!) {
+  updateOlympiadComprehensive(id: $id, input: $input) {
     id
     name
     description
     closeDay
     location
+    status
+    rankingType
+    invitation
+    occurringDay
     organizer {
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
       classYear
       maxScore
+      occurringTime
+      classRoom {
+        id
+        roomNumber
+        mandatNumber {
+          id
+          studentId
+          classTypeId
+          mandatNumber
+        }
+      }
       questions {
         id
-        classTypeId
         questionName
         maxScore
+        classTypeId
       }
       medalists
       participants
@@ -375,68 +296,22 @@ query GetAllApprovedOlympiads {
     }
     participants
     scoreOfAward
-    status
-    rankingType
-    invitation
-    occurringDay
   }
 }
 
-query Olympiad($olympiadId: ID!) {
-  olympiad(id: $olympiadId) {
+mutation DeleteOlympiad($id: ID!) {
+  deleteOlympiad(id: $id)
+}
+
+query GetAllClassRooms {
+  allClassRooms {
     id
-    name
-    description
-    closeDay
-    location
-    organizer {
+    roomNumber
+    mandatNumber {
       id
-      organizationName
-      email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
+      studentId
+      classTypeId
+      mandatNumber
     }
-    classtypes {
-      id
-      classYear
-      maxScore
-      questions {
-        id
-        classTypeId
-        questionName
-        maxScore
-      }
-      medalists
-      participants
-      studentsAnswers
-      olympiadId
-      bestMaterials {
-        studentId
-        materialImages
-        description
-      }
-      gold
-      silver
-      bronze
-      top10
-    }
-    participants
-    scoreOfAward
-    status
-    rankingType
-    invitation
-    occurringDay
   }
 }
-
