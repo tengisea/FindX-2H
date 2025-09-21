@@ -65,6 +65,41 @@ export const OlympiadTypeDefs = gql`
     status: OlympiadStatus
   }
 
+  input UpdateQuestionInput {
+    id: ID
+    questionName: String
+    maxScore: Int
+    classTypeId: ID
+  }
+
+  input UpdateClassTypeComprehensiveInput {
+    id: ID
+    classYear: ClassYear
+    maxScore: Int
+    occurringTime: String
+    classRoom: ID
+    medalists: Int
+    questions: [UpdateQuestionInput!]
+  }
+
+  input UpdateClassRoomInput {
+    id: ID
+    roomNumber: String
+  }
+
+  input UpdateOlympiadComprehensiveInput {
+    name: String
+    description: String
+    closeDay: DateTime
+    location: String
+    rankingType: OlympiadRankingType
+    invitation: Boolean
+    occurringDay: DateTime
+    status: OlympiadStatus
+    classTypes: [UpdateClassTypeComprehensiveInput!]
+    classRooms: [UpdateClassRoomInput!]
+  }
+
   type RankingResult {
     gold: [ID!]!
     silver: [ID!]!
@@ -137,6 +172,7 @@ export const OlympiadTypeDefs = gql`
   type Mutation {
     createOlympiad(input: CreateOlympiadRequestInput!): Olympiad!
     updateOlympiad(id: ID!, input: UpdateOlympiadInput!): Olympiad!
+    updateOlympiadComprehensive(id: ID!, input: UpdateOlympiadComprehensiveInput!): Olympiad!
     deleteOlympiad(id: ID!): Boolean!
     finishOlympiad(id: ID!): FinishOlympiadResponse!
     processClassTypeRankings(classTypeId: ID!): ProcessRankingResponse!
