@@ -17,14 +17,12 @@ export const getClassRoomByMandatNumber = async (
       );
     }
 
-    if (!studentAnswer.roomNumber) {
+    if (!studentAnswer.classRoom) {
       throw new GraphQLError("Student is not assigned to any room");
     }
 
     // Find the ClassRoom that contains this StudentAnswer
-    const classRoom = await ClassRoomModel.findOne({
-      mandatNumber: studentAnswer._id,
-    });
+    const classRoom = await ClassRoomModel.findById(studentAnswer.classRoom);
 
     if (!classRoom) {
       throw new GraphQLError("Class room not found for this mandat number");

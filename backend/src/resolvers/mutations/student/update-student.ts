@@ -1,7 +1,7 @@
 import { StudentModel } from "../../../models";
 import { GraphQLError } from "graphql";
 import { Types } from "mongoose";
-import { getRegionByProvince } from "@/utils/province-region-mapper 2";
+import { getRegionByProvince } from "@/utils/province-region-mapper";
 
 export const updateStudent = async (
   _: unknown,

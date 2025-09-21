@@ -12,7 +12,7 @@ export const StudentAnswerTypeDefs = gql`
     studentId: ID!
     classTypeId: ID!
     mandatNumber: String!
-    roomNumber: Int
+    classRoom: ID
     answers: [StudentAnswerItem!]!
     totalScoreofOlympiad: Int
     createdAt: String!

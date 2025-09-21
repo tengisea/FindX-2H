@@ -7,4 +7,20 @@ export const commonTypeDefs = gql`
     Success
     NOT_FOUND
   }
+
+  type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    totalCount: Int!
+    totalPages: Int!
+    currentPage: Int!
+    limit: Int!
+    offset: Int!
+  }
+
+  input PaginationInput {
+    limit: Int
+    offset: Int
+    page: Int
+  }
 `;

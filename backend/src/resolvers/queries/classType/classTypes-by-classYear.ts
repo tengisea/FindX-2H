@@ -19,7 +19,7 @@ export const classTypesByClassYear = async (_: any, { classYear }: any) => {
       select: "name",
     })
     .populate({
-      path: "classRoom",
+      path: "rooms",
       model: "ClassRoom",
     });
 

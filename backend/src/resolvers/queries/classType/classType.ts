@@ -16,7 +16,7 @@ export const classType = async (_: any, { id }: any) => {
       select: "name",
     })
     .populate({
-      path: "classRoom",
+      path: "rooms",
       model: "ClassRoom",
     });
 

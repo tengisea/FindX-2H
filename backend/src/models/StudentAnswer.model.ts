@@ -4,7 +4,7 @@ type StudentAnswerSchemaType = {
   studentId: Schema.Types.ObjectId;
   classTypeId: Schema.Types.ObjectId;
   mandatNumber: String;
-  roomNumber?: number;
+  classRoom: Schema.Types.ObjectId;
   answers: {
     questionId: Schema.Types.ObjectId;
     score: number;
@@ -25,7 +25,7 @@ const studentAnswerSchema = new Schema<StudentAnswerSchemaType>(
       required: true,
     },
     mandatNumber: { type: String, required: true },
-    roomNumber: { type: Number },
+    classRoom: { type: Schema.Types.ObjectId, ref: "ClassRoom" },
     answers: [
       {
         questionId: {

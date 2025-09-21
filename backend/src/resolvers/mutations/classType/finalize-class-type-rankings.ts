@@ -128,7 +128,7 @@ export const finalizeClassTypeRankings = async (
     // Get updated class type
     const updatedClassType = await ClassTypeModel.findById(classTypeId)
       .populate("questions")
-      .populate("classRoom");
+      .populate("rooms");
 
     if (!updatedClassType) {
       throw new GraphQLError("Failed to retrieve updated class type");
