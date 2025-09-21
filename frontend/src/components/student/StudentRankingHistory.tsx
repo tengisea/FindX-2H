@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RankingChart } from "@/components/student/charts";
 
 type Student = {
@@ -32,7 +31,7 @@ export const StudentRankingHistory = ({ student }: StudentRankingHistoryProps) =
         <RankingChart
           rankingHistory={student?.rankingHistory?.map(entry => ({
             ...entry,
-            changedBy: typeof entry.changedBy === 'string' ? parseInt(entry.changedBy) || 0 : entry.changedBy
+            changedBy: typeof entry.changedBy === "string" ? parseInt(entry.changedBy) || 0 : entry.changedBy,
           })) || []}
           currentRanking={student?.ranking || 0}
         />
@@ -52,7 +51,7 @@ export const StudentRankingHistory = ({ student }: StudentRankingHistoryProps) =
             {student?.rankingHistory && student.rankingHistory.length > 0
               ? (() => {
                   const lastEntry = student.rankingHistory[student.rankingHistory.length - 1];
-                  const change = typeof lastEntry.changedBy === 'string' 
+                  const change = typeof lastEntry.changedBy === "string" 
                     ? parseInt(lastEntry.changedBy) || 0 
                     : lastEntry.changedBy;
                   return change > 0 ? `+${change}` : change < 0 ? `${change}` : "0";

@@ -1,7 +1,7 @@
 // FindX-2H/frontend/src/components/landingPage/background/ExcellencePathwayLines.tsx
 "use client";
-import React from 'react';
-import { motion, Variants } from 'framer-motion';
+import React from "react";
+import { motion, Variants } from "framer-motion";
 
 export const ExcellencePathwayLines = () => {
   const slideVariants: Variants = {
@@ -11,9 +11,9 @@ export const ExcellencePathwayLines = () => {
         duration: 15,
         repeat: Infinity,
         repeatType: "reverse",
-        ease: "linear"
-      }
-    }
+        ease: "linear",
+      },
+    },
   };
 
   return (

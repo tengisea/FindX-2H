@@ -1,14 +1,14 @@
 // FindX-2H/frontend/src/components/landingPage/background/AchievementIcons.tsx
 "use client";
-import React from 'react';
-import { motion, Variants } from 'framer-motion';
+import React from "react";
+import { motion, Variants } from "framer-motion";
 import {
   Trophy,
   Star,
   Award,
   Medal,
   Crown,
-  Target
+  Target,
 } from "lucide-react";
 
 export const AchievementIcons = () => {
@@ -19,9 +19,9 @@ export const AchievementIcons = () => {
       transition: {
         duration: 4,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   const rotateVariants: Variants = {
@@ -30,9 +30,9 @@ export const AchievementIcons = () => {
       transition: {
         duration: 20,
         repeat: Infinity,
-        ease: "linear"
-      }
-    }
+        ease: "linear",
+      },
+    },
   };
 
   return (

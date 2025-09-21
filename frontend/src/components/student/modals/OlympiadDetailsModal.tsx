@@ -1,11 +1,7 @@
 "use client";
 
-import { formatDate, safeFormatDate } from "@/lib/dateUtils";
-import { GetAllApprovedOlympiadsQuery, GetStudentQuery } from "@/generated";
+import { safeFormatDate } from "@/lib/dateUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-type Student = GetStudentQuery["getStudent"];
-type Olympiad = GetAllApprovedOlympiadsQuery["getAllApprovedOlympiads"][0];
 
 interface OlympiadDetailsModalProps {
   isOpen: boolean;

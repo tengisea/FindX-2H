@@ -33,13 +33,13 @@ import {
 
 const getMedalStats = (students: any[]) => {
   const goldStudents = students.filter(
-    (student) => student.goldCount > 0
+    (student) => student.goldCount > 0,
   ).length;
   const silverStudents = students.filter(
-    (student) => student.silverCount > 0
+    (student) => student.silverCount > 0,
   ).length;
   const bronzeStudents = students.filter(
-    (student) => student.bronzeCount > 0
+    (student) => student.bronzeCount > 0,
   ).length;
 
   return {
@@ -104,7 +104,7 @@ export const StudentsRanking = () => {
     const olympiadDetails = olympiadIds
       .map((olympiadId: any) => {
         const olympiad = allOlympiadsData?.allOlympiads?.find(
-          (o: any) => o.id === olympiadId
+          (o: any) => o.id === olympiadId,
         );
 
         if (olympiad) {
@@ -116,19 +116,19 @@ export const StudentsRanking = () => {
             medalType = "Алт";
             medalColor = "text-yellow-600";
             medalCount = student.gold.filter(
-              (id: string) => id === olympiadId
+              (id: string) => id === olympiadId,
             ).length;
           } else if (student.silver?.includes(olympiadId)) {
             medalType = "Мөнгө";
             medalColor = "text-gray-500";
             medalCount = student.silver.filter(
-              (id: string) => id === olympiadId
+              (id: string) => id === olympiadId,
             ).length;
           } else if (student.bronze?.includes(olympiadId)) {
             medalType = "Хүрэл";
             medalColor = "text-amber-600";
             medalCount = student.bronze.filter(
-              (id: string) => id === olympiadId
+              (id: string) => id === olympiadId,
             ).length;
           }
 
@@ -174,10 +174,10 @@ export const StudentsRanking = () => {
   const medalStats = getMedalStats(filteredUsers);
 
   const uniqueClasses = Array.from(
-    new Set(allStudents.map((student) => student.class))
+    new Set(allStudents.map((student) => student.class)),
   ).filter(Boolean);
   const uniqueProvinces = Array.from(
-    new Set(allStudents.map((student) => student.province))
+    new Set(allStudents.map((student) => student.province)),
   ).filter(Boolean);
 
   return (

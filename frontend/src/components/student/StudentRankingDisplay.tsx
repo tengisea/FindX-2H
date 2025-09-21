@@ -32,7 +32,6 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
   }
 
   if (error) {
-    console.error("StudentRankingDisplay error:", error);
     return (
       <Card className={`border-destructive/20 bg-destructive/10 ${className}`}>
         <CardContent className="p-6">

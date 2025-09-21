@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface Organizer {
   id: string;
@@ -18,7 +18,7 @@ interface OrganizerCardProps {
 export const OrganizerCard = ({ organizer, index }: OrganizerCardProps) => {
   const olympiadCount = organizer.Olympiads?.length || 0;
   const getInitials = (name: string) => {
-    return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+    return name.split(" ").map(word => word[0]).join("").toUpperCase().slice(0, 2);
   };
 
   return (

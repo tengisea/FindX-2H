@@ -7,7 +7,7 @@ import {
   type CreateClassTypeInput,
   type CreateOlympiadRequestInput,
   useCreateOlympiadMutation,
-  OlympiadRankingType
+  OlympiadRankingType,
 } from "@/generated";
 
 interface FormData {
@@ -90,13 +90,13 @@ export const OlympiadForm = ({
         organizerId: formData.organizerId,
         invitation: formData.invitation,
         rankingType: formData.rankingType,
-        classtypes: classTypes
+        classtypes: classTypes,
       };
 
       console.log("Submitting olympiad with input:", input);
 
       const result = await createOlympiad({
-        variables: { input }
+        variables: { input },
       });
 
       if (result.data?.createOlympiad) {
@@ -106,7 +106,7 @@ export const OlympiadForm = ({
       }
     } catch (error) {
       console.error("Error creating olympiad:", error);
-      alert(`Failed to create olympiad: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(`Failed to create olympiad: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   };
 
@@ -121,7 +121,7 @@ export const OlympiadForm = ({
         backButtonText="Previous"
         nextButtonText="Next"
         nextButtonProps={{
-          disabled: mutationLoading
+          disabled: mutationLoading,
         }}
       >
         {/* Step 1: Basic Information */}

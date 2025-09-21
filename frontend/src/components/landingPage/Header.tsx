@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Trophy } from "lucide-react";
+import Link from "next/link";
 
 export const Header = () => {
   return (
@@ -17,18 +18,18 @@ export const Header = () => {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors"
           >
             🏠 Home
-          </a>
-          <a
+          </Link>
+          <Link
             href="/results"
             className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
           >
             🏆 Results
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">

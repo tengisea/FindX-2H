@@ -147,11 +147,11 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                                         <span>{olympiad.location}</span>
                                     </div>
                                 </div>
-                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${olympiad.status === 'approved'
-                                    ? 'bg-green-100 text-green-800'
-                                    : olympiad.status === 'pending'
-                                        ? 'bg-yellow-100 text-yellow-800'
-                                        : 'bg-muted text-muted-foreground'
+                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${olympiad.status === "approved"
+                                    ? "bg-green-100 text-green-800"
+                                    : olympiad.status === "pending"
+                                        ? "bg-yellow-100 text-yellow-800"
+                                        : "bg-muted text-muted-foreground"
                                     }`}>
                                     {olympiad.status}
                                 </div>

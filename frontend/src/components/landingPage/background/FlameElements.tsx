@@ -1,7 +1,7 @@
 // FindX-2H/frontend/src/components/landingPage/background/FlameElements.tsx
 "use client";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 import { Flame, Zap } from "lucide-react";
 
 export const FlameElements = () => {
@@ -11,7 +11,7 @@ export const FlameElements = () => {
         className="absolute top-16 left-1/2 transform -translate-x-1/2"
         animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.3, 0.7, 0.3]
+          opacity: [0.3, 0.7, 0.3],
         }}
         transition={{ duration: 2, repeat: Infinity }}
       >
@@ -22,7 +22,7 @@ export const FlameElements = () => {
         className="absolute bottom-16 right-1/2 transform translate-x-1/2"
         animate={{
           scale: [1, 1.1, 1],
-          opacity: [0.2, 0.5, 0.2]
+          opacity: [0.2, 0.5, 0.2],
         }}
         transition={{ duration: 3, repeat: Infinity, delay: 1 }}
       >

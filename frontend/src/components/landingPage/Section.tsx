@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Trophy, ArrowRight, Lock, Shield, Users } from "lucide-react";
+import { Trophy, Lock, Shield, Users } from "lucide-react";
 
 export const Section = () => {
   return (

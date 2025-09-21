@@ -1,7 +1,7 @@
 // FindX-2H/frontend/src/components/landingPage/background/OlympicRings.tsx
 "use client";
-import React from 'react';
-import { motion, Variants } from 'framer-motion';
+import React from "react";
+import { motion, Variants } from "framer-motion";
 
 export const OlympicRings = () => {
   const floatVariants: Variants = {
@@ -12,9 +12,9 @@ export const OlympicRings = () => {
       transition: {
         duration: 8,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   return (

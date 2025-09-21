@@ -1,5 +1,4 @@
-import { useQuery } from "@apollo/client";
-import { gql } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
 
 const GET_STUDENT = gql`
   query GetStudent($getStudentId: ID!) {
@@ -69,9 +68,7 @@ interface UseStudentDetailResult {
   error: any;
 }
 
-export const useStudentDetail = (
-  studentId: string
-): UseStudentDetailResult => {
+export const useStudentDetail = (studentId: string): UseStudentDetailResult => {
   const { data, loading, error } = useQuery<GetStudentQuery>(GET_STUDENT, {
     variables: { getStudentId: studentId },
     errorPolicy: "all",

@@ -103,7 +103,7 @@ export const ClassTypeSection = ({
                   onUpdateClassType(
                     classTypeIndex,
                     "classYear",
-                    e.target.value as ClassYear
+                    e.target.value as ClassYear,
                   )
                 }
                 className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
@@ -201,7 +201,7 @@ export const ClassTypeSection = ({
                           classTypeIndex,
                           questionIndex,
                           "questionName",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       className="w-full px-2 py-1 border border-border rounded focus:ring-1 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
@@ -221,7 +221,7 @@ export const ClassTypeSection = ({
                           classTypeIndex,
                           questionIndex,
                           "maxScore",
-                          numValue
+                          numValue,
                         );
                       }}
                       className="w-full px-2 py-1 border border-border rounded focus:ring-1 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"

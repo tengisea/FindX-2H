@@ -354,7 +354,7 @@ export const StudentSidebar = ({
                     | "tournaments"
                     | "results"
                     | "achievements"
-                    | "settings"
+                    | "settings",
                 )
               }
               className={`w-full flex items-center justify-start space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${

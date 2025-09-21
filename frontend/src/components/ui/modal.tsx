@@ -126,7 +126,7 @@ export const Modal: React.FC<ModalProps> = ({
         "transition-all duration-200 ease-in-out",
         isOpen && !isAnimating
           ? "opacity-100 backdrop-blur-sm"
-          : "opacity-0 backdrop-blur-none"
+          : "opacity-0 backdrop-blur-none",
       )}
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -150,7 +150,7 @@ export const Modal: React.FC<ModalProps> = ({
           isOpen && !isAnimating
             ? "scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 translate-y-4",
-          className
+          className,
         )}
         onClick={(e) => e.stopPropagation()}
       >
@@ -214,7 +214,7 @@ export const ModalFooter: React.FC<{
   <div
     className={cn(
       "flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 p-4 sm:p-6 border-t border-gray-200 bg-gray-50/50",
-      className
+      className,
     )}
   >
     {children}

@@ -1,11 +1,8 @@
 "use client";
 
 import { useOlympiadQuery } from "@/generated";
-import { formatDate, safeFormatDate } from "@/lib/dateUtils";
-import { GetStudentQuery } from "@/generated";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-type Student = GetStudentQuery["getStudent"];
+import { safeFormatDate } from "@/lib/dateUtils";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ParticipatedOlympiadRowProps {
   olympiadId: string;
@@ -121,7 +118,7 @@ const ParticipatedTab = ({
               No Participated Olympiads
             </h3>
             <p className="text-muted-foreground text-lg">
-              You haven't participated in any olympiads yet.
+              You haven&apos;t participated in any olympiads yet.
             </p>
             <button
               onClick={onBrowseOlympiads}
