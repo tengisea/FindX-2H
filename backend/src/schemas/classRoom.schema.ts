@@ -7,18 +7,21 @@ export const ClassRoomTypeDefs = gql`
     roomNumber: String!
     maxStudents: Int!
     mandatNumber: [String!]!
+    classTypeId: ID!
   }
 
   input CreateClassRoomInput {
     roomNumber: String!
     classTypeId: ID!
     maxStudents: Int!
+    classTypeId: ID!
   }
 
   input UpdateClassRoomInput {
     roomNumber: String
     maxStudents: Int
     mandatNumber: [String!]
+    classTypeId: ID
   }
 
   type Mutation {

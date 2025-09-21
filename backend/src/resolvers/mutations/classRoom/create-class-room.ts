@@ -49,6 +49,7 @@ export const createClassRoom = async (
       roomNumber,
       maxStudents,
       mandatNumber: [],
+      classTypeId,
     });
 
     const savedClassRoom = await classRoom.save();
@@ -86,6 +87,7 @@ export const createClassRoom = async (
       roomNumber: savedClassRoom.roomNumber,
       maxStudents: savedClassRoom.maxStudents,
       mandatNumber: savedClassRoom.mandatNumber.map((id) => id.toString()),
+      classTypeId: savedClassRoom.classTypeId.toString(),
     };
   } catch (error: any) {
     console.error("❌ Create class room error:", error);

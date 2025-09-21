@@ -27,6 +27,10 @@ export const updateClassType = async (_: unknown, { id, input }: any) => {
     .populate({
       path: "olympiadId",
       select: "name",
+    })
+    .populate({
+      path: "rooms",
+      model: "ClassRoom",
     });
 
   if (!updatedClassType) {
@@ -41,6 +45,10 @@ export const updateClassType = async (_: unknown, { id, input }: any) => {
 
   if (transformed.classYear) {
     transformed.classYear = mapClassYearToGraphQL(transformed.classYear);
+  }
+
+  if (transformed.rooms) {
+    transformed.rooms = transformed.rooms.map((room: any) => transformDocument(room));
   }
 
   return transformed;

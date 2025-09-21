@@ -17,19 +17,6 @@ export enum ClassYear {
   D_CLASS = "D_CLASS",
   E_CLASS = "E_CLASS",
   F_CLASS = "F_CLASS",
-  // Mongolian class names
-  ANGI_1 = "1р анги",
-  ANGI_2 = "2р анги",
-  ANGI_3 = "3р анги",
-  ANGI_4 = "4р анги",
-  ANGI_5 = "5р анги",
-  ANGI_6 = "6р анги",
-  ANGI_7 = "7р анги",
-  ANGI_8 = "8р анги",
-  ANGI_9 = "9р анги",
-  ANGI_10 = "10р анги",
-  ANGI_11 = "11р анги",
-  ANGI_12 = "12р анги",
 }
 
 const bestMaterialSchema = new Schema(

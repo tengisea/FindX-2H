@@ -12,10 +12,11 @@ export const updateClassRoom = async (
       roomNumber?: string;
       maxStudents?: number;
       mandatNumber?: string[];
+      classTypeId?: string;
     };
   }
 ) => {
-  const { roomNumber, maxStudents, mandatNumber } = input;
+  const { roomNumber, maxStudents, mandatNumber, classTypeId } = input;
 
   try {
     // Input validation
@@ -64,6 +65,7 @@ export const updateClassRoom = async (
       roomNumber: updatedClassRoom.roomNumber,
       maxStudents: updatedClassRoom.maxStudents,
       mandatNumber: updatedClassRoom.mandatNumber.map((id) => id.toString()),
+      classTypeId: updatedClassRoom.classTypeId.toString(),
     };
   } catch (error: any) {
     console.error("❌ Update class room error:", error);

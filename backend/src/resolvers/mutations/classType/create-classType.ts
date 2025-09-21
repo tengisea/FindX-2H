@@ -2,20 +2,19 @@ import { ClassTypeModel } from "@/models";
 import { QuestionModel } from "@/models";
 import {
   transformDocument,
-  transformNestedObject,
   mapClassYearToDB,
   mapClassYearToGraphQL,
 } from "@/lib/enumUtils";
 
 export const createClassType = async (_: unknown, { input }: any) => {
-  const { classYear, maxScore, occurringTime, classRoom, questions, medalists, olympiadId } = input;
+  const { classYear, maxScore, occurringTime, questions, medalists, olympiadId } = input;
 
   const classType = new ClassTypeModel({
     olympiadId,
     classYear: mapClassYearToDB(classYear),
     maxScore,
     occurringTime,
-    classRoom,
+    rooms: [],
     medalists, // Int, not array
     questions: [],
   });
