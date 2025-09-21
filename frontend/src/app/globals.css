@@ -1,6 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "react-day-picker/dist/style.css";
+
+/* Custom styles for react-day-picker */
+.rdp-head_cell {
+  width: 2.25rem !important;
+  text-align: center !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  color: hsl(var(--muted-foreground)) !important;
+  padding: 0.5rem 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.rdp-head_row {
+  display: flex !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.rdp-table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.rdp-month {
+  width: 100% !important;
+}
 
 @custom-variant dark (&:is(.dark *));
 

@@ -5,13 +5,14 @@ import {
 } from "../../../../models";
 import { GraphQLError } from "graphql";
 import { transformDocument } from "@/lib/enumUtils";
+import { generateMandatNumber } from "@/utils/mandat-number-generator";
 
 export const createStudentAnswer = async (
   _: unknown,
   { input }: { input: any }
 ) => {
   try {
-    const { studentId, classTypeId, answers, image } = input;
+    const { studentId, classTypeId, answers, image, mandatNumber } = input;
 
     const existingStudent = await StudentModel.findById(studentId);
     if (!existingStudent) throw new GraphQLError("Student does not exist");
@@ -28,9 +29,17 @@ export const createStudentAnswer = async (
       ? answers.reduce((sum: number, a: any) => sum + (a?.score ?? 0), 0)
       : 0;
 
+    // Generate mandat number if not provided
+    let finalMandatNumber = mandatNumber;
+    if (!finalMandatNumber) {
+      const participantIndex = classType.participants.length;
+      finalMandatNumber = generateMandatNumber(classType.classYear, participantIndex);
+    }
+
     const studentAnswer = new StudentAnswerModel({
       studentId,
       classTypeId,
+      mandatNumber: finalMandatNumber,
       answers,
       totalScoreofOlympiad,
       image: image || [],

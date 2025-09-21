@@ -7,7 +7,7 @@ export const updateStudentAnswer = async (
   { id, input }: { id: string; input: any }
 ) => {
   try {
-    const { studentId, classTypeId, answers, totalScoreofOlympiad, image } =
+    const { studentId, classTypeId, mandatNumber, answers, totalScoreofOlympiad, image } =
       input;
 
     // If classTypeId is being updated, validate that the student is a participant
@@ -32,6 +32,7 @@ export const updateStudentAnswer = async (
     const updateData: any = {};
     if (studentId !== undefined) updateData.studentId = studentId;
     if (classTypeId !== undefined) updateData.classTypeId = classTypeId;
+    if (mandatNumber !== undefined) updateData.mandatNumber = mandatNumber;
     if (answers !== undefined) updateData.answers = answers;
     if (calculatedTotalScore !== undefined)
       updateData.totalScoreofOlympiad = calculatedTotalScore;

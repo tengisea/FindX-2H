@@ -1,5 +1,6 @@
 import { OlympiadModel } from "@/models";
 import { ClassTypeModel } from "@/models";
+import { CreateOlympiadRequestInput } from "@/types/generated";
 import { QuestionModel } from "@/models";
 import { OrganizerModel } from "@/models";
 import {
@@ -14,7 +15,7 @@ import { ClassYear } from "@/models/ClassType.model";
 
 // import { extractClassYearsFromOlympiad } from "@/utils/class-year-mappers";
 
-export const createOlympiad = async (_: unknown, { input }: any) => {
+export const createOlympiad = async (_: unknown, { input }: {input: CreateOlympiadRequestInput}) => {
   const {
     organizerId,
     name,
@@ -45,12 +46,14 @@ export const createOlympiad = async (_: unknown, { input }: any) => {
   const classYears = [];
 
   for (const classTypeInput of classtypes) {
-    const { classYear, maxScore, medalists, questions } = classTypeInput;
+    const { classYear, maxScore, medalists, questions, occurringTime, classRoom } = classTypeInput;
 
     const classType = new ClassTypeModel({
       olympiadId: olympiad._id,
       classYear: mapClassYearToDB(classYear),
       maxScore,
+      occurringTime,
+      classRoom,
       medalists,
     });
     await classType.save();
@@ -101,10 +104,20 @@ export const createOlympiad = async (_: unknown, { input }: any) => {
   const populatedOlympiad = await OlympiadModel.findById(olympiad._id)
     .populate({
       path: "classtypes",
-      populate: {
-        path: "questions",
-        model: "Question",
-      },
+      populate: [
+        {
+          path: "questions",
+          model: "Question",
+        },
+        {
+          path: "classRoom",
+          model: "ClassRoom",
+          populate: {
+            path: "mandatNumber",
+            model: "StudentAnswer",
+          },
+        },
+      ],
     })
     .populate({
       path: "organizer",

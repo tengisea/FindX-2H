@@ -3,7 +3,7 @@ import { gql } from "graphql-tag";
 export const QuestionTypeDefs = gql`
   type Question {
     id: ID!
-    classTypeId: ID!
+    classTypeId: ID
     questionName: String!
     maxScore: Int!
   }

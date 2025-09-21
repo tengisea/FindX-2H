@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@apollo/client";
 
 import { OlympiadForm } from "@/components/host/OlympiadForm";
 import { OlympiadList } from "@/components/host/OlympiadList";
 import { ManageResults } from "@/components/host/ManageResults";
 import HostSidebar from "@/components/host/HostSidebar";
 import StaggeredMenu from "@/components/ui/StaggeredMenu";
+import { useGetOrganizerQuery } from "@/generated";
 
 type TabType = "create" | "manage" | "results";
 
@@ -16,13 +18,22 @@ const HostPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    // Hardcoded organizer ID
+    const ORGANIZER_ID = "68ce60987f494f963e88a8cb";
+
+    // Fetch real data from database
+    const { data: organizerData, loading: organizerLoading, error: organizerError, refetch } = useGetOrganizerQuery({
+        variables: { id: ORGANIZER_ID },
+        errorPolicy: 'all'
+    });
+
     const [formData, setFormData] = useState({
         name: "",
         description: "",
-        closeDay: "",
-        occurringDay: "",
+        closeDay: undefined as Date | undefined,
+        occurringDay: undefined as Date | undefined,
         location: "",
-        organizerId: "68c553d2dbdb1b5ed2b0e455",
+        organizerId: ORGANIZER_ID,
         invitation: false,
         rankingType: "SCHOOL" as any,
     });
@@ -32,6 +43,8 @@ const HostPage = () => {
             classYear: "Grade_5",
             maxScore: 20,
             medalists: 3,
+            occurringTime: "9:00",
+            classRoom: null,
             questions: [
                 { questionName: "Question 1", maxScore: 5 },
                 { questionName: "Question 2", maxScore: 5 },
@@ -41,36 +54,17 @@ const HostPage = () => {
         },
     ]);
 
-    // Mock data for now
-    const myOlympiads = [
-        {
-            id: "1",
-            name: "Math Olympiad 2024",
-            description: "Annual mathematics competition",
-            date: "2024-03-15",
-            location: "Ulaanbaatar",
-            status: "approved",
-            classtypes: [],
-        },
-        {
-            id: "2",
-            name: "Science Fair 2024",
-            description: "Science and technology competition",
-            date: "2024-04-20",
-            location: "Darkhan",
-            status: "pending",
-            classtypes: [],
-        },
-    ];
+    const myOlympiads = organizerData?.getOrganizer?.Olympiads || [];
+
 
     const resetForm = () => {
         setFormData({
             name: "",
             description: "",
-            closeDay: "",
-            occurringDay: "",
+            closeDay: undefined,
+            occurringDay: undefined,
             location: "",
-            organizerId: "68c553d2dbdb1b5ed2b0e455",
+            organizerId: ORGANIZER_ID,
             invitation: false,
             rankingType: "SCHOOL" as any,
         });
@@ -79,6 +73,8 @@ const HostPage = () => {
                 classYear: "Grade_5",
                 maxScore: 20,
                 medalists: 3,
+                occurringTime: "9:00",
+                classRoom: null,
                 questions: [
                     { questionName: "Question 1", maxScore: 5 },
                     { questionName: "Question 2", maxScore: 5 },
@@ -98,6 +94,8 @@ const HostPage = () => {
         setTimeout(() => {
             setIsSubmitting(false);
             resetForm();
+            // Refetch data after form submission
+            refetch();
         }, 1000);
     };
 
@@ -105,10 +103,10 @@ const HostPage = () => {
         setFormData({
             name: olympiad.name,
             description: olympiad.description,
-            closeDay: olympiad.closeDay || "",
-            occurringDay: olympiad.occurringDay || olympiad.date,
+            closeDay: olympiad.closeDay ? new Date(olympiad.closeDay) : undefined,
+            occurringDay: olympiad.occurringDay ? new Date(olympiad.occurringDay) : (olympiad.date ? new Date(olympiad.date) : undefined),
             location: olympiad.location,
-            organizerId: "68c553d2dbdb1b5ed2b0e455",
+            organizerId: ORGANIZER_ID,
             invitation: olympiad.invitation || false,
             rankingType: olympiad.rankingType || "SCHOOL",
         });
@@ -124,10 +122,12 @@ const HostPage = () => {
         // Handle deletion
         setTimeout(() => {
             setIsDeleting(false);
+            // Refetch data after deletion
+            refetch();
         }, 1000);
     };
 
-    const updateFormData = (field: string, value: string | boolean) => {
+    const updateFormData = (field: string, value: string | boolean | Date | undefined) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -145,6 +145,8 @@ const HostPage = () => {
                 classYear: "Grade_5",
                 maxScore: 10,
                 medalists: 3,
+                occurringTime: "9:00",
+                classRoom: null,
                 questions: [
                     { questionName: "Question 1", maxScore: 5 },
                     { questionName: "Question 2", maxScore: 5 },
@@ -257,7 +259,6 @@ const HostPage = () => {
         { label: "Create Olympiad", ariaLabel: "Create new olympiad", link: "#create" },
         { label: "Manage Olympiads", ariaLabel: "Manage existing olympiads", link: "#manage" },
         { label: "Manage Results", ariaLabel: "Manage olympiad results", link: "#results" },
-        { label: "Quick Create", ariaLabel: "Quick create new olympiad", link: "#quick-create" },
     ];
 
     const socialItems: any[] = [];
@@ -273,9 +274,6 @@ const HostPage = () => {
                 break;
             case "#results":
                 setActiveTab("results");
-                break;
-            case "#quick-create":
-                handleQuickCreate();
                 break;
             default:
                 break;
@@ -300,13 +298,14 @@ const HostPage = () => {
                         onUpdateQuestion={updateQuestion}
                         onResetForm={resetForm}
                         isSubmitting={isSubmitting}
+                        onRefetch={refetch}
                     />
                 );
             case "manage":
                 return (
                     <OlympiadList
                         olympiads={myOlympiads}
-                        loading={false}
+                        loading={organizerLoading}
                         onEditOlympiad={handleEditOlympiad}
                         onDeleteOlympiad={handleDeleteOlympiad}
                         isDeleting={isDeleting}
@@ -394,7 +393,9 @@ const HostPage = () => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.length}</div>
+                                    <div className="text-3xl font-bold text-foreground">
+                                        {organizerLoading ? "..." : myOlympiads.length}
+                                    </div>
                                     <div className="text-sm text-muted-foreground">Total Olympiads</div>
                                 </div>
                             </div>
@@ -422,7 +423,10 @@ const HostPage = () => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === "pending").length}</div>
+                                    <div className="text-3xl font-bold text-foreground">
+                                        {organizerLoading ? "..." : myOlympiads.filter(o => o.status === 'UNDER_REVIEW').length}
+                                    </div>
+
                                     <div className="text-sm text-muted-foreground">Pending Approvals</div>
                                 </div>
                             </div>
@@ -436,16 +440,37 @@ const HostPage = () => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="text-3xl font-bold text-foreground">{myOlympiads.filter(o => o.status === "approved").length}</div>
+                                    <div className="text-3xl font-bold text-foreground">
+                                        {organizerLoading ? "..." : myOlympiads.filter(o => o.status === 'OPEN').length}
+                                    </div>
+
                                     <div className="text-sm text-muted-foreground">Active Competitions</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    {/* Error Display */}
+                    {organizerError && (
+                        <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                            <p className="text-destructive text-sm">
+                                Error loading data: {organizerError.message}
+                            </p>
+                        </div>
+                    )}
+
                     {/* Content */}
                     <div className="relative">
-                        {renderContent()}
+                        {organizerLoading ? (
+                            <div className="flex items-center justify-center py-12">
+                                <div className="text-center">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                                    <p className="text-muted-foreground">Loading olympiads...</p>
+                                </div>
+                            </div>
+                        ) : (
+                            renderContent()
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,21 +1,8 @@
 import { OrganizerModel } from "@/models";
 
 const mapClassYearToGraphQL = (dbValue: string): string => {
-  const reverseMapping: { [key: string]: string } = {
-    '1р анги': 'GRADE_1',
-    '2р анги': 'GRADE_2',
-    '3р анги': 'GRADE_3',
-    '4р анги': 'GRADE_4',
-    '5р анги': 'GRADE_5',
-    '6р анги': 'GRADE_6',
-    '7р анги': 'GRADE_7',
-    '8р анги': 'GRADE_8',
-    '9р анги': 'GRADE_9',
-    '10р анги': 'GRADE_10',
-    '11р анги': 'GRADE_11',
-    '12р анги': 'GRADE_12',
-  };
-  return reverseMapping[dbValue] || dbValue;
+  // Since we now use English enum values in the database, no mapping is needed
+  return dbValue;
 };
 
 export const getAllOrganizers = async () => {

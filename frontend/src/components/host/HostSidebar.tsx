@@ -92,11 +92,6 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
       ariaLabel: "Navigate to manage results page",
       link: "#results",
     },
-    {
-      label: "Quick Create",
-      ariaLabel: "Quick create new olympiad",
-      link: "#quick-create",
-    },
   ];
 
   const handleMenuItemClick = (link: string) => {
@@ -109,9 +104,6 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
         break;
       case "#results":
         onTabChange("results");
-        break;
-      case "#quick-create":
-        onQuickCreate();
         break;
       default:
         break;
