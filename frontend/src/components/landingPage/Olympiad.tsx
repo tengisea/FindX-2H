@@ -11,23 +11,44 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import {
   Calendar,
   Trophy,
   MapPin,
   Clock,
   Building,
-  Users,
   Eye,
   Star,
-  Info,
 } from "lucide-react";
+
 import { useAllOlympiadsQuery } from "@/generated";
+
+const formatClassYear = (classYear: string | null | undefined) => {
+  if (!classYear) return "Unknown";
+  
+  // Mapping from English enum values to Mongolian display format
+  const classYearMapping: { [key: string]: string } = {
+    'GRADE_1': '1р анги',
+    'GRADE_2': '2р анги',
+    'GRADE_3': '3р анги',
+    'GRADE_4': '4р анги',
+    'GRADE_5': '5р анги',
+    'GRADE_6': '6р анги',
+    'GRADE_7': '7р анги',
+    'GRADE_8': '8р анги',
+    'GRADE_9': '9р анги',
+    'GRADE_10': '10р анги',
+    'GRADE_11': '11р анги',
+    'GRADE_12': '12р анги',
+    'C_CLASS': 'C анги',
+    'D_CLASS': 'D анги',
+    'E_CLASS': 'E анги',
+    'F_CLASS': 'F анги',
+  };
+  
+  return classYearMapping[classYear] || classYear;
+};
 
 const formatDate = (dateString: string) => {
   try {
@@ -42,28 +63,18 @@ const formatDate = (dateString: string) => {
   }
 };
 
-const formatClassYears = (classYears: string[]) => {
-  return classYears
-    .map((year) => {
-      const numYear = parseInt(year);
-      if (!isNaN(numYear)) {
-        return `${numYear} дугаар анги`;
-      }
-      return year;
-    })
-    .join(", ");
-};
-
 export const Olympiad = () => {
   const [selectedRankingType, setSelectedRankingType] = useState("all");
 
-  const { data, loading, error } = useAllOlympiadsQuery();
+  const { data, loading, error } = useAllOlympiadsQuery({
+    errorPolicy: 'ignore' // Ignore GraphQL errors and still try to render data
+  });
 
   const olympiads = data?.allOlympiads || [];
 
   const rankingTypes = Array.from(
-    new Set(olympiads.map((olympiad) => olympiad.rankingType))
-  );
+    new Set(olympiads.map((olympiad) => olympiad.rankingType).filter(Boolean))
+  ).filter((type) => type !== "A_TIER");
 
   const filteredOlympiads =
     selectedRankingType === "all"
@@ -71,6 +82,51 @@ export const Olympiad = () => {
       : olympiads.filter(
           (olympiad) => olympiad.rankingType === selectedRankingType
         );
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Featured Olympiad Competitions
+          </h2>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            Loading olympiads...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !data) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Featured Olympiad Competitions
+          </h2>
+          <p className="text-lg text-red-400 max-w-2xl mx-auto">
+            Error loading olympiads: {error.message}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (olympiads.length === 0) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Featured Olympiad Competitions
+          </h2>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            No olympiads available at the moment. Please check back later.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-16">
@@ -109,7 +165,7 @@ export const Olympiad = () => {
               key={rankingType}
               variant={isSelected ? "default" : "outline"}
               size="lg"
-              onClick={() => setSelectedRankingType(rankingType)}
+              onClick={() => setSelectedRankingType(rankingType || "")}
               className={`
                 flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
                 ${
@@ -132,7 +188,7 @@ export const Olympiad = () => {
             <div className="relative h-48 bg-gradient-to-br from-blue-900 to-purple-900 overflow-hidden">
               {olympiad.rankingType === "NATIONAL" && (
                 <div className="absolute top-4 left-4 z-10">
-                  <Badge className="bg-gray-600 text-white border-0 flex items-center gap-1">
+                  <Badge className="bg-white text-black border-0 flex items-center gap-1">
                     <Star className="w-3 h-3" />
                     Featured
                   </Badge>
@@ -173,7 +229,7 @@ export const Olympiad = () => {
                   </div>
                   <div className="text-white font-semibold">
                     {olympiad.classtypes
-                      .map((classtype) => classtype.classYear)
+                      .map((classtype) => formatClassYear(classtype.classYear))
                       .join(", ")}
                   </div>
                 </div>

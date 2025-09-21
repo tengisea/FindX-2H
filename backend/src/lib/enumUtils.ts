@@ -36,6 +36,46 @@ export const REVERSE_CLASS_YEAR_MAPPING = Object.fromEntries(
   Object.entries(CLASS_YEAR_MAPPING).map(([key, value]) => [value, key])
 );
 
+// Mapping from English enum values to Mongolian display format
+export const ENGLISH_TO_MONGOLIAN_MAPPING = {
+  'GRADE_1': '1р анги',
+  'GRADE_2': '2р анги',
+  'GRADE_3': '3р анги',
+  'GRADE_4': '4р анги',
+  'GRADE_5': '5р анги',
+  'GRADE_6': '6р анги',
+  'GRADE_7': '7р анги',
+  'GRADE_8': '8р анги',
+  'GRADE_9': '9р анги',
+  'GRADE_10': '10р анги',
+  'GRADE_11': '11р анги',
+  'GRADE_12': '12р анги',
+  'C_CLASS': 'C анги',
+  'D_CLASS': 'D анги',
+  'E_CLASS': 'E анги',
+  'F_CLASS': 'F анги',
+} as const;
+
+// Reverse mapping from Mongolian to English enum values
+export const MONGOLIAN_TO_ENGLISH_MAPPING = {
+  '1р анги': 'GRADE_1',
+  '2р анги': 'GRADE_2',
+  '3р анги': 'GRADE_3',
+  '4р анги': 'GRADE_4',
+  '5р анги': 'GRADE_5',
+  '6р анги': 'GRADE_6',
+  '7р анги': 'GRADE_7',
+  '8р анги': 'GRADE_8',
+  '9р анги': 'GRADE_9',
+  '10р анги': 'GRADE_10',
+  '11р анги': 'GRADE_11',
+  '12р анги': 'GRADE_12',
+  'C анги': 'C_CLASS',
+  'D анги': 'D_CLASS',
+  'E анги': 'E_CLASS',
+  'F анги': 'F_CLASS',
+} as const;
+
 /**
  * Convert GraphQL enum to database value
  */
@@ -50,11 +90,25 @@ export const mapClassYearToDB = (graphqlEnum: string): string => {
  * Convert database value to GraphQL enum
  */
 export const mapClassYearToGraphQL = (dbValue: string): string => {
-  console.log("🔍 mapClassYearToGraphQL input:", dbValue);
-  console.log("🔍 REVERSE_CLASS_YEAR_MAPPING:", REVERSE_CLASS_YEAR_MAPPING);
-  const result = REVERSE_CLASS_YEAR_MAPPING[dbValue] || dbValue;
-  console.log("🔍 mapClassYearToGraphQL result:", result);
-  return result;
+  // First try the reverse mapping for standard English values
+  if (REVERSE_CLASS_YEAR_MAPPING[dbValue]) {
+    return REVERSE_CLASS_YEAR_MAPPING[dbValue];
+  }
+  
+  // If it's a Mongolian value, convert to English enum
+  if (MONGOLIAN_TO_ENGLISH_MAPPING[dbValue as keyof typeof MONGOLIAN_TO_ENGLISH_MAPPING]) {
+    return MONGOLIAN_TO_ENGLISH_MAPPING[dbValue as keyof typeof MONGOLIAN_TO_ENGLISH_MAPPING];
+  }
+  
+  // If still not found, return the original value
+  return dbValue;
+};
+
+/**
+ * Convert English enum value to Mongolian display format
+ */
+export const mapClassYearToMongolian = (englishValue: string): string => {
+  return ENGLISH_TO_MONGOLIAN_MAPPING[englishValue as keyof typeof ENGLISH_TO_MONGOLIAN_MAPPING] || englishValue;
 };
 
 /**
