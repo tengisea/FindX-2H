@@ -17,6 +17,19 @@ export const CLASS_YEAR_MAPPING = {
   D_CLASS: "D_CLASS",
   E_CLASS: "E_CLASS",
   F_CLASS: "F_CLASS",
+  // Mongolian class names
+  ANGI_1: "1р анги",
+  ANGI_2: "2р анги",
+  ANGI_3: "3р анги",
+  ANGI_4: "4р анги",
+  ANGI_5: "5р анги",
+  ANGI_6: "6р анги",
+  ANGI_7: "7р анги",
+  ANGI_8: "8р анги",
+  ANGI_9: "9р анги",
+  ANGI_10: "10р анги",
+  ANGI_11: "11р анги",
+  ANGI_12: "12р анги",
 } as const;
 
 export const REVERSE_CLASS_YEAR_MAPPING = Object.fromEntries(
@@ -37,7 +50,11 @@ export const mapClassYearToDB = (graphqlEnum: string): string => {
  * Convert database value to GraphQL enum
  */
 export const mapClassYearToGraphQL = (dbValue: string): string => {
-  return REVERSE_CLASS_YEAR_MAPPING[dbValue] || dbValue;
+  console.log("🔍 mapClassYearToGraphQL input:", dbValue);
+  console.log("🔍 REVERSE_CLASS_YEAR_MAPPING:", REVERSE_CLASS_YEAR_MAPPING);
+  const result = REVERSE_CLASS_YEAR_MAPPING[dbValue] || dbValue;
+  console.log("🔍 mapClassYearToGraphQL result:", result);
+  return result;
 };
 
 /**
@@ -47,9 +64,41 @@ export const transformDocument = (doc: any) => {
   if (!doc) return null;
 
   const obj = doc.toObject ? doc.toObject() : doc;
+
+  // Transform ObjectId arrays to string arrays
+  const transformedObj = { ...obj };
+
+  // Handle common ObjectId array fields
+  const objectIdArrayFields = [
+    "rooms",
+    "participants",
+    "studentsAnswers",
+    "gold",
+    "silver",
+    "bronze",
+    "top10",
+    "questions",
+    "classtypes",
+    "participatedOlympiads",
+  ];
+
+  objectIdArrayFields.forEach((field) => {
+    if (transformedObj[field] && Array.isArray(transformedObj[field])) {
+      transformedObj[field] = transformedObj[field].map((item: any) => {
+        if (item && typeof item === "object" && item._id) {
+          return item._id.toString();
+        }
+        return item?.toString() || item;
+      });
+    }
+  });
+
+  // Ensure id is always set correctly
+  const finalId = obj._id?.toString() || obj.id || transformedObj.id;
+
   return {
-    ...obj,
-    id: obj._id?.toString() || obj.id,
+    ...transformedObj,
+    id: finalId,
     _id: undefined, // Remove _id from response
   };
 };
