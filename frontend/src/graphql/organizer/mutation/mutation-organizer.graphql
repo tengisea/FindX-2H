@@ -41,7 +41,7 @@ mutation CreateOrganizer($input: CreateOrganizerInput!) {
         bronze
         top10
       }
-      participants
+      
       scoreOfAward
       status
       rankingType
@@ -94,7 +94,7 @@ mutation UpdateOrganizer($updateOrganizerId: ID!, $input: UpdateOrganizerInput!)
         bronze
         top10
       }
-      participants
+      
       scoreOfAward
       status
       rankingType

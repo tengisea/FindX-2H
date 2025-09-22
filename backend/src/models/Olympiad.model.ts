@@ -26,7 +26,6 @@ type OlympiadSchemaType = {
   closeDay?: Date;
   location: string;
   organizer: Schema.Types.ObjectId;
-  participants?: Schema.Types.ObjectId[];
   classtypes: Schema.Types.ObjectId[];
   scoreOfAward?: number;
   status: OlympiadStatus;
@@ -46,7 +45,6 @@ const olympiadSchema = new Schema<OlympiadSchemaType>(
       ref: "Organizer",
       required: true,
     },
-    participants: [{ type: Schema.Types.ObjectId, ref: "Student" }],
     classtypes: [{ type: Schema.Types.ObjectId, ref: "ClassType" }],
     scoreOfAward: { type: Number, default: 0 },
     status: {
