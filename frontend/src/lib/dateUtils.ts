@@ -4,7 +4,7 @@
  * Format class year to readable grade name
  */
 export const formatClassYear = (
-  classYear: string | number | null | undefined,
+  classYear: string | number | null | undefined
 ): string => {
   if (!classYear) return "Unknown Grade";
 
@@ -24,7 +24,7 @@ export const formatClassYear = (
 };
 
 export const formatDate = (
-  date: string | Date | number | null | undefined,
+  date: string | Date | number | null | undefined
 ): string => {
   if (!date || date === null || date === undefined) return "N/A";
 
@@ -286,7 +286,7 @@ export const debugDate = (date: string | Date): void => {
 
 // Safe date formatter that handles all edge cases
 export const safeFormatDate = (
-  date: string | Date | number | null | undefined,
+  date: string | Date | number | null | undefined
 ): string => {
   // Handle null, undefined, empty string
   if (!date || date === null || date === undefined || date === "") {
@@ -337,6 +337,101 @@ export const safeFormatDate = (
     });
   } catch (error) {
     console.error("Error formatting date:", date, error);
+    return "N/A";
+  }
+};
+
+// Mongolian date formatting functions
+export const formatDateMongolian = (
+  date: string | Date | number | null | undefined
+): string => {
+  if (!date || date === null || date === undefined || date === "") {
+    return "N/A";
+  }
+
+  try {
+    let dateObj: Date;
+
+    if (typeof date === "number") {
+      dateObj = new Date(date);
+    } else if (typeof date === "string") {
+      if (/^\d+$/.test(date)) {
+        dateObj = new Date(parseInt(date));
+      } else {
+        dateObj = new Date(date);
+      }
+    } else {
+      dateObj = date;
+    }
+
+    if (isNaN(dateObj.getTime())) {
+      console.warn("Invalid date provided to formatDateMongolian:", date);
+      return "N/A";
+    }
+
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+
+    // Mongolian month names
+    const monthNames = [
+      "1-р сар",
+      "2-р сар",
+      "3-р сар",
+      "4-р сар",
+      "5-р сар",
+      "6-р сар",
+      "7-р сар",
+      "8-р сар",
+      "9-р сар",
+      "10-р сар",
+      "11-р сар",
+      "12-р сар",
+    ];
+
+    return `${year} оны ${monthNames[month - 1]} ${day}-ны өдөр`;
+  } catch (error) {
+    console.error("Error formatting Mongolian date:", date, error);
+    return "N/A";
+  }
+};
+
+export const formatDateShortMongolian = (
+  date: string | Date | number | null | undefined
+): string => {
+  if (!date || date === null || date === undefined || date === "") {
+    return "N/A";
+  }
+
+  try {
+    let dateObj: Date;
+
+    if (typeof date === "number") {
+      dateObj = new Date(date);
+    } else if (typeof date === "string") {
+      if (/^\d+$/.test(date)) {
+        dateObj = new Date(parseInt(date));
+      } else {
+        dateObj = new Date(date);
+      }
+    } else {
+      dateObj = date;
+    }
+
+    if (isNaN(dateObj.getTime())) {
+      console.warn("Invalid date provided to formatDateShortMongolian:", date);
+      return "N/A";
+    }
+
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+
+    return `${year}.${month.toString().padStart(2, "0")}.${day
+      .toString()
+      .padStart(2, "0")}`;
+  } catch (error) {
+    console.error("Error formatting short Mongolian date:", date, error);
     return "N/A";
   }
 };

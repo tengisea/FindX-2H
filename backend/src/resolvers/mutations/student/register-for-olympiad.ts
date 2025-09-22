@@ -110,8 +110,8 @@ export const registerForOlympiad = async (
 
       // Create StudentAnswer record
       const studentAnswer = new StudentAnswerModel({
-        studentId,
-        classTypeId,
+        studentId: studentId as any,
+        classTypeId: classTypeId as any,
         mandatNumber,
         answers: [], // Empty initially, will be filled after olympiad
         totalScoreofOlympiad: 0,
