@@ -83,7 +83,9 @@ const getStatusDisplayName = (status: string) => {
 export const Olympiad = () => {
   const router = useRouter();
   const [selectedStatus, setSelectedStatus] = useState("OPEN");
-  const [expandedDescriptions, setExpandedDescriptions] = useState<{ [key: string]: boolean }>({});
+  const [expandedDescriptions, setExpandedDescriptions] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const { data, loading, error } = useAllOlympiadsQuery();
 
@@ -93,10 +95,10 @@ export const Olympiad = () => {
     // Prevent event bubbling if needed
     event.preventDefault();
     event.stopPropagation();
-    
-    setExpandedDescriptions(prev => ({
+
+    setExpandedDescriptions((prev) => ({
       ...prev,
-      [olympiadId]: !prev[olympiadId]
+      [olympiadId]: !prev[olympiadId],
     }));
   };
 
@@ -111,13 +113,13 @@ export const Olympiad = () => {
 
   if (loading) {
     return (
-      <div className="bg-black min-h-screen px-6 py-16">
+      <div className="bg-gray-100 px-6 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Featured Olympiad Competitions
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Loading olympiads...
             </p>
           </div>
@@ -128,13 +130,13 @@ export const Olympiad = () => {
 
   if (error && !data) {
     return (
-      <div className="bg-black min-h-screen px-6 py-16">
+      <div className="bg-gray-100 px-6 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Featured Olympiad Competitions
             </h2>
-            <p className="text-lg text-red-400 max-w-2xl mx-auto">
+            <p className="text-lg text-red-500 max-w-2xl mx-auto">
               Error loading olympiads: {error.message}
             </p>
           </div>
@@ -145,13 +147,13 @@ export const Olympiad = () => {
 
   if (olympiads.length === 0) {
     return (
-      <div className="bg-black min-h-screen px-6 py-16">
+      <div className="bg-gray-100 px-6 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Featured Olympiad Competitions
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               No olympiads available at the moment. Please check back later.
             </p>
           </div>
@@ -161,67 +163,60 @@ export const Olympiad = () => {
   }
 
   return (
-    <div className="bg-black min-h-screen px-6 py-16">
+    <div className="bg-gray-100 px-6 pt-16 pb-8">
       <div className="max-w-7xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-white mb-4">
-          Featured Olympiad Competitions
-        </h2>
-        <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-6">
-          Join prestigious academic competitions and showcase your skills
-          against the best students worldwide.
-        </p>
-        <div className="flex justify-center">
-          <Button
-            onClick={() => router.push('/olympiads')}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
-          >
-            View All Olympiads
-            <ArrowRight className="w-4 h-4" />
-          </Button>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Олимпиадуудын мэдээлэл
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Академик тэмцээнүүдэд оролцож, шилдэг оюутнуудтай өрсөлдөн ур
+            чадвараа харуул
+          </p>
         </div>
-      </div>
 
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
-        {statusTypes.map((status) => {
-          const isSelected = selectedStatus === status;
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {statusTypes.map((status) => {
+            const isSelected = selectedStatus === status;
 
-          return (
-            <Button
-              key={status}
-              variant={isSelected ? "default" : "outline"}
-              size="lg"
-              onClick={() => setSelectedStatus(status)}
-              className={`
+            return (
+              <Button
+                key={status}
+                variant={isSelected ? "default" : "outline"}
+                size="lg"
+                onClick={() => setSelectedStatus(status)}
+                className={`
                 flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
                 ${
                   isSelected
                     ? "bg-orange-500 hover:bg-orange-600 text-white shadow-lg"
-                    : "bg-[#0A0F1A] hover:bg-gray-700 text-white border-gray-600 hover:border-orange-500/50"
+                    : "bg-white hover:bg-gray-50 text-gray-700 border-gray-300 hover:border-orange-500/50 shadow-sm"
                 }
               `}
-            >
-              <Star className="w-5 h-5" />
-              {getStatusDisplayName(status)}
-            </Button>
-          );
-        })}
-      </div>
+              >
+                <Star className="w-5 h-5" />
+                {getStatusDisplayName(status)}
+              </Button>
+            );
+          })}
+        </div>
 
-      {filteredOlympiads.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="bg-black rounded-lg p-8 max-w-md mx-auto border border-black">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gray-700 rounded-full flex items-center justify-center">
-              <Trophy className="w-8 h-8 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
-              No {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads
-            </h3>
-            <p className="text-gray-400 mb-4">
-              There are currently no {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads available. 
-              Please check back later or try a different status.
-            </p>
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
+        {filteredOlympiads.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="bg-white rounded-2xl p-8 max-w-md mx-auto shadow-lg">
+              <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center">
+                <Trophy className="w-8 h-8 text-orange-500" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No {getStatusDisplayName(selectedStatus).toLowerCase()}{" "}
+                olympiads
+              </h3>
+              <p className="text-gray-600 mb-4">
+                There are currently no{" "}
+                {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads
+                available. Please check back later or try a different status.
+              </p>
+              {/* <div className="flex flex-wrap justify-center gap-2">
               {statusTypes.filter(status => status !== selectedStatus).map((status) => (
                 <Button
                   key={status}
@@ -234,135 +229,149 @@ export const Olympiad = () => {
                   {getStatusDisplayName(status)}
                 </Button>
               ))}
+            </div> */}
             </div>
             <Button
-              onClick={() => router.push('/olympiads')}
+              onClick={() => router.push("/olympiads")}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
               View All Olympiads
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {filteredOlympiads.map((olympiad) => {
-          const isExpanded = expandedDescriptions[olympiad.id];
-          const shouldTruncate = olympiad.description.length > DESCRIPTION_LIMIT;
-          const displayDescription = shouldTruncate && !isExpanded 
-            ? olympiad.description.substring(0, DESCRIPTION_LIMIT) + "..."
-            : olympiad.description;
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {filteredOlympiads.map((olympiad) => {
+              const isExpanded = expandedDescriptions[olympiad.id];
+              const shouldTruncate =
+                olympiad.description.length > DESCRIPTION_LIMIT;
+              const displayDescription =
+                shouldTruncate && !isExpanded
+                  ? olympiad.description.substring(0, DESCRIPTION_LIMIT) + "..."
+                  : olympiad.description;
 
-          return (
-            <Card key={olympiad.id} className="bg-gray-900 flex flex-col border border-gray-800 hover:border-orange-500/50 transition-all duration-300"> 
-              <div className="relative h-48 bg-gradient-to-br from-blue-900 to-purple-900 overflow-hidden">
-                {olympiad.rankingType === "NATIONAL" && (
-                  <div className="absolute top-4 left-4 z-10">
-                    <Badge className="bg-orange-500 text-white border-0 flex items-center gap-1 shadow-lg">
-                      <Star className="w-3 h-3" />
-                      Featured
-                    </Badge>
-                  </div>
-                )}
-              </div>
-
-               <CardHeader className="pb-4 bg-gray-800/30 rounded-t-lg">
-                 <CardTitle className="text-xl font-bold text-white mb-2">
-                   {olympiad.name}
-                 </CardTitle>
-                 <CardDescription className="text-gray-300 leading-relaxed">
-                   {displayDescription}
-                   {shouldTruncate && (
-                     <button
-                       onClick={(e) => toggleDescription(olympiad.id, e)}
-                       className="ml-2 text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200 inline-block"
-                     >
-                       {isExpanded ? "See less" : "See more"}
-                     </button>
-                   )}
-                 </CardDescription>
-               </CardHeader>
-
-              <CardContent className="space-y-4 flex-grow bg-gray-800/20">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-3 p-3 bg-gray-800/30 rounded-lg">
-                    <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <Calendar className="w-4 h-4 text-orange-400" />
-                      <span className="font-medium">Competition Date</span>
-                    </div>
-                    <div className="text-white font-semibold">
-                      {formatDate(olympiad.occurringDay)}
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <Trophy className="w-4 h-4 text-orange-400" />
-                      <span className="font-medium">Class</span>
-                    </div>
-                    <div className="text-white font-semibold">
-                      {olympiad.classtypes
-                        .map((classtype) => formatClassYear(classtype.classYear))
-                        .join(", ")}
+              return (
+                <Card
+                  key={olympiad.id}
+                  className="bg-white flex flex-col border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden"
+                >
+                  {/* Header with orange gradient */}
+                  <div className="relative h-32 bg-gradient-to-r from-orange-500 to-orange-600 overflow-hidden">
+                    {olympiad.rankingType === "NATIONAL" && (
+                      <div className="absolute top-4 left-4 z-10">
+                        <Badge className="bg-white text-orange-600 border-0 flex items-center gap-1 shadow-lg font-semibold">
+                          <Star className="w-3 h-3" />
+                          Featured
+                        </Badge>
+                      </div>
+                    )}
+                    <div className="absolute top-4 right-4">
+                      <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                        <Trophy className="w-8 h-8 text-white" />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-3 p-3 bg-gray-800/30 rounded-lg">
-                    <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <MapPin className="w-4 h-4 text-orange-400" />
-                      <span className="font-medium">Location</span>
-                    </div>
-                    <div className="text-white font-semibold">
-                      {olympiad.location}
-                    </div>
+                  {/* Main content */}
+                  <div className="p-6 flex-grow">
+                    <CardTitle className="text-2xl font-bold text-gray-900 mb-3">
+                      {olympiad.name}
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 leading-relaxed mb-6">
+                      {displayDescription}
+                      {shouldTruncate && (
+                        <button
+                          onClick={(e) => toggleDescription(olympiad.id, e)}
+                          className="ml-2 text-orange-500 hover:text-orange-600 font-medium transition-colors duration-200 inline-block"
+                        >
+                          {isExpanded ? "See less" : "See more"}
+                        </button>
+                      )}
+                    </CardDescription>
 
-                    <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <Clock className="w-4 h-4 text-orange-400" />
-                      <span className="font-medium">Registration</span>
-                    </div>
-                    <div className="text-white font-semibold">
-                      {formatDate(olympiad.closeDay)}
+                    {/* Information cards */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <Calendar className="w-4 h-4 text-orange-500" />
+                          <span className="font-medium">Competition Date</span>
+                        </div>
+                        <div className="text-gray-900 font-semibold">
+                          {formatDate(olympiad.occurringDay)}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-3">
+                          <Trophy className="w-4 h-4 text-orange-500" />
+                          <span className="font-medium">Class</span>
+                        </div>
+                        <div className="text-gray-900 font-semibold">
+                          {olympiad.classtypes
+                            .map((classtype) =>
+                              formatClassYear(classtype.classYear)
+                            )
+                            .join(", ")}
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <MapPin className="w-4 h-4 text-orange-500" />
+                          <span className="font-medium">Location</span>
+                        </div>
+                        <div className="text-gray-900 font-semibold">
+                          {olympiad.location}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-3">
+                          <Clock className="w-4 h-4 text-orange-500" />
+                          <span className="font-medium">Registration</span>
+                        </div>
+                        <div className="text-gray-900 font-semibold">
+                          {formatDate(olympiad.closeDay)}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
 
-               <CardFooter className="pt-4 bg-gray-800/20 rounded-b-lg">
-                 <PageTransition href={`/olympiad/${olympiad.id}`}>
-                   <Button
-                     variant="outline"
-                     className="w-full border-orange-500/50 text-white hover:bg-orange-500 hover:text-black transition-all duration-300 font-medium"
-                   >
-                     <Eye className="w-4 h-4 mr-2" />
-                     Details
-                   </Button>
-                 </PageTransition>
-               </CardFooter>
-            </Card>
-          );
-        })}
-        </div>
-      )}
-
-      {/* View All Olympiads Section */}
-      {filteredOlympiads.length > 0 && (
-        <div className="text-center mt-12">
-          <div className="bg-gray-900/50 rounded-lg p-8 max-w-2xl mx-auto border border-gray-800">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Explore All Competitions
-            </h3>
-            <p className="text-gray-300 mb-6">
-              Discover more olympiad competitions with advanced filtering options, 
-              detailed information, and comprehensive search capabilities.
-            </p>
-            <Button
-              onClick={() => router.push('/olympiads')}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
-            >
-              View All Olympiads
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+                  <CardFooter className="pt-4 bg-gray-800/20 rounded-b-lg">
+                    <PageTransition href={`/olympiad/${olympiad.id}`}>
+                      <Button
+                        variant="outline"
+                        className="w-full border-orange-500/50 text-white hover:bg-orange-500 hover:text-black transition-all duration-300 font-medium"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Details
+                      </Button>
+                    </PageTransition>
+                  </CardFooter>
+                </Card>
+              );
+            })}
           </div>
-        </div>
-      )}
+        )}
+
+        {/* View All Olympiads Section */}
+        {filteredOlympiads.length > 0 && (
+          <div className="text-center mt-12">
+            <div className="bg-gray-900/50 rounded-lg p-8 max-w-2xl mx-auto border border-gray-800">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Explore All Competitions
+              </h3>
+              <p className="text-gray-300 mb-6">
+                Discover more olympiad competitions with advanced filtering
+                options, detailed information, and comprehensive search
+                capabilities.
+              </p>
+              <Button
+                onClick={() => router.push("/olympiads")}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
+              >
+                View All Olympiads
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
