@@ -367,7 +367,7 @@ const HostPage = () => {
                             </div>
 
                             <h1 className="text-4xl font-bold mb-2 text-foreground">
-                                {activeTab === "profile" && "Host Profile"}
+                                {activeTab === "profile" && "Profile"}
                                 {activeTab === "create" && "Create Olympiad"}
                                 {activeTab === "manage" && "Manage Olympiads"}
                                 {activeTab === "results" && "Manage Results"}
