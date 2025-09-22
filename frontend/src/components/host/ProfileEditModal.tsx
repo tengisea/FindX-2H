@@ -14,6 +14,7 @@ interface ProfileEditModalProps {
     currentData: {
         organizationName: string;
         email: string;
+        logo: string;
     };
     onSuccess?: () => void;
 }
@@ -28,6 +29,7 @@ const ProfileEditModal = ({
     const [formData, setFormData] = useState({
         organizationName: currentData.organizationName,
         email: currentData.email,
+        logo: currentData.logo,
     });
 
     const [updateOrganizer, { loading }] = useUpdateOrganizerMutation({
@@ -51,7 +53,7 @@ const ProfileEditModal = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.organizationName.trim() || !formData.email.trim()) {
+        if (!formData.organizationName.trim() || !formData.email.trim() || !formData.logo.trim()) {
             alert("Please fill in all required fields");
             return;
         }
@@ -68,6 +70,7 @@ const ProfileEditModal = ({
                     input: {
                         organizationName: formData.organizationName.trim(),
                         email: formData.email.trim(),
+                        logo: formData.logo.trim(),
                     }
                 }
             });
@@ -81,6 +84,7 @@ const ProfileEditModal = ({
         setFormData({
             organizationName: currentData.organizationName,
             email: currentData.email,
+            logo: currentData.logo,
         });
         onClose();
     };
@@ -90,12 +94,12 @@ const ProfileEditModal = ({
             isOpen={isOpen}
             onClose={handleClose}
             size="md"
-            className="bg-black"
+            className="bg-card"
             showCloseButton={false}
         >
             <form onSubmit={handleSubmit}>
                 {/* Custom Header */}
-                <div className="flex items-center justify-between p-4 sm:p-6  bg-black">
+                <div className="flex items-center justify-between p-4 sm:p-6  bg-card">
                     <div className="flex-1 min-w-0">
                         <h2 className="text-lg sm:text-xl font-semibold text-white leading-none truncate">
                             Edit Profile
@@ -117,7 +121,7 @@ const ProfileEditModal = ({
                     </Button>
                 </div>
 
-                <ModalContent className="bg-black">
+                <ModalContent className="bg-card">
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <Label htmlFor="organizationName" className="text-white">
@@ -131,7 +135,7 @@ const ProfileEditModal = ({
                                 placeholder="Enter organization name"
                                 required
                                 disabled={loading}
-                                className="bg-black border-gray-500 text-white placeholder:text-gray-400 "
+                                className="bg-card border-gray-500 text-white placeholder:text-gray-400 "
                             />
                         </div>
 
@@ -147,13 +151,29 @@ const ProfileEditModal = ({
                                 placeholder="Enter email address"
                                 required
                                 disabled={loading}
-                                className="bg-black border-gray-500 text-white placeholder:text-gray-400 "
+                                className="bg-card border-gray-500 text-white placeholder:text-gray-400 "
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="logo" className="text-white">
+                                Logo URL *
+                            </Label>
+                            <Input
+                                id="logo"
+                                type="url"
+                                value={formData.logo}
+                                onChange={(e) => handleInputChange("logo", e.target.value)}
+                                placeholder="Enter logo URL"
+                                required
+                                disabled={loading}
+                                className="bg-card border-gray-500 text-white placeholder:text-gray-400 "
                             />
                         </div>
                     </div>
                 </ModalContent>
 
-                <ModalFooter className="bg-black border-black">
+                <ModalFooter className="bg-card border-black">
                     <Button
                         type="button"
                         variant="outline"
