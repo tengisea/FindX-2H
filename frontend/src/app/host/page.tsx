@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@apollo/client";
-
 import { OlympiadForm } from "@/components/host/OlympiadForm";
 import { ManageOlympiads } from "@/components/host/ManageOlympiads";
 import { ManageResults } from "@/components/host/ManageResults";
@@ -17,7 +15,7 @@ const HostPage = () => {
     const [activeTab, setActiveTab] = useState<TabType>("profile");
     const [editingOlympiad, setEditingOlympiad] = useState<any>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
+
 
     // Hardcoded organizer ID
     const ORGANIZER_ID = "68d0cfd354ab6e0a0d6237f8";
@@ -101,18 +99,6 @@ const HostPage = () => {
     };
 
 
-    const handleDeleteOlympiad = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this olympiad?")) {
-            return;
-        }
-        setIsDeleting(true);
-        // Handle deletion
-        setTimeout(() => {
-            setIsDeleting(false);
-            // Refetch data after deletion
-            refetch();
-        }, 1000);
-    };
 
     const updateFormData = (field: string, value: string | boolean | Date | undefined) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -277,6 +263,7 @@ const HostPage = () => {
                 return (
                     <HostProfile
                         organizerId={ORGANIZER_ID}
+                        onNavigateToManage={() => setActiveTab("manage")}
                     />
                 );
             case "create":
@@ -302,6 +289,8 @@ const HostPage = () => {
                 return (
                     <ManageOlympiads
                         organizerId={ORGANIZER_ID}
+                        olympiads={myOlympiads}
+                        onRefetch={refetch}
                     />
                 );
             case "results":
@@ -319,7 +308,7 @@ const HostPage = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen ">
                 {/* StaggeredMenu Navigation */}
                 <StaggeredMenu
                     position="left"
@@ -441,10 +430,10 @@ const HostPage = () => {
                         )}
 
                         {/* Content */}
-                        <div className="relative">
+                        <div className="relative h-screen w-full">
                             {organizerLoading ? (
-                                <div className="flex items-center justify-center py-12">
-                                    <div className="text-center">
+                                <div className="flex items-center justify-center py-12 w-full h-full">
+                                    <div className="text-center w-full h-full">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                                         <p className="text-muted-foreground">Loading olympiads...</p>
                                     </div>

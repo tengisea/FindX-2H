@@ -87,13 +87,6 @@ export const registerForOlympiad = async (
         );
       }
 
-      // Add the student to the olympiad's participants array
-      await OlympiadModel.findByIdAndUpdate(
-        olympiadId,
-        { $addToSet: { participants: studentId } },
-        { session }
-      );
-
       // Add the student to the ClassType's participants array
       const updatedClassType = await ClassTypeModel.findByIdAndUpdate(
         classTypeId,

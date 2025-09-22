@@ -28,7 +28,7 @@ export const Section = () => {
     const topPerformer =
       students.length > 0
         ? students.reduce((top, student) =>
-            student.ranking < top.ranking ? student : top
+            student.ranking > top.ranking ? student : top
           )
         : null;
 
@@ -67,19 +67,21 @@ export const Section = () => {
                 <div className="text-3xl font-bold text-orange-500">
                   {stats.activeStudents.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-400">Active Students</div>
+                <div className="text-sm text-gray-400">Идэвхитэй оюутан</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-orange-500">
                   {stats.hostOrganizations.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-400">Host Organizations</div>
+                <div className="text-sm text-gray-400">Зохион байгуулагчид</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-orange-500">
                   {stats.competitionsHeld.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-400">Competitions Held</div>
+                <div className="text-sm text-gray-400">
+                  Зохион байгуулсан тэмцээнүүд
+                </div>
               </div>
             </div>
 
@@ -118,7 +120,7 @@ export const Section = () => {
                     <div className="font-bold text-sm">Top Performer</div>
                     <div className="text-xs text-gray-300">
                       {stats.topPerformer
-                        ? `${stats.topPerformer.name} - Rank #${stats.topPerformer.ranking}`
+                        ? `${stats.topPerformer.name} - Rank #${1}`
                         : "No data available"}
                     </div>
                   </div>

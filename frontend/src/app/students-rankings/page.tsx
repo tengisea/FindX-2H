@@ -17,7 +17,7 @@ const Rankings = () => {
         style={{ transformOrigin: "top" }}
         className="text-white"
       >
-        <div className=" bg-white h-screen w-full">
+        <div className="bg-black h-screen w-full">
           <StudentsRanking />
         </div>
       </motion.div>

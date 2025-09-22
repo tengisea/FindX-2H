@@ -3,16 +3,17 @@
 import { useState, useEffect } from "react";
 import { useGetOrganizerQuery } from "@/generated";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "../ui/button";
 import ProfileEditModal from "./ProfileEditModal";
 import { OlympiadDetailModal } from "./OlympiadDetailModal";
 
+
 interface HostProfileProps {
     organizerId: string;
+    onNavigateToManage?: () => void;
 }
 
-const HostProfile = ({ organizerId }: HostProfileProps) => {
+const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedOlympiadId, setSelectedOlympiadId] = useState<string | null>(null);
 
@@ -24,6 +25,32 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
 
     const organizer = organizerData?.getOrganizer;
     const olympiads = organizer?.Olympiads || [];
+
+    // Debug: Log olympiad data to see what we're getting
+    console.log("Olympiads from organizer query:", olympiads);
+    console.log("Sample olympiad:", olympiads[0]);
+
+    // Date formatting function
+    const formatDate = (dateString?: string | null) => {
+        if (!dateString || dateString === null || dateString === undefined || dateString === "") {
+            return "Set date";
+        }
+
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return "Invalid date";
+            }
+            return date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+            });
+        } catch (error) {
+            console.error("Date formatting error:", error, "for date:", dateString);
+            return "Invalid date";
+        }
+    };
 
     // Refetch data when component mounts or organizerId changes
     useEffect(() => {
@@ -152,9 +179,6 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
             <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-foreground">Recent Olympiads</h3>
-                    <button className="text-primary hover:text-primary/80 text-sm font-medium">
-                        View All
-                    </button>
                 </div>
 
                 {olympiads.length === 0 ? (
@@ -168,21 +192,39 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                 ) : (
                     <div className="space-y-4">
                         {olympiads.slice(0, 5).map((olympiad) => (
-                            <div key={olympiad.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                            <div
+                                key={olympiad.id}
+                                className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border cursor-pointer hover:bg-muted/50 transition-colors"
+                                onClick={() => setSelectedOlympiadId(olympiad.id)}
+                            >
                                 <div className="flex-1">
-                                    <h4 className="font-medium text-foreground">{olympiad.name}</h4>
-                                    <p className="text-sm text-muted-foreground mt-1">{olympiad.description}</p>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <Badge className={getStatusColor(olympiad.status)}>
-                                        {getStatusText(olympiad.status)}
-                                    </Badge>
-                                    <button
-                                        className="text-primary hover:text-primary/80 text-sm font-medium"
-                                        onClick={() => setSelectedOlympiadId(olympiad.id)}
-                                    >
-                                        View Details
-                                    </button>
+                                    <div className="flex items-center space-x-2 mb-2">
+                                        <h4 className="font-medium text-foreground">{olympiad.name}</h4>
+                                        <span className="px-3 py-1 rounded-full text-sm font-medium border text-[#ff8400]">
+                                            {olympiad.status}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground mb-2">{olympiad.description}</p>
+
+                                    {/* Date Information */}
+                                    <div className="flex items-center space-x-4 text-xs">
+                                        <div className="flex items-center space-x-1">
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span className={!olympiad.closeDay ? "text-orange-500" : "text-muted-foreground"}>
+                                                Close: {formatDate(olympiad.closeDay)}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span className={!olympiad.occurringDay ? "text-orange-500" : "text-muted-foreground"}>
+                                                Event: {formatDate(olympiad.occurringDay)}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -217,6 +259,12 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                         refetch();
                     }}
                     olympiadId={selectedOlympiadId}
+                    onEdit={() => {
+                        setSelectedOlympiadId(null);
+                        if (onNavigateToManage) {
+                            onNavigateToManage();
+                        }
+                    }}
                 />
             )}
         </div>

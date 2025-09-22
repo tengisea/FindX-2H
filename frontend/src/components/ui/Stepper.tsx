@@ -32,8 +32,8 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
 export default function Stepper({
   children,
   initialStep = 1,
-  onStepChange = () => {},
-  onFinalStepCompleted = () => {},
+  onStepChange = () => { },
+  onFinalStepCompleted = () => { },
   stepCircleContainerClassName = "",
   stepContainerClassName = "",
   contentClassName = "",
@@ -138,18 +138,16 @@ export default function Stepper({
         {!isCompleted && (
           <div className={`px-6 pb-6 ${footerClassName}`}>
             <div
-              className={`mt-6 flex ${
-                currentStep !== 1 ? "justify-between" : "justify-end"
-              }`}
+              className={`mt-6 flex ${currentStep !== 1 ? "justify-between" : "justify-end"
+                }`}
             >
               {currentStep !== 1 && (
                 <button
                   onClick={handleBack}
-                  className={`duration-350 rounded px-2 py-1 transition ${
-                    currentStep === 1
-                      ? "pointer-events-none opacity-50 text-neutral-400"
-                      : "text-neutral-400 hover:text-neutral-700"
-                  }`}
+                  className={`duration-350 rounded px-2 py-1 transition ${currentStep === 1
+                    ? "pointer-events-none opacity-50 text-neutral-400"
+                    : "text-neutral-400 hover:text-neutral-700"
+                    }`}
                   {...backButtonProps}
                 >
                   {backButtonText}
@@ -157,7 +155,7 @@ export default function Stepper({
               )}
               <button
                 onClick={isLastStep ? handleComplete : handleNext}
-                className="duration-350 flex items-center justify-center rounded-full bg-green-500 py-1.5 px-3.5 font-medium tracking-tight text-white transition hover:bg-green-600 active:bg-green-700"
+                className="duration-350 flex items-center justify-center rounded-full bg-[#FF8400] py-1.5 px-3.5 font-medium tracking-tight text-white transition hover:bg-[#FF8400]/80 active:bg-[#FF8400]/70"
                 {...nextButtonProps}
               >
                 {isLastStep ? "Complete" : nextButtonText}
@@ -284,8 +282,8 @@ function StepIndicator({
     currentStep === step
       ? "active"
       : currentStep < step
-      ? "inactive"
-      : "complete";
+        ? "inactive"
+        : "complete";
 
   const handleClick = () => {
     if (step !== currentStep && !disableStepIndicators) {
@@ -303,8 +301,8 @@ function StepIndicator({
       <motion.div
         variants={{
           inactive: { scale: 1, backgroundColor: "#222", color: "#a3a3a3" },
-          active: { scale: 1, backgroundColor: "#5227FF", color: "#5227FF" },
-          complete: { scale: 1, backgroundColor: "#5227FF", color: "#3b82f6" },
+          active: { scale: 1, backgroundColor: "#FF8400", color: "#FF8400" },
+          complete: { scale: 1, backgroundColor: "#FF8400", color: "#FF8400" },
         }}
         transition={{ duration: 0.3 }}
         className="flex h-8 w-8 items-center justify-center rounded-full font-semibold"
@@ -328,11 +326,11 @@ interface StepConnectorProps {
 function StepConnector({ isComplete }: StepConnectorProps) {
   const lineVariants: Variants = {
     incomplete: { width: 0, backgroundColor: "transparent" },
-    complete: { width: "100%", backgroundColor: "#5227FF" },
+    complete: { width: "100%", backgroundColor: "#FF8400" },
   };
 
   return (
-    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-[#4741A6]">
+    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-[#FF8400]">
       <motion.div
         className="absolute left-0 top-0 h-full"
         variants={lineVariants}

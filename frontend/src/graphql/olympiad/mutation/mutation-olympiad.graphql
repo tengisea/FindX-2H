@@ -16,7 +16,6 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
         description
         closeDay
         location
-        participants
         scoreOfAward
         status
         rankingType
@@ -50,7 +49,6 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
       bronze
       top10
     }
-    participants
     scoreOfAward
     status
     rankingType
@@ -81,7 +79,6 @@ mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
         description
         closeDay
         location
-        participants
         scoreOfAward
         status
         rankingType
@@ -115,7 +112,6 @@ mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
       bronze
       top10
     }
-    participants
     scoreOfAward
     status
     rankingType
@@ -148,7 +144,6 @@ mutation UpdateOlympiadComprehensive(
         description
         closeDay
         location
-        participants
         scoreOfAward
         status
         rankingType
@@ -182,15 +177,10 @@ mutation UpdateOlympiadComprehensive(
       bronze
       top10
     }
-    participants
     scoreOfAward
     status
     rankingType
     invitation
     occurringDay
   }
-}
-
-mutation DeleteOlympiad($deleteOlympiadId: ID!) {
-  deleteOlympiad(id: $deleteOlympiadId)
 }
