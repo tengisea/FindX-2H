@@ -1,547 +1,298 @@
-// "use client";
+"use client";
 
-// import { useState, useEffect } from "react";
-// import {
-//   useGetStudentsByClassTypeQuery,
-//   useGetStudentAnswersByClassTypeQuery,
-//   useCreateStudentAnswerMutation,
-//   useUpdateStudentAnswerMutation,
-// } from "@/generated";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Badge } from "@/components/ui/badge";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Label } from "@/components/ui/label";
-// import { Plus, Save, Edit, Trash2, Users, Award } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
-// interface StudentAnswerFormProps {
-//   selectedOlympiad: any;
-//   selectedClassType: any;
-// }
+interface StudentAnswerFormProps {
+    studentAnswer: any;
+    questions: any[];
+    classType: any;
+    onUpdateScore: (studentAnswerId: string, questionId: string, score: number) => Promise<any>;
+    onAddResult: (input: any) => Promise<any>;
+    editingMode: "view" | "edit";
+}
 
-// export const StudentAnswerForm = ({
-//   selectedOlympiad,
-//   selectedClassType,
-// }: StudentAnswerFormProps) => {
-//   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
-//   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
-//   const [answers, setAnswers] = useState<
-//     { questionId: string; score: number }[]
-//   >([]);
-//   const [isSubmitting, setIsSubmitting] = useState(false);
-//   const [manualStudentId, setManualStudentId] = useState<string>("");
-//   const [useManualInput, setUseManualInput] = useState(false);
+export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
+    studentAnswer,
+    questions,
+    classType,
+    onUpdateScore,
+    onAddResult,
+    editingMode
+}) => {
+    const [answers, setAnswers] = useState<any[]>([]);
+    const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-//   // Queries
-//   const {
-//     data: studentsData,
-//     loading: studentsLoading,
-//     error: studentsError,
-//   } = useGetStudentsByClassTypeQuery({
-//     variables: { classTypeId: selectedClassType?.id || "" },
-//     skip: !selectedClassType?.id,
-//   });
+    useEffect(() => {
+        if (studentAnswer?.answers) {
+            setAnswers([...studentAnswer.answers]);
+        } else {
+            // Initialize with empty answers for each question
+            const initialAnswers = questions.map(question => ({
+                questionId: question.id,
+                score: 0,
+                description: ""
+            }));
+            setAnswers(initialAnswers);
+        }
+    }, [studentAnswer, questions]);
 
-//   // Debug logging
-//   console.log("StudentAnswerForm Debug:", {
-//     selectedClassTypeId: selectedClassType?.id,
-//     studentsData,
-//     studentsLoading,
-//     studentsError,
-//     studentsCount: studentsData?.studentsByClassType?.length || 0,
-//   });
+    const handleScoreChange = async (questionId: string, newScore: number) => {
+        const question = questions.find(q => q.id === questionId);
+        if (!question) return;
 
-//   const {
-//     data: studentAnswersData,
-//     loading: answersLoading,
-//     error: answersError,
-//     refetch: refetchAnswers,
-//   } = useGetStudentAnswersByClassTypeQuery({
-//     variables: { classTypeId: selectedClassType?.id || "" },
-//     skip: !selectedClassType?.id,
-//   });
+        // Validate score is within bounds
+        const score = Math.max(0, Math.min(newScore, question.maxScore));
 
-//   // Debug logging for student answers query
-//   console.log("🔍 Student Answers Query Debug:", {
-//     selectedClassTypeId: selectedClassType?.id,
-//     querySkipped: !selectedClassType?.id,
-//     answersLoading,
-//     answersError,
-//     answersData: studentAnswersData,
-//     answersCount: studentAnswersData?.studentAnswersByClassType?.length || 0,
-//   });
+        // Update local state
+        setAnswers(prev => prev.map(answer => 
+            answer.questionId === questionId 
+                ? { ...answer, score }
+                : answer
+        ));
 
-//   // Mutations
-//   const [createStudentAnswer] = useCreateStudentAnswerMutation({
-//     onCompleted: () => {
-//       refetchAnswers();
-//       resetForm();
-//       alert("Student answer created successfully!");
-//     },
-//     onError: (error) => {
-//       console.error("Error creating student answer:", error);
-//       alert("Failed to create student answer");
-//     },
-//   });
+        // Update in database if student answer exists
+        if (studentAnswer?.id) {
+            try {
+                await onUpdateScore(studentAnswer.id, questionId, score);
+            } catch (error) {
+                console.error("Error updating score:", error);
+                // Revert local state on error
+                setAnswers(prev => prev.map(answer => 
+                    answer.questionId === questionId 
+                        ? { ...answer, score: answer.score }
+                        : answer
+                ));
+            }
+        }
+    };
 
-//   const [updateStudentAnswer] = useUpdateStudentAnswerMutation({
-//     onCompleted: () => {
-//       refetchAnswers();
-//       resetForm();
-//       alert("Student answer updated successfully!");
-//     },
-//     onError: (error) => {
-//       console.error("Error updating student answer:", error);
-//       console.error("Error details:", {
-//         message: error.message,
-//         graphQLErrors: error.graphQLErrors,
-//         networkError: error.networkError,
-//         extraInfo: error.extraInfo,
-//       });
-//       alert(`Failed to update student answer: ${error.message}`);
-//     },
-//   });
+    const handleDescriptionChange = (questionId: string, description: string) => {
+        setAnswers(prev => prev.map(answer => 
+            answer.questionId === questionId 
+                ? { ...answer, description }
+                : answer
+        ));
+    };
 
-//   // Initialize answers when class type changes
-//   useEffect(() => {
-//     if (selectedClassType?.questions) {
-//       const initialAnswers = selectedClassType.questions.map(
-//         (question: any) => ({
-//           questionId: question.id,
-//           score: 0,
-//         })
-//       );
-//       setAnswers(initialAnswers);
-//     }
-//   }, [selectedClassType]);
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(event.target.files || []);
+        setUploadedImages(prev => [...prev, ...files]);
+    };
 
-//   const resetForm = () => {
-//     setSelectedStudentId("");
-//     setEditingAnswerId(null);
-//     if (selectedClassType?.questions) {
-//       const initialAnswers = selectedClassType.questions.map(
-//         (question: any) => ({
-//           questionId: question.id,
-//           score: 0,
-//         })
-//       );
-//       setAnswers(initialAnswers);
-//     }
-//   };
+    const handleRemoveImage = (index: number) => {
+        setUploadedImages(prev => prev.filter((_, i) => i !== index));
+    };
 
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (!selectedStudentId || !selectedClassType?.id) return;
+    const handleSubmit = async () => {
+        if (!studentAnswer?.id) return;
 
-//     setIsSubmitting(true);
-//     try {
-//       if (editingAnswerId) {
-//         console.log("🔧 Frontend: Updating student answer with:", {
-//           id: editingAnswerId,
-//           input: {
-//             studentId: selectedStudentId,
-//             classTypeId: selectedClassType.id,
-//             answers: answers,
-//           },
-//         });
-//         console.log("🔧 Frontend: Individual values:", {
-//           editingAnswerId,
-//           selectedStudentId,
-//           classTypeId: selectedClassType?.id,
-//           answersLength: answers?.length,
-//           answers: answers,
-//         });
-//         await updateStudentAnswer({
-//           variables: {
-//             id: editingAnswerId,
-//             input: {
-//               studentId: selectedStudentId,
-//               classTypeId: selectedClassType.id,
-//               answers: answers,
-//             },
-//           },
-//         });
-//       } else {
-//         await createStudentAnswer({
-//           variables: {
-//             input: {
-//               studentId: selectedStudentId,
-//               classTypeId: selectedClassType.id,
-//               answers: answers,
-//             },
-//           },
-//         });
-//       }
-//     } catch (error: any) {
-//       console.error("Submission error:", error);
-//       console.error("Submission error details:", {
-//         message: error.message,
-//         graphQLErrors: error.graphQLErrors,
-//         networkError: error.networkError,
-//         stack: error.stack,
-//       });
-//       alert(`Submission failed: ${error.message || "Unknown error"}`);
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   };
+        setIsSubmitting(true);
+        try {
+            const imageUrls = uploadedImages.map(file => URL.createObjectURL(file)); // In real app, upload to server
+            
+            await onAddResult({
+                input: {
+                    studentAnswerId: studentAnswer.id,
+                    answers,
+                    image: imageUrls
+                }
+            });
+        } catch (error) {
+            console.error("Error submitting result:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-//   const handleEditAnswer = (studentAnswer: any) => {
-//     console.log("🔧 Frontend: Editing student answer:", studentAnswer);
-//     setSelectedStudentId(studentAnswer.studentId);
-//     setEditingAnswerId(studentAnswer.id);
-//     setAnswers(studentAnswer.answers || []);
-//   };
+    const calculateTotalScore = () => {
+        return answers.reduce((sum, answer) => sum + (answer.score || 0), 0);
+    };
 
-//   const updateAnswerScore = (questionId: string, score: number) => {
-//     setAnswers((prev) =>
-//       prev.map((answer) =>
-//         answer.questionId === questionId
-//           ? {
-//               ...answer,
-//               score: Math.max(
-//                 0,
-//                 Math.min(score, getMaxScoreForQuestion(questionId))
-//               ),
-//             }
-//           : answer
-//       )
-//     );
-//   };
+    const getScoreColor = (score: number, maxScore: number) => {
+        const percentage = (score / maxScore) * 100;
+        if (percentage >= 80) return "text-green-600";
+        if (percentage >= 60) return "text-yellow-600";
+        return "text-red-600";
+    };
 
-//   const getMaxScoreForQuestion = (questionId: string) => {
-//     const question = selectedClassType?.questions?.find(
-//       (q: any) => q.id === questionId
-//     );
-//     return question?.maxScore || 0;
-//   };
+    if (!studentAnswer || !questions.length) return null;
 
-//   const getTotalScore = () => {
-//     return answers.reduce((sum, answer) => sum + answer.score, 0);
-//   };
+    return (
+        <div className="space-y-6">
+            {/* Student Info Header */}
+            <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h4 className="text-xl font-bold text-foreground">
+                            Student {studentAnswer.mandatNumber}
+                        </h4>
+                        <p className="text-muted-foreground">
+                            Grade {classType.classYear.replace('GRADE_', '')} - {questions.length} Questions
+                        </p>
+                    </div>
+                    <div className="text-right">
+                        <div className={`text-3xl font-bold ${getScoreColor(calculateTotalScore(), classType.maxScore)}`}>
+                            {calculateTotalScore()}/{classType.maxScore}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            {Math.round((calculateTotalScore() / classType.maxScore) * 100)}%
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-//   const getStudentName = (studentId: string) => {
-//     const student = studentsData?.studentsByClassType?.find(
-//       (s) => s.id === studentId
-//     );
-//     return student?.name || "Unknown Student";
-//   };
+            {/* Questions and Scoring */}
+            <div className="space-y-4">
+                <h5 className="text-lg font-semibold text-foreground">Question Scoring</h5>
+                {questions.map((question, index) => {
+                    const answer = answers.find(a => a.questionId === question.id);
+                    const score = answer?.score || 0;
+                    
+                    return (
+                        <div key={question.id} className="bg-card rounded-lg border border-border p-6">
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex-1">
+                                    <h6 className="font-medium text-foreground mb-2">
+                                        Question {index + 1}: {question.questionName}
+                                    </h6>
+                                    <p className="text-sm text-muted-foreground">
+                                        Maximum Score: {question.maxScore} points
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <div className={`text-2xl font-bold ${getScoreColor(score, question.maxScore)}`}>
+                                        {score}/{question.maxScore}
+                                    </div>
+                                </div>
+                            </div>
 
-//   const students = studentsData?.studentsByClassType || [];
-//   const studentAnswers = studentAnswersData?.studentAnswersByClassType || [];
+                            {/* Score Input */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Score
+                                </label>
+                                <div className="flex items-center space-x-4">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max={question.maxScore}
+                                        value={score}
+                                        onChange={(e) => handleScoreChange(question.id, parseInt(e.target.value) || 0)}
+                                        disabled={editingMode === "view"}
+                                        className="w-24 px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    />
+                                    <div className="flex-1">
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max={question.maxScore}
+                                            value={score}
+                                            onChange={(e) => handleScoreChange(question.id, parseInt(e.target.value))}
+                                            disabled={editingMode === "view"}
+                                            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
-//   if (!selectedOlympiad || !selectedClassType) {
-//     return (
-//       <div className="flex items-center justify-center h-64">
-//         <div className="text-center">
-//           <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-//           <p className="text-gray-500">
-//             Please select an Olympiad and Class Type to manage student answers
-//           </p>
-//         </div>
-//       </div>
-//     );
-//   }
+                            {/* Description/Notes */}
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Notes/Description
+                                </label>
+                                <textarea
+                                    value={answer?.description || ""}
+                                    onChange={(e) => handleDescriptionChange(question.id, e.target.value)}
+                                    disabled={editingMode === "view"}
+                                    placeholder="Add notes about the student's answer..."
+                                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                                    rows={3}
+                                />
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
 
-//   return (
-//     <div className="space-y-6">
-//       {/* Header */}
-//       <div className="flex items-center justify-between">
-//         <div>
-//           <h2 className="text-2xl font-bold text-gray-900">
-//             Student Answer Management
-//           </h2>
-//           <p className="text-gray-600">
-//             {selectedOlympiad.name} - {selectedClassType.classYear}
-//           </p>
-//         </div>
-//         <Badge variant="outline" className="text-sm">
-//           <Award className="h-4 w-4 mr-1" />
-//           Max Score: {selectedClassType.maxScore}
-//         </Badge>
-//       </div>
+            {/* Image Upload */}
+            {editingMode === "edit" && (
+                <div className="bg-card rounded-lg border border-border p-6">
+                    <h5 className="text-lg font-semibold text-foreground mb-4">Upload Student's Exam Paper</h5>
+                    
+                    <div className="mb-4">
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
+                    </div>
 
-//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-//         {/* Form Section */}
-//         <Card>
-//           <CardHeader>
-//             <CardTitle className="flex items-center gap-2">
-//               <Edit className="h-5 w-5" />
-//               {editingAnswerId ? "Edit Student Answer" : "Add Student Answer"}
-//             </CardTitle>
-//             <CardDescription>
-//               Select a student and enter their scores for each question
-//             </CardDescription>
-//           </CardHeader>
-//           <CardContent>
-//             <form onSubmit={handleSubmit} className="space-y-4">
-//               {/* Student Selection */}
-//               <div className="space-y-2">
-//                 <Label htmlFor="student">Select Student</Label>
-//                 <div className="text-xs text-gray-500 mb-2">
-//                   {students.length} students found, Loading:{" "}
-//                   {studentsLoading ? "Yes" : "No"}
-//                   {studentsError && `, Error: ${studentsError.message}`}
-//                 </div>
+                    {/* Uploaded Images Preview */}
+                    {uploadedImages.length > 0 && (
+                        <div className="space-y-2">
+                            <h6 className="font-medium text-foreground">Uploaded Images:</h6>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {uploadedImages.map((file, index) => (
+                                    <div key={index} className="relative">
+                                        <img
+                                            src={URL.createObjectURL(file)}
+                                            alt={`Upload ${index + 1}`}
+                                            className="w-full h-32 object-cover rounded-lg border border-border"
+                                        />
+                                        <button
+                                            onClick={() => handleRemoveImage(index)}
+                                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
 
-//                 {students.length === 0 && !studentsLoading ? (
-//                   <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-//                     <p className="text-sm text-yellow-800">
-//                       <strong>No students found for this class type.</strong>
-//                     </p>
-//                     <p className="text-xs text-yellow-700 mt-1">
-//                       This could mean:
-//                     </p>
-//                     <ul className="text-xs text-yellow-700 mt-1 ml-4 list-disc">
-//                       <li>
-//                         No students have registered for this class type yet
-//                       </li>
-//                       <li>No students have submitted answers yet</li>
-//                     </ul>
-//                     <p className="text-xs text-yellow-700 mt-2">
-//                       <strong>Note:</strong> The current system only shows
-//                       students who have already submitted answers. To add
-//                       answers for new students, they need to register and submit
-//                       at least one answer first.
-//                     </p>
-//                     <div className="mt-3">
-//                       <button
-//                         type="button"
-//                         onClick={() => setUseManualInput(!useManualInput)}
-//                         className="text-xs text-blue-600 hover:text-blue-800 underline"
-//                       >
-//                         {useManualInput ? "Hide" : "Show"} manual student ID
-//                         input
-//                       </button>
-//                       {useManualInput && (
-//                         <div className="mt-2">
-//                           <Input
-//                             type="text"
-//                             placeholder="Enter student ID manually"
-//                             value={manualStudentId}
-//                             onChange={(e) => {
-//                               setManualStudentId(e.target.value);
-//                               setSelectedStudentId(e.target.value);
-//                             }}
-//                             className="text-sm"
-//                           />
-//                           <p className="text-xs text-gray-500 mt-1">
-//                             Enter the student's ID if you know it
-//                           </p>
-//                         </div>
-//                       )}
-//                     </div>
-//                   </div>
-//                 ) : (
-//                   <div>
-//                     <Select
-//                       value={selectedStudentId}
-//                       onValueChange={(value) => {
-//                         console.log("Student selected:", value);
-//                         setSelectedStudentId(value);
-//                       }}
-//                     >
-//                       <SelectTrigger>
-//                         <SelectValue placeholder="Choose a student..." />
-//                       </SelectTrigger>
-//                       <SelectContent>
-//                         {students.map((student) => (
-//                           <SelectItem key={student.id} value={student.id}>
-//                             {student.name} ({student.email})
-//                           </SelectItem>
-//                         ))}
-//                       </SelectContent>
-//                     </Select>
+            {/* Action Buttons */}
+            {editingMode === "edit" && (
+                <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
+                    <button
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2 disabled:opacity-50"
+                    >
+                        {isSubmitting ? (
+                            <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                        )}
+                        <span>{isSubmitting ? "Saving..." : "Save Results"}</span>
+                    </button>
+                </div>
+            )}
 
-//                     <div className="mt-2">
-//                       <button
-//                         type="button"
-//                         onClick={() => setUseManualInput(!useManualInput)}
-//                         className="text-xs text-blue-600 hover:text-blue-800 underline"
-//                       >
-//                         {useManualInput ? "Hide" : "Show"} manual student ID
-//                         input
-//                       </button>
-//                       {useManualInput && (
-//                         <div className="mt-2">
-//                           <Input
-//                             type="text"
-//                             placeholder="Enter student ID manually"
-//                             value={manualStudentId}
-//                             onChange={(e) => {
-//                               setManualStudentId(e.target.value);
-//                               setSelectedStudentId(e.target.value);
-//                             }}
-//                             className="text-sm"
-//                           />
-//                           <p className="text-xs text-gray-500 mt-1">
-//                             Enter the student's ID if you know it
-//                           </p>
-//                         </div>
-//                       )}
-//                     </div>
-//                   </div>
-//                 )}
-//               </div>
-
-//               {/* Question Scores */}
-//               <div className="space-y-3">
-//                 <Label>Question Scores</Label>
-//                 {selectedClassType.questions?.map(
-//                   (question: any, index: number) => {
-//                     const answer = answers.find(
-//                       (a) => a.questionId === question.id
-//                     );
-//                     return (
-//                       <div
-//                         key={question.id}
-//                         className="flex items-center gap-3 p-3 border rounded-lg"
-//                       >
-//                         <div className="flex-1">
-//                           <p className="font-medium text-sm">
-//                             {question.questionName}
-//                           </p>
-//                           <p className="text-xs text-gray-500">
-//                             Max Score: {question.maxScore}
-//                           </p>
-//                         </div>
-//                         <div className="w-20">
-//                           <Input
-//                             type="number"
-//                             min="0"
-//                             max={question.maxScore}
-//                             value={answer?.score || 0}
-//                             onChange={(e) =>
-//                               updateAnswerScore(
-//                                 question.id,
-//                                 parseInt(e.target.value) || 0
-//                               )
-//                             }
-//                             className="text-center"
-//                           />
-//                         </div>
-//                       </div>
-//                     );
-//                   }
-//                 )}
-//               </div>
-
-//               {/* Total Score Display */}
-//               <div className="p-3 bg-blue-50 rounded-lg">
-//                 <div className="flex justify-between items-center">
-//                   <span className="font-medium">Total Score:</span>
-//                   <Badge variant="secondary" className="text-lg">
-//                     {getTotalScore()} / {selectedClassType.maxScore}
-//                   </Badge>
-//                 </div>
-//               </div>
-
-//               {/* Submit Buttons */}
-//               <div className="flex gap-2">
-//                 <Button
-//                   type="submit"
-//                   disabled={!selectedStudentId || isSubmitting}
-//                   className="flex-1"
-//                 >
-//                   <Save className="h-4 w-4 mr-2" />
-//                   {editingAnswerId ? "Update Answer" : "Save Answer"}
-//                 </Button>
-//                 {editingAnswerId && (
-//                   <Button type="button" variant="outline" onClick={resetForm}>
-//                     Cancel
-//                   </Button>
-//                 )}
-//               </div>
-//             </form>
-//           </CardContent>
-//         </Card>
-
-//         {/* Student Answers List */}
-//         <Card>
-//           <CardHeader>
-//             <CardTitle className="flex items-center gap-2">
-//               <Users className="h-5 w-5" />
-//               Student Answers ({studentAnswers.length})
-//             </CardTitle>
-//             <CardDescription>
-//               View and edit existing student answers
-//             </CardDescription>
-//           </CardHeader>
-//           <CardContent>
-//             <div className="space-y-3 max-h-96 overflow-y-auto">
-//               {studentAnswers.length === 0 ? (
-//                 <div className="text-center py-8 text-gray-500">
-//                   <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-//                   <p>No student answers yet</p>
-//                 </div>
-//               ) : (
-//                 studentAnswers.map((studentAnswer) => (
-//                   <div
-//                     key={studentAnswer.id}
-//                     className="p-3 border rounded-lg hover:bg-gray-50"
-//                   >
-//                     <div className="flex items-center justify-between">
-//                       <div className="flex-1">
-//                         <p className="font-medium text-sm">
-//                           {getStudentName(studentAnswer.studentId)}
-//                         </p>
-//                         <p className="text-xs text-gray-500">
-//                           Total: {studentAnswer.totalScoreofOlympiad} /{" "}
-//                           {selectedClassType.maxScore}
-//                         </p>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <Button
-//                           size="sm"
-//                           variant="outline"
-//                           onClick={() => handleEditAnswer(studentAnswer)}
-//                         >
-//                           <Edit className="h-3 w-3" />
-//                         </Button>
-//                       </div>
-//                     </div>
-
-//                     {/* Question Breakdown */}
-//                     <div className="mt-2 space-y-1">
-//                       {studentAnswer.answers?.map((answer, index) => {
-//                         const question = selectedClassType.questions?.find(
-//                           (q: any) => q.id === answer.questionId
-//                         );
-//                         return (
-//                           <div
-//                             key={index}
-//                             className="flex justify-between text-xs text-gray-600"
-//                           >
-//                             <span>
-//                               Q{index + 1}: {question?.questionName}
-//                             </span>
-//                             <span>
-//                               {answer.score} / {question?.maxScore}
-//                             </span>
-//                           </div>
-//                         );
-//                       })}
-//                     </div>
-//                   </div>
-//                 ))
-//               )}
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </div>
-//   );
-// };
+            {/* Existing Images Display */}
+            {studentAnswer.image && studentAnswer.image.length > 0 && (
+                <div className="bg-card rounded-lg border border-border p-6">
+                    <h5 className="text-lg font-semibold text-foreground mb-4">Student's Exam Paper</h5>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {studentAnswer.image.map((imageUrl: string, index: number) => (
+                            <div key={index} className="relative">
+                                <img
+                                    src={imageUrl}
+                                    alt={`Exam paper ${index + 1}`}
+                                    className="w-full h-32 object-cover rounded-lg border border-border"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};

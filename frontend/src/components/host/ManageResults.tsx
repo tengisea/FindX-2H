@@ -1,6 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
+// Import sub-components for results management
+import { 
+    useStudentAnswersByClassTypeQuery,
+    useUpdateStudentAnswerScoreMutation,
+    useAddStudentResultMutation,
+    useFinishOlympiadMutation,
+    usePreviewMedalsMutation,
+    useUpdateMedalAssignmentsMutation,
+    useFinalizeMedalsMutation,
+    useClassTypesByOlympiadQuery,
+    useQuestionsByClassTypeQuery,
+    ClassYear
+} from "@/generated";
+import { OlympiadOverview } from "./results/OlympiadOverview";
+import { StudentScoringInterface } from "./results/StudentScoringInterface"; 
+import { RankingInterface } from "./results/RankingInterface";
+import { MedalManagementInterface } from "./results/MedalManagementInterface"; 
+import { StatusProgressIndicator } from "./results/StatusProgressIndicator";
 
 interface ManageResultsProps {
     olympiads: any[];
@@ -8,13 +26,68 @@ interface ManageResultsProps {
     onViewResults: (olympiadId: string) => void;
 }
 
+interface StudentAnswer {
+    id: string;
+    studentId: string;
+    classTypeId: string;
+    mandatNumber: string;
+    answers: Array<{
+        questionId: string;
+        score: number;
+        description: string;
+    }>;
+    totalScoreofOlympiad: number;
+    image: string[];
+}
+
+interface Question {
+    id: string;
+    questionName: string;
+    maxScore: number;
+}
+
+interface ClassType {
+    id: string;
+    classYear: ClassYear;
+    maxScore: number;
+    medalists: number;
+    questions: Question[];
+}
+
+type ViewMode = "overview" | "scoring" | "ranking" | "medals";
+
 export const ManageResults: React.FC<ManageResultsProps> = ({
     olympiads,
     onExportResults,
     onViewResults,
 }) => {
     const [selectedOlympiad, setSelectedOlympiad] = useState<string>("");
+    const [selectedClassType, setSelectedClassType] = useState<string>("");
     const [filterStatus, setFilterStatus] = useState<string>("all");
+    const [viewMode, setViewMode] = useState<ViewMode>("overview");
+
+    // GraphQL hooks
+    const { data: classTypesData, loading: classTypesLoading } = useClassTypesByOlympiadQuery({
+        variables: { olympiadId: selectedOlympiad },
+        skip: !selectedOlympiad
+    });
+
+    const { data: studentAnswersData, loading: studentAnswersLoading, refetch: refetchStudentAnswers } = useStudentAnswersByClassTypeQuery({
+        variables: { classTypeId: selectedClassType },
+        skip: !selectedClassType
+    });
+
+    const { data: questionsData, loading: questionsLoading } = useQuestionsByClassTypeQuery({
+        variables: { classTypeId: selectedClassType },
+        skip: !selectedClassType
+    });
+
+    const [updateStudentAnswerScore] = useUpdateStudentAnswerScoreMutation();
+    const [addStudentResult] = useAddStudentResultMutation();
+    const [finishOlympiad] = useFinishOlympiadMutation();
+    const [previewMedals] = usePreviewMedalsMutation();
+    const [updateMedalAssignments] = useUpdateMedalAssignmentsMutation();
+    const [finalizeMedals] = useFinalizeMedalsMutation();
 
     // Filter olympiads based on status
     const filteredOlympiads = olympiads.filter(olympiad => {
@@ -22,35 +95,163 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
         return olympiad.status === filterStatus;
     });
 
+    const selectedOlympiadData = olympiads.find(o => o.id === selectedOlympiad);
+    const classTypes = classTypesData?.classTypesByOlympiad || [];
+    const studentAnswers = studentAnswersData?.studentAnswersByClassType || [];
+    const questions = questionsData?.questionsByClassType || [];
+
     const handleOlympiadSelect = (olympiadId: string) => {
         setSelectedOlympiad(olympiadId);
+        setSelectedClassType("");
+        setViewMode("overview");
     };
 
-    const handleExportResults = () => {
-        if (selectedOlympiad) {
-            onExportResults(selectedOlympiad);
+    const handleClassTypeSelect = (classTypeId: string) => {
+        setSelectedClassType(classTypeId);
+        setViewMode("scoring");
+    };
+
+    const handleFinishOlympiad = async () => {
+        if (!selectedOlympiad) return;
+        
+        try {
+            const result = await finishOlympiad({
+                variables: { finishOlympiadId: selectedOlympiad }
+            });
+            
+            if (result.data?.finishOlympiad) {
+                setViewMode("medals");
+                // Refetch olympiad data to get updated status
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Error finishing olympiad:", error);
         }
     };
 
-    const handleViewResults = () => {
-        if (selectedOlympiad) {
-            onViewResults(selectedOlympiad);
+    const handleFinalizeMedals = async () => {
+        if (!selectedOlympiad) return;
+        
+        try {
+            await finalizeMedals({
+                variables: { finalizeMedalsId: selectedOlympiad }
+            });
+            // Refetch olympiad data to get updated status
+            window.location.reload();
+        } catch (error) {
+            console.error("Error finalizing medals:", error);
+        }
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "DRAFT": return "bg-gray-100 text-gray-800";
+            case "OPEN": return "bg-blue-100 text-blue-800";
+            case "CLOSED": return "bg-yellow-100 text-yellow-800";
+            case "MEDALS_PREVIEW": return "bg-purple-100 text-purple-800";
+            case "FINISHED": return "bg-green-100 text-green-800";
+            default: return "bg-gray-100 text-gray-800";
+        }
+    };
+
+    const getStatusDescription = (status: string) => {
+        switch (status) {
+            case "DRAFT": return "Olympiad is being prepared";
+            case "OPEN": return "Registration is open";
+            case "CLOSED": return "Registration closed, ready for scoring";
+            case "MEDALS_PREVIEW": return "Medal assignments ready for review";
+            case "FINISHED": return "Olympiad completed and medals finalized";
+            default: return "Unknown status";
+        }
+    };
+
+    const renderContent = () => {
+        if (!selectedOlympiad) {
+            return (
+                <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3 className="text-lg font-medium text-foreground mb-2">Select an Olympiad</h3>
+                    <p className="text-muted-foreground">Choose an olympiad from the dropdown above to view and manage its results.</p>
+                </div>
+            );
+        }
+
+        switch (viewMode) {
+            case "overview":
+                return (
+                    <OlympiadOverview
+                        olympiad={selectedOlympiadData}
+                        classTypes={classTypes}
+                        onClassTypeSelect={handleClassTypeSelect}
+                        onFinishOlympiad={handleFinishOlympiad}
+                        onExportResults={onExportResults}
+                        onViewResults={onViewResults}
+                        getStatusColor={getStatusColor}
+                        getStatusDescription={getStatusDescription}
+                    />
+                );
+            case "scoring":
+                return (
+                    <StudentScoringInterface
+                        classType={classTypes.find(ct => ct.id === selectedClassType)}
+                        studentAnswers={studentAnswers}
+                        questions={questions}
+                        onUpdateScore={updateStudentAnswerScore}
+                        onAddResult={addStudentResult}
+                        onRefetch={refetchStudentAnswers}
+                        onBack={() => setViewMode("overview")}
+                    />
+                );
+            case "ranking":
+                return (
+                    <RankingInterface
+                        classType={classTypes.find(ct => ct.id === selectedClassType)}
+                        studentAnswers={studentAnswers}
+                        onBack={() => setViewMode("overview")}
+                    />
+                );
+            case "medals":
+                return (
+                    <MedalManagementInterface
+                        olympiad={selectedOlympiadData}
+                        classTypes={classTypes}
+                        onFinalizeMedals={handleFinalizeMedals}
+                        onUpdateMedalAssignments={updateMedalAssignments}
+                        onBack={() => setViewMode("overview")}
+                    />
+                );
+            default:
+                return null;
         }
     };
 
     return (
         <div className="w-full">
             <div className="bg-card rounded-2xl sm:rounded-3xl shadow-xl border border-border p-4 sm:p-6 lg:p-8">
+                {/* Header */}
                 <div className="mb-6 sm:mb-8">
                     <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
                         Manage Results
                     </h2>
                     <p className="text-muted-foreground text-sm sm:text-base">
-                        View, export, and manage results for your olympiads
+                        Complete student answer management, scoring, and medal assignment system
                     </p>
                 </div>
 
-                {/* Filters */}
+                {/* Status Progress Indicator */}
+                {selectedOlympiadData && (
+                    <StatusProgressIndicator
+                        status={selectedOlympiadData.status}
+                        getStatusColor={getStatusColor}
+                        getStatusDescription={getStatusDescription}
+                    />
+                )}
+
+                {/* Filters and Selection */}
                 <div className="mb-6">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                         <div className="flex-1">
@@ -63,9 +264,11 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base bg-background text-foreground"
                             >
                                 <option value="all">All Olympiads</option>
-                                <option value="approved">Approved</option>
-                                <option value="pending">Pending</option>
-                                <option value="completed">Completed</option>
+                                <option value="DRAFT">Draft</option>
+                                <option value="OPEN">Open</option>
+                                <option value="CLOSED">Closed</option>
+                                <option value="MEDALS_PREVIEW">Medals Preview</option>
+                                <option value="FINISHED">Finished</option>
                             </select>
                         </div>
 
@@ -81,7 +284,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                                 <option value="">Choose an olympiad...</option>
                                 {filteredOlympiads.map((olympiad) => (
                                     <option key={olympiad.id} value={olympiad.id}>
-                                        {olympiad.name} - {olympiad.date}
+                                        {olympiad.name} - {olympiad.status}
                                     </option>
                                 ))}
                             </select>
@@ -89,123 +292,61 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                     </div>
                 </div>
 
-                {/* Results Summary */}
+                {/* View Mode Navigation */}
                 {selectedOlympiad && (
                     <div className="mb-6">
-                        <div className="bg-primary/10 rounded-xl p-6 border border-primary/20">
-                            <h3 className="text-lg font-semibold text-primary mb-4">
-                                Results Summary
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="bg-card rounded-lg p-4">
-                                    <div className="text-2xl font-bold text-primary">156</div>
-                                    <div className="text-sm text-muted-foreground">Total Participants</div>
-                                </div>
-                                <div className="bg-card rounded-lg p-4">
-                                    <div className="text-2xl font-bold text-yellow-600">12</div>
-                                    <div className="text-sm text-muted-foreground">Medal Winners</div>
-                                </div>
-                                <div className="bg-card rounded-lg p-4">
-                                    <div className="text-2xl font-bold text-primary">89.5%</div>
-                                    <div className="text-sm text-muted-foreground">Average Score</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Olympiad Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                    {filteredOlympiads.map((olympiad) => (
-                        <div
-                            key={olympiad.id}
-                            className={`bg-card rounded-xl shadow-lg border-2 p-6 cursor-pointer transition-all duration-200 ${selectedOlympiad === olympiad.id
-                                ? "border-primary shadow-primary/20"
-                                : "border-border hover:border-primary/50"
+                        <div className="flex flex-wrap gap-2">
+                            <button
+                                onClick={() => setViewMode("overview")}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                    viewMode === "overview"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                                 }`}
-                            onClick={() => handleOlympiadSelect(olympiad.id)}
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                    <h4 className="text-lg font-semibold text-foreground mb-2">
-                                        {olympiad.name}
-                                    </h4>
-                                    <p className="text-sm text-muted-foreground mb-2">
-                                        {olympiad.description}
-                                    </p>
-                                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <span>{olympiad.date}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-2 text-sm text-muted-foreground mt-1">
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        <span>{olympiad.location}</span>
-                                    </div>
-                                </div>
-                                <div className={`px-3 py-1 rounded-full text-xs font-medium ${olympiad.status === "approved"
-                                    ? "bg-green-100 text-green-800"
-                                    : olympiad.status === "pending"
-                                        ? "bg-yellow-100 text-yellow-800"
-                                        : "bg-muted text-muted-foreground"
-                                    }`}>
-                                    {olympiad.status}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="text-sm text-muted-foreground">
-                                    <span className="font-medium">Participants:</span> 156
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    <span className="font-medium">Results:</span> Available
-                                </div>
-                            </div>
+                            >
+                                Overview
+                            </button>
+                            <button
+                                onClick={() => setViewMode("scoring")}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                    viewMode === "scoring"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                }`}
+                                disabled={!selectedClassType}
+                            >
+                                Student Scoring
+                            </button>
+                            <button
+                                onClick={() => setViewMode("ranking")}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                    viewMode === "ranking"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                }`}
+                                disabled={!selectedClassType}
+                            >
+                                Rankings
+                            </button>
+                            <button
+                                onClick={() => setViewMode("medals")}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                    viewMode === "medals"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                }`}
+                                disabled={selectedOlympiadData?.status !== "MEDALS_PREVIEW" && selectedOlympiadData?.status !== "FINISHED"}
+                            >
+                                Medal Management
+                            </button>
                         </div>
-                    ))}
+                    </div>
+                )}
+
+                {/* Main Content */}
+                <div className="relative">
+                    {renderContent()}
                 </div>
-
-                {/* Action Buttons */}
-                {selectedOlympiad && (
-                    <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border">
-                        <button
-                            onClick={handleViewResults}
-                            className="flex-1 bg-primary text-primary-foreground px-6 py-3 rounded-xl hover:bg-primary/90 transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            <span>View Detailed Results</span>
-                        </button>
-
-                        <button
-                            onClick={handleExportResults}
-                            className="flex-1 bg-primary/10 text-primary px-6 py-3 rounded-xl hover:bg-primary/20 transition-colors flex items-center justify-center space-x-2 border border-primary/20"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span>Export Results</span>
-                        </button>
-                    </div>
-                )}
-
-                {!selectedOlympiad && (
-                    <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-medium text-foreground mb-2">Select an Olympiad</h3>
-                        <p className="text-muted-foreground">Choose an olympiad from the dropdown above to view and manage its results.</p>
-                    </div>
-                )}
             </div>
         </div>
     );
