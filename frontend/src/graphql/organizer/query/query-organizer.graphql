@@ -41,7 +41,6 @@ query GetOrganizer($getOrganizerId: ID!) {
         bronze
         top10
       }
-      participants
       scoreOfAward
       status
       rankingType
@@ -94,7 +93,7 @@ query GetAllOrganizers {
         bronze
         top10
       }
-      participants
+      
       scoreOfAward
       status
       rankingType
