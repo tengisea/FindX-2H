@@ -3,6 +3,7 @@ mutation CreateOrganizer($input: CreateOrganizerInput!) {
     id
     organizationName
     email
+    logo
     Olympiads {
       id
       name
@@ -55,6 +56,7 @@ mutation UpdateOrganizer($updateOrganizerId: ID!, $input: UpdateOrganizerInput!)
     id
     organizationName
     email
+    logo
     Olympiads {
       id
       name

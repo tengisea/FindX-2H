@@ -5,7 +5,7 @@ export const ClassRoomTypeDefs = gql`
     id: ID!
     roomNumber: String!
     maxStudents: Int!
-    mandatNumber: [String!]!
+    mandatNumber: [String!]
     classTypeId: ID
   }
 

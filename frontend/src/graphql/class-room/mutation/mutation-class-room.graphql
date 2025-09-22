@@ -4,6 +4,7 @@ mutation CreateClassRoom($input: CreateClassRoomInput!) {
     roomNumber
     maxStudents
     mandatNumber
+    classTypeId
   }
 }
 
@@ -11,11 +12,15 @@ mutation DeleteClassRoom($deleteClassRoomId: ID!) {
   deleteClassRoom(id: $deleteClassRoomId)
 }
 
-mutation UpdateClassRoom($updateClassRoomId: ID!, $input: UpdateClassRoomInput!) {
+mutation UpdateClassRoom(
+  $updateClassRoomId: ID!
+  $input: UpdateClassRoomInput!
+) {
   updateClassRoom(id: $updateClassRoomId, input: $input) {
     id
     roomNumber
     maxStudents
     mandatNumber
+    classTypeId
   }
 }

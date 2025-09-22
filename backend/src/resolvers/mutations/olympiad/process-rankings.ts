@@ -1,12 +1,27 @@
-import { RankingService } from "@/services/rankingService";
+import { RankingServiceV2 } from "@/services/rankingServiceV2";
 import { GraphQLError } from "graphql";
+import { RankingError, RANKING_ERROR_CODES } from "@/types/ranking.types";
 
 export const processClassTypeRankings = async (
   _: unknown,
-  { classTypeId }: { classTypeId: string }
+  {
+    classTypeId,
+    options,
+  }: {
+    classTypeId: string;
+    options?: {
+      batchSize?: number;
+      useTransactions?: boolean;
+      retryCount?: number;
+      skipValidation?: boolean;
+    };
+  }
 ) => {
   try {
-    const result = await RankingService.processClassTypeRankings(classTypeId);
+    const result = await RankingServiceV2.processClassTypeRankings(
+      classTypeId,
+      options
+    );
 
     return {
       success: true,
@@ -16,18 +31,43 @@ export const processClassTypeRankings = async (
       bronze: result.bronze,
       top10: result.top10,
       processedStudents: result.processedStudents,
+      medalDistribution: result.medalDistribution,
+      studentRankings: result.studentRankings,
+      processingTime: result.processingTime || 0,
     };
   } catch (error: any) {
-    throw new GraphQLError(error.message);
+    if (error instanceof RankingError) {
+      throw new GraphQLError(error.message, {
+        extensions: {
+          code: error.code,
+          context: error.context,
+        },
+      });
+    }
+    throw new GraphQLError(error.message || "Unknown error occurred");
   }
 };
 
 export const processOlympiadRankings = async (
   _: unknown,
-  { olympiadId }: { olympiadId: string }
+  {
+    olympiadId,
+    options,
+  }: {
+    olympiadId: string;
+    options?: {
+      batchSize?: number;
+      useTransactions?: boolean;
+      retryCount?: number;
+      skipValidation?: boolean;
+    };
+  }
 ) => {
   try {
-    const result = await RankingService.processOlympiadRankings(olympiadId);
+    const result = await RankingServiceV2.processOlympiadRankings(
+      olympiadId,
+      options
+    );
 
     return {
       success: true,
@@ -35,9 +75,18 @@ export const processOlympiadRankings = async (
       classTypesProcessed: result.classTypesProcessed,
       totalStudentsProcessed: result.totalStudentsProcessed,
       results: result.results,
+      processingTime: result.processingTime,
     };
   } catch (error: any) {
-    throw new GraphQLError(error.message);
+    if (error instanceof RankingError) {
+      throw new GraphQLError(error.message, {
+        extensions: {
+          code: error.code,
+          context: error.context,
+        },
+      });
+    }
+    throw new GraphQLError(error.message || "Unknown error occurred");
   }
 };
 
@@ -46,9 +95,17 @@ export const getClassTypeRankingStats = async (
   { classTypeId }: { classTypeId: string }
 ) => {
   try {
-    const stats = await RankingService.getClassTypeRankingStats(classTypeId);
+    const stats = await RankingServiceV2.getClassTypeRankingStats(classTypeId);
     return stats;
   } catch (error: any) {
-    throw new GraphQLError(error.message);
+    if (error instanceof RankingError) {
+      throw new GraphQLError(error.message, {
+        extensions: {
+          code: error.code,
+          context: error.context,
+        },
+      });
+    }
+    throw new GraphQLError(error.message || "Unknown error occurred");
   }
 };

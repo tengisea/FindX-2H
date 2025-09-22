@@ -90,3 +90,52 @@ export const validateRegistrationInput = (input: any) => {
     );
   }
 };
+
+export const validateStudentInput = (input: any) => {
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(input.email)) {
+    throw createGraphQLError(
+      "Invalid email format",
+      ErrorCodes.VALIDATION_ERROR
+    );
+  }
+
+  // Name validation
+  if (!input.name || input.name.trim().length < 2) {
+    throw createGraphQLError(
+      "Name must be at least 2 characters long",
+      ErrorCodes.VALIDATION_ERROR
+    );
+  }
+
+  // School validation
+  if (!input.school || input.school.trim().length < 2) {
+    throw createGraphQLError(
+      "School name must be at least 2 characters long",
+      ErrorCodes.VALIDATION_ERROR
+    );
+  }
+
+  // Profile picture URL validation
+  if (input.profilePicture) {
+    try {
+      new URL(input.profilePicture);
+    } catch {
+      throw createGraphQLError(
+        "Invalid profile picture URL",
+        ErrorCodes.VALIDATION_ERROR
+      );
+    }
+  }
+};
+
+export const validateObjectId = (id: string, fieldName: string = "ID") => {
+  const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+  if (!objectIdRegex.test(id)) {
+    throw createGraphQLError(
+      `Invalid ${fieldName} format`,
+      ErrorCodes.VALIDATION_ERROR
+    );
+  }
+};

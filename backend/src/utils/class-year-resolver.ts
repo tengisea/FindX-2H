@@ -21,18 +21,6 @@ export const mapClassYearToDB = (graphqlValue: string): string => {
     D_CLASS: "D_CLASS",
     E_CLASS: "E_CLASS",
     F_CLASS: "F_CLASS",
-    ANGI_1: "1р анги",
-    ANGI_2: "2р анги",
-    ANGI_3: "3р анги",
-    ANGI_4: "4р анги",
-    ANGI_5: "5р анги",
-    ANGI_6: "6р анги",
-    ANGI_7: "7р анги",
-    ANGI_8: "8р анги",
-    ANGI_9: "9р анги",
-    ANGI_10: "10р анги",
-    ANGI_11: "11р анги",
-    ANGI_12: "12р анги",
   };
 
   return mapping[graphqlValue] || graphqlValue;
@@ -59,18 +47,6 @@ export const mapClassYearToGraphQL = (dbValue: string): string => {
     D_CLASS: "D_CLASS",
     E_CLASS: "E_CLASS",
     F_CLASS: "F_CLASS",
-    "1р анги": "ANGI_1",
-    "2р анги": "ANGI_2",
-    "3р анги": "ANGI_3",
-    "4р анги": "ANGI_4",
-    "5р анги": "ANGI_5",
-    "6р анги": "ANGI_6",
-    "7р анги": "ANGI_7",
-    "8р анги": "ANGI_8",
-    "9р анги": "ANGI_9",
-    "10р анги": "ANGI_10",
-    "11р анги": "ANGI_11",
-    "12р анги": "ANGI_12",
   };
 
   return mapping[dbValue] || dbValue;

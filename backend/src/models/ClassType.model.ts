@@ -36,7 +36,7 @@ type ClassTypeSchemaType = {
   olympiadId: Schema.Types.ObjectId;
   classYear: ClassYear;
   maxScore: number;
-  occurringTime?: String;
+  occurringTime?: string;
   rooms?: Schema.Types.ObjectId[];
   questions: Schema.Types.ObjectId[];
   participants?: Schema.Types.ObjectId[];

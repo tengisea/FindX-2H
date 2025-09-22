@@ -10,17 +10,20 @@ export const OrganizerTypeDefs = gql`
     id: ID!
     organizationName: String!
     email: String!
+    logo: String!
     Olympiads: [Olympiad!]
   }
 
   input CreateOrganizerInput {
     organizationName: String!
     email: String!
+    logo: String!
   }
 
   input UpdateOrganizerInput {
     organizationName: String
     email: String
+    logo: String
   }
 
   type Mutation {

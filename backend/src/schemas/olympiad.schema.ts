@@ -18,6 +18,7 @@ export const OlympiadTypeDefs = gql`
     CANCELLED
     DRAFT
     UNDER_REVIEW
+    MEDALS_PREVIEW
   }
 
   type Olympiad {
@@ -144,6 +145,45 @@ export const OlympiadTypeDefs = gql`
     olympiad: Olympiad!
   }
 
+  type MedalPreview {
+    classTypeId: ID!
+    classYear: ClassYear!
+    gold: [StudentMedalInfo!]!
+    silver: [StudentMedalInfo!]!
+    bronze: [StudentMedalInfo!]!
+    top10: [StudentMedalInfo!]!
+    totalParticipants: Int!
+    medalists: Int!
+  }
+
+  type StudentMedalInfo {
+    studentId: ID!
+    studentName: String!
+    score: Int!
+    rank: Int!
+  }
+
+  type PreviewMedalsResponse {
+    success: Boolean!
+    message: String!
+    olympiad: Olympiad!
+    medalPreviews: [MedalPreview!]!
+  }
+
+  input UpdateMedalAssignmentsInput {
+    classTypeId: ID!
+    gold: [ID!]!
+    silver: [ID!]!
+    bronze: [ID!]!
+  }
+
+  type FinalizeMedalsResponse {
+    success: Boolean!
+    message: String!
+    olympiad: Olympiad!
+    emailsSent: Int!
+  }
+
   type InvitationResult {
     success: Boolean!
     message: String!
@@ -177,7 +217,13 @@ export const OlympiadTypeDefs = gql`
       input: UpdateOlympiadComprehensiveInput!
     ): Olympiad!
     deleteOlympiad(id: ID!): Boolean!
-    finishOlympiad(id: ID!): FinishOlympiadResponse!
+    finishOlympiad(id: ID!): PreviewMedalsResponse!
+    previewMedals(id: ID!): PreviewMedalsResponse!
+    updateMedalAssignments(
+      olympiadId: ID!
+      assignments: [UpdateMedalAssignmentsInput!]!
+    ): PreviewMedalsResponse!
+    finalizeMedals(id: ID!): FinalizeMedalsResponse!
     processClassTypeRankings(classTypeId: ID!): ProcessRankingResponse!
     processOlympiadRankings(olympiadId: ID!): ProcessOlympiadRankingResponse!
     getClassTypeRankingStats(classTypeId: ID!): ClassTypeRankingStats!

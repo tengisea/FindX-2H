@@ -17,6 +17,7 @@ enum OlympiadStatus {
   CANCELLED = "CANCELLED",
   DRAFT = "DRAFT",
   UNDER_REVIEW = "UNDER_REVIEW",
+  MEDALS_PREVIEW = "MEDALS_PREVIEW",
 }
 
 type OlympiadSchemaType = {
@@ -101,7 +102,7 @@ olympiadSchema.post("save", async function (doc) {
   if (this.isModified("status") && doc.status === "FINISHED") {
     try {
       // Import here to avoid circular dependency
-      const { RankingService } = await import("../services/rankingService");
+      const { RankingServiceV2 } = await import("../services/rankingServiceV2");
       const { InvitationService } = await import(
         "../services/invitationService"
       );
@@ -109,9 +110,10 @@ olympiadSchema.post("save", async function (doc) {
         "../utils/email-services"
       );
 
-      // Process rankings first
-      const result = await RankingService.processOlympiadRankings(
-        doc._id.toString()
+      // Process rankings first with transaction support
+      const result = await RankingServiceV2.processOlympiadRankings(
+        doc._id.toString(),
+        { useTransactions: true, batchSize: 1000 }
       );
       console.log(
         `✅ Rankings processed: ${result.classTypesProcessed} class types, ${result.totalStudentsProcessed} students`

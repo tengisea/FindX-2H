@@ -3,5 +3,8 @@ export * from "./update-olympiad";
 export * from "./update-olympiad-comprehensive";
 export * from "./delete-olympiad";
 export * from "./finish-olympiad";
+export * from "./preview-medals";
+export * from "./update-medal-assignments";
+export * from "./finalize-medals";
 export * from "./process-rankings";
 export * from "./process-invitations";

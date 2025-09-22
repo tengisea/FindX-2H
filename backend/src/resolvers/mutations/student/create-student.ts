@@ -1,12 +1,19 @@
 import { StudentModel } from "../../../models";
 import { GraphQLError } from "graphql";
 import { CreateStudentInput } from "@/types/generated";
+import {
+  validateStudentInput,
+  validateObjectId,
+} from "@/utils/validationHelper";
 
 export const createStudent = async (
   _: unknown,
   { input }: { input: CreateStudentInput }
 ) => {
   try {
+    // Validate input
+    validateStudentInput(input);
+
     const {
       name,
       email,
@@ -35,19 +42,23 @@ export const createStudent = async (
     await student.save();
 
     const created = student.toObject();
-    const { _id, ...rest } = created as any;
+    const { _id, ...rest } = created as Record<string, unknown>;
     return {
       id: String(_id),
       class: rest.class,
       ...rest,
       participatedOlympiads:
-        rest.participatedOlympiads?.map((id: any) => String(id)) || [],
-      gold: rest.gold?.map((id: any) => String(id)) || [],
-      silver: rest.silver?.map((id: any) => String(id)) || [],
-      bronze: rest.bronze?.map((id: any) => String(id)) || [],
-      top10: rest.top10?.map((id: any) => String(id)) || [],
+        (rest.participatedOlympiads as string[])?.map((id: string) =>
+          String(id)
+        ) || [],
+      gold: (rest.gold as string[])?.map((id: string) => String(id)) || [],
+      silver: (rest.silver as string[])?.map((id: string) => String(id)) || [],
+      bronze: (rest.bronze as string[])?.map((id: string) => String(id)) || [],
+      top10: (rest.top10 as string[])?.map((id: string) => String(id)) || [],
     };
-  } catch (error: any) {
-    throw new GraphQLError(error.message);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    throw new GraphQLError(errorMessage);
   }
 };

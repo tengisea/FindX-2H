@@ -3,7 +3,7 @@ import { Model, model, models, Schema } from "mongoose";
 type StudentAnswerSchemaType = {
   studentId: Schema.Types.ObjectId;
   classTypeId: Schema.Types.ObjectId;
-  mandatNumber: String;
+  mandatNumber: string;
   classRoom: Schema.Types.ObjectId;
   answers: {
     questionId: Schema.Types.ObjectId;
