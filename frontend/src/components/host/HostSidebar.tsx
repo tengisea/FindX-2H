@@ -94,22 +94,6 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
     },
   ];
 
-  const handleMenuItemClick = (link: string) => {
-    switch (link) {
-      case "#create":
-        onTabChange("create");
-        break;
-      case "#manage":
-        onTabChange("manage");
-        break;
-      case "#results":
-        onTabChange("results");
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
     <div className="w-80 bg-card border-r border-border text-card-foreground flex flex-col h-screen fixed left-0 top-0 z-50">
       {/* Header */}
@@ -164,7 +148,7 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-muted rounded-xl p-3 border border-border">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">
+              <div className="text-3xl font-bold text-foreground">
                 {olympiadCount}
               </div>
               <div className="text-xs text-muted-foreground">
@@ -211,8 +195,8 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
                 )
               }
               className={`w-full flex items-center justify-start space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${activeTab === tab.id
-                  ? "bg-primary text-primary-foreground shadow-lg"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 }`}
             >
               {getTabIcon(tab.id, activeTab === tab.id)}
@@ -220,8 +204,8 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
                 <div className="font-medium">{tab.label}</div>
                 <div
                   className={`text-xs ${activeTab === tab.id
-                      ? "text-primary-foreground/80"
-                      : "text-muted-foreground/80"
+                    ? "text-primary-foreground/80"
+                    : "text-muted-foreground/80"
                     }`}
                 >
                   {tab.description}
