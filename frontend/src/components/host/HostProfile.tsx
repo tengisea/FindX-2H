@@ -1,15 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { useGetOrganizerQuery } from "@/generated";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "../ui/button";
+import ProfileEditModal from "./ProfileEditModal";
 
 interface HostProfileProps {
     organizerId: string;
 }
 
 const HostProfile = ({ organizerId }: HostProfileProps) => {
-    const { data: organizerData, loading, error } = useGetOrganizerQuery({
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const { data: organizerData, loading, error, refetch } = useGetOrganizerQuery({
         variables: { getOrganizerId: organizerId },
         errorPolicy: 'all'
     });
@@ -87,12 +92,22 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                         </svg>
                     </div>
                     <div className="flex-1">
-                        <h2 className="text-2xl font-bold text-foreground mb-2">
-                            {organizer.organizationName}
-                        </h2>
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-2xl font-bold text-foreground mb-2">
+                                {organizer.organizationName}
+                            </h2>
+                            <div className="flex items-center space-x-2">
+                                <Button
+                                    onClick={() => setIsEditModalOpen(true)}
+                                    className="text-white hover:opacity-80 text-sm font-medium bg-[#FF8400]"
+                                >
+                                    Edit Profile
+                                </Button>
+                            </div>
+                        </div>
                         <p className="text-muted-foreground mb-4">{organizer.email}</p>
                         <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center   space-x-2">
                                 <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -143,6 +158,22 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                     </div>
                 )}
             </Card>
+
+            {/* Profile Edit Modal */}
+            {organizer && (
+                <ProfileEditModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    organizerId={organizerId}
+                    currentData={{
+                        organizationName: organizer.organizationName,
+                        email: organizer.email,
+                    }}
+                    onSuccess={() => {
+                        refetch();
+                    }}
+                />
+            )}
         </div>
     );
 };
