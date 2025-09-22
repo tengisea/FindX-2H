@@ -16,7 +16,7 @@ export const getAllApprovedOlympiads = async () => {
     })
     .populate({
       path: "organizer",
-      select: "organizationName email",
+      select: "organizationName email logo",
     });
 
   return olympiads.map((olympiad) => {

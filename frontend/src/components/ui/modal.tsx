@@ -141,7 +141,7 @@ export const Modal: React.FC<ModalProps> = ({
         aria-describedby={description ? "modal-description" : undefined}
         tabIndex={-1}
         className={cn(
-          "relative w-full bg-white shadow-2xl",
+          "relative w-full bg-black text-white shadow-2xl",
           "rounded-lg sm:rounded-xl",
           "max-h-[95vh] sm:max-h-[90vh] overflow-hidden",
           "transform transition-all duration-200 ease-in-out",
@@ -156,12 +156,12 @@ export const Modal: React.FC<ModalProps> = ({
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gray-50/50">
+          <div className="flex items-center justify-between  bg-[#1a1a1a] text-white">
             <div className="flex-1 min-w-0">
               {title && (
                 <h2
                   id="modal-title"
-                  className="text-lg sm:text-xl font-semibold text-gray-900 leading-none truncate"
+                  className="text-lg sm:text-xl p-4 text-white font-semibold text-gray-900 leading-none truncate"
                 >
                   {title}
                 </h2>
@@ -169,7 +169,7 @@ export const Modal: React.FC<ModalProps> = ({
               {description && (
                 <p
                   id="modal-description"
-                  className="text-sm text-gray-600 mt-1 line-clamp-2"
+                  className="text-sm text-gray-600 mt-1 m-4 line-clamp-2"
                 >
                   {description}
                 </p>
@@ -180,10 +180,10 @@ export const Modal: React.FC<ModalProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="ml-2 sm:ml-4 h-8 w-8 text-gray-500 hover:text-gray-700 hover:bg-gray-100 flex-shrink-0"
+                className="ml-2 sm:ml-4 h-8 w-8 text-gray-500 hover:text-white hover:bg-[#FF8400] flex-shrink-0"
               >
                 <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
+
               </Button>
             )}
           </div>

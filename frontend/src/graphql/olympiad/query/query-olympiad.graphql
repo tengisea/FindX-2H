@@ -9,6 +9,7 @@ query AllOlympiads {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
@@ -69,6 +70,7 @@ query GetAllApprovedOlympiads {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
@@ -129,6 +131,7 @@ query GetOlympiadByClassYear($classYear: ClassYear!) {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
@@ -203,6 +206,7 @@ query GetOlympiad($olympiadId: ID!) {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
@@ -263,6 +267,7 @@ query GetPendingOlympiads {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name

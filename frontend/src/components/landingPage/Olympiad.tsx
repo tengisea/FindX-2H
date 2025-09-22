@@ -62,25 +62,34 @@ const formatDate = (dateString: string) => {
   }
 };
 
+const getStatusDisplayName = (status: string) => {
+  switch (status) {
+    case "OPEN":
+      return "Open";
+    case "CLOSED":
+      return "Closed";
+    case "FINISHED":
+      return "Finished";
+    case "DRAFT":
+      return "Draft";
+    default:
+      return status;
+  }
+};
+
 export const Olympiad = () => {
-  const [selectedRankingType, setSelectedRankingType] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("OPEN");
 
   const { data, loading, error } = useAllOlympiadsQuery();
 
   const olympiads = data?.allOlympiads || [];
 
-  const rankingTypes = Array.from(
-    new Set(olympiads.map((olympiad) => olympiad.rankingType).filter(Boolean))
-  ).filter((type) => type !== "A_TIER");
+  // Only show OPEN, CLOSED, FINISHED status types
+  const statusTypes = ["OPEN", "CLOSED", "FINISHED"];
 
-  const filteredOlympiads =
-    selectedRankingType === "all"
-      ? olympiads.filter((olympiad) => olympiad.status === "OPEN")
-      : olympiads.filter(
-          (olympiad) =>
-            olympiad.rankingType === selectedRankingType &&
-            olympiad.status === "OPEN"
-        );
+  const filteredOlympiads = olympiads.filter(
+    (olympiad) => olympiad.status === selectedStatus
+  );
 
   if (loading) {
     return (
@@ -140,31 +149,15 @@ export const Olympiad = () => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mb-12">
-        <Button
-          variant={selectedRankingType === "all" ? "default" : "outline"}
-          size="lg"
-          onClick={() => setSelectedRankingType("all")}
-          className={`
-            flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
-            ${
-              selectedRankingType === "all"
-                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-lg"
-                : "bg-gray-800 hover:bg-gray-700 text-white border-gray-600 hover:border-orange-500/50"
-            }
-          `}
-        >
-          <Trophy className="w-5 h-5" />
-          All Types
-        </Button>
-        {rankingTypes.map((rankingType) => {
-          const isSelected = selectedRankingType === rankingType;
+        {statusTypes.map((status) => {
+          const isSelected = selectedStatus === status;
 
           return (
             <Button
-              key={rankingType}
+              key={status}
               variant={isSelected ? "default" : "outline"}
               size="lg"
-              onClick={() => setSelectedRankingType(rankingType || "")}
+              onClick={() => setSelectedStatus(status)}
               className={`
                 flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
                 ${
@@ -175,7 +168,7 @@ export const Olympiad = () => {
               `}
             >
               <Star className="w-5 h-5" />
-              {rankingType}
+              {getStatusDisplayName(status)}
             </Button>
           );
         })}

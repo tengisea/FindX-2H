@@ -85,8 +85,10 @@ const getStudentOlympiads = (student: any) => {
 
 export const StudentsRanking = () => {
   const [searchStudentsName, setSearchStudentsName] = useState("");
-  const [selectedCity, setSelectedCity] = useState("All Classes");
+  const [selectedCity, setSelectedCity] = useState("GRADE_12");
   const [selectedOrg, setSelectedOrg] = useState("All Provinces");
+  const [selectedRankingType, setSelectedRankingType] =
+    useState("All Olympiad Types");
   const [selectedOlympiads, setSelectedOlympiads] = useState<any[]>([]);
   const [displayCount, setDisplayCount] = useState(10);
 
@@ -174,7 +176,24 @@ export const StudentsRanking = () => {
       const matchesProvince =
         selectedOrg === "All Provinces" || user.province === selectedOrg;
 
-      return matchesName && matchesClass && matchesProvince;
+      // Filter by Olympiad ranking type
+      const matchesRankingType =
+        selectedRankingType === "All Olympiad Types" ||
+        (() => {
+          if (!allOlympiadsData?.allOlympiads) return true;
+
+          const userOlympiadIds = getStudentOlympiads(user);
+          return userOlympiadIds.some((olympiadId: any) => {
+            const olympiad = allOlympiadsData.allOlympiads.find(
+              (o: any) => o.id === olympiadId
+            );
+            return olympiad?.rankingType === selectedRankingType;
+          });
+        })();
+
+      return (
+        matchesName && matchesClass && matchesProvince && matchesRankingType
+      );
     })
     .sort((a, b) => b.totalMedals - a.totalMedals); // Sort by points (total medals) descending
 
@@ -189,6 +208,15 @@ export const StudentsRanking = () => {
   const uniqueProvinces = Array.from(
     new Set(allStudents.map((student) => student.province))
   ).filter(Boolean);
+
+  // Get unique ranking types from all olympiads
+  const uniqueRankingTypes = Array.from(
+    new Set(
+      allOlympiadsData?.allOlympiads
+        ?.map((olympiad: any) => olympiad.rankingType)
+        .filter(Boolean)
+    )
+  );
 
   return (
     <div className=" bg-white p-6">
@@ -285,6 +313,38 @@ export const StudentsRanking = () => {
                       className="text-black focus:bg-[#ff8300]"
                     >
                       {province}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4" />
+              <Select
+                value={selectedRankingType}
+                onValueChange={(value) => {
+                  setSelectedRankingType(value);
+                  setDisplayCount(10); // Reset display count when filter changes
+                }}
+              >
+                <SelectTrigger className="w-48 bg-white text-black border border-gray-300">
+                  <SelectValue placeholder="Select olympiad type" />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-black border border-gray-300">
+                  <SelectItem
+                    value="All Olympiad Types"
+                    className="text-black focus:bg-[#ff8300]"
+                  >
+                    All Olympiad Types
+                  </SelectItem>
+                  {uniqueRankingTypes.map((rankingType) => (
+                    <SelectItem
+                      key={rankingType}
+                      value={rankingType}
+                      className="text-black focus:bg-[#ff8300]"
+                    >
+                      {getRankingTypeDisplayName(rankingType)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -453,7 +513,11 @@ export const StudentsRanking = () => {
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <Award className="w-3 h-3" />
-                                      <span>{getRankingTypeDisplayName(olympiad.rankingType)}</span>
+                                      <span>
+                                        {getRankingTypeDisplayName(
+                                          olympiad.rankingType
+                                        )}
+                                      </span>
                                     </div>
                                   </div>
                                 </div>

@@ -93,6 +93,12 @@ export const OlympiadForm = ({
     }
 
     try {
+      // Filter out classRoom field from classTypes as it's not part of CreateClassTypeInput
+      const cleanedClassTypes = classTypes.map((classType: any) => {
+        const { classRoom, ...cleanedClassType } = classType;
+        return cleanedClassType;
+      });
+
       const input: CreateOlympiadRequestInput = {
         name: formData.name,
         description: formData.description,
@@ -102,7 +108,7 @@ export const OlympiadForm = ({
         organizerId: formData.organizerId,
         invitation: formData.invitation,
         rankingType: formData.rankingType,
-        classtypes: classTypes,
+        classtypes: cleanedClassTypes,
       };
 
       console.log("Submitting olympiad with input:", input);
