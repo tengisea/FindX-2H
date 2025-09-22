@@ -1,28 +1,21 @@
 "use client";
-
-import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Modal } from "@/components/ui/modal";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Calendar,
   MapPin,
   Users,
-  Trophy,
   Clock,
   BookOpen,
-  Award,
-  Building,
-  Mail,
 } from "lucide-react";
-import { GetOlympiadDocument, ClassYear } from "@/generated";
+import { GetOlympiadDocument } from "@/generated";
 
 interface OlympiadDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   olympiadId: string;
+  onEdit?: () => void;
 }
 
 const formatDate = (dateString: string | null) => {
@@ -83,6 +76,7 @@ export const OlympiadDetailModal = ({
   isOpen,
   onClose,
   olympiadId,
+  onEdit,
 }: OlympiadDetailModalProps) => {
   const { data, loading, error } = useQuery(GetOlympiadDocument, {
     variables: { olympiadId },
@@ -150,9 +144,10 @@ export const OlympiadDetailModal = ({
               {olympiad.description}
             </p>
           </div>
+
         </div>
 
-        <div className="bg-[#1a1a1a]  p-4">
+        <div className="bg-[#1a1a1a] p-2">
           <h3 className="text-sm font-medium text-white flex items-center space-x-2 mb-3">
             <BookOpen className="w-4 h-4 text-gray-400" />
             <span>Class Types</span>
@@ -250,7 +245,18 @@ export const OlympiadDetailModal = ({
           </div>
         </div>
 
-        {/* Class Types */}
+        <div className="flex justify-end bg-[#1a1a1a] p-4">
+          {onEdit && (
+            <div className="ml-4">
+              <Button
+                onClick={onEdit}
+                className="bg-[#FF8400] hover:bg-[#FF8400]/80 text-white"
+              >
+                Edit
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </Modal>
   );

@@ -15,7 +15,7 @@ const HostPage = () => {
     const [activeTab, setActiveTab] = useState<TabType>("profile");
     const [editingOlympiad, setEditingOlympiad] = useState<any>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
+
 
     // Hardcoded organizer ID
     const ORGANIZER_ID = "68d0cfd354ab6e0a0d6237f8";
@@ -99,18 +99,6 @@ const HostPage = () => {
     };
 
 
-    const handleDeleteOlympiad = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this olympiad?")) {
-            return;
-        }
-        setIsDeleting(true);
-        // Handle deletion
-        setTimeout(() => {
-            setIsDeleting(false);
-            // Refetch data after deletion
-            refetch();
-        }, 1000);
-    };
 
     const updateFormData = (field: string, value: string | boolean | Date | undefined) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -275,6 +263,7 @@ const HostPage = () => {
                 return (
                     <HostProfile
                         organizerId={ORGANIZER_ID}
+                        onNavigateToManage={() => setActiveTab("manage")}
                     />
                 );
             case "create":
@@ -300,6 +289,8 @@ const HostPage = () => {
                 return (
                     <ManageOlympiads
                         organizerId={ORGANIZER_ID}
+                        olympiads={myOlympiads}
+                        onRefetch={refetch}
                     />
                 );
             case "results":

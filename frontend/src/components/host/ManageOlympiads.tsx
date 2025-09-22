@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-  useAllOlympiadsQuery,
   useUpdateOlympiadComprehensiveMutation,
   useDeleteOlympiadMutation,
   useAllClassRoomsQuery,
@@ -17,9 +16,11 @@ import { OlympiadDetailModal } from "./OlympiadDetailModal";
 
 interface ManageOlympiadsProps {
   organizerId: string;
+  olympiads?: any[]; // Optional prop to pass olympiads from parent
+  onRefetch?: () => void; // Optional refetch function from parent
 }
 
-export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
+export const ManageOlympiads = ({ organizerId, olympiads, onRefetch }: ManageOlympiadsProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [rankingFilter, setRankingFilter] = useState<string>("all");
@@ -28,15 +29,22 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, loading, error, refetch } = useAllOlympiadsQuery();
+  // Only use the passed olympiads from parent, no separate query needed
+  const myOlympiads = olympiads || [];
+
+  // Still need these for mutations and class rooms
   const [updateOlympiadComprehensive] = useUpdateOlympiadComprehensiveMutation();
   const [deleteOlympiad] = useDeleteOlympiadMutation();
   const { data: classRoomsData } = useAllClassRoomsQuery();
 
-  // Filter olympiads for this organizer
-  const myOlympiads = data?.allOlympiads?.filter(olympiad =>
-    olympiad.organizer?.id === organizerId
-  ) || [];
+  // Use parent's refetch function if available
+  const refetch = onRefetch || (() => {
+    console.warn("No refetch function provided");
+  });
+
+  // Debug logging (can be removed in production)
+  // console.log("Passed olympiads:", olympiads);
+  // console.log("Final olympiads:", myOlympiads);
 
   const filteredOlympiads = myOlympiads.filter((olympiad) => {
     const matchesSearch =
@@ -49,40 +57,6 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
 
     return matchesSearch && matchesStatus && matchesRanking;
   });
-
-  // const getStatusColor = (status: OlympiadStatus) => {
-  //   switch (status) {
-  //     case OlympiadStatus.Draft:
-  //       return "bg-gray-100 text-gray-800 border-gray-200";
-  //     case OlympiadStatus.UnderReview:
-  //       return "bg-yellow-100 text-yellow-800 border-yellow-200";
-  //     case OlympiadStatus.Open:
-  //       return "bg-green-100 text-green-800 border-green-200";
-  //     case OlympiadStatus.Closed:
-  //       return "bg-red-100 text-red-800 border-red-200";
-  //     case OlympiadStatus.Finished:
-  //       return "bg-blue-100 text-blue-800 border-blue-200";
-  //     default:
-  //       return "bg-muted text-muted-foreground border-border";
-  //   }
-  // };
-
-  // const getStatusIcon = (status: OlympiadStatus) => {
-  //   switch (status) {
-  //     case OlympiadStatus.Draft:
-  //       return "📝";
-  //     case OlympiadStatus.UnderReview:
-  //       return "⏳";
-  //     case OlympiadStatus.Open:
-  //       return "✅";
-  //     case OlympiadStatus.Closed:
-  //       return "❌";
-  //     case OlympiadStatus.Finished:
-  //       return "🏆";
-  //     default:
-  //       return "❓";
-  //   }
-  // };
 
   const formatDate = (dateString?: string | null) => {
     if (!dateString) return "Not set";
@@ -152,38 +126,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
     setIsEditing(true);
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <div className="bg-card rounded-2xl shadow-xl border border-border p-12 text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full mx-auto mb-4"></div>
-          <div className="text-muted-foreground font-medium">
-            Loading your olympiads...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-card rounded-2xl shadow-xl border border-border p-8 text-center">
-        <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-        </div>
-        <h3 className="text-2xl font-bold text-foreground mb-2">Error Loading Data</h3>
-        <p className="text-muted-foreground mb-4">There was an error loading your olympiads.</p>
-        <button
-          onClick={() => refetch()}
-          className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
+  // No loading/error states needed since we're using parent's data
 
   if (!myOlympiads || myOlympiads.length === 0) {
     return (
@@ -207,25 +150,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
           <div>
             <h2 className="text-2xl font-bold text-foreground">Manage Olympiads</h2>
             <p className="text-muted-foreground">Manage and update your olympiad competitions</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-foreground">{myOlympiads.length}</div>
-              <div className="text-sm text-muted-foreground">Total</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {myOlympiads.filter(o => o.status === OlympiadStatus.Open).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Active</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">
-                {myOlympiads.filter(o => o.status === OlympiadStatus.UnderReview).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Pending</div>
-            </div>
-          </div>
+          </div>s
         </div>
 
         {/* Search and Filter Controls */}
@@ -344,7 +269,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
               <div className="mb-4">
                 <h4 className="text-base font-medium text-foreground mb-2">Class Types:</h4>
                 <div className="flex flex-wrap gap-1">
-                  {olympiad.classtypes.slice(0, 3).map((classType) => (
+                  {olympiad.classtypes.slice(0, 3).map((classType: any) => (
                     <span
                       key={classType.id}
                       className="bg-muted/50 rounded-md px-2 py-1 text-sm"
