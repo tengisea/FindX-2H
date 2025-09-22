@@ -23,7 +23,6 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
     onBack
 }) => {
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
-    const [editingMode, setEditingMode] = useState<"view" | "edit">("view");
 
     if (!classType) return null;
 
@@ -43,7 +42,6 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
             await onAddResult(input);
             onRefetch();
             setSelectedStudent(null);
-            setEditingMode("view");
         } catch (error) {
             console.error("Error adding student result:", error);
         }
@@ -130,7 +128,6 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                                 className="p-6 hover:bg-muted/50 transition-colors cursor-pointer"
                                 onClick={() => {
                                     setSelectedStudent(studentAnswer);
-                                    setEditingMode("view");
                                 }}
                             >
                                 <div className="flex items-center justify-between">
@@ -208,12 +205,6 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                             </h4>
                             <div className="flex items-center space-x-2">
                                 <button
-                                    onClick={() => setEditingMode(editingMode === "view" ? "edit" : "view")}
-                                    className="px-3 py-1 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm"
-                                >
-                                    {editingMode === "view" ? "Edit" : "View"}
-                                </button>
-                                <button
                                     onClick={() => setSelectedStudent(null)}
                                     className="p-2 hover:bg-muted rounded-lg transition-colors"
                                 >
@@ -231,7 +222,6 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                                 classType={classType}
                                 onUpdateScore={handleScoreUpdate}
                                 onAddResult={handleAddStudentResult}
-                                editingMode={editingMode}
                             />
                         </div>
                     </div>

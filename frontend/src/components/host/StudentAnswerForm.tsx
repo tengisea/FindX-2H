@@ -6,9 +6,8 @@ interface StudentAnswerFormProps {
     studentAnswer: any;
     questions: any[];
     classType: any;
-    onUpdateScore: (studentAnswerId: string, questionId: string, score: number) => Promise<any>;
+    onUpdateScore: (options: { variables: { studentAnswerId: string; questionId: string; score: number } }) => Promise<any>;
     onAddResult: (input: any) => Promise<any>;
-    editingMode: "view" | "edit";
 }
 
 export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
@@ -16,8 +15,7 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
     questions,
     classType,
     onUpdateScore,
-    onAddResult,
-    editingMode
+    onAddResult
 }) => {
     const [answers, setAnswers] = useState<any[]>([]);
     const [uploadedImages, setUploadedImages] = useState<File[]>([]);
@@ -38,8 +36,13 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
     }, [studentAnswer, questions]);
 
     const handleScoreChange = async (questionId: string, newScore: number) => {
+        console.log("🎯 Frontend: Updating score for questionId:", questionId, "newScore:", newScore);
+        
         const question = questions.find(q => q.id === questionId);
-        if (!question) return;
+        if (!question) {
+            console.error("❌ Question not found for ID:", questionId);
+            return;
+        }
 
         // Validate score is within bounds
         const score = Math.max(0, Math.min(newScore, question.maxScore));
@@ -54,7 +57,9 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
         // Update in database if student answer exists
         if (studentAnswer?.id) {
             try {
-                await onUpdateScore(studentAnswer.id, questionId, score);
+                await onUpdateScore({
+                    variables: { studentAnswerId: studentAnswer.id, questionId, score }
+                });
             } catch (error) {
                 console.error("Error updating score:", error);
                 // Revert local state on error
@@ -166,6 +171,7 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                     </div>
                                 </div>
                             </div>
+<div className="flex items-center space-x-4 justify-start">
 
                             {/* Score Input */}
                             <div className="mb-4">
@@ -179,20 +185,8 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                         max={question.maxScore}
                                         value={score}
                                         onChange={(e) => handleScoreChange(question.id, parseInt(e.target.value) || 0)}
-                                        disabled={editingMode === "view"}
                                         className="w-24 px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
                                     />
-                                    <div className="flex-1">
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max={question.maxScore}
-                                            value={score}
-                                            onChange={(e) => handleScoreChange(question.id, parseInt(e.target.value))}
-                                            disabled={editingMode === "view"}
-                                            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
-                                        />
-                                    </div>
                                 </div>
                             </div>
 
@@ -204,20 +198,19 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                 <textarea
                                     value={answer?.description || ""}
                                     onChange={(e) => handleDescriptionChange(question.id, e.target.value)}
-                                    disabled={editingMode === "view"}
                                     placeholder="Add notes about the student's answer..."
                                     className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                                     rows={3}
                                 />
                             </div>
+</div>
                         </div>
                     );
                 })}
             </div>
 
             {/* Image Upload */}
-            {editingMode === "edit" && (
-                <div className="bg-card rounded-lg border border-border p-6">
+            <div className="bg-card rounded-lg border border-border p-6">
                     <h5 className="text-lg font-semibold text-foreground mb-4">Upload Student's Exam Paper</h5>
                     
                     <div className="mb-4">
@@ -254,11 +247,9 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                         </div>
                     )}
                 </div>
-            )}
 
             {/* Action Buttons */}
-            {editingMode === "edit" && (
-                <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
+            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting}
@@ -274,7 +265,6 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                         <span>{isSubmitting ? "Saving..." : "Save Results"}</span>
                     </button>
                 </div>
-            )}
 
             {/* Existing Images Display */}
             {studentAnswer.image && studentAnswer.image.length > 0 && (
