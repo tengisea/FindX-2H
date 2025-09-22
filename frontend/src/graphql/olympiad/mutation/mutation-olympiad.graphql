@@ -9,6 +9,7 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
@@ -73,6 +74,7 @@ mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
@@ -139,6 +141,7 @@ mutation UpdateOlympiadComprehensive(
       id
       organizationName
       email
+      logo
       Olympiads {
         id
         name
