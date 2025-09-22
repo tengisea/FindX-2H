@@ -5,6 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 
+// Extend Window interface to include alertSystem
+declare global {
+  interface Window {
+    alertSystem?: {
+      showSuccess: (message: string, title?: string) => void;
+      showError: (message: string, title?: string) => void;
+      showWarning: (message: string, title?: string) => void;
+      showInfo: (message: string, title?: string) => void;
+    };
+  }
+}
+
 interface AlertData {
   id: string;
   type: "success" | "error" | "warning" | "info";
@@ -39,27 +51,30 @@ interface AlertProviderProps {
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   const [alerts, setAlerts] = useState<AlertData[]>([]);
 
-  const showAlert = useCallback((alert: Omit<AlertData, "id">) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    const newAlert: AlertData = {
-      id,
-      duration: 5000, // Default 5 seconds
-      ...alert,
-    };
-
-    setAlerts((prev) => [...prev, newAlert]);
-
-    // Auto-hide after duration
-    if (newAlert.duration && newAlert.duration > 0) {
-      setTimeout(() => {
-        hideAlert(id);
-      }, newAlert.duration);
-    }
-  }, []);
-
   const hideAlert = useCallback((id: string) => {
     setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   }, []);
+
+  const showAlert = useCallback(
+    (alert: Omit<AlertData, "id">) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      const newAlert: AlertData = {
+        id,
+        duration: 5000, // Default 5 seconds
+        ...alert,
+      };
+
+      setAlerts((prev) => [...prev, newAlert]);
+
+      // Auto-hide after duration
+      if (newAlert.duration && newAlert.duration > 0) {
+        setTimeout(() => {
+          hideAlert(id);
+        }, newAlert.duration);
+      }
+    },
+    [hideAlert]
+  );
 
   const showSuccess = useCallback(
     (message: string, title?: string) => {

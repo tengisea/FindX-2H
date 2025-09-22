@@ -15,10 +15,9 @@ import {
   BookOpen,
   Award,
   Building,
-  Mail
+  Mail,
 } from "lucide-react";
-import { GetOlympiadDocument } from "@/generated";
-import { ClassYear } from "@/generated";
+import { GetOlympiadDocument, ClassYear } from "@/generated";
 
 interface OlympiadDetailModalProps {
   isOpen: boolean;
@@ -83,7 +82,7 @@ const formatClassYear = (classYear: string) => {
 export const OlympiadDetailModal = ({
   isOpen,
   onClose,
-  olympiadId
+  olympiadId,
 }: OlympiadDetailModalProps) => {
   const { data, loading, error } = useQuery(GetOlympiadDocument, {
     variables: { olympiadId },
@@ -94,7 +93,12 @@ export const OlympiadDetailModal = ({
 
   if (loading) {
     return (
-      <Modal isOpen={isOpen} onClose={onClose} title="Olympiad Details" size="lg">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Olympiad Details"
+        size="lg"
+      >
         <div className="flex items-center justify-center  py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-card"></div>
           <span className="ml-2 text-gray-300">Loading...</span>
@@ -105,9 +109,16 @@ export const OlympiadDetailModal = ({
 
   if (error) {
     return (
-      <Modal isOpen={isOpen} onClose={onClose} title="Olympiad Details" size="lg">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Olympiad Details"
+        size="lg"
+      >
         <div className="text-center py-8">
-          <p className="text-red-500">Error loading olympiad details: {error.message}</p>
+          <p className="text-red-500">
+            Error loading olympiad details: {error.message}
+          </p>
         </div>
       </Modal>
     );
@@ -115,7 +126,12 @@ export const OlympiadDetailModal = ({
 
   if (!olympiad) {
     return (
-      <Modal isOpen={isOpen} onClose={onClose} title="Olympiad Details" size="lg">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Olympiad Details"
+        size="lg"
+      >
         <div className="text-center py-8 bg-card">
           <p className="text-gray-300">Olympiad not found</p>
         </div>
@@ -129,14 +145,11 @@ export const OlympiadDetailModal = ({
         {/* Header Section */}
         <div className="flex items-start justify-between bg-[#1a1a1a] p-4">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-white">
-              {olympiad.name}
-            </h2>
+            <h2 className="text-2xl font-bold text-white">{olympiad.name}</h2>
             <p className="text-gray-300 leading-relaxed ">
               {olympiad.description}
             </p>
           </div>
-
         </div>
 
         <div className="bg-[#1a1a1a]  p-4">
@@ -146,28 +159,45 @@ export const OlympiadDetailModal = ({
           </h3>
           <div className="space-y-3">
             {olympiad.classtypes?.map((classType: any, index: number) => (
-              <div key={classType.id} className="border-2 rounded-lg border-gray-600 pl-3  p-2">
+              <div
+                key={classType.id}
+                className="border-2 rounded-lg border-gray-600 pl-3  p-2"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-sm font-medium text-white">
                     {formatClassYear(classType.classYear)}
                   </h4>
                   <div className="flex items-center space-x-3 text-xs text-gray-300">
                     <span>{classType.medalists} medalists</span>
-                    <span>{classType.participants?.length || 0} participants</span>
+                    <span>
+                      {classType.participants?.length || 0} participants
+                    </span>
                     <span>{formatTime(classType.occurringTime)}</span>
                   </div>
                 </div>
                 <p className="text-xs text-gray-300 mb-2">
-                  Max Score: <span className="text-white font-medium">{classType.maxScore}</span>
+                  Max Score:{" "}
+                  <span className="text-white font-medium">
+                    {classType.maxScore}
+                  </span>
                 </p>
                 {classType.questions && classType.questions.length > 0 && (
                   <div className="grid grid-cols-2 gap-1">
-                    {classType.questions.map((question: any, qIndex: number) => (
-                      <div key={question.id} className="flex items-center justify-between text-xs">
-                        <span className="text-gray-300">{question.questionName}</span>
-                        <span className="text-gray-400">{question.maxScore} pts</span>
-                      </div>
-                    ))}
+                    {classType.questions.map(
+                      (question: any, qIndex: number) => (
+                        <div
+                          key={question.id}
+                          className="flex items-center justify-between text-xs"
+                        >
+                          <span className="text-gray-300">
+                            {question.questionName}
+                          </span>
+                          <span className="text-gray-400">
+                            {question.maxScore} pts
+                          </span>
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
               </div>
@@ -210,7 +240,10 @@ export const OlympiadDetailModal = ({
               <div>
                 <p className="text-xs text-gray-400">Participants</p>
                 <p className="text-sm text-white font-medium">
-                  {olympiad.participants?.length || 0}
+                  {olympiad.classtypes?.reduce(
+                    (total: number, ct: any) => total + (ct.participants?.length || 0),
+                    0
+                  ) || 0}
                 </p>
               </div>
             </div>
@@ -218,7 +251,6 @@ export const OlympiadDetailModal = ({
         </div>
 
         {/* Class Types */}
-
       </div>
     </Modal>
   );

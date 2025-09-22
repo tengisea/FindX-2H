@@ -47,7 +47,9 @@ export class InvitationService {
       }
 
       // Only process invitations for olympiads that have next levels (SCHOOL, DISTRICT, REGIONAL)
-      if (!this.shouldProcessInvitations(finishedOlympiad.rankingType as string)) {
+      if (
+        !this.shouldProcessInvitations(finishedOlympiad.rankingType as string)
+      ) {
         console.log(
           `ℹ️ Skipping invitations for olympiad without next level: ${finishedOlympiad.rankingType}`
         );
@@ -277,11 +279,6 @@ export class InvitationService {
         // Register student for the olympiad
         await StudentModel.findByIdAndUpdate(performer.studentId, {
           $addToSet: { participatedOlympiads: targetOlympiadId },
-        });
-
-        // Add student to olympiad participants
-        await OlympiadModel.findByIdAndUpdate(targetOlympiadId, {
-          $addToSet: { participants: performer.studentId },
         });
 
         // Add student to class type participants

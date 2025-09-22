@@ -29,7 +29,6 @@ export const OlympiadTypeDefs = gql`
     location: String!
     organizer: Organizer
     classtypes: [ClassType!]!
-    participants: [ID!]
     scoreOfAward: Int
     status: OlympiadStatus!
     rankingType: OlympiadRankingType

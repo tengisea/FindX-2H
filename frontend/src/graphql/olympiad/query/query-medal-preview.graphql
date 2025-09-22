@@ -39,7 +39,7 @@ query GetOlympiadWithMedalPreview($olympiadId: ID!) {
       bronze
       top10
     }
-    participants
+
     scoreOfAward
     status
     rankingType
@@ -87,7 +87,7 @@ query GetOlympiadsByStatus($status: OlympiadStatus!) {
       bronze
       top10
     }
-    participants
+
     scoreOfAward
     status
     rankingType
@@ -135,7 +135,7 @@ query GetMedalPreviewOlympiads {
       bronze
       top10
     }
-    participants
+
     scoreOfAward
     status
     rankingType
