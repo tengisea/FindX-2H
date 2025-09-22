@@ -20,7 +20,7 @@ const HostPage = () => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     // Hardcoded organizer ID
-    const ORGANIZER_ID = "68ce60987f494f963e88a8cb";
+    const ORGANIZER_ID = "68d0cfd354ab6e0a0d6237f8";
 
     // Fetch real data from database
     const { data: organizerData, loading: organizerLoading, error: organizerError, refetch } = useGetOrganizerQuery({
@@ -381,7 +381,7 @@ const HostPage = () => {
                         </div>
 
                         {/* Metrics Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                             <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
                                 <div className="flex items-center space-x-4">
                                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -412,22 +412,6 @@ const HostPage = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div className="text-3xl font-bold text-foreground">
-                                            {organizerLoading ? "..." : myOlympiads.filter(o => o.status === 'UNDER_REVIEW').length}
-                                        </div>
-
-                                        <div className="text-sm text-muted-foreground">Pending Approvals</div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
                                 <div className="flex items-center space-x-4">

@@ -133,7 +133,7 @@ query GetOlympiadWithMedalData {
 }
 
 # Example 5: Get all olympiads in MEDALS_PREVIEW status
-query GetMedalPreviewOlympiads {
+query GetMedalPreviewOlympiadsExample {
   allOlympiads {
     id
     name
