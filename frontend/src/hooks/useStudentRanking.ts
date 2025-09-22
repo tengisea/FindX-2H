@@ -9,7 +9,7 @@ const GET_STUDENTS_MINIMAL = gql`
       ranking
       class
       province
-      district
+      region
       participatedOlympiads
       gold
       silver
@@ -25,7 +25,7 @@ interface Student {
   ranking: number;
   class: string;
   province: string;
-  district: string;
+  region: string;
   participatedOlympiads: string[];
   gold: string[];
   silver: string[];
@@ -43,7 +43,7 @@ interface StudentRanking {
   ranking: number;
   class: string;
   province: string;
-  district: string;
+  region: string;
   totalMedals: number;
   goldCount: number;
   silverCount: number;
@@ -65,14 +65,14 @@ interface UseStudentRankingResult {
 }
 
 export const useStudentRanking = (
-  currentStudentId?: string,
+  currentStudentId?: string
 ): UseStudentRankingResult => {
   const { data, loading, error } = useQuery<GetAllStudentsQuery>(
     GET_STUDENTS_MINIMAL,
     {
       errorPolicy: "all",
       notifyOnNetworkStatusChange: true,
-    },
+    }
   );
 
   const result = useMemo(() => {
@@ -122,7 +122,7 @@ export const useStudentRanking = (
         ranking: student.ranking || 0,
         class: student.class || "",
         province: student.province || "",
-        district: student.district || "",
+        region: student.region || "",
         totalMedals,
         goldCount,
         silverCount,
@@ -173,7 +173,7 @@ export const useStudentRanking = (
 
     if (currentStudentId) {
       const currentStudentIndex = sortedStudents.findIndex(
-        (student) => student.id === currentStudentId,
+        (student) => student.id === currentStudentId
       );
 
       if (currentStudentIndex !== -1) {

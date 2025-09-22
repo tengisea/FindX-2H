@@ -1,15 +1,17 @@
 import { OlympiadRankingType } from "@/generated";
 
-export const getRankingTypeDisplayName = (rankingType: OlympiadRankingType | null | undefined): string => {
+export const getRankingTypeDisplayName = (
+  rankingType: OlympiadRankingType | null | undefined
+): string => {
   if (!rankingType) return "Not specified";
-  
+
   switch (rankingType) {
     case OlympiadRankingType.School:
       return "School Level";
     case OlympiadRankingType.District:
       return "District Level";
     case OlympiadRankingType.Regional:
-      return "Regional Level";
+      return "Regional";
     case OlympiadRankingType.National:
       return "National Level";
     case OlympiadRankingType.ATier:
