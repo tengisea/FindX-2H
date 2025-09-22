@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { PageTransition } from "@/components/ui/PageTransition";
 import {
   Card,
   CardContent,
@@ -109,14 +110,16 @@ export const Olympiad = () => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Featured Olympiad Competitions
-          </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Loading olympiads...
-          </p>
+      <div className="bg-black min-h-screen px-6 py-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Featured Olympiad Competitions
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Loading olympiads...
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -124,14 +127,16 @@ export const Olympiad = () => {
 
   if (error && !data) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Featured Olympiad Competitions
-          </h2>
-          <p className="text-lg text-red-400 max-w-2xl mx-auto">
-            Error loading olympiads: {error.message}
-          </p>
+      <div className="bg-black min-h-screen px-6 py-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Featured Olympiad Competitions
+            </h2>
+            <p className="text-lg text-red-400 max-w-2xl mx-auto">
+              Error loading olympiads: {error.message}
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -139,21 +144,24 @@ export const Olympiad = () => {
 
   if (olympiads.length === 0) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Featured Olympiad Competitions
-          </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            No olympiads available at the moment. Please check back later.
-          </p>
+      <div className="bg-black min-h-screen px-6 py-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Featured Olympiad Competitions
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              No olympiads available at the moment. Please check back later.
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-16">
+    <div className="bg-black min-h-screen px-6 py-16">
+      <div className="max-w-7xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white mb-4">
           Featured Olympiad Competitions
@@ -192,7 +200,7 @@ export const Olympiad = () => {
 
       {filteredOlympiads.length === 0 ? (
         <div className="text-center py-16">
-          <div className="bg-[#0A0F1A] rounded-lg p-8 max-w-md mx-auto">
+          <div className="bg-black rounded-lg p-8 max-w-md mx-auto border border-black">
             <div className="w-16 h-16 mx-auto mb-4 bg-gray-700 rounded-full flex items-center justify-center">
               <Trophy className="w-8 h-8 text-gray-400" />
             </div>
@@ -229,11 +237,11 @@ export const Olympiad = () => {
             : olympiad.description;
 
           return (
-            <Card key={olympiad.id} className="bg-[#0A0F1A] flex flex-col"> 
+            <Card key={olympiad.id} className="bg-gray-900 flex flex-col border border-gray-800 hover:border-orange-500/50 transition-all duration-300"> 
               <div className="relative h-48 bg-gradient-to-br from-blue-900 to-purple-900 overflow-hidden">
                 {olympiad.rankingType === "NATIONAL" && (
                   <div className="absolute top-4 left-4 z-10">
-                    <Badge className="bg-white text-black border-0 flex items-center gap-1">
+                    <Badge className="bg-orange-500 text-white border-0 flex items-center gap-1 shadow-lg">
                       <Star className="w-3 h-3" />
                       Featured
                     </Badge>
@@ -241,35 +249,28 @@ export const Olympiad = () => {
                 )}
               </div>
 
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-white">
-                  {olympiad.name}
-                </CardTitle>
-                <CardDescription className="text-gray-300 leading-relaxed">
-                  {displayDescription}
-                  {shouldTruncate && (
-                    <button
-                      onClick={(e) => toggleDescription(olympiad.id, e)}
-                      className="ml-2 text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200 inline-block"
-                    >
-                      {isExpanded ? "See less" : "See more"}
-                    </button>
-                  )}
-                </CardDescription>
-              </CardHeader>
+               <CardHeader className="pb-4 bg-gray-800/30 rounded-t-lg">
+                 <CardTitle className="text-xl font-bold text-white mb-2">
+                   {olympiad.name}
+                 </CardTitle>
+                 <CardDescription className="text-gray-300 leading-relaxed">
+                   {displayDescription}
+                   {shouldTruncate && (
+                     <button
+                       onClick={(e) => toggleDescription(olympiad.id, e)}
+                       className="ml-2 text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200 inline-block"
+                     >
+                       {isExpanded ? "See less" : "See more"}
+                     </button>
+                   )}
+                 </CardDescription>
+               </CardHeader>
 
-              <CardContent className="space-y-4 flex-grow">
-                <div className="flex items-center gap-6 text-sm text-gray-300">
-                  <div className="flex items-center gap-2">
-                    <Building className="w-4 h-4" />
-                    {olympiad.organizer?.organizationName}
-                  </div>
-                </div>
-
+              <CardContent className="space-y-4 flex-grow bg-gray-800/20">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-3">
+                  <div className="space-y-3 p-3 bg-gray-800/30 rounded-lg">
                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="w-4 h-4 text-orange-400" />
                       <span className="font-medium">Competition Date</span>
                     </div>
                     <div className="text-white font-semibold">
@@ -277,7 +278,7 @@ export const Olympiad = () => {
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <Trophy className="w-4 h-4" />
+                      <Trophy className="w-4 h-4 text-orange-400" />
                       <span className="font-medium">Class</span>
                     </div>
                     <div className="text-white font-semibold">
@@ -287,9 +288,9 @@ export const Olympiad = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-3 p-3 bg-gray-800/30 rounded-lg">
                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="w-4 h-4 text-orange-400" />
                       <span className="font-medium">Location</span>
                     </div>
                     <div className="text-white font-semibold">
@@ -297,7 +298,7 @@ export const Olympiad = () => {
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <Clock className="w-4 h-4" />
+                      <Clock className="w-4 h-4 text-orange-400" />
                       <span className="font-medium">Registration</span>
                     </div>
                     <div className="text-white font-semibold">
@@ -307,21 +308,23 @@ export const Olympiad = () => {
                 </div>
               </CardContent>
 
-               <CardFooter className="pt-4">
-                 <Button
-                   variant="outline"
-                   className="w-full border-gray-600 text-white hover:bg-gray-800"
-                   onClick={() => router.push(`/olympiad/${olympiad.id}`)}
-                 >
-                   <Eye className="w-4 h-4 mr-2" />
-                   Details
-                 </Button>
+               <CardFooter className="pt-4 bg-gray-800/20 rounded-b-lg">
+                 <PageTransition href={`/olympiad/${olympiad.id}`}>
+                   <Button
+                     variant="outline"
+                     className="w-full border-orange-500/50 text-white hover:bg-orange-500 hover:text-black transition-all duration-300 font-medium"
+                   >
+                     <Eye className="w-4 h-4 mr-2" />
+                     Details
+                   </Button>
+                 </PageTransition>
                </CardFooter>
             </Card>
           );
         })}
         </div>
       )}
+      </div>
     </div>
   );
 };

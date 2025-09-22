@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -131,20 +132,9 @@ export default function OlympiadDetailsPage() {
   const olympiad = olympiadData?.olympiad;
   const students = studentsData?.students || [];
 
-  if (olympiadLoading || studentsLoading) {
-    return (
-      <div className="min-h-screen bg-black">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-white text-lg">Loading olympiad details...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Remove loading state - show content immediately with skeleton or empty states
 
-  if (!olympiad) {
+  if (!olympiad && !olympiadLoading) {
     return (
       <div className="min-h-screen bg-black">
         <div className="container mx-auto px-4 py-8">
@@ -200,7 +190,16 @@ export default function OlympiadDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <motion.div 
+      className="min-h-screen bg-black"
+      initial={{ y: 100, scaleY: 0 }}
+      animate={{ y: 0, scaleY: 1 }}
+      transition={{
+        duration: 0.6,
+        ease: "easeInOut",
+      }}
+      style={{ transformOrigin: "bottom" }}
+    >
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -217,22 +216,28 @@ export default function OlympiadDetailsPage() {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold text-white">{olympiad.name}</h1>
-                  <Badge className={`${
-                    olympiad.status === "OPEN" ? "bg-green-500" :
-                    olympiad.status === "CLOSED" ? "bg-yellow-500" :
-                    olympiad.status === "FINISHED" ? "bg-blue-500" :
-                    "bg-gray-500"
-                  } text-white border-0`}>
-                    {olympiad.status === "OPEN" ? "Нээлттэй" :
-                     olympiad.status === "CLOSED" ? "Хаалттай" :
-                     olympiad.status === "FINISHED" ? "Дууссан" :
-                     olympiad.status}
-                  </Badge>
+                  <h1 className="text-3xl font-bold text-white">
+                    {olympiad?.name || "Loading..."}
+                  </h1>
+                  {olympiad?.status && (
+                    <Badge className={`${
+                      olympiad.status === "OPEN" ? "bg-orange-500" :
+                      olympiad.status === "CLOSED" ? "bg-orange-600" :
+                      olympiad.status === "FINISHED" ? "bg-orange-700" :
+                      "bg-orange-400"
+                    } text-white border-0`}>
+                      {olympiad.status === "OPEN" ? "Нээлттэй" :
+                       olympiad.status === "CLOSED" ? "Хаалттай" :
+                       olympiad.status === "FINISHED" ? "Дууссан" :
+                       olympiad.status}
+                    </Badge>
+                  )}
                 </div>
-                <p className="text-gray-300 text-lg leading-relaxed">{olympiad.description}</p>
+                <p className="text-gray-300 text-lg leading-relaxed">
+                  {olympiad?.description || "Loading description..."}
+                </p>
               </div>
-              {olympiad.rankingType === "NATIONAL" && (
+              {olympiad?.rankingType === "NATIONAL" && (
                 <Badge className="bg-orange-500 text-white border-0 flex items-center gap-1">
                   <Star className="w-3 h-3" />
                   Featured
@@ -245,7 +250,9 @@ export default function OlympiadDetailsPage() {
                 <Building className="w-5 h-5" />
                 <div>
                   <p className="text-sm text-gray-400">Зохион байгуулагч</p>
-                  <p className="font-semibold text-white">{olympiad.organizer?.organizationName}</p>
+                  <p className="font-semibold text-white">
+                    {olympiad?.organizer?.organizationName || "Loading..."}
+                  </p>
                 </div>
               </div>
               
@@ -253,7 +260,9 @@ export default function OlympiadDetailsPage() {
                 <Calendar className="w-5 h-5" />
                 <div>
                   <p className="text-sm text-gray-400">Тэмцээний өдөр</p>
-                  <p className="font-semibold text-white">{formatDate(olympiad.occurringDay)}</p>
+                  <p className="font-semibold text-white">
+                    {olympiad?.occurringDay ? formatDate(olympiad.occurringDay) : "Loading..."}
+                  </p>
                 </div>
               </div>
               
@@ -261,7 +270,9 @@ export default function OlympiadDetailsPage() {
                 <MapPin className="w-5 h-5" />
                 <div>
                   <p className="text-sm text-gray-400">Байршил</p>
-                  <p className="font-semibold text-white">{olympiad.location}</p>
+                  <p className="font-semibold text-white">
+                    {olympiad?.location || "Loading..."}
+                  </p>
                 </div>
               </div>
               
@@ -269,7 +280,9 @@ export default function OlympiadDetailsPage() {
                 <Users className="w-5 h-5" />
                 <div>
                   <p className="text-sm text-gray-400">Оролцогчдын тоо</p>
-                  <p className="font-semibold text-white">{students.length}</p>
+                  <p className="font-semibold text-white">
+                    {studentsLoading ? "Loading..." : students.length}
+                  </p>
                 </div>
               </div>
             </div>
@@ -285,9 +298,9 @@ export default function OlympiadDetailsPage() {
                   <Trophy className="w-6 h-6 text-orange-500" />
                   Оролцогчдын жагсаалт
                 </CardTitle>
-                {olympiad?.status !== "FINISHED" && (
+                {olympiad?.status && olympiad.status !== "FINISHED" && (
                   <p className="text-sm text-gray-400 mt-1">
-                    {olympiad?.status === "OPEN" 
+                    {olympiad.status === "OPEN" 
                       ? "Тэмцээн хараахан эхлээгүй байна. Медаль тэмцээн дууссаны дараа харуулагдана."
                       : "Тэмцээн дуусаагүй байна. Медаль тэмцээн дууссаны дараа харуулагдана."
                     }
@@ -328,7 +341,12 @@ export default function OlympiadDetailsPage() {
           </CardHeader>
           
           <CardContent>
-            {students.length === 0 ? (
+            {studentsLoading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p className="text-gray-400">Оролцогчдын мэдээллийг ачааллаж байна...</p>
+              </div>
+            ) : students.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">Оролцогч байхгүй</h3>
@@ -398,6 +416,6 @@ export default function OlympiadDetailsPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </motion.div>
   );
 }
