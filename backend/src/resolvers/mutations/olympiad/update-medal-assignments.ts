@@ -103,7 +103,7 @@ export const updateMedalAssignments = async (
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!updatedOlympiad) {

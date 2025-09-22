@@ -152,7 +152,7 @@ export const updateOlympiadComprehensive = async (
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!populatedOlympiad) {

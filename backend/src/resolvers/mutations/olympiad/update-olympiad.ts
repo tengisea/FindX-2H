@@ -28,7 +28,7 @@ export const updateOlympiad = async (_: unknown, { id, input }: any) => {
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!populatedOlympiad) {
@@ -96,7 +96,7 @@ export const updateOlympiad = async (_: unknown, { id, input }: any) => {
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!updatedOlympiad) {
