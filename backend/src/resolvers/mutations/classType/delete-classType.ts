@@ -1,5 +1,4 @@
-import { ClassTypeModel } from "@/models";
-import { QuestionModel } from "@/models";
+import { ClassTypeModel, QuestionModel, OlympiadModel } from "@/models";
 
 export const deleteClassType = async (_: unknown, { id }: any) => {
   try {
@@ -13,6 +12,12 @@ export const deleteClassType = async (_: unknown, { id }: any) => {
     if (classType.questions.length > 0) {
       await QuestionModel.deleteMany({ _id: { $in: classType.questions } });
     }
+
+    // Remove the classtype from all olympiads that reference it
+    await OlympiadModel.updateMany(
+      { classtypes: id },
+      { $pull: { classtypes: id } }
+    );
 
     // Delete the classType
     const result = await ClassTypeModel.findByIdAndDelete(id);

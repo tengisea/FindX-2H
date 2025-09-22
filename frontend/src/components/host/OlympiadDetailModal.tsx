@@ -76,19 +76,6 @@ const getStatusText = (status: string) => {
   }
 };
 
-const getRankingTypeText = (rankingType: string) => {
-  switch (rankingType) {
-    case "NATIONAL":
-      return "National";
-    case "SCHOOL":
-      return "School";
-    case "A_TIER":
-      return "A Tier";
-    default:
-      return rankingType;
-  }
-};
-
 const formatClassYear = (classYear: string) => {
   return classYear.replace("GRADE_", "Grade ").replace("_CLASS", " Class");
 };
@@ -109,7 +96,7 @@ export const OlympiadDetailModal = ({
     return (
       <Modal isOpen={isOpen} onClose={onClose} title="Olympiad Details" size="lg">
         <div className="flex items-center justify-center  py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-card"></div>
           <span className="ml-2 text-gray-300">Loading...</span>
         </div>
       </Modal>
@@ -129,7 +116,7 @@ export const OlympiadDetailModal = ({
   if (!olympiad) {
     return (
       <Modal isOpen={isOpen} onClose={onClose} title="Olympiad Details" size="lg">
-        <div className="text-center py-8">
+        <div className="text-center py-8 bg-card">
           <p className="text-gray-300">Olympiad not found</p>
         </div>
       </Modal>

@@ -152,9 +152,6 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
             <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-foreground">Recent Olympiads</h3>
-                    <button className="text-primary hover:text-primary/80 text-sm font-medium">
-                        View All
-                    </button>
                 </div>
 
                 {olympiads.length === 0 ? (
@@ -174,9 +171,9 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                                     <p className="text-sm text-muted-foreground mt-1">{olympiad.description}</p>
                                 </div>
                                 <div className="flex items-center space-x-3">
-                                    <Badge className={getStatusColor(olympiad.status)}>
-                                        {getStatusText(olympiad.status)}
-                                    </Badge>
+                                    <span className="px-3 py-1 rounded-full text-sm font-medium border text-[#ff8400]">
+                                        {olympiad.status}
+                                    </span>
                                     <button
                                         className="text-primary hover:text-primary/80 text-sm font-medium"
                                         onClick={() => setSelectedOlympiadId(olympiad.id)}

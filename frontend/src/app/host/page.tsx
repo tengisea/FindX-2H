@@ -319,7 +319,7 @@ const HostPage = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen ">
                 {/* StaggeredMenu Navigation */}
                 <StaggeredMenu
                     position="left"
@@ -441,10 +441,10 @@ const HostPage = () => {
                         )}
 
                         {/* Content */}
-                        <div className="relative">
+                        <div className="relative h-screen w-full">
                             {organizerLoading ? (
-                                <div className="flex items-center justify-center py-12">
-                                    <div className="text-center">
+                                <div className="flex items-center justify-center py-12 w-full h-full">
+                                    <div className="text-center w-full h-full">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                                         <p className="text-muted-foreground">Loading olympiads...</p>
                                     </div>
