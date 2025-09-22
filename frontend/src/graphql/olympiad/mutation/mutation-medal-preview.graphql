@@ -14,6 +14,7 @@ mutation FinishOlympiad($finishOlympiadId: ID!) {
         id
         organizationName
         email
+        logo
       }
       classtypes {
         id
@@ -95,6 +96,7 @@ mutation PreviewMedals($previewMedalsId: ID!) {
         id
         organizationName
         email
+        logo
       }
       classtypes {
         id
@@ -179,6 +181,7 @@ mutation UpdateMedalAssignments(
         id
         organizationName
         email
+        logo
       }
       classtypes {
         id
@@ -261,6 +264,7 @@ mutation FinalizeMedals($finalizeMedalsId: ID!) {
         id
         organizationName
         email
+        logo
       }
       classtypes {
         id

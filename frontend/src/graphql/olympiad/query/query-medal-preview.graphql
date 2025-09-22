@@ -11,6 +11,7 @@ query GetOlympiadWithMedalPreview($olympiadId: ID!) {
       id
       organizationName
       email
+      logo
     }
     classtypes {
       id
@@ -58,6 +59,7 @@ query GetOlympiadsByStatus($status: OlympiadStatus!) {
       id
       organizationName
       email
+      logo
     }
     classtypes {
       id
@@ -105,6 +107,7 @@ query GetMedalPreviewOlympiads {
       id
       organizationName
       email
+      logo
     }
     classtypes {
       id
