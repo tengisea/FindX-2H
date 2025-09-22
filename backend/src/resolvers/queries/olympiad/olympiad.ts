@@ -22,7 +22,7 @@ export const olympiad = async (_: any, { id }: any) => {
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!olympiad) {

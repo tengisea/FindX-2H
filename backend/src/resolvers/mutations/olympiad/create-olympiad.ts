@@ -139,7 +139,7 @@ export const createOlympiad = async (
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     // Populated olympiad result

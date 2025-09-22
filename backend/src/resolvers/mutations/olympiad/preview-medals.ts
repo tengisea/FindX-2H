@@ -39,7 +39,7 @@ export const previewMedals = async (_: unknown, { id }: { id: string }) => {
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!olympiad) {
@@ -159,7 +159,7 @@ export const previewMedals = async (_: unknown, { id }: { id: string }) => {
       })
       .populate({
         path: "organizer",
-        select: "organizationName email",
+        select: "organizationName email logo",
       });
 
     if (!updatedOlympiad) {
