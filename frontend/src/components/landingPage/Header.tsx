@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Trophy, Home, Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const Header = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleHostClick = () => {
@@ -30,42 +31,58 @@ export const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div
-          className="flex items-center font-bold text-2xl cursor-pointer group transition-all duration-300 hover:scale-105"
+          className="flex font-[800] text-2xl cursor-pointer group transition-all duration-300 hover:scale-105"
           onClick={() => router.push("/")}
         >
           <span className="text-white group-hover:text-slate-200 transition-colors">
             Find
           </span>
-          <Badge variant="secondary" className="ml-1 bg-orange-500 hover:bg-orange-600 text-white border-none font-bold text-lg px-2 py-1">
+          <div className="flex font-[800] text-2xl text-orange-500 group-hover:text-orange-400 transition-colors">
             X
-          </Badge>
+          </div>
         </div>
 
         {/* Desktop Navigation & Actions */}
         <div className="hidden md:flex items-center gap-1.5">
           <Link href="/" className={cn(
-            "inline-flex h-7 items-center justify-center rounded-md bg-slate-800/50 hover:bg-orange-500/10 border border-slate-700 hover:border-orange-500/50 px-2.5 py-1 text-xs font-medium text-white hover:text-orange-400 transition-all duration-200 no-underline"
+            "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
+            pathname === "/" 
+              ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+              : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
           )}>
             <Home className="w-3.5 h-3.5 mr-1" />
             Home
           </Link>
           
           <Link href="/students-rankings" className={cn(
-            "inline-flex h-7 items-center justify-center rounded-md bg-slate-800/50 hover:bg-orange-500/10 border border-slate-700 hover:border-orange-500/50 px-2.5 py-1 text-xs font-medium text-white hover:text-orange-400 transition-all duration-200 no-underline"
+            "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
+            pathname === "/students-rankings" 
+              ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+              : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
           )}>
             <Trophy className="w-3.5 h-3.5 mr-1" />
             Ranking
           </Link>
 
           <button
-            className="inline-flex h-7 items-center justify-center rounded-md bg-slate-800/50 hover:bg-orange-500/10 border border-slate-700 hover:border-orange-500/50 px-2.5 py-1 text-xs font-medium text-white hover:text-orange-400 transition-all duration-200"
+            className={cn(
+              "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200",
+              pathname === "/host" 
+                ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+                : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
+            )}
             onClick={handleHostClick}
           >
             Host
           </button>
           
           <button
-            className="inline-flex h-7 items-center justify-center rounded-md bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border border-orange-500 px-2.5 py-1 text-xs font-medium shadow-sm hover:shadow-orange-500/25 transition-all duration-200"
+            className={cn(
+              "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200",
+              pathname === "/student" 
+                ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+                : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
+            )}
             onClick={handleStudentClick}
           >
             Student
@@ -90,7 +107,12 @@ export const Header = () => {
           <nav className="flex flex-col space-y-2 px-2">
             <Link
               href="/"
-              className="flex items-center gap-3 text-white hover:text-orange-400 hover:bg-slate-800/50 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline"
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline",
+                pathname === "/" 
+                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30" 
+                  : "text-white hover:text-orange-400 hover:bg-slate-800/50"
+              )}
               onClick={() => setMobileMenuOpen(false)}
             >
               <Home className="w-4 h-4" />
@@ -99,7 +121,12 @@ export const Header = () => {
             
             <Link
               href="/students-rankings"
-              className="flex items-center gap-3 text-white hover:text-orange-400 hover:bg-slate-800/50 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline"
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline",
+                pathname === "/students-rankings" 
+                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30" 
+                  : "text-white hover:text-orange-400 hover:bg-slate-800/50"
+              )}
               onClick={() => setMobileMenuOpen(false)}
             >
               <Trophy className="w-4 h-4" />
@@ -111,7 +138,12 @@ export const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              className="justify-start text-orange-400 border-orange-500/50 hover:bg-orange-500 hover:text-white"
+              className={cn(
+                "justify-start transition-all duration-200",
+                pathname === "/host" 
+                  ? "text-white bg-orange-500 border-orange-500 hover:bg-orange-600" 
+                  : "text-orange-400 border-orange-500/50 hover:bg-orange-500 hover:text-white"
+              )}
               onClick={() => {
                 handleHostClick();
                 setMobileMenuOpen(false);
