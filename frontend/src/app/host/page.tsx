@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@apollo/client";
-
 import { OlympiadForm } from "@/components/host/OlympiadForm";
 import { ManageOlympiads } from "@/components/host/ManageOlympiads";
 import { ManageResults } from "@/components/host/ManageResults";
