@@ -1,5 +1,7 @@
-mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
-  createOlympiad(input: $input) {
+# Medal Preview System Queries
+
+query GetOlympiadWithMedalPreview($olympiadId: ID!) {
+  olympiad(id: $olympiadId) {
     id
     name
     description
@@ -9,19 +11,6 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
@@ -58,12 +47,8 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
   }
 }
 
-mutation DeleteOlympiad($deleteOlympiadId: ID!) {
-  deleteOlympiad(id: $deleteOlympiadId)
-}
-
-mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
-  updateOlympiad(id: $updateOlympiadId, input: $input) {
+query GetOlympiadsByStatus($status: OlympiadStatus!) {
+  allOlympiads {
     id
     name
     description
@@ -73,19 +58,6 @@ mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
@@ -122,14 +94,8 @@ mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
   }
 }
 
-mutation UpdateOlympiadComprehensive(
-  $updateOlympiadComprehensiveId: ID!
-  $input: UpdateOlympiadComprehensiveInput!
-) {
-  updateOlympiadComprehensive(
-    id: $updateOlympiadComprehensiveId
-    input: $input
-  ) {
+query GetMedalPreviewOlympiads {
+  allOlympiads {
     id
     name
     description
@@ -139,19 +105,6 @@ mutation UpdateOlympiadComprehensive(
       id
       organizationName
       email
-      Olympiads {
-        id
-        name
-        description
-        closeDay
-        location
-        participants
-        scoreOfAward
-        status
-        rankingType
-        invitation
-        occurringDay
-      }
     }
     classtypes {
       id
@@ -186,8 +139,4 @@ mutation UpdateOlympiadComprehensive(
     invitation
     occurringDay
   }
-}
-
-mutation DeleteOlympiad($deleteOlympiadId: ID!) {
-  deleteOlympiad(id: $deleteOlympiadId)
 }

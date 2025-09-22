@@ -6,7 +6,7 @@
     "dev": "PORT=8000 npm run codegen && PORT=8000 next dev",
     "predev": "npm run codegen",
     "codegen": "npx graphql-codegen --config codegen.yml",
-    "build": "npm run codegen && next build --no-lint",
+    "build": "npm run codegen && next build",
     "start": "next start",
     "start:prod": "npm run codegen && next start",
     "lint": "eslint"

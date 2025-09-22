@@ -15,6 +15,7 @@ export const getOrganizer = async (_: unknown, { id }: { id: string }) => {
       id: organizer._id.toString(),
       organizationName: organizer.organizationName,
       email: organizer.email,
+      logo: organizer.logo,
       Olympiads: organizer.Olympiads.map((olympiad: any) => ({
         id: olympiad._id.toString(),
         name: olympiad.name,

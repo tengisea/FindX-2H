@@ -163,17 +163,49 @@ export const updateOlympiadComprehensive = async (
 
     const transformed = transformDocument(populatedOlympiad);
 
-    if (transformed.classtypes) {
-      transformed.classtypes = transformed.classtypes.map((classType: any) => ({
-        ...transformDocument(classType),
-        classYear: mapClassYearToGraphQL(classType.classYear),
-        questions: classType.questions
-          ? classType.questions.map((q: any) => transformDocument(q))
-          : [],
-        rooms: classType.rooms
-          ? classType.rooms.map((room: any) => transformDocument(room))
-          : [],
-      }));
+    // Handle ClassTypes manually since transformDocument is not working properly for populated objects
+    if (populatedOlympiad.classtypes) {
+      transformed.classtypes = populatedOlympiad.classtypes.map(
+        (classType: any) => {
+          const classTypeId = classType._id?.toString() || classType.id;
+          return {
+            id: classTypeId,
+            classYear: mapClassYearToGraphQL(classType.classYear),
+            maxScore: classType.maxScore,
+            occurringTime: classType.occurringTime,
+            rooms: classType.rooms
+              ? classType.rooms.map((room: any) => ({
+                  id: room._id?.toString() || room.id,
+                  roomNumber: room.roomNumber,
+                  maxStudents: room.maxStudents,
+                  mandatNumber: room.mandatNumber || [],
+                  classTypeId: room.classTypeId?.toString() || room.classTypeId,
+                }))
+              : [],
+            questions: classType.questions
+              ? classType.questions.map((question: any) => {
+                  const questionId = question._id?.toString() || question.id;
+                  return {
+                    id: questionId,
+                    classTypeId: classTypeId,
+                    questionName: question.questionName,
+                    maxScore: question.maxScore,
+                  };
+                })
+              : [],
+            medalists: classType.medalists,
+            participants: classType.participants || [],
+            studentsAnswers: classType.studentsAnswers || [],
+            olympiadId:
+              classType.olympiadId?.toString() || classType.olympiadId,
+            bestMaterials: classType.bestMaterials || [],
+            gold: classType.gold || [],
+            silver: classType.silver || [],
+            bronze: classType.bronze || [],
+            top10: classType.top10 || [],
+          };
+        }
+      );
     }
 
     if (transformed.organizer) {

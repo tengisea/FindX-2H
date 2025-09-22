@@ -18,9 +18,9 @@ import {
   handleAsyncError,
 } from "@/utils/errorHandler";
 
-export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
+export const previewMedals = async (_: unknown, { id }: { id: string }) => {
   return await handleAsyncError(async () => {
-    console.log(`🔍 Finishing Olympiad and generating medal preview: ${id}`);
+    console.log(`🔍 Previewing medals for Olympiad: ${id}`);
 
     // Get the olympiad with populated data
     const olympiad = await OlympiadModel.findById(id)
@@ -48,7 +48,7 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
 
     if (olympiad.status !== "CLOSED") {
       throw createGraphQLError(
-        "Olympiad must be CLOSED before finishing",
+        "Olympiad must be CLOSED before previewing medals",
         ErrorCodes.BAD_REQUEST
       );
     }
@@ -214,16 +214,14 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
       delete transformed.organizer.Olympiads;
     }
 
-    console.log(
-      `✅ Medal preview generated for Olympiad: ${updatedOlympiad.name}`
-    );
+    console.log(`✅ Medal preview generated for Olympiad: ${olympiad.name}`);
 
     return {
       success: true,
       message:
-        "Olympiad finished successfully. Medal preview generated. You can now review and edit medal assignments before finalizing.",
+        "Medal preview generated successfully. You can now review and edit medal assignments before finalizing.",
       olympiad: transformed,
       medalPreviews,
     };
-  }, "Failed to finish olympiad and generate medal preview");
+  }, "Failed to preview medals");
 };

@@ -1,0 +1,299 @@
+# Medal Preview System Mutations
+
+mutation FinishOlympiad($finishOlympiadId: ID!) {
+  finishOlympiad(id: $finishOlympiadId) {
+    success
+    message
+    olympiad {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+    medalPreviews {
+      classTypeId
+      classYear
+      totalParticipants
+      medalists
+      gold {
+        studentId
+        studentName
+        score
+        rank
+      }
+      silver {
+        studentId
+        studentName
+        score
+        rank
+      }
+      bronze {
+        studentId
+        studentName
+        score
+        rank
+      }
+      top10 {
+        studentId
+        studentName
+        score
+        rank
+      }
+    }
+  }
+}
+
+mutation PreviewMedals($previewMedalsId: ID!) {
+  previewMedals(id: $previewMedalsId) {
+    success
+    message
+    olympiad {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+    medalPreviews {
+      classTypeId
+      classYear
+      totalParticipants
+      medalists
+      gold {
+        studentId
+        studentName
+        score
+        rank
+      }
+      silver {
+        studentId
+        studentName
+        score
+        rank
+      }
+      bronze {
+        studentId
+        studentName
+        score
+        rank
+      }
+      top10 {
+        studentId
+        studentName
+        score
+        rank
+      }
+    }
+  }
+}
+
+mutation UpdateMedalAssignments(
+  $olympiadId: ID!
+  $assignments: [UpdateMedalAssignmentsInput!]!
+) {
+  updateMedalAssignments(olympiadId: $olympiadId, assignments: $assignments) {
+    success
+    message
+    olympiad {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+    medalPreviews {
+      classTypeId
+      classYear
+      totalParticipants
+      medalists
+      gold {
+        studentId
+        studentName
+        score
+        rank
+      }
+      silver {
+        studentId
+        studentName
+        score
+        rank
+      }
+      bronze {
+        studentId
+        studentName
+        score
+        rank
+      }
+      top10 {
+        studentId
+        studentName
+        score
+        rank
+      }
+    }
+  }
+}
+
+mutation FinalizeMedals($finalizeMedalsId: ID!) {
+  finalizeMedals(id: $finalizeMedalsId) {
+    success
+    message
+    emailsSent
+    olympiad {
+      id
+      name
+      description
+      closeDay
+      location
+      organizer {
+        id
+        organizationName
+        email
+      }
+      classtypes {
+        id
+        classYear
+        maxScore
+        occurringTime
+        rooms
+        questions {
+          id
+          classTypeId
+          questionName
+          maxScore
+        }
+        medalists
+        participants
+        studentsAnswers
+        olympiadId
+        bestMaterials {
+          studentId
+          materialImages
+          description
+        }
+        gold
+        silver
+        bronze
+        top10
+      }
+      participants
+      scoreOfAward
+      status
+      rankingType
+      invitation
+      occurringDay
+    }
+  }
+}

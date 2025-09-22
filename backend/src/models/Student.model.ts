@@ -117,5 +117,13 @@ const studentSchema = new Schema<StudentSchemaType>(
   { timestamps: true }
 );
 
+// Add indexes for better query performance
+studentSchema.index({ email: 1 }, { unique: true });
+studentSchema.index({ class: 1 });
+studentSchema.index({ province: 1 });
+studentSchema.index({ region: 1 });
+studentSchema.index({ school: 1 });
+studentSchema.index({ ranking: 1 });
+
 export const StudentModel: Model<StudentSchemaType> =
   models["Student"] || model("Student", studentSchema);
