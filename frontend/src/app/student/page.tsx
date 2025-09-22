@@ -219,7 +219,7 @@ const StudentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* StaggeredMenu Navigation */}
       <StaggeredMenu
         position="left"
@@ -230,7 +230,7 @@ const StudentPage = () => {
         menuButtonColor="#ff8400"
         openMenuButtonColor="#ffffff"
         changeMenuColorOnOpen={true}
-        colors={["var(--card)", "var(--card)"]}
+        colors={["#ffffff", "#ffffff"]}
         accentColor="#ff8400"
         onMenuOpen={() => console.log("Student menu opened")}
         onMenuClose={() => console.log("Student menu closed")}
@@ -247,7 +247,7 @@ const StudentPage = () => {
       </div>
 
       {/* Main content with left margin for left-positioned StaggeredMenu */}
-      <div className="w-full pl-20 bg-background">{renderContent()}</div>
+      <div className="w-full pl-20 bg-white">{renderContent()}</div>
 
       {/* Modals */}
       <OlympiadDetailsModal
