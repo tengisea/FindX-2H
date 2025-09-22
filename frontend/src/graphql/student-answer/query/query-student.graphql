@@ -4,7 +4,7 @@ query StudentAnswer($studentAnswerId: ID!) {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -23,7 +23,7 @@ query AllStudentAnswers {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -42,7 +42,7 @@ query StudentAnswersByClassType($classTypeId: ID!) {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -61,7 +61,7 @@ query GetStudentsByOlympiadId($olympiadId: ID!) {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -80,7 +80,7 @@ query GetStudentsByStudentId($studentId: ID!) {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score

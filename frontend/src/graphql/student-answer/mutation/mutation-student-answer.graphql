@@ -4,7 +4,7 @@ mutation CreateStudentAnswer($input: CreateStudentAnswerInput!) {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -23,7 +23,7 @@ mutation UpdateStudentAnswer($updateStudentAnswerId: ID!, $input: UpdateStudentA
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -42,7 +42,7 @@ mutation UpdateStudentAnswerScore($studentAnswerId: ID!, $questionId: ID!, $scor
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -65,7 +65,7 @@ mutation AddStudentResult($input: AddStudentResultInput!) {
     studentId
     classTypeId
     mandatNumber
-    roomNumber
+    classRoom
     answers {
       questionId
       score
@@ -84,12 +84,7 @@ mutation FinalizeClassTypeRankings($classTypeId: ID!) {
     classYear
     maxScore
     occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
+    rooms
     questions {
       id
       classTypeId

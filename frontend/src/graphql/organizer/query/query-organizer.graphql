@@ -19,12 +19,7 @@ query GetOrganizer($getOrganizerId: ID!) {
         classYear
         maxScore
         occurringTime
-        rooms {
-          id
-          roomNumber
-          maxStudents
-          mandatNumber
-        }
+        rooms
         questions {
           id
           classTypeId
@@ -76,12 +71,7 @@ query GetAllOrganizers {
         classYear
         maxScore
         occurringTime
-        rooms {
-          id
-          roomNumber
-          maxStudents
-          mandatNumber
-        }
+        rooms
         questions {
           id
           classTypeId

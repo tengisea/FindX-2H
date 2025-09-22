@@ -28,12 +28,7 @@ mutation CreateOlympiad($input: CreateOlympiadRequestInput!) {
       classYear
       maxScore
       occurringTime
-      rooms {
-        id
-        roomNumber
-        maxStudents
-        mandatNumber
-      }
+      rooms
       questions {
         id
         classTypeId
@@ -97,12 +92,7 @@ mutation UpdateOlympiad($updateOlympiadId: ID!, $input: UpdateOlympiadInput!) {
       classYear
       maxScore
       occurringTime
-      rooms {
-        id
-        roomNumber
-        maxStudents
-        mandatNumber
-      }
+      rooms
       questions {
         id
         classTypeId
@@ -162,12 +152,7 @@ mutation UpdateOlympiadComprehensive($updateOlympiadComprehensiveId: ID!, $input
       classYear
       maxScore
       occurringTime
-      rooms {
-        id
-        roomNumber
-        maxStudents
-        mandatNumber
-      }
+      rooms
       questions {
         id
         classTypeId
@@ -234,12 +219,7 @@ mutation FinishOlympiad($finishOlympiadId: ID!) {
         classYear
         maxScore
         occurringTime
-        rooms {
-          id
-          roomNumber
-          maxStudents
-          mandatNumber
-        }
+        rooms
         questions {
           id
           classTypeId

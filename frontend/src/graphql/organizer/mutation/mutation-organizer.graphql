@@ -19,12 +19,7 @@ mutation CreateOrganizer($input: CreateOrganizerInput!) {
         classYear
         maxScore
         occurringTime
-        rooms {
-          id
-          roomNumber
-          maxStudents
-          mandatNumber
-        }
+        rooms
         questions {
           id
           classTypeId
@@ -76,12 +71,7 @@ mutation UpdateOrganizer($updateOrganizerId: ID!, $input: UpdateOrganizerInput!)
         classYear
         maxScore
         occurringTime
-        rooms {
-          id
-          roomNumber
-          maxStudents
-          mandatNumber
-        }
+        rooms
         questions {
           id
           classTypeId

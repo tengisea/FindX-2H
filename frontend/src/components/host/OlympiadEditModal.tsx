@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { 
   useUpdateOlympiadComprehensiveMutation,
-  useGetAllClassRoomsQuery,
+  useAllClassRoomsQuery,
   Olympiad,
   ClassYear,
   OlympiadRankingType,
@@ -38,7 +38,7 @@ export const OlympiadEditModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [updateOlympiadComprehensive] = useUpdateOlympiadComprehensiveMutation();
-  const { data: classRoomsData } = useGetAllClassRoomsQuery();
+  const { data: classRoomsData } = useAllClassRoomsQuery();
 
   useEffect(() => {
     if (olympiad) {

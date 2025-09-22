@@ -21,7 +21,7 @@ import {
   Eye,
   Star,
 } from "lucide-react";
-import { useGetAllOlympiadsQuery } from "@/generated";
+import { useAllOlympiadsQuery } from "@/generated";
 
 
 const formatClassYear = (classYear: string | null | undefined) => {
@@ -66,7 +66,7 @@ const formatDate = (dateString: string) => {
 export const Olympiad = () => {
   const [selectedRankingType, setSelectedRankingType] = useState("all");
 
-  const { data, loading, error } = useGetAllOlympiadsQuery();
+  const { data, loading, error } = useAllOlympiadsQuery();
 
 
   const olympiads = data?.allOlympiads || [];

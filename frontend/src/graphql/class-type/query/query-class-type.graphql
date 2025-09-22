@@ -4,12 +4,7 @@ query AllClassTypes {
     classYear
     maxScore
     occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
+    rooms
     questions {
       id
       classTypeId
@@ -38,12 +33,7 @@ query ClassType($classTypeId: ID!) {
     classYear
     maxScore
     occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
+    rooms
     questions {
       id
       classTypeId
@@ -72,12 +62,7 @@ query ClassTypesByClassYear($classYear: ClassYear!) {
     classYear
     maxScore
     occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
+    rooms
     questions {
       id
       classTypeId
@@ -106,12 +91,7 @@ query ClassTypesByOlympiad($olympiadId: ID!) {
     classYear
     maxScore
     occurringTime
-    rooms {
-      id
-      roomNumber
-      maxStudents
-      mandatNumber
-    }
+    rooms
     questions {
       id
       classTypeId

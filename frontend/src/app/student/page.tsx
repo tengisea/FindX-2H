@@ -5,7 +5,7 @@ import { StudentSidebar } from "@/components/student/StudentSidebar";
 import StaggeredMenu from "@/components/ui/StaggeredMenu";
 import {
   useGetStudentQuery,
-  useGetAllOlympiadsQuery,
+  useAllOlympiadsQuery,
   useGetStudentsByStudentIdQuery,
 } from "@/generated";
 import { getCurrentStudentId } from "@/config/student";
@@ -92,7 +92,7 @@ const StudentPage = () => {
   });
 
   const { data: olympiadsData, loading: olympiadsLoading } =
-    useGetAllOlympiadsQuery();
+    useAllOlympiadsQuery();
 
   const { data: studentAnswersData, loading: studentAnswersLoading } =
     useGetStudentsByStudentIdQuery({

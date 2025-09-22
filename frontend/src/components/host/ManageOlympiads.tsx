@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { 
-  useGetAllOlympiadsQuery,
+  useAllOlympiadsQuery,
   useUpdateOlympiadComprehensiveMutation,
   useDeleteOlympiadMutation,
-  useGetAllClassRoomsQuery,
+  useAllClassRoomsQuery,
   Olympiad,
   ClassYear,
   OlympiadStatus,
@@ -26,10 +26,10 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, loading, error, refetch } = useGetAllOlympiadsQuery();
+  const { data, loading, error, refetch } = useAllOlympiadsQuery();
   const [updateOlympiadComprehensive] = useUpdateOlympiadComprehensiveMutation();
   const [deleteOlympiad] = useDeleteOlympiadMutation();
-  const { data: classRoomsData } = useGetAllClassRoomsQuery();
+  const { data: classRoomsData } = useAllClassRoomsQuery();
 
   // Filter olympiads for this organizer
   const myOlympiads = data?.allOlympiads?.filter(olympiad => 

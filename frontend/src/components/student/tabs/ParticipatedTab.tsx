@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetOlympiadQuery } from "@/generated";
+import { useAllOlympiadsQuery } from "@/generated";
 import { safeFormatDate } from "@/lib/dateUtils";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -14,12 +14,10 @@ const ParticipatedOlympiadRow = ({
   onViewDetails,
 }: ParticipatedOlympiadRowProps) => {
   const {
-    data: olympiadData,
+    data: olympiadsData,
     loading,
     error,
-  } = useGetOlympiadQuery({
-    variables: { id: olympiadId },
-  });
+  } = useAllOlympiadsQuery();
 
   if (loading) {
     return (
@@ -33,7 +31,7 @@ const ParticipatedOlympiadRow = ({
     );
   }
 
-  if (error || !olympiadData?.olympiad) {
+  if (error || !olympiadsData?.allOlympiads) {
     return (
       <tr>
         <td colSpan={5} className="px-6 py-4 text-red-600 text-base">
@@ -43,7 +41,17 @@ const ParticipatedOlympiadRow = ({
     );
   }
 
-  const olympiad = olympiadData.olympiad;
+  const olympiad = olympiadsData.allOlympiads.find(o => o.id === olympiadId);
+  
+  if (!olympiad) {
+    return (
+      <tr>
+        <td colSpan={5} className="px-6 py-4 text-red-600 text-base">
+          Olympiad not found (ID: {olympiadId})
+        </td>
+      </tr>
+    );
+  }
 
   return (
     <tr className="hover:bg-muted/50 transition-colors duration-200">

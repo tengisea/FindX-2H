@@ -28,12 +28,7 @@ query AllOlympiads {
       classYear
       maxScore
       occurringTime
-      rooms {
-        id
-        roomNumber
-        maxStudents
-        mandatNumber
-      }
+      rooms
       questions {
         id
         classTypeId
@@ -93,12 +88,7 @@ query GetAllApprovedOlympiads {
       classYear
       maxScore
       occurringTime
-      rooms {
-        id
-        roomNumber
-        maxStudents
-        mandatNumber
-      }
+      rooms
       questions {
         id
         classTypeId
@@ -158,12 +148,7 @@ query GetOlympiadByClassYear($classYear: ClassYear!) {
       classYear
       maxScore
       occurringTime
-      rooms {
-        id
-        roomNumber
-        maxStudents
-        mandatNumber
-      }
+      rooms
       questions {
         id
         classTypeId
