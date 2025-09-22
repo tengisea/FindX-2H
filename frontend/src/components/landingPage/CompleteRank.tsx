@@ -19,8 +19,8 @@ export const CompleteRank = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen p-8">
-      <h1 className="text-3xl font-bold text-center text-white mb-8">
+    <div className="bg-black p-6">
+      <h1 className="text-3xl font-bold text-center text-white mb-6">
         Complete Rankings
       </h1>
 
