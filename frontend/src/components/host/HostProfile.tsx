@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGetOrganizerQuery } from "@/generated";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "../ui/button";
 import ProfileEditModal from "./ProfileEditModal";
+import { OlympiadDetailModal } from "./OlympiadDetailModal";
 
 interface HostProfileProps {
     organizerId: string;
@@ -13,14 +14,21 @@ interface HostProfileProps {
 
 const HostProfile = ({ organizerId }: HostProfileProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedOlympiadId, setSelectedOlympiadId] = useState<string | null>(null);
 
     const { data: organizerData, loading, error, refetch } = useGetOrganizerQuery({
         variables: { getOrganizerId: organizerId },
-        errorPolicy: 'all'
+        errorPolicy: 'all',
+        fetchPolicy: 'cache-and-network'
     });
 
     const organizer = organizerData?.getOrganizer;
     const olympiads = organizer?.Olympiads || [];
+
+    // Refetch data when component mounts or organizerId changes
+    useEffect(() => {
+        refetch();
+    }, [organizerId, refetch]);
 
     if (loading) {
         return (
@@ -169,7 +177,10 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                                     <Badge className={getStatusColor(olympiad.status)}>
                                         {getStatusText(olympiad.status)}
                                     </Badge>
-                                    <button className="text-primary hover:text-primary/80 text-sm font-medium">
+                                    <button
+                                        className="text-primary hover:text-primary/80 text-sm font-medium"
+                                        onClick={() => setSelectedOlympiadId(olympiad.id)}
+                                    >
                                         View Details
                                     </button>
                                 </div>
@@ -193,6 +204,19 @@ const HostProfile = ({ organizerId }: HostProfileProps) => {
                     onSuccess={() => {
                         refetch();
                     }}
+                />
+            )}
+
+            {/* Olympiad Detail Modal */}
+            {selectedOlympiadId && (
+                <OlympiadDetailModal
+                    isOpen={!!selectedOlympiadId}
+                    onClose={() => {
+                        setSelectedOlympiadId(null);
+                        // Refetch organizer data to ensure consistency
+                        refetch();
+                    }}
+                    olympiadId={selectedOlympiadId}
                 />
             )}
         </div>
