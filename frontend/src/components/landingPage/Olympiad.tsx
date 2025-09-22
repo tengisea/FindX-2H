@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -78,9 +79,24 @@ const getStatusDisplayName = (status: string) => {
 };
 
 export const Olympiad = () => {
+  const router = useRouter();
   const [selectedStatus, setSelectedStatus] = useState("OPEN");
+  const [expandedDescriptions, setExpandedDescriptions] = useState<{ [key: string]: boolean }>({});
 
   const { data, loading, error } = useAllOlympiadsQuery();
+
+  const DESCRIPTION_LIMIT = 150; // Character limit for truncated description
+
+  const toggleDescription = (olympiadId: string, event: React.MouseEvent) => {
+    // Prevent event bubbling if needed
+    event.preventDefault();
+    event.stopPropagation();
+    
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [olympiadId]: !prev[olympiadId]
+    }));
+  };
 
   const olympiads = data?.allOlympiads || [];
 
@@ -174,90 +190,138 @@ export const Olympiad = () => {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {filteredOlympiads.map((olympiad) => (
-          <Card key={olympiad.id} className="bg-[#0A0F1A]">
-            <div className="relative h-48 bg-gradient-to-br from-blue-900 to-purple-900 overflow-hidden">
-              {olympiad.rankingType === "NATIONAL" && (
-                <div className="absolute top-4 left-4 z-10">
-                  <Badge className="bg-white text-black border-0 flex items-center gap-1">
-                    <Star className="w-3 h-3" />
-                    Featured
-                  </Badge>
-                </div>
-              )}
+      {filteredOlympiads.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="bg-[#0A0F1A] rounded-lg p-8 max-w-md mx-auto">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gray-700 rounded-full flex items-center justify-center">
+              <Trophy className="w-8 h-8 text-gray-400" />
             </div>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads
+            </h3>
+            <p className="text-gray-400 mb-4">
+              There are currently no {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads available. 
+              Please check back later or try a different status.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {statusTypes.filter(status => status !== selectedStatus).map((status) => (
+                <Button
+                  key={status}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedStatus(status)}
+                  className="bg-gray-800 hover:bg-gray-700 text-white border-gray-600 hover:border-orange-500/50"
+                >
+                  <Star className="w-4 h-4 mr-1" />
+                  {getStatusDisplayName(status)}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {filteredOlympiads.map((olympiad) => {
+          const isExpanded = expandedDescriptions[olympiad.id];
+          const shouldTruncate = olympiad.description.length > DESCRIPTION_LIMIT;
+          const displayDescription = shouldTruncate && !isExpanded 
+            ? olympiad.description.substring(0, DESCRIPTION_LIMIT) + "..."
+            : olympiad.description;
 
-            <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-bold text-white">
-                {olympiad.name}
-              </CardTitle>
-              <CardDescription className="text-gray-300 leading-relaxed">
-                {olympiad.description}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-6 text-sm text-gray-300">
-                <div className="flex items-center gap-2">
-                  <Building className="w-4 h-4" />
-                  {olympiad.organizer?.organizationName}
-                </div>
+          return (
+            <Card key={olympiad.id} className="bg-[#0A0F1A] flex flex-col"> 
+              <div className="relative h-48 bg-gradient-to-br from-blue-900 to-purple-900 overflow-hidden">
+                {olympiad.rankingType === "NATIONAL" && (
+                  <div className="absolute top-4 left-4 z-10">
+                    <Badge className="bg-white text-black border-0 flex items-center gap-1">
+                      <Star className="w-3 h-3" />
+                      Featured
+                    </Badge>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <Calendar className="w-4 h-4" />
-                    <span className="font-medium">Competition Date</span>
-                  </div>
-                  <div className="text-white font-semibold">
-                    {formatDate(olympiad.occurringDay)}
-                  </div>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold text-white">
+                  {olympiad.name}
+                </CardTitle>
+                <CardDescription className="text-gray-300 leading-relaxed">
+                  {displayDescription}
+                  {shouldTruncate && (
+                    <button
+                      onClick={(e) => toggleDescription(olympiad.id, e)}
+                      className="ml-2 text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200 inline-block"
+                    >
+                      {isExpanded ? "See less" : "See more"}
+                    </button>
+                  )}
+                </CardDescription>
+              </CardHeader>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <Trophy className="w-4 h-4" />
-                    <span className="font-medium">Class</span>
-                  </div>
-                  <div className="text-white font-semibold">
-                    {olympiad.classtypes
-                      .map((classtype) => formatClassYear(classtype.classYear))
-                      .join(", ")}
+              <CardContent className="space-y-4 flex-grow">
+                <div className="flex items-center gap-6 text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Building className="w-4 h-4" />
+                    {olympiad.organizer?.organizationName}
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <MapPin className="w-4 h-4" />
-                    <span className="font-medium">Location</span>
-                  </div>
-                  <div className="text-white font-semibold">
-                    {olympiad.location}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <Calendar className="w-4 h-4" />
+                      <span className="font-medium">Competition Date</span>
+                    </div>
+                    <div className="text-white font-semibold">
+                      {formatDate(olympiad.occurringDay)}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <Trophy className="w-4 h-4" />
+                      <span className="font-medium">Class</span>
+                    </div>
+                    <div className="text-white font-semibold">
+                      {olympiad.classtypes
+                        .map((classtype) => formatClassYear(classtype.classYear))
+                        .join(", ")}
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <Clock className="w-4 h-4" />
-                    <span className="font-medium">Registration</span>
-                  </div>
-                  <div className="text-white font-semibold">
-                    {formatDate(olympiad.closeDay)}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <MapPin className="w-4 h-4" />
+                      <span className="font-medium">Location</span>
+                    </div>
+                    <div className="text-white font-semibold">
+                      {olympiad.location}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <Clock className="w-4 h-4" />
+                      <span className="font-medium">Registration</span>
+                    </div>
+                    <div className="text-white font-semibold">
+                      {formatDate(olympiad.closeDay)}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
+              </CardContent>
 
-            <CardFooter className="pt-4">
-              <Button
-                variant="outline"
-                className="w-full border-gray-600 text-white hover:bg-gray-800"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                Details
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+               <CardFooter className="pt-4">
+                 <Button
+                   variant="outline"
+                   className="w-full border-gray-600 text-white hover:bg-gray-800"
+                   onClick={() => router.push(`/olympiad/${olympiad.id}`)}
+                 >
+                   <Eye className="w-4 h-4 mr-2" />
+                   Details
+                 </Button>
+               </CardFooter>
+            </Card>
+          );
+        })}
+        </div>
+      )}
     </div>
   );
 };
