@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
+import {
   useAllOlympiadsQuery,
   useUpdateOlympiadComprehensiveMutation,
   useDeleteOlympiadMutation,
@@ -13,6 +13,7 @@ import {
 } from "@/generated";
 import { getRankingTypeDisplayName } from "@/utils/rankingUtils";
 import { OlympiadEditModal } from "./OlympiadEditModal";
+import { OlympiadDetailModal } from "./OlympiadDetailModal";
 
 interface ManageOlympiadsProps {
   organizerId: string;
@@ -23,6 +24,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [rankingFilter, setRankingFilter] = useState<string>("all");
   const [selectedOlympiad, setSelectedOlympiad] = useState<Olympiad | null>(null);
+  const [selectedOlympiadId, setSelectedOlympiadId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -32,55 +34,55 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
   const { data: classRoomsData } = useAllClassRoomsQuery();
 
   // Filter olympiads for this organizer
-  const myOlympiads = data?.allOlympiads?.filter(olympiad => 
+  const myOlympiads = data?.allOlympiads?.filter(olympiad =>
     olympiad.organizer?.id === organizerId
   ) || [];
 
   const filteredOlympiads = myOlympiads.filter((olympiad) => {
-    const matchesSearch = 
+    const matchesSearch =
       olympiad.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       olympiad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (olympiad.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
-    
+
     const matchesStatus = statusFilter === "all" || olympiad.status === statusFilter;
     const matchesRanking = rankingFilter === "all" || olympiad.rankingType === rankingFilter;
-    
+
     return matchesSearch && matchesStatus && matchesRanking;
   });
 
-  const getStatusColor = (status: OlympiadStatus) => {
-    switch (status) {
-      case OlympiadStatus.Draft:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-      case OlympiadStatus.UnderReview:
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case OlympiadStatus.Open:
-        return "bg-green-100 text-green-800 border-green-200";
-      case OlympiadStatus.Closed:
-        return "bg-red-100 text-red-800 border-red-200";
-      case OlympiadStatus.Finished:
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      default:
-        return "bg-muted text-muted-foreground border-border";
-    }
-  };
+  // const getStatusColor = (status: OlympiadStatus) => {
+  //   switch (status) {
+  //     case OlympiadStatus.Draft:
+  //       return "bg-gray-100 text-gray-800 border-gray-200";
+  //     case OlympiadStatus.UnderReview:
+  //       return "bg-yellow-100 text-yellow-800 border-yellow-200";
+  //     case OlympiadStatus.Open:
+  //       return "bg-green-100 text-green-800 border-green-200";
+  //     case OlympiadStatus.Closed:
+  //       return "bg-red-100 text-red-800 border-red-200";
+  //     case OlympiadStatus.Finished:
+  //       return "bg-blue-100 text-blue-800 border-blue-200";
+  //     default:
+  //       return "bg-muted text-muted-foreground border-border";
+  //   }
+  // };
 
-  const getStatusIcon = (status: OlympiadStatus) => {
-    switch (status) {
-      case OlympiadStatus.Draft:
-        return "📝";
-      case OlympiadStatus.UnderReview:
-        return "⏳";
-      case OlympiadStatus.Open:
-        return "✅";
-      case OlympiadStatus.Closed:
-        return "❌";
-      case OlympiadStatus.Finished:
-        return "🏆";
-      default:
-        return "❓";
-    }
-  };
+  // const getStatusIcon = (status: OlympiadStatus) => {
+  //   switch (status) {
+  //     case OlympiadStatus.Draft:
+  //       return "📝";
+  //     case OlympiadStatus.UnderReview:
+  //       return "⏳";
+  //     case OlympiadStatus.Open:
+  //       return "✅";
+  //     case OlympiadStatus.Closed:
+  //       return "❌";
+  //     case OlympiadStatus.Finished:
+  //       return "🏆";
+  //     default:
+  //       return "❓";
+  //   }
+  // };
 
   const formatDate = (dateString?: string | null) => {
     if (!dateString) return "Not set";
@@ -117,7 +119,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
     try {
       await updateOlympiadComprehensive({
         variables: {
-          id: olympiadId,
+          updateOlympiadComprehensiveId: olympiadId,
           input: { status: newStatus }
         }
       });
@@ -135,7 +137,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
     setIsDeleting(true);
     try {
       await deleteOlympiad({
-        variables: { id: olympiadId }
+        variables: { deleteOlympiadId: olympiadId }
       });
       refetch();
     } catch (error) {
@@ -238,7 +240,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
             />
           </div>
           <div className="flex gap-4">
-            <select 
+            <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
@@ -250,7 +252,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
               <option value={OlympiadStatus.Closed}>Closed</option>
               <option value={OlympiadStatus.Finished}>Finished</option>
             </select>
-            <select 
+            <select
               value={rankingFilter}
               onChange={(e) => setRankingFilter(e.target.value)}
               className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
@@ -287,16 +289,15 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
         {filteredOlympiads.map((olympiad) => (
           <div
             key={olympiad.id}
-            className="bg-card rounded-2xl shadow-lg border border-border p-6 hover:shadow-xl transition-all duration-300 group"
+            onClick={() => setSelectedOlympiadId(olympiad.id)}
+            className="bg-card rounded-2xl shadow-lg border border-border p-6 hover:shadow-xl transition-all duration-300 group cursor-pointer"
           >
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <span className="text-2xl">🏆</span>
-                </div>
+
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-1 line-clamp-1">
+                  <h3 className="text-[30px] font-semibold text-foreground mb-1 line-clamp-1">
                     {olympiad.name}
                   </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">
@@ -304,14 +305,14 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
                   </p>
                 </div>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(olympiad.status)}`}>
-                {getStatusIcon(olympiad.status)} {olympiad.status.replace('_', ' ')}
+              <span className="px-3 py-1 rounded-full text-sm font-medium border text-[#ff8400]">
+                {olympiad.status}
               </span>
             </div>
 
             {/* Details */}
             <div className="space-y-3 mb-4">
-              <div className="flex items-center text-sm text-muted-foreground">
+              <div className="flex items-center text-base text-muted-foreground">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -341,18 +342,18 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
             {/* Class Types Summary */}
             {olympiad.classtypes && olympiad.classtypes.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-foreground mb-2">Class Types:</h4>
+                <h4 className="text-base font-medium text-foreground mb-2">Class Types:</h4>
                 <div className="flex flex-wrap gap-1">
                   {olympiad.classtypes.slice(0, 3).map((classType) => (
                     <span
                       key={classType.id}
-                      className="bg-muted/50 rounded-md px-2 py-1 text-xs"
+                      className="bg-muted/50 rounded-md px-2 py-1 text-sm"
                     >
                       {getClassYearDisplay(classType.classYear)}
                     </span>
                   ))}
                   {olympiad.classtypes.length > 3 && (
-                    <span className="bg-muted/50 rounded-md px-2 py-1 text-xs">
+                    <span className="bg-muted/50 rounded-md px-2 py-1 text-sm">
                       +{olympiad.classtypes.length - 3} more
                     </span>
                   )}
@@ -361,7 +362,7 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-border">
+            <div className="flex items-center justify-between pt-4 border-t border-border" onClick={(e) => e.stopPropagation()}>
               <select
                 value={olympiad.status}
                 onChange={(e) => handleQuickStatusUpdate(olympiad.id, e.target.value as OlympiadStatus)}
@@ -377,22 +378,20 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleEdit(olympiad)}
-                  className="px-3 py-1 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm flex items-center space-x-1"
+                  className="px-3 py-1  text-[#ff8400] rounded-lg hover:bg-[#ff8400]/80 transition-colors text-sm flex items-center space-x-1"
                 >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span>Edit</span>
                 </button>
                 <button
                   onClick={() => handleDelete(olympiad.id)}
                   disabled={isDeleting}
-                  className="px-3 py-1 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center space-x-1"
+                  className="text-destructive hover:text-destructive/80 transition-colors"
                 >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  <span>Delete</span>
                 </button>
               </div>
             </div>
@@ -410,6 +409,19 @@ export const ManageOlympiads = ({ organizerId }: ManageOlympiadsProps) => {
             setSelectedOlympiad(null);
           }}
           onRefetch={refetch}
+        />
+      )}
+
+      {/* Detail Modal */}
+      {selectedOlympiadId && (
+        <OlympiadDetailModal
+          isOpen={!!selectedOlympiadId}
+          onClose={() => {
+            setSelectedOlympiadId(null);
+            // Refetch data to ensure consistency
+            refetch();
+          }}
+          olympiadId={selectedOlympiadId}
         />
       )}
     </div>

@@ -9,7 +9,7 @@ import { ManageResults } from "@/components/host/ManageResults";
 import HostProfile from "@/components/host/HostProfile";
 import HostSidebar from "@/components/host/HostSidebar";
 import StaggeredMenu from "@/components/ui/StaggeredMenu";
-import { useGetOrganizerQuery } from "@/generated";
+import { useGetOrganizerQuery, ClassYear } from "@/generated";
 
 type TabType = "profile" | "create" | "manage" | "results";
 
@@ -41,7 +41,7 @@ const HostPage = () => {
 
     const [classTypes, setClassTypes] = useState<any[]>([
         {
-            classYear: "Grade_5",
+            classYear: ClassYear.Grade_5,
             maxScore: 20,
             medalists: 3,
             occurringTime: "9:00",
@@ -71,7 +71,7 @@ const HostPage = () => {
         });
         setClassTypes([
             {
-                classYear: "Grade_5",
+                classYear: ClassYear.Grade_5,
                 maxScore: 20,
                 medalists: 3,
                 occurringTime: "9:00",
@@ -129,7 +129,7 @@ const HostPage = () => {
         setClassTypes([
             ...classTypes,
             {
-                classYear: "Grade_5",
+                classYear: ClassYear.Grade_5,
                 maxScore: 10,
                 medalists: 3,
                 occurringTime: "9:00",
