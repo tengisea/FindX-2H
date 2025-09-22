@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Trophy, Home, Menu, X } from "lucide-react";
+import { Trophy, Home, Menu, X, BookOpen } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -52,6 +52,16 @@ export const Header = () => {
           )}>
             <Home className="w-3.5 h-3.5 mr-1" />
             Home
+          </Link>
+          
+          <Link href="/olympiads" className={cn(
+            "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
+            pathname === "/olympiads" 
+              ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+              : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
+          )}>
+            <BookOpen className="w-3.5 h-3.5 mr-1" />
+            Olympiads
           </Link>
           
           <Link href="/students-rankings" className={cn(
@@ -117,6 +127,20 @@ export const Header = () => {
             >
               <Home className="w-4 h-4" />
               Home
+            </Link>
+            
+            <Link
+              href="/olympiads"
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline",
+                pathname === "/olympiads" 
+                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30" 
+                  : "text-white hover:text-orange-400 hover:bg-slate-800/50"
+              )}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <BookOpen className="w-4 h-4" />
+              Olympiads
             </Link>
             
             <Link
