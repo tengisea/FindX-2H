@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - "https://find-x-2-h.vercel.app/api/graphql"
+  - "http://localhost:8000/api/graphql"
 
 documents:
   - "./src/**/*.graphql"

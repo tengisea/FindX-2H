@@ -22,6 +22,7 @@ import {
   Building,
   Eye,
   Star,
+  ArrowRight,
 } from "lucide-react";
 import { useAllOlympiadsQuery } from "@/generated";
 
@@ -166,10 +167,19 @@ export const Olympiad = () => {
         <h2 className="text-4xl font-bold text-white mb-4">
           Featured Olympiad Competitions
         </h2>
-        <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+        <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-6">
           Join prestigious academic competitions and showcase your skills
           against the best students worldwide.
         </p>
+        <div className="flex justify-center">
+          <Button
+            onClick={() => router.push('/olympiads')}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+          >
+            View All Olympiads
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -211,7 +221,7 @@ export const Olympiad = () => {
               There are currently no {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads available. 
               Please check back later or try a different status.
             </p>
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
               {statusTypes.filter(status => status !== selectedStatus).map((status) => (
                 <Button
                   key={status}
@@ -225,6 +235,13 @@ export const Olympiad = () => {
                 </Button>
               ))}
             </div>
+            <Button
+              onClick={() => router.push('/olympiads')}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+            >
+              View All Olympiads
+              <ArrowRight className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       ) : (
@@ -322,6 +339,28 @@ export const Olympiad = () => {
             </Card>
           );
         })}
+        </div>
+      )}
+
+      {/* View All Olympiads Section */}
+      {filteredOlympiads.length > 0 && (
+        <div className="text-center mt-12">
+          <div className="bg-gray-900/50 rounded-lg p-8 max-w-2xl mx-auto border border-gray-800">
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Explore All Competitions
+            </h3>
+            <p className="text-gray-300 mb-6">
+              Discover more olympiad competitions with advanced filtering options, 
+              detailed information, and comprehensive search capabilities.
+            </p>
+            <Button
+              onClick={() => router.push('/olympiads')}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
+            >
+              View All Olympiads
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       )}
       </div>
