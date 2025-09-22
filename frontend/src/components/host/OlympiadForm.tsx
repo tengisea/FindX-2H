@@ -10,6 +10,7 @@ import {
   useCreateOlympiadMutation,
   OlympiadRankingType,
 } from "@/generated";
+import { useAlert } from "@/components/ui/alert-system";
 
 interface FormData {
   name: string;
@@ -27,7 +28,10 @@ interface OlympiadFormProps {
   classTypes: CreateClassTypeInput[];
   editingOlympiad?: any;
   onSubmit: (e: React.FormEvent) => void;
-  onUpdateFormData: (field: string, value: string | boolean | Date | undefined) => void;
+  onUpdateFormData: (
+    field: string,
+    value: string | boolean | Date | undefined
+  ) => void;
   onUpdateClassType: (index: number, field: string, value: any) => void;
   onAddClassType: () => void;
   onRemoveClassType: (index: number) => void;
@@ -60,25 +64,30 @@ export const OlympiadForm = ({
   isSubmitting,
   onRefetch,
 }: OlympiadFormProps) => {
-  const [createOlympiad, { loading: mutationLoading, error: mutationError }] = useCreateOlympiadMutation();
+  const { showSuccess, showError, showWarning } = useAlert();
+  const [createOlympiad, { loading: mutationLoading, error: mutationError }] =
+    useCreateOlympiadMutation();
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleFinalSubmit = async () => {
     // Validate required fields
     if (!formData.name || !formData.description || !formData.location) {
-      alert("Please fill in all required fields.");
+      showWarning("Please fill in all required fields.", "Validation Error");
       return;
     }
 
     if (classTypes.length === 0) {
-      alert("Please add at least one class type.");
+      showWarning("Please add at least one class type.", "Validation Error");
       return;
     }
 
     // Validate class types have questions
     for (const classType of classTypes) {
       if (classType.questions.length === 0) {
-        alert("Each class type must have at least one question.");
+        showWarning(
+          "Each class type must have at least one question.",
+          "Validation Error"
+        );
         return;
       }
     }
@@ -109,7 +118,7 @@ export const OlympiadForm = ({
       });
 
       if (result.data?.createOlympiad) {
-        alert("Olympiad created successfully!");
+        showSuccess("Olympiad created successfully!", "Success");
         onResetForm();
         setCurrentStep(1);
         // Refetch data to show the new olympiad
@@ -119,7 +128,12 @@ export const OlympiadForm = ({
       }
     } catch (error) {
       console.error("Error creating olympiad:", error);
-      alert(`Failed to create olympiad: ${error instanceof Error ? error.message : "Unknown error"}`);
+      showError(
+        `Failed to create olympiad: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+        "Creation Failed"
+      );
     }
   };
 
@@ -141,8 +155,12 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">Olympiad Information</h2>
-              <p className="text-sm text-muted-foreground">Enter the basic details for your olympiad</p>
+              <h2 className="text-xl font-bold text-foreground mb-1">
+                Olympiad Information
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Enter the basic details for your olympiad
+              </p>
             </div>
 
             <div className="space-y-4">
@@ -166,7 +184,9 @@ export const OlympiadForm = ({
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => onUpdateFormData("description", e.target.value)}
+                  onChange={(e) =>
+                    onUpdateFormData("description", e.target.value)
+                  }
                   rows={4}
                   className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm bg-background text-foreground"
                   placeholder="Describe the olympiad event..."
@@ -195,8 +215,12 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">Dates & Settings</h2>
-              <p className="text-sm text-muted-foreground">Set the dates and configuration for your olympiad</p>
+              <h2 className="text-xl font-bold text-foreground mb-1">
+                Dates & Settings
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Set the dates and configuration for your olympiad
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -230,14 +254,27 @@ export const OlympiadForm = ({
                 </label>
                 <select
                   value={formData.rankingType}
-                  onChange={(e) => onUpdateFormData("rankingType", e.target.value as OlympiadRankingType)}
+                  onChange={(e) =>
+                    onUpdateFormData(
+                      "rankingType",
+                      e.target.value as OlympiadRankingType
+                    )
+                  }
                   className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
                   required
                 >
-                  <option value={OlympiadRankingType.School}>School Level</option>
-                  <option value={OlympiadRankingType.District}>District Level</option>
-                  <option value={OlympiadRankingType.Regional}>Regional Level</option>
-                  <option value={OlympiadRankingType.National}>National Level</option>
+                  <option value={OlympiadRankingType.School}>
+                    School Level
+                  </option>
+                  <option value={OlympiadRankingType.District}>
+                    District Level
+                  </option>
+                  <option value={OlympiadRankingType.Regional}>
+                    Regional Level
+                  </option>
+                  <option value={OlympiadRankingType.National}>
+                    National Level
+                  </option>
                   <option value={OlympiadRankingType.ATier}>A Tier</option>
                   <option value={OlympiadRankingType.BTier}>B Tier</option>
                   <option value={OlympiadRankingType.CTier}>C Tier</option>
@@ -249,10 +286,15 @@ export const OlympiadForm = ({
                   type="checkbox"
                   id="invitation"
                   checked={formData.invitation}
-                  onChange={(e) => onUpdateFormData("invitation", e.target.checked)}
+                  onChange={(e) =>
+                    onUpdateFormData("invitation", e.target.checked)
+                  }
                   className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary"
                 />
-                <label htmlFor="invitation" className="text-sm font-medium text-foreground">
+                <label
+                  htmlFor="invitation"
+                  className="text-sm font-medium text-foreground"
+                >
                   Require invitation to participate
                 </label>
               </div>
@@ -264,8 +306,12 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">Class Types & Questions</h2>
-              <p className="text-sm text-muted-foreground">Configure the grade levels and questions for your olympiad</p>
+              <h2 className="text-xl font-bold text-foreground mb-1">
+                Class Types & Questions
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Configure the grade levels and questions for your olympiad
+              </p>
             </div>
 
             <ClassTypeSection
@@ -285,38 +331,61 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">Review & Submit</h2>
-              <p className="text-sm text-muted-foreground">Review your olympiad details before submitting</p>
+              <h2 className="text-xl font-bold text-foreground mb-1">
+                Review & Submit
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Review your olympiad details before submitting
+              </p>
             </div>
 
             <div className="bg-card rounded-xl p-6 border border-border">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Olympiad Summary</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Olympiad Summary
+              </h3>
 
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Name:</span>
-                  <span className="text-foreground font-medium">{formData.name}</span>
+                  <span className="text-foreground font-medium">
+                    {formData.name}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Location:</span>
-                  <span className="text-foreground font-medium">{formData.location}</span>
+                  <span className="text-foreground font-medium">
+                    {formData.location}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Registration Closes:</span>
-                  <span className="text-foreground font-medium">{formData.closeDay?.toLocaleString()}</span>
+                  <span className="text-muted-foreground">
+                    Registration Closes:
+                  </span>
+                  <span className="text-foreground font-medium">
+                    {formData.closeDay?.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Olympiad Date:</span>
-                  <span className="text-foreground font-medium">{formData.occurringDay?.toLocaleString()}</span>
+                  <span className="text-foreground font-medium">
+                    {formData.occurringDay?.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Class Types:</span>
-                  <span className="text-foreground font-medium">{classTypes.length}</span>
+                  <span className="text-foreground font-medium">
+                    {classTypes.length}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Questions:</span>
+                  <span className="text-muted-foreground">
+                    Total Questions:
+                  </span>
                   <span className="text-foreground font-medium">
-                    {classTypes.reduce((total, ct) => total + ct.questions.length, 0)}
+                    {classTypes.reduce(
+                      (total, ct) => total + ct.questions.length,
+                      0
+                    )}
                   </span>
                 </div>
               </div>

@@ -55,7 +55,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
     name: student?.name || "",
     email: student?.email || "",
     school: student?.school || "",
-    district: student?.district || "",
+    region: student?.region || "",
     province: student?.province || "",
   });
 
@@ -103,7 +103,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
         email: student.email,
         school: student.school,
         grade: formatClassYear(student.class),
-        district: student.district,
+        region: student.region,
         province: getProvinceName(student.province),
         memberSince: new Date().getFullYear(),
       },
@@ -310,13 +310,11 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   </Label>
                   <Input
                     type="text"
-                    value={
-                      isEditing ? editData.district : student?.district || ""
-                    }
+                    value={isEditing ? editData.region : student?.region || ""}
                     onChange={(e) =>
                       setEditData((prev) => ({
                         ...prev,
-                        district: e.target.value,
+                        region: e.target.value,
                       }))
                     }
                     readOnly={!isEditing}

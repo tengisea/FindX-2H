@@ -7,7 +7,7 @@ const GET_STUDENT = gql`
       name
       email
       province
-      district
+      region
       school
       class
       profilePicture
@@ -36,7 +36,7 @@ interface Student {
   name: string;
   email: string;
   province: string;
-  district: string;
+  region: string;
   school: string;
   class: string;
   profilePicture?: string;

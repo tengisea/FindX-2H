@@ -3,6 +3,7 @@
 import { useGetStudentQuery } from "@/generated";
 import { getCurrentStudentId } from "@/config/student";
 import { getProvinceName } from "@/lib/province-utils";
+import { useStudentRanking } from "@/hooks/useStudentRanking";
 
 interface StudentSidebarProps {
   activeTab:
@@ -162,6 +163,9 @@ export const StudentSidebar = ({
 }: StudentSidebarProps) => {
   const currentStudentId = studentId || getCurrentStudentId();
 
+  // Get the actual ranking placement
+  const { currentStudentRank } = useStudentRanking(currentStudentId);
+
   const {
     data: studentData,
     loading: studentLoading,
@@ -249,7 +253,7 @@ export const StudentSidebar = ({
                   {student.school} • Grade {student.class}
                 </p>
                 <p className="text-xs text-muted-foreground/80 truncate">
-                  {student.district}, {getProvinceName(student.province)}
+                  {student.region}, {getProvinceName(student.province)}
                 </p>
               </div>
             </div>
@@ -268,7 +272,7 @@ export const StudentSidebar = ({
             <div className="bg-muted rounded-xl p-3 border border-border">
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">
-                  {student.ranking || "N/A"}
+                  {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Current Ranking
@@ -354,7 +358,7 @@ export const StudentSidebar = ({
                     | "tournaments"
                     | "results"
                     | "achievements"
-                    | "settings",
+                    | "settings"
                 )
               }
               className={`w-full flex items-center justify-start space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${

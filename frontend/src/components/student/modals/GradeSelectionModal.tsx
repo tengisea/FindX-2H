@@ -77,7 +77,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20 backdrop-blur-2xl"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -266,7 +266,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                   whileTap={{ scale: 0.98 }}
                   onClick={onRegister}
                   disabled={!selectedClassType || registering}
-                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                 >
                   <Trophy className="w-5 h-5" />
                   <span>{registering ? "Registering..." : "Register"}</span>

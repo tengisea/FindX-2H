@@ -86,16 +86,25 @@ const OlympiadsTab = ({
     return Array.from(regions).sort();
   }, [olympiads]);
 
+  // Count OPEN olympiads for display
+  const openOlympiadsCount = useMemo(() => {
+    return olympiads.filter((olympiad) => olympiad.status === "OPEN").length;
+  }, [olympiads]);
+
   // Filter olympiads based on all filter criteria
   const filteredOlympiads = useMemo(() => {
     let filtered = olympiads;
 
-    // Grade filter (student's grade and higher)
+    // Status filter - only show OPEN olympiads
+    filtered = filtered.filter((olympiad) => olympiad.status === "OPEN");
+
+    // Grade filter (student's grade and higher) - students can register for their grade and higher grades
     if (!showAllGrades && student?.class) {
       const studentGrade = getGradeNumber(student.class);
       filtered = filtered.filter((olympiad) => {
         return olympiad.classtypes.some((classType: any) => {
           const classTypeGrade = getGradeNumber(classType.classYear);
+          // Students can register for their grade and higher grades
           return classTypeGrade >= studentGrade;
         });
       });
@@ -104,14 +113,14 @@ const OlympiadsTab = ({
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter((olympiad) =>
-        olympiad.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        olympiad.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Ranking type filter
     if (selectedRankingType !== "all") {
       filtered = filtered.filter(
-        (olympiad) => olympiad.rankingType === selectedRankingType,
+        (olympiad) => olympiad.rankingType === selectedRankingType
       );
     }
 
@@ -119,8 +128,8 @@ const OlympiadsTab = ({
     if (selectedGrade !== "all") {
       filtered = filtered.filter((olympiad) =>
         olympiad.classtypes.some(
-          (classType: any) => classType.classYear === selectedGrade,
-        ),
+          (classType: any) => classType.classYear === selectedGrade
+        )
       );
     }
 
@@ -323,7 +332,7 @@ const OlympiadsTab = ({
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.2 }}
                   >
-                    {filteredOlympiads.length} of {olympiads.length} olympiads
+                    {filteredOlympiads.length} of {openOlympiadsCount} olympiads
                   </motion.div>
                 </motion.div>
 
@@ -466,7 +475,7 @@ const OlympiadsTab = ({
           </motion.div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-fr"
             variants={containerVariants}
           >
             <AnimatePresence mode="popLayout">
@@ -481,14 +490,14 @@ const OlympiadsTab = ({
                   layout
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <Card className="hover:shadow-lg transition-shadow duration-200">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-3">
+                  <Card className="hover:shadow-lg transition-shadow duration-200 h-full flex flex-col">
+                    <CardContent className="p-6 flex flex-col h-full">
+                      <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h4 className="text-xl font-bold mb-1 text-primary">
+                          <h4 className="text-xl font-bold mb-2 text-primary">
                             {olympiad.name}
                           </h4>
-                          <p className="text-base mb-2 line-clamp-2 text-muted-foreground">
+                          <p className="text-base mb-3 line-clamp-3 text-muted-foreground min-h-[3.5rem]">
                             {olympiad.description}
                           </p>
                         </div>
@@ -503,7 +512,7 @@ const OlympiadsTab = ({
                         </div>
                       </div>
 
-                      <div className="space-y-2 mb-3">
+                      <div className="space-y-3 mb-4">
                         <div className="flex items-center text-sm text-muted-foreground">
                           <svg
                             className="w-4 h-4 mr-2 text-primary"
@@ -563,61 +572,74 @@ const OlympiadsTab = ({
                       </div>
 
                       {/* Class Types */}
-                      <div className="mb-3">
-                        <h5 className="text-base font-semibold mb-2 text-center text-foreground">
+                      <div className="mb-4 flex-grow">
+                        <h5 className="text-base font-semibold mb-3 text-center text-foreground">
                           Available Grades:
                         </h5>
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          {olympiad.classtypes.map((classType: any) => {
-                            const classTypeGrade = getGradeNumber(
-                              classType.classYear,
-                            );
-                            const studentGrade = student?.class
-                              ? getGradeNumber(student.class)
-                              : 0;
-                            const isStudentGrade =
-                              String(classType.classYear) ===
-                              String(student?.class);
-                            const isHigherGrade = classTypeGrade > studentGrade;
-                            const isLowerGrade = classTypeGrade < studentGrade;
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {olympiad.classtypes
+                            .filter((classType: any) => {
+                              // Only show class types that the student can register for (their grade and higher)
+                              const classTypeGrade = getGradeNumber(
+                                classType.classYear
+                              );
+                              const studentGrade = student?.class
+                                ? getGradeNumber(student.class)
+                                : 0;
+                              return classTypeGrade >= studentGrade;
+                            })
+                            .map((classType: any) => {
+                              const classTypeGrade = getGradeNumber(
+                                classType.classYear
+                              );
+                              const studentGrade = student?.class
+                                ? getGradeNumber(student.class)
+                                : 0;
+                              const isStudentGrade =
+                                String(classType.classYear) ===
+                                String(student?.class);
+                              const isHigherGrade =
+                                classTypeGrade > studentGrade;
+                              const isLowerGrade =
+                                classTypeGrade < studentGrade;
 
-                            return (
-                              <span
-                                key={classType.id}
-                                className={`px-2 py-1 rounded text-sm font-medium ${
-                                  isStudentGrade
-                                    ? "bg-primary/10 text-primary border border-primary/20"
-                                    : isHigherGrade
-                                    ? "bg-green-100 text-green-700 border border-green-200"
-                                    : isLowerGrade
-                                    ? "bg-gray-100 text-gray-500 border border-gray-200"
-                                    : "bg-muted text-muted-foreground"
-                                }`}
-                                title={
-                                  isStudentGrade
-                                    ? "Your current grade"
-                                    : isHigherGrade
-                                    ? "Higher grade (available for registration)"
-                                    : isLowerGrade
-                                    ? "Lower grade (not available for registration)"
-                                    : "Available grade"
-                                }
-                              >
-                                {classType.classYear.replace(
-                                  "GRADE_",
-                                  "Grade ",
-                                )}
-                                {isStudentGrade && " (You)"}
-                                {isHigherGrade && " ↑"}
-                                {isLowerGrade && " ↓"}
-                              </span>
-                            );
-                          })}
+                              return (
+                                <span
+                                  key={classType.id}
+                                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                                    isStudentGrade
+                                      ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                                      : isHigherGrade
+                                      ? "bg-green-100 text-green-700 border border-green-200 shadow-sm"
+                                      : isLowerGrade
+                                      ? "bg-gray-800 text-gray-200 border border-gray-700 shadow-md hover:bg-gray-700"
+                                      : "bg-muted text-muted-foreground border border-border"
+                                  }`}
+                                  title={
+                                    isStudentGrade
+                                      ? "Your current grade"
+                                      : isHigherGrade
+                                      ? "Higher grade (available for registration)"
+                                      : isLowerGrade
+                                      ? "Lower grade (not available for registration)"
+                                      : "Available grade"
+                                  }
+                                >
+                                  {classType.classYear.replace(
+                                    "GRADE_",
+                                    "Grade "
+                                  )}
+                                  {isStudentGrade && " (You)"}
+                                  {isHigherGrade && " ↑"}
+                                  {isLowerGrade && " ↓"}
+                                </span>
+                              );
+                            })}
                         </div>
                       </div>
 
                       <motion.div
-                        className="flex space-x-2"
+                        className="flex space-x-2 mt-auto pt-4"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
@@ -626,7 +648,7 @@ const OlympiadsTab = ({
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => onViewDetails(olympiad)}
-                          className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+                          className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium bg-gray-700 text-white hover:bg-gray-800"
                         >
                           View Details
                         </motion.button>
@@ -645,7 +667,7 @@ const OlympiadsTab = ({
                             whileTap={{ scale: 0.98 }}
                             onClick={() => onRegister(olympiad)}
                             disabled={registering}
-                            className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-yellow-500 text-white hover:bg-yellow-600"
+                            className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-orange-500 text-white hover:bg-orange-600"
                           >
                             {registering ? "Registering..." : "Register"}
                           </motion.button>

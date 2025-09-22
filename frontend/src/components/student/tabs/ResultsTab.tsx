@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatClassYear, safeFormatDate } from "@/lib/dateUtils";
-import {
-  useClassTypeQuery,
-} from "@/generated";
+import { useClassTypeQuery, useAllOlympiadsQuery } from "@/generated";
 import { RankingChart } from "@/components/student/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StudentAnswerModal from "@/components/student/modals/StudentAnswerModal";
 
 interface ResultsTabProps {
   student: any;
@@ -64,6 +63,22 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
   const [expandedResults, setExpandedResults] = React.useState<
     Record<string, boolean>
   >({});
+  const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Get olympiads data to find olympiad names
+  const { data: olympiadsData } = useAllOlympiadsQuery();
+
+  // Helper function to get olympiad name from classTypeId
+  const getOlympiadName = (classTypeId: string) => {
+    if (!olympiadsData?.allOlympiads) return "Olympiad Result";
+
+    const olympiad = olympiadsData.allOlympiads.find((olympiad) =>
+      olympiad.classtypes?.some((classType) => classType.id === classTypeId)
+    );
+
+    return olympiad?.name || "Olympiad Result";
+  };
 
   const handleMaxScoreChange = useCallback(
     (classTypeId: string, maxScore: number) => {
@@ -72,7 +87,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
         [classTypeId]: maxScore,
       }));
     },
-    [],
+    []
   );
 
   const toggleExpanded = (resultId: string) => {
@@ -80,6 +95,16 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
       ...prev,
       [resultId]: !prev[resultId],
     }));
+  };
+
+  const handleViewAnswerDetails = (answerId: string) => {
+    setSelectedAnswerId(answerId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedAnswerId(null);
   };
 
   return (
@@ -171,7 +196,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                         <div className="flex items-center justify-between mb-3">
                           <div>
                             <h4 className="font-semibold text-foreground">
-                              Olympiad Result
+                              {getOlympiadName(studentAnswer.classTypeId)}
                             </h4>
                             <p className="text-sm text-muted-foreground">
                               {safeFormatDate(studentAnswer.createdAt)}
@@ -232,7 +257,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                               onMaxScoreChange={(maxScore) =>
                                 handleMaxScoreChange(
                                   studentAnswer.classTypeId,
-                                  maxScore,
+                                  maxScore
                                 )
                               }
                             />
@@ -263,40 +288,77 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                           </div>
                         </div>
 
-                        {/* Interactive Details Section */}
+                        {/* Action Buttons */}
                         <div className="mt-4 pt-4 border-t border-border">
-                          <motion.button
-                            onClick={() => toggleExpanded(studentAnswer.id)}
-                            className="flex items-center justify-between w-full text-left hover:bg-muted/50 p-2 rounded-lg transition-colors"
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.99 }}
-                          >
-                            <span className="text-sm font-medium text-foreground">
-                              {expandedResults[studentAnswer.id]
-                                ? "Hide Details"
-                                : "View Answer Details"}
-                            </span>
-                            <motion.svg
-                              className="w-4 h-4 text-muted-foreground"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              animate={{
-                                rotate: expandedResults[studentAnswer.id]
-                                  ? 180
-                                  : 0,
-                              }}
-                              transition={{ duration: 0.3, ease: "easeInOut" }}
+                          <div className="flex space-x-3">
+                            <motion.button
+                              onClick={() =>
+                                handleViewAnswerDetails(studentAnswer.id)
+                              }
+                              className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors duration-200 flex items-center justify-center space-x-2"
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </motion.svg>
-                          </motion.button>
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                              <span>View Details</span>
+                            </motion.button>
+                            <motion.button
+                              onClick={() => toggleExpanded(studentAnswer.id)}
+                              className="px-4 py-2 bg-muted text-muted-foreground rounded-lg font-medium hover:bg-muted/80 transition-colors duration-200 flex items-center justify-center space-x-2"
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <motion.svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                animate={{
+                                  rotate: expandedResults[studentAnswer.id]
+                                    ? 180
+                                    : 0,
+                                }}
+                                transition={{
+                                  duration: 0.3,
+                                  ease: "easeInOut",
+                                }}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 9l-7 7-7-7"
+                                />
+                              </motion.svg>
+                              <span>
+                                {expandedResults[studentAnswer.id]
+                                  ? "Hide"
+                                  : "Quick View"}
+                              </span>
+                            </motion.button>
+                          </div>
+                        </div>
 
+                        {/* Interactive Details Section */}
+                        <div className="mt-4">
                           <AnimatePresence>
                             {expandedResults[studentAnswer.id] && (
                               <motion.div
@@ -385,7 +447,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                                   </p>
                                                 )}
                                               </motion.div>
-                                            ),
+                                            )
                                           )}
                                         </div>
                                       </motion.div>
@@ -437,8 +499,8 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                   No Results Yet
                 </h3>
                 <p className="text-muted-foreground">
-                  You haven&apos;t completed any olympiads yet. Results will appear
-                  here once you participate in olympiads.
+                  You haven&apos;t completed any olympiads yet. Results will
+                  appear here once you participate in olympiads.
                 </p>
               </div>
             )}
@@ -502,6 +564,14 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Student Answer Modal */}
+      <StudentAnswerModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        studentAnswerId={selectedAnswerId}
+        studentName={student?.name}
+      />
     </div>
   );
 };
