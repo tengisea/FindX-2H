@@ -22,7 +22,7 @@ interface MedalWinner {
   school: string;
   class: string;
   province: string;
-  district: string;
+  region: string;
 }
 
 // PDF Certificate Component
@@ -42,7 +42,7 @@ const PDFCertificate = React.forwardRef<
 >(
   (
     { name, event, rank, rankLabel, score, category, certificateId, date },
-    ref,
+    ref
   ) => {
     const rankColor =
       rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
@@ -141,7 +141,7 @@ const PDFCertificate = React.forwardRef<
         </div>
       </div>
     );
-  },
+  }
 );
 
 PDFCertificate.displayName = "PDFCertificate";
@@ -149,7 +149,7 @@ PDFCertificate.displayName = "PDFCertificate";
 const AchievementsTab = () => {
   const [selectedMedalType, setSelectedMedalType] = useState<string>("all");
   const [selectedStudent, setSelectedStudent] = useState<MedalWinner | null>(
-    null,
+    null
   );
   const [searchTerm, setSearchTerm] = useState("");
   const certificateRef = useRef<HTMLDivElement>(null);
@@ -165,7 +165,7 @@ const AchievementsTab = () => {
       (student: any) =>
         student.gold.length > 0 ||
         student.silver.length > 0 ||
-        student.bronze.length > 0,
+        student.bronze.length > 0
     ) as MedalWinner[];
   }, [studentsData]);
 
@@ -216,7 +216,7 @@ const AchievementsTab = () => {
       score,
       category: `Grade ${student.class.replace(
         "GRADE_",
-        "",
+        ""
       )} - ${getProvinceName(student.province)}`,
       completionTime: "60 minutes",
       certificateId: `CERT-${student.id.slice(-8).toUpperCase()}`,
@@ -280,8 +280,8 @@ const AchievementsTab = () => {
 
   return (
     <div className="content-wrapper container">
-      <h2 className="text-4xl font-bold mb-8 text-center text-foreground">
-        Medal Winners Hall of Fame
+      <h2 className="text-4xl font-bold mb-8 text-center text-foreground pt-10">
+        Certicate your achievements
       </h2>
 
       {/* Simple Search and Filter */}
@@ -370,13 +370,13 @@ const AchievementsTab = () => {
                     <CardTitle className="text-lg">{student.name}</CardTitle>
                     <div className="flex gap-1">
                       {student.gold.length > 0 && (
-                        <span className="text-yellow-500 font-bold">G</span>
+                        <span className="text-yellow-500 font-bold">Gold</span>
                       )}
                       {student.silver.length > 0 && (
-                        <span className="text-gray-400 font-bold">S</span>
+                        <span className="text-gray-400 font-bold">Silver</span>
                       )}
                       {student.bronze.length > 0 && (
-                        <span className="text-orange-600 font-bold">B</span>
+                        <span className="text-orange-600 font-bold">Bronze</span>
                       )}
                     </div>
                   </div>
@@ -391,7 +391,7 @@ const AchievementsTab = () => {
                       {student.class.replace("GRADE_", "")}
                     </p>
                     <p>
-                      <strong>Location:</strong> {student.district},{" "}
+                      <strong>Location:</strong> {student.region},{" "}
                       {getProvinceName(student.province)}
                     </p>
                   </div>

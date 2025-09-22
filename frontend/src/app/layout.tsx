@@ -3,6 +3,7 @@ import { Inter, Libre_Baskerville, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import { ApolloWrapper } from "@/providers/AppolloWrapper";
 import { Header } from "@/components/landingPage";
+import { AlertProvider } from "@/components/ui/alert-system";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,10 +41,12 @@ export default function RootLayout({
         <body
           className={`${inter.variable} ${libreBaskerville.variable} ${greatVibes.variable} font-sans antialiased bg-background text-foreground`}
         >
-          <div className="flex justify-end">
-            <Header />
-          </div>
-          {children}
+          <AlertProvider>
+            <div className="flex justify-end">
+              <Header />
+            </div>
+            {children}
+          </AlertProvider>
         </body>
       </ApolloWrapper>
     </html>

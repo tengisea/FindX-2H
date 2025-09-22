@@ -156,22 +156,29 @@ const OlympiadDetailsModal = ({
           <div className="mt-6 flex space-x-3">
             <button
               onClick={onClose}
-              className="flex-1 bg-muted text-muted-foreground px-4 py-2 rounded-lg hover:bg-muted/80 transition-colors duration-200"
+              className={`flex-1 px-4 py-2 rounded-lg transition-colors duration-200 ${
+                isStudentRegistered
+                  ? "bg-orange-500 text-white hover:bg-orange-600 border-0 outline-none"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+              style={
+                isStudentRegistered
+                  ? { backgroundColor: "#f97316", color: "white" }
+                  : {}
+              }
             >
               Close
             </button>
             {isStudentRegistered ? (
-              <button
-                className="flex-1 bg-muted text-muted-foreground px-4 py-2 rounded-lg cursor-not-allowed"
-                disabled
-              >
+              <button className="flex-1 bg-muted text-muted-foreground px-4 py-2 rounded-lg cursor-not-allowed border-0 outline-none">
                 Already Registered
               </button>
             ) : (
               <button
                 onClick={onRegister}
                 disabled={registering}
-                className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-0 outline-none"
+                style={{ backgroundColor: "#f97316", color: "white" }}
               >
                 Select Grade & Register
               </button>

@@ -4,7 +4,7 @@ import { RankingChart } from "@/components/student/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StudentRankingDisplay from "@/components/student/StudentRankingDisplay";
 import { getProvinceName } from "@/lib/province-utils";
-
+import { useStudentRanking } from "@/hooks/useStudentRanking";
 
 interface ProfileTabProps {
   student: any;
@@ -13,6 +13,9 @@ interface ProfileTabProps {
 }
 
 const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
+  // Get the actual ranking placement
+  const { currentStudentRank } = useStudentRanking(student?.id);
+
   if (loading) {
     return (
       <div className="content-wrapper container">
@@ -100,9 +103,9 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                     </span>
                   )}
                 </div>
-                {student.ranking && (
-                  <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                    #{student.ranking}
+                {currentStudentRank && (
+                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                    #{currentStudentRank}
                   </div>
                 )}
               </div>
@@ -291,7 +294,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-primary/10 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {student?.ranking || 0}
+                  {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
                 <div className="text-sm text-primary">Current Ranking</div>
               </div>

@@ -23,30 +23,29 @@ import {
 } from "lucide-react";
 import { useAllOlympiadsQuery } from "@/generated";
 
-
 const formatClassYear = (classYear: string | null | undefined) => {
   if (!classYear) return "Unknown";
-  
+
   // Mapping from English enum values to Mongolian display format
   const classYearMapping: { [key: string]: string } = {
-    'GRADE_1': '1р анги',
-    'GRADE_2': '2р анги',
-    'GRADE_3': '3р анги',
-    'GRADE_4': '4р анги',
-    'GRADE_5': '5р анги',
-    'GRADE_6': '6р анги',
-    'GRADE_7': '7р анги',
-    'GRADE_8': '8р анги',
-    'GRADE_9': '9р анги',
-    'GRADE_10': '10р анги',
-    'GRADE_11': '11р анги',
-    'GRADE_12': '12р анги',
-    'C_CLASS': 'C анги',
-    'D_CLASS': 'D анги',
-    'E_CLASS': 'E анги',
-    'F_CLASS': 'F анги',
+    GRADE_1: "1р анги",
+    GRADE_2: "2р анги",
+    GRADE_3: "3р анги",
+    GRADE_4: "4р анги",
+    GRADE_5: "5р анги",
+    GRADE_6: "6р анги",
+    GRADE_7: "7р анги",
+    GRADE_8: "8р анги",
+    GRADE_9: "9р анги",
+    GRADE_10: "10р анги",
+    GRADE_11: "11р анги",
+    GRADE_12: "12р анги",
+    C_CLASS: "C анги",
+    D_CLASS: "D анги",
+    E_CLASS: "E анги",
+    F_CLASS: "F анги",
   };
-  
+
   return classYearMapping[classYear] || classYear;
 };
 
@@ -68,7 +67,6 @@ export const Olympiad = () => {
 
   const { data, loading, error } = useAllOlympiadsQuery();
 
-
   const olympiads = data?.allOlympiads || [];
 
   const rankingTypes = Array.from(
@@ -77,9 +75,11 @@ export const Olympiad = () => {
 
   const filteredOlympiads =
     selectedRankingType === "all"
-      ? olympiads
+      ? olympiads.filter((olympiad) => olympiad.status === "OPEN")
       : olympiads.filter(
-          (olympiad) => olympiad.rankingType === selectedRankingType
+          (olympiad) =>
+            olympiad.rankingType === selectedRankingType &&
+            olympiad.status === "OPEN"
         );
 
   if (loading) {

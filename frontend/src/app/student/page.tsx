@@ -7,9 +7,8 @@ import {
   useGetStudentQuery,
   useAllOlympiadsQuery,
   useGetStudentsByStudentIdQuery,
+  useRegisterForOlympiadMutation,
 } from "@/generated";
-import { getCurrentStudentId } from "@/config/student";
-import { formatDate, safeFormatDate } from "@/lib/dateUtils";
 import {
   ProfileTab,
   OlympiadsTab,
@@ -22,8 +21,12 @@ import {
   OlympiadDetailsModal,
   GradeSelectionModal,
 } from "@/components/student/modals";
+import { useAlert } from "@/components/ui/alert-system";
 
 const StudentPage = () => {
+  const { showSuccess, showError } = useAlert();
+  const [registerForOlympiad, { loading: registering }] =
+    useRegisterForOlympiadMutation();
   const [activeTab, setActiveTab] = useState<
     | "profile"
     | "olympiads"
@@ -114,24 +117,27 @@ const StudentPage = () => {
 
   const handleGradeSelection = async (classType: any) => {
     try {
-      // TODO: Implement registerForOlympiad mutation
-      // await registerForOlympiad({
-      //   variables: {
-      //     input: {
-      //       studentId: studentId,
-      //       classTypeId: classType.id,
-      //       olympiadId: selectedOlympiad.id,
-      //     },
-      //   },
-      // });
+      const result = await registerForOlympiad({
+        variables: {
+          input: {
+            studentId: studentId,
+            classTypeId: classType.id,
+            olympiadId: selectedOlympiad.id,
+          },
+        },
+      });
 
-      alert("Successfully registered for the olympiad!");
-      setShowGradeSelectionModal(false);
-      setSelectedClassType(null);
-      // Optionally refresh the data
-      window.location.reload();
+      if (result.data?.registerForOlympiad) {
+        showSuccess(
+          "Successfully registered for the olympiad!",
+          "Registration Complete"
+        );
+        setShowGradeSelectionModal(false);
+        setSelectedClassType(null);
+        // Close the modal and let the user continue without refreshing
+      }
     } catch (error: any) {
-      alert(`Registration failed: ${error.message}`);
+      showError(`Registration failed: ${error.message}`, "Registration Error");
     }
   };
 
@@ -246,7 +252,7 @@ const StudentPage = () => {
           setShowDetailsModal(false);
           handleRegister(selectedOlympiad);
         }}
-        registering={false}
+        registering={registering}
       />
 
       <GradeSelectionModal
@@ -261,7 +267,7 @@ const StudentPage = () => {
         onRegister={() =>
           selectedClassType && handleGradeSelection(selectedClassType)
         }
-        registering={false}
+        registering={registering}
       />
     </div>
   );
