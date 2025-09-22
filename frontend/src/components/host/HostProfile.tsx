@@ -1,0 +1,219 @@
+"use client";
+
+import { useGetOrganizerQuery } from "@/generated";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+interface HostProfileProps {
+    organizerId: string;
+}
+
+const HostProfile = ({ organizerId }: HostProfileProps) => {
+    const { data: organizerData, loading, error } = useGetOrganizerQuery({
+        variables: { getOrganizerId: organizerId },
+        errorPolicy: 'all'
+    });
+
+    const organizer = organizerData?.getOrganizer;
+    const olympiads = organizer?.Olympiads || [];
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">Loading profile...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-destructive text-sm">
+                    Error loading profile: {error.message}
+                </p>
+            </div>
+        );
+    }
+
+    if (!organizer) {
+        return (
+            <div className="p-4 bg-muted/10 border border-muted/20 rounded-lg">
+                <p className="text-muted-foreground text-sm">No profile data available</p>
+            </div>
+        );
+    }
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'OPEN':
+                return 'bg-green-100 text-green-800 border-green-200';
+            case 'UNDER_REVIEW':
+                return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+            case 'CLOSED':
+                return 'bg-gray-100 text-gray-800 border-gray-200';
+            case 'FINISHED':
+                return 'bg-blue-100 text-blue-800 border-blue-200';
+            default:
+                return 'bg-gray-100 text-gray-800 border-gray-200';
+        }
+    };
+
+    const getStatusText = (status: string) => {
+        switch (status) {
+            case 'OPEN':
+                return 'Active';
+            case 'UNDER_REVIEW':
+                return 'Under Review';
+            case 'CLOSED':
+                return 'Closed';
+            case 'FINISHED':
+                return 'Finished';
+            default:
+                return status;
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            {/* Profile Header */}
+            <Card className="p-6">
+                <div className="flex items-start space-x-6">
+                    <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center">
+                        <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <div className="flex-1">
+                        <h2 className="text-2xl font-bold text-foreground mb-2">
+                            {organizer.organizationName}
+                        </h2>
+                        <p className="text-muted-foreground mb-4">{organizer.email}</p>
+                        <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span className="text-sm text-muted-foreground">Active Host</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="text-sm text-muted-foreground">
+                                    Member since {new Date().getFullYear()}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Card>
+
+            {/* Statistics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card className="p-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                            <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-foreground">{olympiads.length}</div>
+                            <div className="text-sm text-muted-foreground">Total Olympiads</div>
+                        </div>
+                    </div>
+                </Card>
+
+                <Card className="p-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-foreground">
+                                {olympiads.filter(o => o.status === 'OPEN').length}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Active Competitions</div>
+                        </div>
+                    </div>
+                </Card>
+
+                <Card className="p-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                            <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-foreground">
+                                {olympiads.filter(o => o.status === 'UNDER_REVIEW').length}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Pending Approvals</div>
+                        </div>
+                    </div>
+                </Card>
+
+                <Card className="p-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-foreground">
+                                {olympiads.filter(o => o.status === 'FINISHED').length}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Completed</div>
+                        </div>
+                    </div>
+                </Card>
+            </div>
+
+            {/* Recent Olympiads */}
+            <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-semibold text-foreground">Recent Olympiads</h3>
+                    <button className="text-primary hover:text-primary/80 text-sm font-medium">
+                        View All
+                    </button>
+                </div>
+
+                {olympiads.length === 0 ? (
+                    <div className="text-center py-8">
+                        <svg className="w-12 h-12 text-muted-foreground mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                        </svg>
+                        <p className="text-muted-foreground">No olympiads created yet</p>
+                        <p className="text-sm text-muted-foreground mt-1">Create your first olympiad to get started</p>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {olympiads.slice(0, 5).map((olympiad) => (
+                            <div key={olympiad.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                                <div className="flex-1">
+                                    <h4 className="font-medium text-foreground">{olympiad.name}</h4>
+                                    <p className="text-sm text-muted-foreground mt-1">{olympiad.description}</p>
+                                </div>
+                                <div className="flex items-center space-x-3">
+                                    <Badge className={getStatusColor(olympiad.status)}>
+                                        {getStatusText(olympiad.status)}
+                                    </Badge>
+                                    <button className="text-primary hover:text-primary/80 text-sm font-medium">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </Card>
+        </div>
+    );
+};
+
+export default HostProfile;
