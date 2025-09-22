@@ -26,6 +26,7 @@ import Image from "next/image";
 import { useStudentRanking } from "@/hooks/useStudentRanking";
 import { useAllOlympiadsQuery } from "@/generated";
 import { getRankingTypeDisplayName } from "@/utils/rankingUtils";
+import { mapClassToMongolian, mapClassToEnglish } from "@/utils/classUtils";
 import {
   Popover,
   PopoverContent,
@@ -85,10 +86,8 @@ const getStudentOlympiads = (student: any) => {
 
 export const StudentsRanking = () => {
   const [searchStudentsName, setSearchStudentsName] = useState("");
-  const [selectedCity, setSelectedCity] = useState("GRADE_12");
-  const [selectedOrg, setSelectedOrg] = useState("All Provinces");
-  const [selectedRankingType, setSelectedRankingType] =
-    useState("All Olympiad Types");
+  const [selectedCity, setSelectedCity] = useState("12р анги");
+  const [selectedOrg, setSelectedOrg] = useState("Бүх аймаг");
   const [selectedOlympiads, setSelectedOlympiads] = useState<any[]>([]);
   const [displayCount, setDisplayCount] = useState(10);
 
@@ -171,29 +170,16 @@ export const StudentsRanking = () => {
       const matchesName = user.name
         ?.toLowerCase()
         .includes(searchStudentsName.toLowerCase());
+
+      // Convert user's class to Mongolian for comparison
+      const userClassMongolian = mapClassToMongolian(user.class);
       const matchesClass =
-        selectedCity === "All Classes" || user.class === selectedCity;
+        selectedCity === "Бүх анги" || userClassMongolian === selectedCity;
+
       const matchesProvince =
-        selectedOrg === "All Provinces" || user.province === selectedOrg;
+        selectedOrg === "Бүх аймаг" || user.province === selectedOrg;
 
-      // Filter by Olympiad ranking type
-      const matchesRankingType =
-        selectedRankingType === "All Olympiad Types" ||
-        (() => {
-          if (!allOlympiadsData?.allOlympiads) return true;
-
-          const userOlympiadIds = getStudentOlympiads(user);
-          return userOlympiadIds.some((olympiadId: any) => {
-            const olympiad = allOlympiadsData.allOlympiads.find(
-              (o: any) => o.id === olympiadId
-            );
-            return olympiad?.rankingType === selectedRankingType;
-          });
-        })();
-
-      return (
-        matchesName && matchesClass && matchesProvince && matchesRankingType
-      );
+      return matchesName && matchesClass && matchesProvince;
     })
     .sort((a, b) => b.totalMedals - a.totalMedals); // Sort by points (total medals) descending
 
@@ -203,20 +189,11 @@ export const StudentsRanking = () => {
   const medalStats = getMedalStats(filteredUsers);
 
   const uniqueClasses = Array.from(
-    new Set(allStudents.map((student) => student.class))
+    new Set(allStudents.map((student) => mapClassToMongolian(student.class)))
   ).filter(Boolean);
   const uniqueProvinces = Array.from(
     new Set(allStudents.map((student) => student.province))
   ).filter(Boolean);
-
-  // Get unique ranking types from all olympiads
-  const uniqueRankingTypes = Array.from(
-    new Set(
-      allOlympiadsData?.allOlympiads
-        ?.map((olympiad: any) => olympiad.rankingType)
-        .filter(Boolean)
-    )
-  );
 
   return (
     <div className=" bg-white p-6">
@@ -269,10 +246,10 @@ export const StudentsRanking = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-white text-black border border-gray-300">
                   <SelectItem
-                    value="All Classes"
+                    value="Бүх анги"
                     className="text-black focus:bg-[#ff8300]"
                   >
-                    All Classes
+                    Бүх анги
                   </SelectItem>
                   {uniqueClasses.map((className) => (
                     <SelectItem
@@ -301,10 +278,10 @@ export const StudentsRanking = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-white text-black border border-gray-300">
                   <SelectItem
-                    value="All Provinces"
+                    value="Бүх аймаг"
                     className="text-black focus:bg-[#ff8300]"
                   >
-                    All Provinces
+                    Бүх аймаг
                   </SelectItem>
                   {uniqueProvinces.map((province) => (
                     <SelectItem
@@ -313,38 +290,6 @@ export const StudentsRanking = () => {
                       className="text-black focus:bg-[#ff8300]"
                     >
                       {province}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4" />
-              <Select
-                value={selectedRankingType}
-                onValueChange={(value) => {
-                  setSelectedRankingType(value);
-                  setDisplayCount(10); // Reset display count when filter changes
-                }}
-              >
-                <SelectTrigger className="w-48 bg-white text-black border border-gray-300">
-                  <SelectValue placeholder="Select olympiad type" />
-                </SelectTrigger>
-                <SelectContent className="bg-white text-black border border-gray-300">
-                  <SelectItem
-                    value="All Olympiad Types"
-                    className="text-black focus:bg-[#ff8300]"
-                  >
-                    All Olympiad Types
-                  </SelectItem>
-                  {uniqueRankingTypes.map((rankingType) => (
-                    <SelectItem
-                      key={rankingType}
-                      value={rankingType}
-                      className="text-black focus:bg-[#ff8300]"
-                    >
-                      {getRankingTypeDisplayName(rankingType)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -438,7 +383,8 @@ export const StudentsRanking = () => {
                             {user.name}
                           </span>
                           <span className="text-gray-500 text-sm">
-                            {user.class || "Grade Unknown"}
+                            {mapClassToMongolian(user.class) ||
+                              "Анги тодорхойгүй"}
                           </span>
                         </div>
                       </div>
