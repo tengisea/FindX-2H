@@ -17,6 +17,7 @@ import {
   AchievementsTab,
   SettingsTab,
 } from "@/components/student/tabs";
+import { MandatDisplay } from "@/components/student/mandat";
 import {
   OlympiadDetailsModal,
   GradeSelectionModal,
@@ -34,6 +35,7 @@ const StudentPage = () => {
     | "tournaments"
     | "results"
     | "achievements"
+    | "mandats"
     | "settings"
   >("profile");
   const [selectedOlympiad, setSelectedOlympiad] = useState<any>(null);
@@ -58,6 +60,11 @@ const StudentPage = () => {
       ariaLabel: "View your achievements",
       link: "#achievements",
     },
+    {
+      label: "Mandats",
+      ariaLabel: "View your registration mandats",
+      link: "#mandats",
+    },
     { label: "Settings", ariaLabel: "Manage your settings", link: "#settings" },
   ];
 
@@ -74,6 +81,7 @@ const StudentPage = () => {
         "participated",
         "results",
         "achievements",
+        "mandats",
         "settings",
       ].includes(tab)
     ) {
@@ -201,6 +209,8 @@ const StudentPage = () => {
 
       case "achievements":
         return <AchievementsTab />;
+      case "mandats":
+        return <MandatDisplay studentId={studentId} />;
       case "settings":
         return <SettingsTab student={student} loading={studentLoading} />;
       default:

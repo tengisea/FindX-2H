@@ -11,8 +11,7 @@ import { ReactNode } from "react";
 import { setContext } from "@apollo/client/link/context";
 
 const backendUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  "http://localhost:8000/api/graphql";
+  process.env.NEXT_PUBLIC_BACKEND_UR || "http://localhost:8000/api/graphql";
 console.log("🔧 Apollo Client Backend URL:", backendUrl);
 
 const httpLink = createHttpLink({
