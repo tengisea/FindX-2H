@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Calendar, 
-  MapPin, 
-  Building2, 
-  Trophy, 
-  Award, 
+import {
+  Calendar,
+  MapPin,
+  Building2,
+  Trophy,
+  Award,
   Eye,
   Users
 } from 'lucide-react';
@@ -101,12 +101,12 @@ export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCar
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.3, delay: index * 0.05 }
     },
-    hover: { 
+    hover: {
       scale: 1.02,
       transition: { duration: 0.2 }
     }
@@ -143,12 +143,12 @@ export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCar
               <Calendar className="h-4 w-4 text-blue-500" />
               <span>{formatDate(olympiad.occurringDay)}</span>
             </div>
-            
+
             <div className="flex items-center gap-3 text-sm text-gray-600">
               <MapPin className="h-4 w-4 text-green-500" />
               <span className="line-clamp-1">{olympiad.location || 'Location TBD'}</span>
             </div>
-            
+
             <div className="flex items-center gap-3 text-sm text-gray-600">
               <Building2 className="h-4 w-4 text-purple-500" />
               <span className="line-clamp-1">{olympiad.organizer?.organizationName || 'Unknown Organizer'}</span>

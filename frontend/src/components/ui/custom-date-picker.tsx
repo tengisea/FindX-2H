@@ -11,6 +11,34 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+// Mongolian date formatting function
+const formatDateMongolian = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Mongolian month names
+    const monthNames = [
+        "1-р сар",
+        "2-р сар",
+        "3-р сар",
+        "4-р сар",
+        "5-р сар",
+        "6-р сар",
+        "7-р сар",
+        "8-р сар",
+        "9-р сар",
+        "10-р сар",
+        "11-р сар",
+        "12-р сар",
+    ];
+
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    return `${year} оны ${monthNames[month - 1]} ${day}-ны өдөр ${formattedTime} цагт`;
+};
+
 interface CustomDateTimePickerProps {
     value?: Date
     onChange?: (date: Date | undefined) => void
@@ -54,6 +82,8 @@ export function CustomDateTimePicker({
         } else {
             onChange?.(undefined)
         }
+        // Close the popover after date selection
+        setOpen(false)
     }
 
     const handleTimeChange = (time: string) => {
@@ -64,6 +94,10 @@ export function CustomDateTimePicker({
             newDate.setHours(hours, minutes, 0, 0)
             onChange?.(newDate)
         }
+    }
+
+    const handleClose = () => {
+        setOpen(false)
     }
 
     return (
@@ -80,7 +114,7 @@ export function CustomDateTimePicker({
                         disabled={disabled}
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {value ? format(value, "PPP 'at' p") : placeholder}
+                        {value ? formatDateMongolian(value) : placeholder}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0 bg-white" align="start">
@@ -94,7 +128,7 @@ export function CustomDateTimePicker({
                         />
                         <div className="space-y-2">
                             <Label htmlFor="time" className="text-sm font-medium text-gray-900">
-                                Time
+                                Цаг
                             </Label>
                             <div className="flex items-center space-x-2">
                                 <Clock className="h-4 w-4 text-gray-600" />
@@ -106,6 +140,15 @@ export function CustomDateTimePicker({
                                     className="flex-1 bg-white border-gray-200 text-gray-900 focus:outline-none"
                                 />
                             </div>
+                        </div>
+                        <div className="flex justify-end pt-2 border-t">
+                            <Button
+                                onClick={handleClose}
+                                size="sm"
+                                className="bg-[#FF8400] hover:bg-[#FF8400]/90 text-white"
+                            >
+                                Болсон
+                            </Button>
                         </div>
                     </div>
                 </PopoverContent>

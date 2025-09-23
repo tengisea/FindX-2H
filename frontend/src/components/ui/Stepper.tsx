@@ -27,6 +27,8 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
     currentStep: number;
     onStepClick: (clicked: number) => void;
   }) => ReactNode;
+  validateStep?: (step: number) => Promise<boolean> | boolean;
+  validationErrors?: { [step: number]: string };
 }
 
 export default function Stepper({
@@ -44,10 +46,13 @@ export default function Stepper({
   nextButtonText = "Continue",
   disableStepIndicators = false,
   renderStepIndicator,
+  validateStep,
+  validationErrors = {},
   ...rest
 }: StepperProps) {
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [direction, setDirection] = useState<number>(0);
+  const [isValidating, setIsValidating] = useState<boolean>(false);
   const stepsArray = Children.toArray(children);
   const totalSteps = stepsArray.length;
   const isCompleted = currentStep > totalSteps;
@@ -69,10 +74,25 @@ export default function Stepper({
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isLastStep) {
-      setDirection(1);
-      updateStep(currentStep + 1);
+      if (validateStep) {
+        setIsValidating(true);
+        try {
+          const isValid = await validateStep(currentStep);
+          if (isValid) {
+            setDirection(1);
+            updateStep(currentStep + 1);
+          }
+        } catch (error) {
+          console.error('Validation error:', error);
+        } finally {
+          setIsValidating(false);
+        }
+      } else {
+        setDirection(1);
+        updateStep(currentStep + 1);
+      }
     }
   };
 
@@ -134,6 +154,7 @@ export default function Stepper({
           {stepsArray[currentStep - 1]}
         </StepContentWrapper>
 
+
         {!isCompleted && (
           <div className={`px-6 pb-6 ${footerClassName}`}>
             <div
@@ -154,10 +175,11 @@ export default function Stepper({
               )}
               <button
                 onClick={isLastStep ? handleComplete : handleNext}
-                className="duration-350 flex items-center justify-center rounded-full bg-[#FF8400] py-1.5 px-3.5 font-medium tracking-tight text-white transition hover:opacity-60 active:opacity-50"
+                disabled={isValidating || nextButtonProps.disabled}
+                className="duration-350 flex items-center justify-center rounded-full bg-[#FF8400] py-1.5 px-3.5 font-medium tracking-tight text-white transition hover:opacity-60 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 {...nextButtonProps}
               >
-                {isLastStep ? "Complete" : nextButtonText}
+                {isValidating ? "Шалгаж байна..." : (isLastStep ? "Үүсгэх" : nextButtonText)}
               </button>
             </div>
           </div>

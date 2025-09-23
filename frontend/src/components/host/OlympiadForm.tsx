@@ -68,6 +68,147 @@ export const OlympiadForm = ({
   const [createOlympiad, { loading: mutationLoading, error: mutationError }] =
     useCreateOlympiadMutation();
   const [currentStep, setCurrentStep] = useState(1);
+  const [validationErrors, setValidationErrors] = useState<{ [step: number]: string }>({});
+  const [fieldErrors, setFieldErrors] = useState<{ [field: string]: string }>({});
+
+  // Validation functions for each step
+  const validateStep1 = (): boolean => {
+    const errors: string[] = [];
+    const newFieldErrors: { [field: string]: string } = {};
+
+    if (!formData.name?.trim()) {
+      errors.push("Олимпиадын нэр заавал оруулах ёстой");
+      newFieldErrors.name = "Олимпиадын нэр заавал оруулах ёстой";
+    }
+
+    if (!formData.description?.trim()) {
+      errors.push("Дэлгэрэнгүй тайлбар заавал оруулах ёстой");
+      newFieldErrors.description = "Дэлгэрэнгүй тайлбар заавал оруулах ёстой";
+    }
+
+    if (!formData.location?.trim()) {
+      errors.push("Байршил заавал оруулах ёстой");
+      newFieldErrors.location = "Байршил заавал оруулах ёстой";
+    }
+
+    if (errors.length > 0) {
+      setValidationErrors({ ...validationErrors, 1: errors.join(", ") });
+      setFieldErrors({ ...fieldErrors, ...newFieldErrors });
+      return false;
+    }
+
+    // Clear validation errors for this step
+    const newErrors = { ...validationErrors };
+    delete newErrors[1];
+    setValidationErrors(newErrors);
+
+    // Clear field errors for step 1 fields
+    const clearedFieldErrors = { ...fieldErrors };
+    delete clearedFieldErrors.name;
+    delete clearedFieldErrors.description;
+    delete clearedFieldErrors.location;
+    setFieldErrors(clearedFieldErrors);
+    return true;
+  };
+
+  const validateStep2 = (): boolean => {
+    const errors: string[] = [];
+    const newFieldErrors: { [field: string]: string } = {};
+
+    console.log("Validating Step 2:", { closeDay: formData.closeDay, occurringDay: formData.occurringDay });
+
+    // Only validate if dates are set - make this step optional for now
+    // Check if closeDay is in the future (only if it's set)
+    if (formData.closeDay && formData.closeDay <= new Date()) {
+      errors.push("Бүртгэл хаагдах огноо ирээдүйд байх ёстой");
+      newFieldErrors.closeDay = "Бүртгэл хаагдах огноо ирээдүйд байх ёстой";
+    }
+
+    // Check if occurringDay is after closeDay (only if both are set)
+    if (formData.closeDay && formData.occurringDay && formData.occurringDay <= formData.closeDay) {
+      errors.push("Олимпиадын болох огноо бүртгэл хаагдах огнооноос хойш байх ёстой");
+      newFieldErrors.occurringDay = "Олимпиадын болох огноо бүртгэл хаагдах огнооноос хойш байх ёстой";
+    }
+
+    console.log("Step 2 validation errors:", errors);
+
+    if (errors.length > 0) {
+      setValidationErrors({ ...validationErrors, 2: errors.join(", ") });
+      setFieldErrors({ ...fieldErrors, ...newFieldErrors });
+      return false;
+    }
+
+    // Clear validation errors for this step
+    const newErrors = { ...validationErrors };
+    delete newErrors[2];
+    setValidationErrors(newErrors);
+
+    // Clear field errors for step 2 fields
+    const clearedFieldErrors = { ...fieldErrors };
+    delete clearedFieldErrors.closeDay;
+    delete clearedFieldErrors.occurringDay;
+    setFieldErrors(clearedFieldErrors);
+    return true;
+  };
+
+  const validateStep3 = (): boolean => {
+    const errors: string[] = [];
+
+    if (classTypes.length === 0) {
+      errors.push("Дор хаяж нэг ангийн төрөл нэмэх ёстой");
+    } else {
+      // Check each class type has at least one question
+      for (let i = 0; i < classTypes.length; i++) {
+        const classType = classTypes[i];
+        if (!classType.classYear) {
+          errors.push(`${i + 1}-р ангийн төрлийн анги сонгох ёстой`);
+        }
+        if (classType.questions.length === 0) {
+          const classYearName = classType.classYear ? `${classType.classYear} ангид` : `${i + 1}-р ангийн төрөлд`;
+          errors.push(`${classYearName} дор хаяж нэг асуулт нэмэх ёстой`);
+        }
+      }
+    }
+
+    if (errors.length > 0) {
+      setValidationErrors({ ...validationErrors, 3: errors.join(", ") });
+      return false;
+    }
+
+    // Clear validation error for this step
+    const newErrors = { ...validationErrors };
+    delete newErrors[3];
+    setValidationErrors(newErrors);
+    return true;
+  };
+
+  const validateStep = async (step: number): Promise<boolean> => {
+    switch (step) {
+      case 1:
+        return validateStep1();
+      case 2:
+        return validateStep2();
+      case 3:
+        return validateStep3();
+      default:
+        return true;
+    }
+  };
+
+  // Clear validation errors when user makes changes
+  const clearValidationError = (step: number, field?: string) => {
+    if (validationErrors[step]) {
+      const newErrors = { ...validationErrors };
+      delete newErrors[step];
+      setValidationErrors(newErrors);
+    }
+
+    if (field && fieldErrors[field]) {
+      const newFieldErrors = { ...fieldErrors };
+      delete newFieldErrors[field];
+      setFieldErrors(newFieldErrors);
+    }
+  };
 
   const handleFinalSubmit = async () => {
     // Validate required fields
@@ -149,6 +290,8 @@ export const OlympiadForm = ({
         nextButtonProps={{
           disabled: mutationLoading,
         }}
+        validateStep={validateStep}
+        validationErrors={validationErrors}
       >
         {/* Step 1: Basic Information */}
         <Step>
@@ -170,12 +313,22 @@ export const OlympiadForm = ({
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => onUpdateFormData("name", e.target.value)}
-                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${formData.name ? 'bg-gray-100' : 'bg-gray-300'
+                  onChange={(e) => {
+                    onUpdateFormData("name", e.target.value);
+                    clearValidationError(1, "name");
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${fieldErrors.name
+                    ? 'border-red-300 bg-red-50'
+                    : formData.name
+                      ? 'border-gray-200 bg-gray-100'
+                      : 'border-gray-200 bg-gray-300'
                     }`}
                   placeholder="Олимпиадын нэр оруулна уу"
                   required
                 />
+                {fieldErrors.name && (
+                  <p className="text-red-500 text-sm mt-1 pl-1">{fieldErrors.name}</p>
+                )}
               </div>
 
               <div>
@@ -184,15 +337,23 @@ export const OlympiadForm = ({
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) =>
-                    onUpdateFormData("description", e.target.value)
-                  }
+                  onChange={(e) => {
+                    onUpdateFormData("description", e.target.value);
+                    clearValidationError(1, "description");
+                  }}
                   rows={4}
-                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl resize-none text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${formData.description ? 'bg-gray-100' : 'bg-gray-300'
+                  className={`w-full px-4 py-3 border rounded-xl resize-none text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${fieldErrors.description
+                    ? 'border-red-300 bg-red-50'
+                    : formData.description
+                      ? 'border-gray-200 bg-gray-100'
+                      : 'border-gray-200 bg-gray-300'
                     }`}
                   placeholder="Олимпиадын тайлбар оруулна уу"
                   required
                 />
+                {fieldErrors.description && (
+                  <p className="text-red-500 text-sm mt-1 pl-1">{fieldErrors.description}</p>
+                )}
               </div>
 
               <div>
@@ -202,12 +363,22 @@ export const OlympiadForm = ({
                 <input
                   type="text"
                   value={formData.location}
-                  onChange={(e) => onUpdateFormData("location", e.target.value)}
-                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${formData.location ? 'bg-gray-100' : 'bg-gray-300'
+                  onChange={(e) => {
+                    onUpdateFormData("location", e.target.value);
+                    clearValidationError(1, "location");
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${fieldErrors.location
+                    ? 'border-red-300 bg-red-50'
+                    : formData.location
+                      ? 'border-gray-200 bg-gray-100'
+                      : 'border-gray-200 bg-gray-300'
                     }`}
                   placeholder="Олимпиадын байршил оруулна уу"
                   required
                 />
+                {fieldErrors.location && (
+                  <p className="text-red-500 text-sm mt-1 pl-1">{fieldErrors.location}</p>
+                )}
               </div>
             </div>
           </div>
@@ -232,9 +403,15 @@ export const OlympiadForm = ({
                 </label>
                 <CustomDateTimePicker
                   value={formData.closeDay}
-                  onChange={(date) => onUpdateFormData("closeDay", date)}
+                  onChange={(date) => {
+                    onUpdateFormData("closeDay", date);
+                    clearValidationError(2, "closeDay");
+                  }}
                   placeholder="Бүртгэл хаагдах огноо сонгоно уу"
                 />
+                {fieldErrors.closeDay && (
+                  <p className="text-red-500 text-sm mt-1 pl-1">{fieldErrors.closeDay}</p>
+                )}
               </div>
 
               <div>
@@ -243,9 +420,15 @@ export const OlympiadForm = ({
                 </label>
                 <CustomDateTimePicker
                   value={formData.occurringDay}
-                  onChange={(date) => onUpdateFormData("occurringDay", date)}
+                  onChange={(date) => {
+                    onUpdateFormData("occurringDay", date);
+                    clearValidationError(2, "occurringDay");
+                  }}
                   placeholder="Олимпиадын болох огноо сонгоно уу"
                 />
+                {fieldErrors.occurringDay && (
+                  <p className="text-red-500 text-sm mt-1 pl-1">{fieldErrors.occurringDay}</p>
+                )}
               </div>
             </div>
 
@@ -266,20 +449,20 @@ export const OlympiadForm = ({
                   required
                 >
                   <option value={OlympiadRankingType.School}>
-                    School Level
+                    Сургууль
                   </option>
                   <option value={OlympiadRankingType.District}>
-                    District Level
+                    Аймаг/Дүүрэг
                   </option>
                   <option value={OlympiadRankingType.Regional}>
-                    Regional Level
+                    Бүс
                   </option>
                   <option value={OlympiadRankingType.National}>
-                    National Level
+                    Улс
                   </option>
-                  <option value={OlympiadRankingType.ATier}>A Tier</option>
-                  <option value={OlympiadRankingType.BTier}>B Tier</option>
-                  <option value={OlympiadRankingType.CTier}>C Tier</option>
+                  <option value={OlympiadRankingType.ATier}>A зэрэглэл</option>
+                  <option value={OlympiadRankingType.BTier}>B зэрэглэл</option>
+                  <option value={OlympiadRankingType.CTier}>C зэрэглэл</option>
                 </select>
               </div>
 
@@ -339,60 +522,43 @@ export const OlympiadForm = ({
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-gray-200 relative overflow-hidden pl-1"
-              style={{
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-              }}>
-              {/* Notebook margin line */}
-              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-b from-red-200 to-red-300 opacity-30"></div>
-              <div className="absolute left-6 top-0 bottom-0 w-px bg-red-300 opacity-50"></div>
+            <div className="bg-white rounded-xl p-6 border border-gray-200 relative overflow-hidden pl-1">
 
               <h3 className="text-lg font-semibold text-gray-900 mb-4 pl-1">
-                Olympiad Summary
+                Хянах самбар
               </h3>
 
               <div className="space-y-3 pl-1">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Name:</span>
+                  <span className="text-gray-600">Олимпиадын нэр:</span>
                   <span className="text-gray-900 font-medium">
                     {formData.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Location:</span>
+                  <span className="text-gray-600">Байршил:</span>
                   <span className="text-gray-900 font-medium">
                     {formData.location}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">
-                    Registration Closes:
+                    Бүртгэл хаагдах огноо:
                   </span>
                   <span className="text-gray-900 font-medium">
                     {formData.closeDay?.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Olympiad Date:</span>
+                  <span className="text-gray-600">Олимпиадын болох огноо:</span>
                   <span className="text-gray-900 font-medium">
                     {formData.occurringDay?.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Class Types:</span>
+                  <span className="text-gray-600">Ангилал:</span>
                   <span className="text-gray-900 font-medium">
                     {classTypes.length}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">
-                    Total Questions:
-                  </span>
-                  <span className="text-gray-900 font-medium">
-                    {classTypes.reduce(
-                      (total, ct) => total + ct.questions.length,
-                      0
-                    )}
                   </span>
                 </div>
               </div>
