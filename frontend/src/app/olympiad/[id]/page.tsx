@@ -142,8 +142,8 @@ export default function OlympiadDetailsPage() {
     );
   }
 
-  // Get unique class types from students
-  const availableClassTypes = [...new Set(students.map(student => student.class).filter(Boolean))];
+  // Get unique class types from olympiad's classtypes instead of students
+  const availableClassTypes = olympiad?.classtypes?.map(classType => classType.classYear).filter(Boolean) || [];
 
   // Sort class types by grade level
   const sortedClassTypes = availableClassTypes.sort((a, b) => {
@@ -166,16 +166,31 @@ export default function OlympiadDetailsPage() {
 
   // Filter students by selected class type and sort by medals
   const filteredStudents = selectedClassType
-    ? students.filter(student => student.class === selectedClassType)
+    ? students.filter(student => student.class === selectedClassType as any)
     : [];
 
   const sortedStudents = [...filteredStudents].sort((a, b) => {
     if (olympiad?.status === "FINISHED") {
-      // Sort by medals for finished olympiads
-      const medalPriority = { GOLD: 1, SILVER: 2, BRONZE: 3, NONE: 4 };
-      const aMedal = (a.gold && a.gold.length > 0) ? "GOLD" : (a.silver && a.silver.length > 0) ? "SILVER" : (a.bronze && a.bronze.length > 0) ? "BRONZE" : "NONE";
-      const bMedal = (b.gold && b.gold.length > 0) ? "GOLD" : (b.silver && b.silver.length > 0) ? "SILVER" : (b.bronze && b.bronze.length > 0) ? "BRONZE" : "NONE";
-      return medalPriority[aMedal] - medalPriority[bMedal];
+      // Sort by medals using olympiad's class type medal assignments
+      const currentClassType = olympiad?.classtypes?.find(ct => ct.classYear === selectedClassType);
+      
+      if (currentClassType) {
+        const medalPriority = { GOLD: 1, SILVER: 2, BRONZE: 3, NONE: 4 };
+        
+        // Check if student is in olympiad's medal lists
+        const aMedal = currentClassType.gold?.includes(a.id) ? "GOLD" : 
+                      currentClassType.silver?.includes(a.id) ? "SILVER" : 
+                      currentClassType.bronze?.includes(a.id) ? "BRONZE" : "NONE";
+        
+        const bMedal = currentClassType.gold?.includes(b.id) ? "GOLD" : 
+                      currentClassType.silver?.includes(b.id) ? "SILVER" : 
+                      currentClassType.bronze?.includes(b.id) ? "BRONZE" : "NONE";
+        
+        return medalPriority[aMedal] - medalPriority[bMedal];
+      }
+      
+      // Fallback to ranking if no class type found
+      return (a.ranking || 0) - (b.ranking || 0);
     } else {
       // Sort by ranking for non-finished olympiads
       return (a.ranking || 0) - (b.ranking || 0);
@@ -186,9 +201,15 @@ export default function OlympiadDetailsPage() {
     // Only show medals for finished olympiads
     if (olympiad?.status !== "FINISHED") return "NONE";
 
-    if (student.gold && student.gold.length > 0) return "GOLD";
-    if (student.silver && student.silver.length > 0) return "SILVER";
-    if (student.bronze && student.bronze.length > 0) return "BRONZE";
+    // Use olympiad's class type medal assignments instead of student's individual medals
+    const currentClassType = olympiad?.classtypes?.find(ct => ct.classYear === selectedClassType);
+    
+    if (currentClassType) {
+      if (currentClassType.gold?.includes(student.id)) return "GOLD";
+      if (currentClassType.silver?.includes(student.id)) return "SILVER";
+      if (currentClassType.bronze?.includes(student.id)) return "BRONZE";
+    }
+    
     return "NONE";
   };
 
@@ -283,7 +304,7 @@ export default function OlympiadDetailsPage() {
                 <div>
                   <p className="text-sm text-gray-500">Оролцогчдын тоо</p>
                   <p className="font-semibold text-black">
-                    {studentsLoading ? "Loading..." : students.length}
+                    {studentsLoading ? "Loading..." : selectedClassType ? filteredStudents.length : students.length}
                   </p>
                 </div>
               </div>
@@ -311,10 +332,10 @@ export default function OlympiadDetailsPage() {
               </div>
 
               {/* Class Type Tabs */}
-              {students.length > 0 && (
+              {sortedClassTypes.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {sortedClassTypes.map((classType) => {
-                    const studentsInClass = students.filter(student => student.class === classType);
+                    const studentsInClass = students.filter(student => student.class === classType as any);
                     return (
                       <button
                         key={classType}
