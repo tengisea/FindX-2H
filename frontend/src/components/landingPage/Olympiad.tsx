@@ -50,11 +50,11 @@ const formatClassYear = (classYear: string | null | undefined) => {
 const formatDate = (dateString: string) => {
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString("mn-MN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    // Use a consistent format that works the same on server and client
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year} оны ${month} сарын ${day}`;
   } catch (error) {
     return dateString;
   }
@@ -160,10 +160,10 @@ export const Olympiad = () => {
     <div className="px-6 pt-16 pb-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-black mb-4">
             Олимпиадуудын мэдээлэл
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-black max-w-2xl mx-auto">
             Академик тэмцээнүүдэд оролцож, шилдэг оюутнуудтай өрсөлдөн ур
             чадвараа харуул
           </p>
@@ -196,7 +196,7 @@ export const Olympiad = () => {
         </div>
 
         {filteredOlympiads.length === 0 ? (
-          <div className="text-center py-16">
+          <div className="text-center py-16 ">
             <div className="bg-white rounded-2xl p-8 max-w-md mx-auto shadow-lg">
               <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center">
                 <Trophy className="w-8 h-8 text-orange-500" />
@@ -245,10 +245,10 @@ export const Olympiad = () => {
                   </div>
 
                   <div className="p-6 flex-grow">
-                    <CardTitle className="text-2xl font-bold text-gray-900 mb-3">
+                    <CardTitle className="text-2xl font-bold text-black mb-3">
                       {olympiad.name}
                     </CardTitle>
-                    <CardDescription className="text-gray-600 leading-relaxed mb-6">
+                    <CardDescription className="text-black leading-relaxed mb-6">
                       {displayDescription}
                       {shouldTruncate && (
                         <button
@@ -262,19 +262,19 @@ export const Olympiad = () => {
 
                     <div className="grid grid-cols-2 gap-4 mb-6">
                       <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-2 text-sm text-black">
                           <Calendar className="w-4 h-4 text-orange-500" />
                           <span className="font-medium">Олимпиадын огноо</span>
                         </div>
-                        <div className="text-gray-900 font-semibold">
+                        <div className="text-black font-semibold">
                           {formatDate(olympiad.occurringDay)}
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-3">
+                        <div className="flex items-center gap-2 text-sm text-black mt-3">
                           <Trophy className="w-4 h-4 text-orange-500" />
                           <span className="font-medium">Анги</span>
                         </div>
-                        <div className="text-gray-900 font-semibold">
+                        <div className="text-black font-semibold">
                           {olympiad.classtypes
                             .map((classtype) =>
                               formatClassYear(classtype.classYear)
@@ -284,19 +284,19 @@ export const Olympiad = () => {
                       </div>
 
                       <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-2 text-sm text-black">
                           <MapPin className="w-4 h-4 text-orange-500" />
                           <span className="font-medium">Байршил</span>
                         </div>
-                        <div className="text-gray-900 font-semibold">
+                        <div className="text-black font-semibold">
                           {olympiad.location}
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-3">
+                        <div className="flex items-center gap-2 text-sm text-black mt-3">
                           <Clock className="w-4 h-4 text-orange-500" />
                           <span className="font-medium">Бүртгүүлэх огноо</span>
                         </div>
-                        <div className="text-gray-900 font-semibold">
+                        <div className="text-black font-semibold">
                           {formatDate(olympiad.closeDay)}
                         </div>
                       </div>
@@ -324,7 +324,7 @@ export const Olympiad = () => {
         <div className="text-center mt-12">
           <Button
             onClick={() => router.push("/olympiads")}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
+            className="bg-white  text-black border border-black   flex items-center gap-2 mx-auto"
           >
             Бүх олимпиадууд үзэх
             <ArrowRight className="w-4 h-4" />

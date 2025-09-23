@@ -226,7 +226,7 @@ export const StudentsRanking = () => {
               placeholder="Сурагчын нэрээр хайх"
               value={searchStudentsName}
               onChange={handleChangeSearch}
-              className=" pl-10  text-black border-black focus:outline-none focus:border-orange-500 "
+              className=" pl-10  text-black border-gray-300 focus:outline-none focus:border-orange-500 "
             />
           </div>
 
@@ -240,10 +240,10 @@ export const StudentsRanking = () => {
                   setDisplayCount(10);
                 }}
               >
-                <SelectTrigger className="w-48 text-black border-black">
+                <SelectTrigger className="w-48 text-black border-gray-300">
                   <SelectValue placeholder="Анги сонгох" />
                 </SelectTrigger>
-                <SelectContent className="text-black border-black">
+                <SelectContent className="text-black border-gray-300">
                   <SelectItem
                     value="Бүх анги"
                     className="text-black focus:bg-[#ff8300]"
@@ -272,10 +272,10 @@ export const StudentsRanking = () => {
                   setDisplayCount(10);
                 }}
               >
-                <SelectTrigger className="w-48 text-black border-black">
+                <SelectTrigger className="w-48 text-black border-gray-300">
                   <SelectValue placeholder="Аймаг сонгох" />
                 </SelectTrigger>
-                <SelectContent className="text-black border-black">
+                <SelectContent className="text-black border-gray-300">
                   <SelectItem
                     value="Бүх аймаг"
                     className="text-black focus:bg-[#ff8300]"
@@ -297,10 +297,10 @@ export const StudentsRanking = () => {
           </div>
         </div>
 
-        <div className="rounded-lg border border-black overflow-hidden">
+        <div className="rounded-lg border border-gray-300 overflow-hidden">
           <div className="overflow-x-auto bg-white  ">
             <table className="w-full">
-              <thead className="border-b border-black">
+              <thead className="border-b border-gray-300">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold ">
                     Эрэмбэ
@@ -325,7 +325,7 @@ export const StudentsRanking = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black">
+              <tbody className="divide-y divide-gray-300">
                 {displayedUsers.map((user, index) => (
                   <tr
                     key={user.id}
@@ -415,14 +415,14 @@ export const StudentsRanking = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex items-center gap-1 text-black border-black hover:bg-gray-200"
+                            className="flex items-center gap-1 text-black border-gray-300 hover:bg-gray-200"
                             onClick={(e) => handleViewOlympiads(user, e)}
                           >
                             <Eye className="w-4 h-4" />
                             Үзэх
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="text-black border-black p-4 w-96">
+                        <PopoverContent className="text-black border-gray-300 p-4 w-96">
                           <h4 className="font-semibold mb-3 text-lg flex items-center gap-2">
                             <Trophy className="w-5 h-5 text-yellow-600" />
                             Шагнал авсан олимпиадууд
@@ -432,7 +432,7 @@ export const StudentsRanking = () => {
                               {selectedOlympiads.map((olympiad: any, idx) => (
                                 <div
                                   key={idx}
-                                  className="border-l-4 border-black pl-3 py-2"
+                                  className="border-l-4 border-gray-300 pl-3 py-2"
                                 >
                                   <div className="flex items-center gap-2 mb-1">
                                     <span className="font-semibold text-black">
@@ -480,7 +480,7 @@ export const StudentsRanking = () => {
           <div className="mt-6 flex justify-center">
             <Button
               variant="outline"
-              className="px-6 py-2 text-black border-black hover:bg-gray-200"
+              className="px-6 py-2 text-black border-gray-300 hover:bg-gray-200"
               onClick={handleLoadMore}
             >
               Дараах үзэх
