@@ -282,7 +282,7 @@ const LogoLoop: React.FC<LogoLoopProps> = ({
         </span>
       ) : (
         <div className={cx(
-          "h-[var(--logoloop-logoHeight)] w-[var(--logoloop-logoHeight)] flex items-center justify-center bg-black rounded-lg p-4",
+          "h-[var(--logoloop-logoHeight)] w-[var(--logoloop-logoHeight)] flex items-center justify-center bg-white rounded-lg p-4",
           "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           "hover:scale-125 cursor-pointer",
         )}>
@@ -416,7 +416,7 @@ const LogoLoop: React.FC<LogoLoopProps> = ({
 export default function Footer() {
   const logos: LogoItem[] = [
     {
-      src: "/images/ecm.png",
+      src: "/images/ecm_blue.png",
       alt: "ECM Billing Center",
       title: "ECM Billing Center",
       width: 120,
@@ -437,7 +437,7 @@ export default function Footer() {
       height: 60,
     },
     {
-      src: "/images/pinecone_logo.png",
+      src: "/images/pinecone_black.png",
       alt: "Pinecone",
       title: "Pinecone",
       width: 120,
@@ -451,21 +451,28 @@ export default function Footer() {
       height: 60,
     },
     {
-      src: "/images/techpack_group_logo.png",
+      src: "/images/tech_pack_enhanced.png",
       alt: "TechPack - ACE Software Group",
       title: "TechPack",
+      width: 120,
+      height: 60,
+    },
+    {
+      src: "/images/zerotech_logo.png",
+      alt: "ZeroTech",
+      title: "ZeroTech",
       width: 120,
       height: 60,
     },
   ];
 
   return (
-    <footer className="bg-black text-white py-8">
+    <footer className="bg-white text-black py-8">
       <div className="max-w-6xl mx-auto px-4">
         {/* Partner Logos Section */}
         <div className="text-center mb-4">
-          <h3 className="text-lg font-semibold text-white mb-3">Trusted by Leading Organizations</h3>
-          <div className="bg-black rounded-xl p-4">
+          <h3 className="text-lg font-semibold text-black mb-3">Trusted by Leading Organizations</h3>
+          <div className="bg-white rounded-xl p-4">
             <LogoLoop
               logos={logos}
               speed={80}
@@ -474,7 +481,7 @@ export default function Footer() {
               gap={28}
               pauseOnHover={true}
               fadeOut={true}
-              fadeOutColor="#000000"
+              fadeOutColor="#ffffff"
               scaleOnHover={true}
               ariaLabel="Our partner companies"
               className="py-2"
