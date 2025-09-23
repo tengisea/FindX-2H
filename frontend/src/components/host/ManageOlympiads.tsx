@@ -52,6 +52,11 @@ export const ManageOlympiads = ({ organizerId, olympiads, onRefetch }: ManageOly
   // console.log("Final olympiads:", myOlympiads);
 
   const filteredOlympiads = myOlympiads.filter((olympiad) => {
+    // Hide finished olympiads
+    if (olympiad.status === OlympiadStatus.Finished) {
+      return false;
+    }
+
     const matchesSearch =
       olympiad.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       olympiad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||

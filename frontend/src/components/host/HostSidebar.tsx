@@ -81,7 +81,7 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
       link: "#create",
     },
     {
-      label: "Олимпиадын засах",
+      label: "Олимпиад засах",
       ariaLabel: "Navigate to manage olympiads page",
       link: "#manage",
     },
@@ -176,7 +176,7 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
             },
             {
               id: "manage",
-              label: "Олимпиадын засах",
+              label: "Олимпиад засах",
               description: "Олимпиадыг харах, засах",
             },
             {
