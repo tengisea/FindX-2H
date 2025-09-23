@@ -180,7 +180,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
   return (
     <div className="content-wrapper container">
       <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 pt-10">
-        Registration Mandats
+        Мандат
       </h2>
 
       {/* Search and Filter */}
@@ -189,7 +189,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="relative flex-1 max-w-md">
               <Input
-                placeholder="Search by olympiad name, organizer, location, or mandat number..."
+                placeholder="Олимпиадын нэр, зохион байгуулагчид, байршил, мандатын дугаар..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
@@ -199,7 +199,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
             <div className="flex gap-2">
               <Badge variant="secondary" className="text-lg px-4 py-2">
                 {filteredMandats.length}{" "}
-                {filteredMandats.length === 1 ? "Mandat" : "Mandats"}
+                {filteredMandats.length === 1 ? "Мандат" : "Мандат"}
               </Badge>
             </div>
           </div>
@@ -215,12 +215,12 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {searchTerm
-                ? "No mandats found matching your search."
+                ? "Хэрэглэгчийн хайсан мандат олдсонгүй."
                 : "No mandats found."}
             </h3>
             <p className="text-gray-600">
               {searchTerm
-                ? "Try adjusting your search terms."
+                ? "Хайлтын үгээ засах."
                 : "Register for olympiads to get your mandats!"}
             </p>
           </CardContent>
@@ -276,7 +276,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
                       <div className="flex items-center gap-2 mb-3">
                         <Calendar className="h-4 w-4 text-gray-600" />
                         <span className="font-semibold text-gray-800">
-                          Olympiad Details
+                          Олимпиадын дэлгэрэнгүй мэдээлэл
                         </span>
                       </div>
                       <div className="space-y-2">
@@ -285,16 +285,16 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
                           <span>{mandat.olympiadLocation}</span>
                         </div>
                         <div className="text-sm text-gray-600">
-                          <span className="font-medium">Date:</span>{" "}
+                          <span className="font-medium">Огноо:</span>{" "}
                           {formatDateShortMongolian(mandat.olympiadDate)}
                         </div>
                         <div className="text-sm text-gray-600">
-                          <span className="font-medium">Class Type:</span>{" "}
+                          <span className="font-medium">Ангиллын төрөл:</span>{" "}
                           {getClassTypeInMongolian(mandat.classType)}
                         </div>
                         {mandat.roomNumber && (
                           <div className="text-sm text-gray-600">
-                            <span className="font-medium">Room:</span>{" "}
+                            <span className="font-medium">Өрөө:</span>{" "}
                             {mandat.roomNumber}
                           </div>
                         )}
@@ -303,18 +303,18 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
 
                     {/* Registration Information */}
                     <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
-                      Registered:{" "}
+                      Бүртгүүлсэн огноо:{" "}
                       {formatDateShortMongolian(mandat.registrationDate)}
                     </div>
 
                     {/* Action Button */}
                     <Button
                       onClick={() => handleView3D(mandat)}
-                      className="w-full bg-[#FF8400] text-white hover:bg-[#FF8400]/90 py-3 text-base font-medium flex items-center justify-center gap-2"
+                      className="text-black hover:bg-[#ff8400] hover:text-white"
                       aria-label={`View 3D mandat for ${mandat.olympiadName}`}
                     >
                       <Eye className="h-4 w-4" />
-                      View 3D Mandat
+                      3D Мандат харах
                     </Button>
                   </div>
                 </CardContent>
@@ -337,7 +337,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
               <h2 className="text-lg font-bold text-black m-0">
-                3D Олимпиад Мандат
+                3D Олимпиад мандат
               </h2>
               <div className="flex items-center gap-2">
                 <Button
@@ -369,14 +369,14 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
                   className="p-2 min-w-0 text-black hover:text-black hover:bg-gray-100"
                   aria-label="Print 3D mandat"
                 >
-                  Print
+                  PDF татах
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShow3DModal(false)}
                   className="p-2 min-w-0"
-                  aria-label="Close 3D modal"
+                  aria-label="3D мандат хаах"
                 >
                   <X size={18} color="black" />
                 </Button>

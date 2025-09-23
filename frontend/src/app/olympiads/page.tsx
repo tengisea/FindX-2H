@@ -240,13 +240,13 @@ const AllOlympiadsPage = () => {
               <div className="flex items-center gap-4 mt-4">
                 <Badge
                   variant="outline"
-                  className="text-sm text-black border-black"
+                  className="text-sm text-black border-gray-300"
                 >
                   {filteredAndSortedOlympiads.length} Нийт олимпиадуудын тоо
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="text-sm text-black border-black"
+                  className="text-sm text-black border-gray-300"
                 >
                   {olympiads.length} Оролцох боломжтой олимпиадууд
                 </Badge>
@@ -257,7 +257,7 @@ const AllOlympiadsPage = () => {
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 text-black border-black"
+                className="flex items-center gap-2 text-black border-gray-300"
               >
                 <Filter className="h-4 w-4" />
                 Шүүлтүүрүүд
@@ -277,7 +277,7 @@ const AllOlympiadsPage = () => {
                 placeholder="Олимпиадын нэр, зохион байгуулагчид, байршил..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 text-black border-black"
+                className="pl-10 text-black border-gray-300"
               />
             </div>
           </div>
@@ -295,10 +295,10 @@ const AllOlympiadsPage = () => {
                     Төлөв
                   </label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="text-black border-black">
+                    <SelectTrigger className="text-black border-gray-300">
                       <SelectValue placeholder="All Statuses" />
                     </SelectTrigger>
-                    <SelectContent className="text-black border-black">
+                    <SelectContent className="text-black border-gray-300">
                       <SelectItem value="all">Бүх төлөвүүд</SelectItem>
                       {filterOptions.statuses.map((status) => (
                         <SelectItem key={status} value={status}>
@@ -317,10 +317,10 @@ const AllOlympiadsPage = () => {
                     value={rankingFilter}
                     onValueChange={setRankingFilter}
                   >
-                    <SelectTrigger className="text-black border-black">
+                    <SelectTrigger className="text-black border-gray-300">
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
-                    <SelectContent className="text-black border-black">
+                    <SelectContent className="text-black border-gray-300">
                       <SelectItem value="all">Бүх эрэмбүүд</SelectItem>
                       {filterOptions.rankingTypes.map((type) => (
                         <SelectItem key={type} value={type}>
@@ -336,10 +336,10 @@ const AllOlympiadsPage = () => {
                     Ангиуд{" "}
                   </label>
                   <Select value={gradeFilter} onValueChange={setGradeFilter}>
-                    <SelectTrigger className="text-black border-black">
+                    <SelectTrigger className="text-black border-gray-300">
                       <SelectValue placeholder="Бүх ангиуд" />
                     </SelectTrigger>
-                    <SelectContent className="text-black border-black">
+                    <SelectContent className="text-black border-gray-300">
                       <SelectItem value="all">Бүх ангиуд</SelectItem>
                       {filterOptions.grades.map((grade) => (
                         <SelectItem key={grade} value={grade}>
@@ -358,10 +358,10 @@ const AllOlympiadsPage = () => {
                     value={locationFilter}
                     onValueChange={setLocationFilter}
                   >
-                    <SelectTrigger className="text-black border-black">
+                    <SelectTrigger className="text-black border-gray-300">
                       <SelectValue placeholder="Бүх байршил" />
                     </SelectTrigger>
-                    <SelectContent className="text-black border-black">
+                    <SelectContent className="text-black border-gray-300">
                       <SelectItem value="all">Бүх байршил</SelectItem>
                       {filterOptions.locations.map((location) => (
                         <SelectItem key={location} value={location}>
@@ -380,10 +380,10 @@ const AllOlympiadsPage = () => {
                     value={organizerFilter}
                     onValueChange={setOrganizerFilter}
                   >
-                    <SelectTrigger className="text-black border-black">
+                    <SelectTrigger className="text-black border-gray-300">
                       <SelectValue placeholder="Бүх зохион байгуулагч" />
                     </SelectTrigger>
-                    <SelectContent className="text-black border-black">
+                    <SelectContent className="text-black border-gray-300">
                       <SelectItem value="all">Бүх зохион байгуулагч</SelectItem>
                       {filterOptions.organizers.map((organizer) => (
                         <SelectItem key={organizer} value={organizer}>
@@ -460,7 +460,7 @@ const AllOlympiadsPage = () => {
                   layout
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
-                  <Card className="h-full hover:shadow-xl transition-all duration-300 bg-white border border-black">
+                  <Card className="h-full hover:shadow-xl transition-all duration-300 bg-white border border-gray-300">
                     <CardContent className="p-6 h-full flex flex-col">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
@@ -472,7 +472,7 @@ const AllOlympiadsPage = () => {
                           </p>
                         </div>
                         <Badge
-                          className={`ml-3 border-black ${getStatusColor(
+                          className={`ml-3 border-gray-300 ${getStatusColor(
                             olympiad.status
                           )}`}
                         >
@@ -525,7 +525,7 @@ const AllOlympiadsPage = () => {
                               </span>
                               <Badge
                                 variant="secondary"
-                                className="text-xs bg-blue-100 text-blue-800 border-black"
+                                className="text-xs bg-blue-100 text-blue-800 border-gray-300"
                               >
                                 {olympiad.classtypes.length} grades
                               </Badge>
@@ -537,7 +537,7 @@ const AllOlympiadsPage = () => {
                                   <Badge
                                     key={classType.id}
                                     variant="outline"
-                                    className="text-xs bg-green-100 text-green-800 border-black"
+                                    className="text-xs bg-green-100 text-green-800 border-gray-300"
                                   >
                                     Grade {getGradeNumber(classType.classYear)}
                                   </Badge>
@@ -545,7 +545,7 @@ const AllOlympiadsPage = () => {
                               {olympiad.classtypes.length > 3 && (
                                 <Badge
                                   variant="outline"
-                                  className="text-xs bg-gray-100 text-gray-800 border-black"
+                                  className="text-xs bg-gray-100 text-gray-800 border-gray-300"
                                 >
                                   +{olympiad.classtypes.length - 3} more
                                 </Badge>

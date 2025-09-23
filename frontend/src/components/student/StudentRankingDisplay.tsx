@@ -100,7 +100,7 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <p className="text-base font-medium text-gray-600 mb-1">
-              Current Ranking
+              Одоогийн байр
             </p>
             <p className="text-3xl font-bold text-[#FF8400]">
               #{currentStudentRank}

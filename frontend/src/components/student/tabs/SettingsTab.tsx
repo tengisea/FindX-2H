@@ -151,7 +151,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
     return (
       <div className="content-wrapper container">
         <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
-          Settings
+          Тохиргоо
         </h2>
         <div className="animate-pulse space-y-6">
           {[1, 2, 3].map((i) => (
@@ -178,9 +178,9 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-8"
       >
-        <h2 className="text-4xl font-bold mb-2 pt-8 text-gray-800">Settings</h2>
+        <h2 className="text-4xl font-bold mb-2 pt-8 text-gray-800">Тохиргоо</h2>
         <p className="text-gray-600 text-lg">
-          Manage your account preferences and settings
+          Өөрийн бүртгэлийн тохиргоог удирдах
         </p>
       </motion.div>
 
@@ -199,7 +199,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <div className="flex items-center space-x-3">
                   <UserCircle className="w-6 h-6 text-[#FF8400]" />
                   <CardTitle className="text-2xl font-semibold text-gray-800">
-                    Profile Information
+                    Хувийн мэдээлэл{" "}
                   </CardTitle>
                 </div>
                 <Button
@@ -210,12 +210,12 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   {isEditing ? (
                     <>
                       <X className="w-4 h-4" />
-                      <span>Cancel</span>
+                      <span>Цуцалгах</span>
                     </>
                   ) : (
                     <>
                       <Edit3 className="w-4 h-4" />
-                      <span>Edit</span>
+                      <span>Засварлах</span>
                     </>
                   )}
                 </Button>
@@ -231,7 +231,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 >
                   <Check className="w-4 h-4 text-green-600" />
                   <span className="text-base text-green-700">
-                    Profile updated successfully!
+                    Профиль амжилттай шинэчлэгдлээ!
                   </span>
                 </motion.div>
               )}
@@ -239,7 +239,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <User className="w-4 h-4" />
-                    <span>Full Name</span>
+                    <span>Овог нэр</span>
                   </Label>
                   <Input
                     type="text"
@@ -259,7 +259,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <Mail className="w-4 h-4" />
-                    <span>Email</span>
+                    <span>Имэйл</span>
                   </Label>
                   <Input
                     type="email"
@@ -282,7 +282,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <School className="w-4 h-4" />
-                    <span>School</span>
+                    <span>Сургууль</span>
                   </Label>
                   <Input
                     type="text"
@@ -305,7 +305,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <span className="text-lg">🎓</span>
-                    <span>Grade</span>
+                    <span>Анги</span>
                   </Label>
                   <Input
                     type="text"
@@ -314,14 +314,14 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                     readOnly
                   />
                   <p className="text-base text-gray-600">
-                    Grade cannot be changed
+                    Анги засах боломжгүй
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <MapPin className="w-4 h-4" />
-                    <span>Province</span>
+                    <span>Аймаг/Дүүрэг</span>
                   </Label>
                   {isEditing ? (
                     <Select
@@ -334,7 +334,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                       }
                     >
                       <SelectTrigger className="bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] focus:ring-[#FF8400]">
-                        <SelectValue placeholder="Select a province" />
+                        <SelectValue placeholder="Аймаг/Дүүрэг сонгох" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border border-gray-200">
                         {Object.entries(PROVINCE_NAMES).map(([key, value]) => (
@@ -374,7 +374,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         disabled={isSaving}
                         className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                       >
-                        Cancel
+                        Цуцалгах
                       </Button>
                       <Button
                         onClick={handleSave}
@@ -384,12 +384,12 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         {isSaving ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            <span>Saving...</span>
+                            <span>Хадгалах...</span>
                           </>
                         ) : (
                           <>
                             <Save className="w-4 h-4" />
-                            <span>Save Changes</span>
+                            <span>Хадгалах</span>
                           </>
                         )}
                       </Button>
@@ -406,7 +406,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
               <div className="flex items-center space-x-3">
                 <Bell className="w-6 h-6 text-[#FF8400]" />
                 <CardTitle className="text-2xl font-semibold text-gray-800">
-                  Notification Preferences
+                  Мэдэгдэл хүлээн авах тохиргоо{" "}
                 </CardTitle>
               </div>
             </CardHeader>
@@ -416,16 +416,15 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 [
                   {
                     key: "olympiads" as const,
-                    title: "Olympiad Notifications",
+                    title: "Олимпиад мэдэгдэл",
                     description:
-                      "Get notified about new olympiads and registration deadlines",
+                      "Шинэ олимпиад болон бүртгүүлэх огноо мэдэгдэл авах",
                     icon: <Bell className="w-5 h-5" />,
                   },
                   {
                     key: "results" as const,
-                    title: "Result Notifications",
-                    description:
-                      "Get notified when your olympiad results are published",
+                    title: "Үнэлгээ мэдэгдэл",
+                    description: "Олимпиадын үнэлгээ гарсандаа мэдэгдэл авах",
                     icon: <Check className="w-5 h-5" />,
                   },
                 ] as const
@@ -481,7 +480,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           <Card className="bg-white border border-gray-200 overflow-hidden">
             <CardHeader className="bg-gray-50">
               <CardTitle className="text-xl font-semibold text-gray-800">
-                Quick Actions
+                Товч үйлдлүүд{" "}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
@@ -494,10 +493,10 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <Download className="w-5 h-5 text-green-600" />
                 <div className="text-left">
                   <div className="font-medium text-gray-800 text-lg">
-                    Export Data
+                    Мэдээлэл татаж авах{" "}
                   </div>
                   <div className="text-base text-gray-600">
-                    Download your data
+                    Мэдээллээ татаж авах
                   </div>
                 </div>
               </motion.button>
@@ -511,11 +510,9 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 <Trash2 className="w-5 h-5 text-red-600" />
                 <div className="text-left">
                   <div className="font-medium text-red-600 text-lg">
-                    Delete Account
+                    Бүртгэлийг устгах
                   </div>
-                  <div className="text-base text-red-500">
-                    Permanently remove
-                  </div>
+                  <div className="text-base text-red-500">Бүрмөсөн устгах </div>
                 </div>
               </motion.button>
             </CardContent>
@@ -525,28 +522,30 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           <Card className="bg-white border border-gray-200 overflow-hidden">
             <CardHeader className="bg-gray-50">
               <CardTitle className="text-xl font-semibold text-gray-800">
-                Account Statistics
+                Бүртгэлийн тоо статистик
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-base">Member since</span>
+                <span className="text-gray-600 text-base">
+                  Бүртгэлтэй болсон огноо
+                </span>
                 <span className="font-medium text-gray-800 text-lg">
                   {new Date().getFullYear()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 text-base">
-                  Olympiads joined
+                  Олимпиад оролцсон тоо
                 </span>
                 <span className="font-medium text-gray-800 text-lg">
                   {student?.participatedOlympiads?.length || 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600 text-base">Current ranking</span>
+                <span className="text-gray-600 text-base">Үнэлгээ</span>
                 <span className="font-medium text-gray-800 text-lg">
-                  {student?.ranking + " points" || "N/A"}
+                  {student?.ranking + " оноо" || "N/A"}
                 </span>
               </div>
             </CardContent>
@@ -576,12 +575,11 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   <AlertTriangle className="w-8 h-8 text-red-600" />
                 </div>
                 <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-                  Delete Account
+                  Бүртгэлийг устгах
                 </h3>
                 <p className="text-gray-600 mb-6 text-lg">
-                  Are you sure you want to delete your account? This action
-                  cannot be undone and all your data will be permanently
-                  removed.
+                  Та бүртгэлийг устгах уу? Энэ үйлдэл буцаах боломжгүй бөгөөд
+                  бүх мэдээлэл устгагдна
                 </p>
               </div>
 
@@ -590,13 +588,13 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   onClick={() => setShowDeleteModal(false)}
                   className="px-6 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 >
-                  Cancel
+                  Цуцалгах
                 </button>
                 <button
                   onClick={handleDeleteAccount}
                   className="px-6 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors duration-200"
                 >
-                  Delete Account
+                  Бүртгэлийг устгах
                 </button>
               </div>
             </motion.div>

@@ -190,11 +190,10 @@ const RankingChart: React.FC<RankingChartProps> = ({
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            No Ranking History
+            Одоогоор түүх алга
           </h3>
           <p className="text-sm text-gray-600">
-            Your ranking history will appear here once you participate in
-            olympiads.
+            Түүхийг оруулахын тулд олимпиад оролцсон байх ёстой.
           </p>
         </div>
       </div>

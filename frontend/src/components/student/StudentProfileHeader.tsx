@@ -161,16 +161,6 @@ export const StudentProfileHeader = ({
         </div>
         {recentActivity.length > 0 && (
           <div className="relative group">
-            <div className="text-right">
-              <div className="text-sm font-medium text-foreground">
-                Recent Activity
-              </div>
-              <div className="text-xs text-gray-500">
-                {getOlympiadName(recentActivity[0]?.olympiadId)} •{" "}
-                {formatDate(recentActivity[0]?.date)}
-              </div>
-            </div>
-
             {/* Activity Tooltip */}
             <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
               <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 shadow-lg max-w-xs">

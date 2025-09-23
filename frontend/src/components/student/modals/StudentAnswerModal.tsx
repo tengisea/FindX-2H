@@ -88,7 +88,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-800">
-                    Answer Details
+                    Дэлгэрэнгүй хариулт
                   </h2>
                   {studentName && (
                     <p className="text-base text-gray-600">{studentName}</p>
@@ -126,7 +126,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <X className="w-8 h-8 text-red-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  Error Loading Answer
+                  Хэрэглэгчийн хариулт олдсонгүй
                 </h3>
                 <p className="text-gray-600">
                   {error.message || "Failed to load answer details"}
@@ -138,7 +138,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <FileText className="w-8 h-8 text-gray-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  No Answer Found
+                  Хэрэглэгчийн хариулт олдсонгүй
                 </h3>
                 <p className="text-gray-600">
                   The requested answer could not be found.
@@ -151,7 +151,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2 text-gray-800">
                       <Trophy className="w-5 h-5 text-[#FF8400]" />
-                      <span>Answer Summary</span>
+                      <span>Хариултын тойм</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -160,22 +160,21 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                         <div className="text-2xl font-bold text-[#FF8400]">
                           {studentAnswer.totalScoreofOlympiad || 0}
                         </div>
-                        <div className="text-base text-[#FF8400]">
-                          Total Score
-                        </div>
+
+                        <div className="text-base text-[#FF8400]">Нийт дүн</div>
                       </div>
                       <div className="text-center p-4 bg-blue-500/10 rounded-lg">
                         <div className="text-2xl font-bold text-blue-500">
                           {studentAnswer.answers?.length || 0}
                         </div>
-                        <div className="text-base text-blue-500">Questions</div>
+                        <div className="text-base text-blue-500">Асуултууд</div>
                       </div>
                       <div className="text-center p-4 bg-green-500/10 rounded-lg">
                         <div className="text-2xl font-bold text-green-500">
                           {studentAnswer.mandatNumber}
                         </div>
                         <div className="text-base text-green-500">
-                          Mandat Number
+                          Мандатын дугаар
                         </div>
                       </div>
                     </div>
@@ -183,14 +182,16 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-4 h-4" />
                         <span>
-                          Submitted: {safeFormatDate(studentAnswer.createdAt)}
+                          Оруулсан огноо:{" "}
+                          {safeFormatDate(studentAnswer.createdAt)}
                         </span>
                       </div>
                       {studentAnswer.updatedAt !== studentAnswer.createdAt && (
                         <div className="flex items-center space-x-1">
                           <Calendar className="w-4 h-4" />
                           <span>
-                            Updated: {safeFormatDate(studentAnswer.updatedAt)}
+                            Засварласан огноо:{" "}
+                            {safeFormatDate(studentAnswer.updatedAt)}
                           </span>
                         </div>
                       )}
@@ -204,7 +205,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2 text-gray-800">
                         <ImageIcon className="w-5 h-5 text-[#FF8400]" />
-                        <span>Submitted Images</span>
+                        <span>Оруулсан зураг</span>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -231,7 +232,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                               }}
                             />
                             <div className="hidden w-full h-32 bg-gray-200 rounded-lg border border-gray-200 items-center justify-center text-gray-600 text-base">
-                              Image could not be loaded
+                              Зураг оруулж чадсангүй
                             </div>
                             <div className="absolute top-2 right-2 bg-gray-800/80 text-white text-sm px-2 py-1 rounded">
                               {index + 1}
@@ -249,7 +250,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2 text-gray-800">
                         <FileText className="w-5 h-5 text-[#FF8400]" />
-                        <span>Question Answers</span>
+                        <span>Асуултын хариултууд</span>
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -270,22 +271,23 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                                   </span>
                                 </div>
                                 <span className="font-semibold text-gray-800">
-                                  Question {index + 1}
+                                  Асуулт {index + 1}
                                 </span>
                               </div>
                               <div className="flex items-center space-x-2">
                                 <span className="text-base text-gray-600">
-                                  Score:
+                                  Дүн:
                                 </span>
+
                                 <span className="text-lg font-bold text-[#FF8400]">
-                                  {answer.score || 0} points
+                                  {answer.score || 0} оноо
                                 </span>
                               </div>
                             </div>
                             {answer.description && (
                               <div className="mt-3">
                                 <h4 className="text-base font-medium text-gray-600 mb-2">
-                                  Description:
+                                  Тайлбар:
                                 </h4>
                                 <div className="bg-white rounded-lg p-3 border border-gray-200">
                                   <p className="text-gray-800 whitespace-pre-wrap">
@@ -312,11 +314,11 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                           <FileText className="w-8 h-8 text-gray-600" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                          No Detailed Answers
+                          Бүрэн дэлгэрэнгүй хариултууд олдсонгүй
                         </h3>
                         <p className="text-gray-600">
-                          No detailed answers or images are available for this
-                          submission.
+                          Бүрэн дэлгэрэнгүй хариултууд эсвэл зураг оруулж
+                          чадсангүй
                         </p>
                       </CardContent>
                     </Card>
