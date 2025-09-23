@@ -73,6 +73,7 @@ export interface UpdateMedalAssignmentsInput {
   gold: string[];
   silver: string[];
   bronze: string[];
+  top10: string[];
 }
 
 export interface FinalizeMedalsResponse {

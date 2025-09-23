@@ -13,6 +13,12 @@ export const getAllOrganizers = async () => {
       Olympiads: organizer.Olympiads.map((olympiad: any) => ({
         id: olympiad._id.toString(),
         name: olympiad.name,
+        occurringDay: olympiad.occurringDay,
+        closeDay: olympiad.closeDay,
+        location: olympiad.location,
+        rankingType: olympiad.rankingType,
+        invitation: olympiad.invitation,
+        status: olympiad.status,
       })),
     }));
   } catch (error: any) {

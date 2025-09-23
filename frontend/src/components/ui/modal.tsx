@@ -161,7 +161,7 @@ export const Modal: React.FC<ModalProps> = ({
               {title && (
                 <h2
                   id="modal-title"
-                  className="text-lg sm:text-xl p-4 text-black font-semibold text-gray-900 leading-none truncate"
+                  className="text-lg sm:text-xl p-4 text-black font-semibold leading-none truncate"
                 >
                   {title}
                 </h2>

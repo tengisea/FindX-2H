@@ -34,6 +34,10 @@ export const updateMedalAssignments = async (
 ) => {
   return await handleAsyncError(async () => {
     console.log(`🔍 Updating medal assignments for Olympiad: ${olympiadId}`);
+    console.log(
+      `📋 Received assignments:`,
+      JSON.stringify(assignments, null, 2)
+    );
 
     // Verify olympiad exists and is in MEDALS_PREVIEW status
     const olympiad = await OlympiadModel.findById(olympiadId);
@@ -62,7 +66,9 @@ export const updateMedalAssignments = async (
       }
 
       // Validate that all student IDs exist and have submitted answers
-      const allStudentIds = [...new Set([...gold, ...silver, ...bronze, ...top10])]; // Remove duplicates
+      const allStudentIds = [
+        ...new Set([...gold, ...silver, ...bronze, ...top10]),
+      ]; // Remove duplicates
       const studentAnswers = await StudentAnswerModel.find({
         classTypeId,
         studentId: { $in: allStudentIds },
@@ -76,16 +82,30 @@ export const updateMedalAssignments = async (
       }
 
       // Update the class type with new medal assignments
-      await ClassTypeModel.findByIdAndUpdate(classTypeId, {
-        gold,
-        silver,
-        bronze,
-        top10,
-      });
+      const updateResult = await ClassTypeModel.findByIdAndUpdate(
+        classTypeId,
+        {
+          gold,
+          silver,
+          bronze,
+          top10,
+        },
+        { new: true }
+      );
 
       console.log(
         `✅ Updated medals for ClassType ${classTypeId}: Gold(${gold.length}), Silver(${silver.length}), Bronze(${bronze.length}), Top10(${top10.length})`
       );
+      console.log(`📊 Update result:`, updateResult);
+
+      // Verify the update was successful
+      const verifyUpdate = await ClassTypeModel.findById(classTypeId);
+      console.log(`🔍 Verification - Current medal assignments after update:`, {
+        gold: verifyUpdate?.gold?.length || 0,
+        silver: verifyUpdate?.silver?.length || 0,
+        bronze: verifyUpdate?.bronze?.length || 0,
+        top10: verifyUpdate?.top10?.length || 0,
+      });
     }
 
     // Get updated olympiad with populated data
