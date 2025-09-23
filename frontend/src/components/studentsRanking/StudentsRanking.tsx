@@ -46,8 +46,8 @@ const getMedalStats = (students: any[]) => {
 
   return {
     gold: { count: goldStudents, icon: Crown, color: "text-yellow-600" },
-    silver: { count: silverStudents, icon: Trophy, color: "text-gray-400" },
-    bronze: { count: bronzeStudents, icon: Star, color: "text-amber-600" },
+    silver: { count: silverStudents, icon: Trophy, color: "text-" },
+    bronze: { count: bronzeStudents, icon: Star, color: "text-a" },
   };
 };
 
@@ -59,7 +59,7 @@ const getTierIcon = (ranking: number) => {
   } else if (ranking <= 100) {
     return <Star className="w-5 h-5 text-purple-600" />;
   } else {
-    return <Award className="w-5 h-5 text-gray-600" />;
+    return <Award className="w-5 h-5 text-" />;
   }
 };
 
@@ -123,7 +123,7 @@ export const StudentsRanking = () => {
             ).length;
           } else if (student.silver?.includes(olympiadId)) {
             medalType = "Мөнгө";
-            medalColor = "text-gray-500";
+            medalColor = "text-";
             medalCount = student.silver.filter(
               (id: string) => id === olympiadId
             ).length;
@@ -158,7 +158,7 @@ export const StudentsRanking = () => {
 
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchStudentsName(event.target.value);
-    setDisplayCount(10); // Reset display count when searching
+    setDisplayCount(10);
   };
 
   const handleLoadMore = () => {
@@ -171,7 +171,6 @@ export const StudentsRanking = () => {
         ?.toLowerCase()
         .includes(searchStudentsName.toLowerCase());
 
-      // Convert user's class to Mongolian for comparison
       const userClassMongolian = mapClassToMongolian(user.class);
       const matchesClass =
         selectedCity === "Бүх анги" || userClassMongolian === selectedCity;
@@ -181,7 +180,7 @@ export const StudentsRanking = () => {
 
       return matchesName && matchesClass && matchesProvince;
     })
-    .sort((a, b) => b.totalMedals - a.totalMedals); // Sort by points (total medals) descending
+    .sort((a, b) => b.totalMedals - a.totalMedals);
 
   const displayedUsers = filteredUsers.slice(0, displayCount);
   const hasMoreUsers = displayCount < filteredUsers.length;
@@ -196,58 +195,58 @@ export const StudentsRanking = () => {
   ).filter(Boolean);
 
   return (
-    <div className="bg-black p-6">
+    <div className="p-6">
       <div className="max-w-6xl mx-auto ">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-6">
-            Student Rankings
+          <h1 className="text-3xl font-bold text-black mb-6">
+            Сурагчидын эрэмбэ
           </h1>
 
-          <div className="flex flex-wrap gap-6 mb-8">
+          {/* <div className="flex flex-wrap gap-6 mb-8">
             {Object.entries(medalStats).map(([medalType, stats]) => {
               const IconComponent = stats.icon;
               return (
                 <div key={medalType} className="flex items-center gap-2">
                   <IconComponent className={`w-6 h-6 ${stats.color}`} />
-                  <span className="text-lg font-semibold text-gray-300">
+                  <span className="text-lg font-semibold ">
                     {stats.count}{" "}
                     {medalType.charAt(0).toUpperCase() + medalType.slice(1)}{" "}
                   </span>
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </div>
 
         <div className="mb-6 space-y-4">
           <div className="relative ">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 " />
             <Input
               type="text"
-              placeholder="Search by username"
+              placeholder="Сурагчын нэрээр хайх"
               value={searchStudentsName}
               onChange={handleChangeSearch}
-              className=" pl-10  text-white bg-gray-800 border-gray-600 focus:outline-none focus:border-orange-500 "
+              className=" pl-10  text-black border-black focus:outline-none focus:border-orange-500 "
             />
           </div>
 
-          <div className="flex gap-4 text-white">
+          <div className="flex gap-4 text-black">
             <div className="flex items-center gap-2">
               <School className="w-4 h-4" />
               <Select
                 value={selectedCity}
                 onValueChange={(value) => {
                   setSelectedCity(value);
-                  setDisplayCount(10); // Reset display count when filter changes
+                  setDisplayCount(10);
                 }}
               >
-                <SelectTrigger className="w-48 bg-gray-800 text-white border border-gray-600">
-                  <SelectValue placeholder="Select class" />
+                <SelectTrigger className="w-48 text-black border-black">
+                  <SelectValue placeholder="Анги сонгох" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 text-white border border-gray-600">
+                <SelectContent className="text-black border-black">
                   <SelectItem
                     value="Бүх анги"
-                    className="text-white focus:bg-[#ff8300]"
+                    className="text-black focus:bg-[#ff8300]"
                   >
                     Бүх анги
                   </SelectItem>
@@ -255,7 +254,7 @@ export const StudentsRanking = () => {
                     <SelectItem
                       key={className}
                       value={className}
-                      className="text-white focus:bg-[#ff8300]"
+                      className="text-black focus:bg-[#ff8300]"
                     >
                       {className}
                     </SelectItem>
@@ -270,16 +269,16 @@ export const StudentsRanking = () => {
                 value={selectedOrg}
                 onValueChange={(value) => {
                   setSelectedOrg(value);
-                  setDisplayCount(10); // Reset display count when filter changes
+                  setDisplayCount(10);
                 }}
               >
-                <SelectTrigger className="w-48 bg-gray-800 text-white border border-gray-600">
-                  <SelectValue placeholder="Select province" />
+                <SelectTrigger className="w-48 text-black border-black">
+                  <SelectValue placeholder="Аймаг сонгох" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 text-white border border-gray-600">
+                <SelectContent className="text-black border-black">
                   <SelectItem
                     value="Бүх аймаг"
-                    className="text-white focus:bg-[#ff8300]"
+                    className="text-black focus:bg-[#ff8300]"
                   >
                     Бүх аймаг
                   </SelectItem>
@@ -287,7 +286,7 @@ export const StudentsRanking = () => {
                     <SelectItem
                       key={province}
                       value={province}
-                      className="text-white focus:bg-[#ff8300]"
+                      className="text-black focus:bg-[#ff8300]"
                     >
                       {province}
                     </SelectItem>
@@ -298,50 +297,50 @@ export const StudentsRanking = () => {
           </div>
         </div>
 
-        <div className="bg-[#27272a] rounded-lg border border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="rounded-lg border border-black overflow-hidden">
+          <div className="overflow-x-auto bg-white  ">
             <table className="w-full">
-              <thead className="bg-gray-800 border-b border-gray-700">
+              <thead className="border-b border-black">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    Rank
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Эрэмбэ
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    Tier
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Төгсөгч
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    User
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Хэрэглэгч
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    Joined
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Бүртгүүлсэн огноо
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    Medals
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Шагнал
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    Points
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Оноо
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
-                    Olympiads
+                  <th className="px-6 py-4 text-left text-sm font-semibold ">
+                    Олимпиадууд
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-black">
                 {displayedUsers.map((user, index) => (
                   <tr
                     key={user.id}
-                    className="hover:bg-gray-800/50 transition-colors cursor-pointer"
+                    className="hover:bg-gray-200/50 transition-colors cursor-pointer"
                     onClick={() => handleClick(user.id)}
                   >
                     <td className="px-6 py-4">
-                      <span className="text-lg font-bold text-white">
+                      <span className="text-lg font-bold text-black">
                         {index + 1}
                       </span>
                     </td>
                     <td className="px-6 py-4">{getTierIcon(user.ranking)}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-600 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                           {user.profilePicture &&
                           user.profilePicture.trim() !== "" &&
                           user.profilePicture !== ".////" &&
@@ -355,7 +354,6 @@ export const StudentsRanking = () => {
                               height={48}
                               className="w-full h-full object-cover"
                               onError={(e) => {
-                                // Hide the image and show fallback on error
                                 e.currentTarget.style.display = "none";
                                 e.currentTarget.nextElementSibling?.classList.remove(
                                   "hidden"
@@ -364,7 +362,7 @@ export const StudentsRanking = () => {
                             />
                           ) : null}
                           <span
-                            className={`text-gray-300 font-semibold text-lg ${
+                            className={` font-semibold text-lg ${
                               user.profilePicture &&
                               user.profilePicture.trim() !== "" &&
                               user.profilePicture !== ".////" &&
@@ -379,41 +377,35 @@ export const StudentsRanking = () => {
                           </span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="font-semibold text-white text-lg">
+                          <span className="font-semibold text-black text-lg">
                             {user.name}
                           </span>
-                          <span className="text-gray-400 text-sm">
+                          <span className=" text-sm">
                             {mapClassToMongolian(user.class) ||
                               "Анги тодорхойгүй"}
                           </span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-400">-</td>
+                    <td className="px-6 py-4 ">-</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1">
                           <Medal className="w-4 h-4 text-yellow-500" />
-                          <span className="text-sm text-gray-300">
-                            {user.goldCount}
-                          </span>
+                          <span className="text-sm ">{user.goldCount}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Medal className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-300">
-                            {user.silverCount}
-                          </span>
+                          <Medal className="w-4 h-4 " />
+                          <span className="text-sm ">{user.silverCount}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Medal className="w-4 h-4 text-amber-600" />
-                          <span className="text-sm text-gray-300">
-                            {user.bronzeCount}
-                          </span>
+                          <span className="text-sm ">{user.bronzeCount}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-semibold text-white">
+                      <span className="font-semibold text-black">
                         {user.ranking}
                       </span>
                     </td>
@@ -423,14 +415,14 @@ export const StudentsRanking = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex items-center gap-1 bg-gray-800 text-white border-gray-600 hover:bg-gray-700"
+                            className="flex items-center gap-1 text-black border-black hover:bg-gray-200"
                             onClick={(e) => handleViewOlympiads(user, e)}
                           >
                             <Eye className="w-4 h-4" />
-                            View
+                            Үзэх
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="bg-gray-800 text-white border border-gray-600 p-4 w-96">
+                        <PopoverContent className="text-black border-black p-4 w-96">
                           <h4 className="font-semibold mb-3 text-lg flex items-center gap-2">
                             <Trophy className="w-5 h-5 text-yellow-600" />
                             Шагнал авсан олимпиадууд
@@ -440,19 +432,19 @@ export const StudentsRanking = () => {
                               {selectedOlympiads.map((olympiad: any, idx) => (
                                 <div
                                   key={idx}
-                                  className="border-l-4 border-gray-600 pl-3 py-2"
+                                  className="border-l-4 border-black pl-3 py-2"
                                 >
                                   <div className="flex items-center gap-2 mb-1">
-                                    <span className="font-semibold text-white">
+                                    <span className="font-semibold text-black">
                                       {olympiad.name}
                                     </span>
                                     <span
-                                      className={`px-2 py-1 rounded-full text-xs font-medium ${olympiad.medalColor} bg-gray-700`}
+                                      className={`px-2 py-1 rounded-full text-xs font-medium ${olympiad.medalColor} `}
                                     >
                                       {olympiad.medalType}-{olympiad.medalCount}
                                     </span>
                                   </div>
-                                  <div className="text-sm text-gray-400 space-y-1">
+                                  <div className="text-sm  space-y-1">
                                     <div className="flex items-center gap-2">
                                       <MapPin className="w-3 h-3" />
                                       <span>{olympiad.location}</span>
@@ -470,7 +462,7 @@ export const StudentsRanking = () => {
                               ))}
                             </div>
                           ) : (
-                            <p className="text-gray-400 text-sm text-center py-4">
+                            <p className=" text-sm text-center py-4">
                               Энэ сурагч шагнал авсан олимпиад байхгүй байна
                             </p>
                           )}
@@ -488,10 +480,10 @@ export const StudentsRanking = () => {
           <div className="mt-6 flex justify-center">
             <Button
               variant="outline"
-              className="px-6 py-2 bg-gray-800 text-white border-gray-600 hover:bg-gray-700"
+              className="px-6 py-2 text-black border-black hover:bg-gray-200"
               onClick={handleLoadMore}
             >
-              Load More
+              Дараах үзэх
             </Button>
           </div>
         )}

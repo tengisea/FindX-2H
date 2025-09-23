@@ -1,50 +1,49 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAllOlympiadsQuery } from '@/generated';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Trophy, 
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { useAllOlympiadsQuery } from "@/generated";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Search,
+  Filter,
+  Calendar,
+  MapPin,
+  Users,
+  Trophy,
   Building2,
   ChevronDown,
   ChevronUp,
   Eye,
-  Award
-} from 'lucide-react';
+  Award,
+} from "lucide-react";
 
 const AllOlympiadsPage = () => {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [rankingFilter, setRankingFilter] = useState<string>('all');
-  const [gradeFilter, setGradeFilter] = useState<string>('all');
-  const [locationFilter, setLocationFilter] = useState<string>('all');
-  const [organizerFilter, setOrganizerFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [rankingFilter, setRankingFilter] = useState<string>("all");
+  const [gradeFilter, setGradeFilter] = useState<string>("all");
+  const [locationFilter, setLocationFilter] = useState<string>("all");
+  const [organizerFilter, setOrganizerFilter] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
-  const [sortBy, setSortBy] = useState<string>('name');
+  const [sortBy, setSortBy] = useState<string>("name");
 
   const { data, loading, error } = useAllOlympiadsQuery();
 
   const olympiads = data?.allOlympiads || [];
 
-  // Get unique values for filters
   const filterOptions = useMemo(() => {
     const statuses = new Set<string>();
     const rankingTypes = new Set<string>();
@@ -56,8 +55,9 @@ const AllOlympiadsPage = () => {
       if (olympiad.status) statuses.add(olympiad.status);
       if (olympiad.rankingType) rankingTypes.add(olympiad.rankingType);
       if (olympiad.location) locations.add(olympiad.location);
-      if (olympiad.organizer?.organizationName) organizers.add(olympiad.organizer.organizationName);
-      
+      if (olympiad.organizer?.organizationName)
+        organizers.add(olympiad.organizer.organizationName);
+
       olympiad.classtypes?.forEach((classType) => {
         if (classType.classYear) grades.add(classType.classYear);
       });
@@ -67,8 +67,8 @@ const AllOlympiadsPage = () => {
       statuses: Array.from(statuses).sort(),
       rankingTypes: Array.from(rankingTypes).sort(),
       grades: Array.from(grades).sort((a, b) => {
-        const gradeA = parseInt(a.match(/GRADE_(\d+)/)?.[1] || '0');
-        const gradeB = parseInt(b.match(/GRADE_(\d+)/)?.[1] || '0');
+        const gradeA = parseInt(a.match(/GRADE_(\d+)/)?.[1] || "0");
+        const gradeB = parseInt(b.match(/GRADE_(\d+)/)?.[1] || "0");
         return gradeA - gradeB;
       }),
       locations: Array.from(locations).sort(),
@@ -76,67 +76,95 @@ const AllOlympiadsPage = () => {
     };
   }, [olympiads]);
 
-  // Filter and sort olympiads
   const filteredAndSortedOlympiads = useMemo(() => {
     let filtered = olympiads.filter((olympiad) => {
-      const matchesSearch = 
+      const matchesSearch =
         olympiad.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        olympiad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        olympiad.description
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         olympiad.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        olympiad.organizer?.organizationName?.toLowerCase().includes(searchTerm.toLowerCase());
+        olympiad.organizer?.organizationName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
-      const matchesStatus = statusFilter === 'all' || olympiad.status === statusFilter;
-      const matchesRanking = rankingFilter === 'all' || olympiad.rankingType === rankingFilter;
-      const matchesLocation = locationFilter === 'all' || olympiad.location === locationFilter;
-      const matchesOrganizer = organizerFilter === 'all' || olympiad.organizer?.organizationName === organizerFilter;
-      
-      const matchesGrade = gradeFilter === 'all' || 
-        olympiad.classtypes?.some(ct => ct.classYear === gradeFilter);
+      const matchesStatus =
+        statusFilter === "all" || olympiad.status === statusFilter;
+      const matchesRanking =
+        rankingFilter === "all" || olympiad.rankingType === rankingFilter;
+      const matchesLocation =
+        locationFilter === "all" || olympiad.location === locationFilter;
+      const matchesOrganizer =
+        organizerFilter === "all" ||
+        olympiad.organizer?.organizationName === organizerFilter;
 
-      return matchesSearch && matchesStatus && matchesRanking && 
-             matchesLocation && matchesOrganizer && matchesGrade;
+      const matchesGrade =
+        gradeFilter === "all" ||
+        olympiad.classtypes?.some((ct) => ct.classYear === gradeFilter);
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesRanking &&
+        matchesLocation &&
+        matchesOrganizer &&
+        matchesGrade
+      );
     });
 
-    // Sort olympiads
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'name':
+        case "name":
           return a.name.localeCompare(b.name);
-        case 'date':
-          return new Date(a.occurringDay || '').getTime() - new Date(b.occurringDay || '').getTime();
-        case 'status':
+        case "date":
+          return (
+            new Date(a.occurringDay || "").getTime() -
+            new Date(b.occurringDay || "").getTime()
+          );
+        case "status":
           return a.status.localeCompare(b.status);
-        case 'organizer':
-          return (a.organizer?.organizationName || '').localeCompare(b.organizer?.organizationName || '');
+        case "organizer":
+          return (a.organizer?.organizationName || "").localeCompare(
+            b.organizer?.organizationName || ""
+          );
         default:
           return 0;
       }
     });
 
     return filtered;
-  }, [olympiads, searchTerm, statusFilter, rankingFilter, gradeFilter, locationFilter, organizerFilter, sortBy]);
+  }, [
+    olympiads,
+    searchTerm,
+    statusFilter,
+    rankingFilter,
+    gradeFilter,
+    locationFilter,
+    organizerFilter,
+    sortBy,
+  ]);
 
   const formatDate = (dateString?: string | null) => {
-    if (!dateString) return 'Not set';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    if (!dateString) return "Not set";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'OPEN':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'CLOSED':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'FINISHED':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'DRAFT':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "OPEN":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "CLOSED":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "FINISHED":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "DRAFT":
+        return "bg-gray-100 text-gray-800 border-gray-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -150,32 +178,34 @@ const AllOlympiadsPage = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.3 }
+      transition: { duration: 0.3 },
     },
-    hover: { 
+    hover: {
       scale: 1.02,
-      transition: { duration: 0.2 }
-    }
+      transition: { duration: 0.2 },
+    },
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+      <div className="min-h-screen p-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Loading Olympiads</h2>
-            <p className="text-gray-600">Please wait while we fetch all available competitions...</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2"></h2>
+            <p className="text-gray-600">
+              Please wait while we fetch all available competitions...
+            </p>
           </div>
         </div>
       </div>
@@ -184,15 +214,13 @@ const AllOlympiadsPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+      <div className="min-h-screen p-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-20">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Olympiads</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2"></h2>
             <p className="text-red-600 mb-4">{error.message}</p>
-            <Button onClick={() => window.location.reload()}>
-              Try Again
-            </Button>
+            <Button onClick={() => window.location.reload()}>Try Again</Button>
           </div>
         </div>
       </div>
@@ -200,73 +228,78 @@ const AllOlympiadsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+    <div className="min-h-screen">
+      <div className="shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                All Olympiad Competitions
+                Бүх олимпиадуудын мэдээллүүд
               </h1>
-              <p className="text-lg text-gray-600">
-                Discover and explore all available olympiad competitions
-              </p>
+
               <div className="flex items-center gap-4 mt-4">
-                <Badge variant="secondary" className="text-sm bg-blue-100 text-blue-800 border-blue-200">
-                  {filteredAndSortedOlympiads.length} Olympiads Found
+                <Badge
+                  variant="outline"
+                  className="text-sm text-black border-black"
+                >
+                  {filteredAndSortedOlympiads.length} Нийт олимпиадуудын тоо
                 </Badge>
-                <Badge variant="outline" className="text-sm bg-gray-100 text-gray-800 border-gray-300">
-                  {olympiads.length} Total Available
+                <Badge
+                  variant="outline"
+                  className="text-sm text-black border-black"
+                >
+                  {olympiads.length} Оролцох боломжтой олимпиадууд
                 </Badge>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                className="flex items-center gap-2 text-black border-black"
               >
                 <Filter className="h-4 w-4" />
-                Filters
-                {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                Шүүлтүүрүүд
+                {showFilters ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
               </Button>
             </div>
           </div>
 
-          {/* Search Bar */}
           <div className="mt-6">
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <div className="relative max-w-md ">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-black" />
               <Input
-                placeholder="Search olympiads, organizers, locations..."
+                placeholder="Олимпиадын нэр, зохион байгуулагчид, байршил..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-black border-black"
               />
             </div>
           </div>
 
-          {/* Filters */}
           <AnimatePresence>
             {showFilters && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
               >
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Status
+                    Төлөв
                   </label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger>
+                    <SelectTrigger className="text-black border-black">
                       <SelectValue placeholder="All Statuses" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectContent className="text-black border-black">
+                      <SelectItem value="all">Бүх төлөвүүд</SelectItem>
                       {filterOptions.statuses.map((status) => (
                         <SelectItem key={status} value={status}>
                           {status}
@@ -278,14 +311,17 @@ const AllOlympiadsPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ranking Type
+                    Олимпиадуудын эрэмбэ
                   </label>
-                  <Select value={rankingFilter} onValueChange={setRankingFilter}>
-                    <SelectTrigger>
+                  <Select
+                    value={rankingFilter}
+                    onValueChange={setRankingFilter}
+                  >
+                    <SelectTrigger className="text-black border-black">
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
+                    <SelectContent className="text-black border-black">
+                      <SelectItem value="all">Бүх эрэмбүүд</SelectItem>
                       {filterOptions.rankingTypes.map((type) => (
                         <SelectItem key={type} value={type}>
                           {type}
@@ -297,14 +333,14 @@ const AllOlympiadsPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Grade Level
+                    Ангиуд{" "}
                   </label>
                   <Select value={gradeFilter} onValueChange={setGradeFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Grades" />
+                    <SelectTrigger className="text-black border-black">
+                      <SelectValue placeholder="Бүх ангиуд" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Grades</SelectItem>
+                    <SelectContent className="text-black border-black">
+                      <SelectItem value="all">Бүх ангиуд</SelectItem>
                       {filterOptions.grades.map((grade) => (
                         <SelectItem key={grade} value={grade}>
                           Grade {getGradeNumber(grade)}
@@ -316,14 +352,17 @@ const AllOlympiadsPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Location
+                    Байршил{" "}
                   </label>
-                  <Select value={locationFilter} onValueChange={setLocationFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Locations" />
+                  <Select
+                    value={locationFilter}
+                    onValueChange={setLocationFilter}
+                  >
+                    <SelectTrigger className="text-black border-black">
+                      <SelectValue placeholder="Бүх байршил" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Locations</SelectItem>
+                    <SelectContent className="text-black border-black">
+                      <SelectItem value="all">Бүх байршил</SelectItem>
                       {filterOptions.locations.map((location) => (
                         <SelectItem key={location} value={location}>
                           {location}
@@ -335,14 +374,17 @@ const AllOlympiadsPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Organizer
+                    Зохион байгуулагч
                   </label>
-                  <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Organizers" />
+                  <Select
+                    value={organizerFilter}
+                    onValueChange={setOrganizerFilter}
+                  >
+                    <SelectTrigger className="text-black border-black">
+                      <SelectValue placeholder="Бүх зохион байгуулагч" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Organizers</SelectItem>
+                    <SelectContent className="text-black border-black">
+                      <SelectItem value="all">Бүх зохион байгуулагч</SelectItem>
                       {filterOptions.organizers.map((organizer) => (
                         <SelectItem key={organizer} value={organizer}>
                           {organizer}
@@ -355,9 +397,10 @@ const AllOlympiadsPage = () => {
             )}
           </AnimatePresence>
 
-          {/* Sort Options */}
-          <div className="mt-4 flex items-center gap-4">
-            <label className="text-sm font-medium text-gray-700">Sort by:</label>
+          {/* <div className="mt-4 flex items-center gap-4">
+            <label className="text-sm font-medium text-gray-700">
+              Sort by:
+            </label>
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-48">
                 <SelectValue />
@@ -369,28 +412,30 @@ const AllOlympiadsPage = () => {
                 <SelectItem value="organizer">Organizer</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
       </div>
 
-      {/* Olympiads Grid */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {filteredAndSortedOlympiads.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-gray-400 text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Olympiads Found</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              No Olympiads Found
+            </h3>
             <p className="text-gray-600 mb-6">
-              Try adjusting your search criteria or filters to find more competitions.
+              Try adjusting your search criteria or filters to find more
+              competitions.
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
-                setSearchTerm('');
-                setStatusFilter('all');
-                setRankingFilter('all');
-                setGradeFilter('all');
-                setLocationFilter('all');
-                setOrganizerFilter('all');
+                setSearchTerm("");
+                setStatusFilter("all");
+                setRankingFilter("all");
+                setGradeFilter("all");
+                setLocationFilter("all");
+                setOrganizerFilter("all");
               }}
             >
               Clear All Filters
@@ -415,9 +460,8 @@ const AllOlympiadsPage = () => {
                   layout
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
-                  <Card className="h-full hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                  <Card className="h-full hover:shadow-xl transition-all duration-300 bg-white border border-black">
                     <CardContent className="p-6 h-full flex flex-col">
-                      {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
@@ -427,26 +471,34 @@ const AllOlympiadsPage = () => {
                             {olympiad.description}
                           </p>
                         </div>
-                        <Badge className={`ml-3 ${getStatusColor(olympiad.status)}`}>
+                        <Badge
+                          className={`ml-3 border-black ${getStatusColor(
+                            olympiad.status
+                          )}`}
+                        >
                           {olympiad.status}
                         </Badge>
                       </div>
 
-                      {/* Details */}
                       <div className="space-y-3 mb-4 flex-1">
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                           <Calendar className="h-4 w-4 text-blue-500" />
                           <span>{formatDate(olympiad.occurringDay)}</span>
                         </div>
-                        
+
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                           <MapPin className="h-4 w-4 text-green-500" />
-                          <span className="line-clamp-1">{olympiad.location || 'Location TBD'}</span>
+                          <span className="line-clamp-1">
+                            {olympiad.location || "Location TBD"}
+                          </span>
                         </div>
-                        
+
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                           <Building2 className="h-4 w-4 text-purple-500" />
-                          <span className="line-clamp-1">{olympiad.organizer?.organizationName || 'Unknown Organizer'}</span>
+                          <span className="line-clamp-1">
+                            {olympiad.organizer?.organizationName ||
+                              "Unknown Organizer"}
+                          </span>
                         </div>
 
                         {olympiad.rankingType && (
@@ -464,41 +516,57 @@ const AllOlympiadsPage = () => {
                         )}
                       </div>
 
-                      {/* Class Types */}
-                      {olympiad.classtypes && olympiad.classtypes.length > 0 && (
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-700">Available Grades</span>
-                            <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 border-blue-200">
-                              {olympiad.classtypes.length} grades
-                            </Badge>
-                          </div>
-                          <div className="flex flex-wrap gap-1">
-                            {olympiad.classtypes.slice(0, 3).map((classType) => (
-                              <Badge key={classType.id} variant="outline" className="text-xs bg-green-100 text-green-800 border-green-300">
-                                Grade {getGradeNumber(classType.classYear)}
+                      {olympiad.classtypes &&
+                        olympiad.classtypes.length > 0 && (
+                          <div className="mb-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-gray-700">
+                                Available Grades
+                              </span>
+                              <Badge
+                                variant="secondary"
+                                className="text-xs bg-blue-100 text-blue-800 border-black"
+                              >
+                                {olympiad.classtypes.length} grades
                               </Badge>
-                            ))}
-                            {olympiad.classtypes.length > 3 && (
-                              <Badge variant="outline" className="text-xs bg-gray-100 text-gray-800 border-gray-300">
-                                +{olympiad.classtypes.length - 3} more
-                              </Badge>
-                            )}
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              {olympiad.classtypes
+                                .slice(0, 3)
+                                .map((classType) => (
+                                  <Badge
+                                    key={classType.id}
+                                    variant="outline"
+                                    className="text-xs bg-green-100 text-green-800 border-black"
+                                  >
+                                    Grade {getGradeNumber(classType.classYear)}
+                                  </Badge>
+                                ))}
+                              {olympiad.classtypes.length > 3 && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs bg-gray-100 text-gray-800 border-black"
+                                >
+                                  +{olympiad.classtypes.length - 3} more
+                                </Badge>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Actions */}
                       <div className="flex gap-2 pt-4 border-t">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 bg-white border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700"
-                          onClick={() => router.push(`/olympiad/${olympiad.id}`)}
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Button>
+                        {olympiad.status === "FINISHED" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 bg-orange-500 "
+                            onClick={() =>
+                              router.push(`/olympiad/${olympiad.id}`)
+                            }
+                          >
+                            Дэлгэрэнгүй
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

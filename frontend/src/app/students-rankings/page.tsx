@@ -15,9 +15,9 @@ const Rankings = () => {
           ease: "easeOut",
         }}
         style={{ transformOrigin: "top" }}
-        className="text-white"
+        className="text-black"
       >
-        <div className="bg-black h-screen w-full">
+        <div className="h-screen w-full">
           <StudentsRanking />
         </div>
       </motion.div>
