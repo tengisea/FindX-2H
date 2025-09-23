@@ -96,8 +96,8 @@ export const CompleteRank = () => {
 
                 <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
                   <Image
-                    src="/images/photo.avif"
-                    alt="profile"
+                    src={person.profilePicture || "/images/photo.avif"}
+                    alt={`${person.name} profile`}
                     width={64}
                     height={64}
                     className="rounded-full object-cover w-full h-full"

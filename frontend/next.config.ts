@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "assets.grok.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   // Vercel optimizations

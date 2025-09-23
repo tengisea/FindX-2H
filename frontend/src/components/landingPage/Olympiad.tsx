@@ -48,20 +48,20 @@ const formatClassYear = (classYear: string | null | undefined) => {
 
 const formatDateWithFallback = (dateString: string | null | undefined, fallbackText: string = "Тодорхойгүй") => {
   if (!dateString) return fallbackText;
-  
+
   try {
     const date = new Date(dateString);
-    
+
     // Check if date is valid
     if (isNaN(date.getTime())) {
       return "Буруу огноо";
     }
-    
+
     // Use Mongolian locale for better formatting
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    
+
     return `${year}.${month}.${day}`;
   } catch (error) {
     console.error("Date formatting error:", error, "for date:", dateString);
@@ -199,11 +199,10 @@ export const Olympiad = () => {
                 onClick={() => setSelectedStatus(status)}
                 className={`
                 flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
-                ${
-                  isSelected
+                ${isSelected
                     ? "bg-[#ff8400] hover:bg-[#ff8400] text-white"
                     : "bg-white hover:bg-gray-50 text-gray-700 border-gray-300 hover:border-[#ff8400]/50 shadow-sm hover:text-[#ff8400]"
-                }
+                  }
               `}
               >
                 <Star className="w-5 h-5" />
@@ -220,7 +219,7 @@ export const Olympiad = () => {
                 <Trophy className="w-8 h-8 text-[#ff8400]" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {getStatusDisplayName(selectedStatus).charAt(0).toUpperCase() + getStatusDisplayName(selectedStatus).slice(1)}{" "} олимпиадууд олдсонгүй.
+                {getStatusDisplayName(selectedStatus).charAt(0).toUpperCase() + getStatusDisplayName(selectedStatus).slice(1)}{" "} олимпиадууд олдсонгүй.
               </h3>
               <p className="text-gray-600 mb-4">
                 {getStatusDisplayName(selectedStatus).charAt(0).toUpperCase() + getStatusDisplayName(selectedStatus).slice(1)} олимпиадууд олдсонгүй. Дахин оролдоно уу.
@@ -281,7 +280,7 @@ export const Olympiad = () => {
                           <Calendar className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Олимпиадын огноо</span>
                         </div>
-                        <div className="text-black font-semibold">
+                        <div className="text-black pl-6">
                           {formatDateWithFallback(olympiad.occurringDay, "Огноо тодорхойгүй")}
                         </div>
 
@@ -289,13 +288,13 @@ export const Olympiad = () => {
                           <Trophy className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Анги</span>
                         </div>
-                        <div className="text-black font-semibold">
+                        <div className="text-black pl-6">
                           {olympiad.classtypes && olympiad.classtypes.length > 0
                             ? olympiad.classtypes
-                                .map((classtype) =>
-                                  formatClassYear(classtype.classYear)
-                                )
-                                .join(", ")
+                              .map((classtype) =>
+                                formatClassYear(classtype.classYear)
+                              )
+                              .join(", ")
                             : "Тодорхойгүй"}
                         </div>
                       </div>
@@ -305,7 +304,7 @@ export const Olympiad = () => {
                           <MapPin className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Байршил</span>
                         </div>
-                        <div className="text-black font-semibold">
+                        <div className="text-black pl-6">
                           {olympiad.location || "Тодорхойгүй"}
                         </div>
 
@@ -313,7 +312,7 @@ export const Olympiad = () => {
                           <Clock className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Бүртгүүлэх хугацаа</span>
                         </div>
-                        <div className="text-black font-semibold">
+                        <div className="text-black pl-6">
                           {formatDateWithFallback(olympiad.closeDay, "Хугацаа тодорхойгүй")}
                         </div>
                       </div>
