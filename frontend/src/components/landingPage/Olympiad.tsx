@@ -16,7 +16,6 @@ import {
   Trophy,
   MapPin,
   Clock,
-  Eye,
   Star,
   ArrowRight,
 } from "lucide-react";
@@ -63,11 +62,11 @@ const formatDate = (dateString: string) => {
 const getStatusDisplayName = (status: string) => {
   switch (status) {
     case "OPEN":
-      return "Open";
+      return "Нээлттэй";
     case "CLOSED":
-      return "Closed";
+      return "Хаагдсан";
     case "FINISHED":
-      return "Finished";
+      return "Дууссан";
     case "DRAFT":
       return "Draft";
     default:
@@ -111,10 +110,10 @@ export const Olympiad = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Featured Olympiad Competitions
+              Олимпиадуудын мэдээлэл
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Loading olympiads...
+              Олимпиадуудыг хайж байна...
             </p>
           </div>
         </div>
@@ -128,10 +127,10 @@ export const Olympiad = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Featured Olympiad Competitions
+              Олимпиадуудын мэдээлэл
             </h2>
             <p className="text-lg text-red-500 max-w-2xl mx-auto">
-              Error loading olympiads: {error.message}
+              Олимпиадуудын мэдээлэл олдох боломжгүй: {error.message}
             </p>
           </div>
         </div>
@@ -145,10 +144,10 @@ export const Olympiad = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Featured Olympiad Competitions
+              Олимпиадуудын мэдээлэл
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              No olympiads available at the moment. Please check back later.
+              Одоогоор олимпиадууд олдсонгүй. Дахин оролдоно уу.
             </p>
           </div>
         </div>
@@ -164,8 +163,8 @@ export const Olympiad = () => {
             Олимпиадуудын мэдээлэл
           </h2>
           <p className="text-lg text-black max-w-2xl mx-auto">
-            Академик тэмцээнүүдэд оролцож, шилдэг оюутнуудтай өрсөлдөн ур
-            чадвараа харуул
+            Академик тэмцээнүүдэд оролцож, шилдэг сургуулийн сурагчидтай өрсөлдөн ур
+            чадвараа сорино уу.
           </p>
         </div>
 
@@ -183,8 +182,8 @@ export const Olympiad = () => {
                 flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200
                 ${
                   isSelected
-                    ? "bg-orange-500 hover:bg-orange-600 text-white shadow-lg"
-                    : "bg-white hover:bg-gray-50 text-gray-700 border-gray-300 hover:border-orange-500/50 shadow-sm"
+                    ? "bg-[#ff8400] hover:bg-[#ff8400] text-white"
+                    : "bg-white hover:bg-gray-50 text-gray-700 border-gray-300 hover:border-[#ff8400]/50 shadow-sm hover:text-[#ff8400]"
                 }
               `}
               >
@@ -199,16 +198,13 @@ export const Olympiad = () => {
           <div className="text-center py-16 ">
             <div className="bg-white rounded-2xl p-8 max-w-md mx-auto shadow-lg">
               <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center">
-                <Trophy className="w-8 h-8 text-orange-500" />
+                <Trophy className="w-8 h-8 text-[#ff8400]" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                No {getStatusDisplayName(selectedStatus).toLowerCase()}{" "}
-                olympiads
+              {getStatusDisplayName(selectedStatus).charAt(0).toUpperCase() + getStatusDisplayName(selectedStatus).slice(1)}{" "} олимпиадууд олдсонгүй.
               </h3>
               <p className="text-gray-600 mb-4">
-                There are currently no{" "}
-                {getStatusDisplayName(selectedStatus).toLowerCase()} olympiads
-                available. Please check back later or try a different status.
+                {getStatusDisplayName(selectedStatus).charAt(0).toUpperCase() + getStatusDisplayName(selectedStatus).slice(1)} олимпиадууд олдсонгүй. Дахин оролдоно уу.
               </p>
             </div>
           </div>
@@ -228,50 +224,50 @@ export const Olympiad = () => {
                   key={olympiad.id}
                   className="bg-white flex flex-col border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden"
                 >
-                  <div className="relative h-32 bg-gradient-to-r from-orange-500 to-orange-600 overflow-hidden">
-                    {olympiad.rankingType === "NATIONAL" && (
-                      <div className="absolute top-4 left-4 z-10">
-                        <Badge className="bg-white text-orange-600 border-0 flex items-center gap-1 shadow-lg font-semibold">
-                          <Star className="w-3 h-3" />
-                          Featured
-                        </Badge>
-                      </div>
-                    )}
-                    <div className="absolute top-4 right-4">
+                  <div className="relative h-20 bg-gradient-to-r from-[#ff8400] to-[#ff8400] overflow-hidden">
+                    <div className="absolute top-4 left-4">
                       <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
                         <Trophy className="w-8 h-8 text-white" />
                       </div>
                     </div>
+                    {olympiad.rankingType === "NATIONAL" && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <Badge className="bg-white text-[#ff8400] border-0 flex items-center gap-1 shadow-lg font-semibold">
+                          <Star className="w-3 h-3" />
+                          Онцолсон
+                        </Badge>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="p-6 flex-grow">
-                    <CardTitle className="text-2xl font-bold text-black mb-3">
+                  <div className="p-3 flex-grow">
+                    <CardTitle className="text-lg font-bold text-black mb-2">
                       {olympiad.name}
                     </CardTitle>
-                    <CardDescription className="text-black leading-relaxed mb-6">
+                    <CardDescription className="text-black leading-relaxed mb-3">
                       {displayDescription}
                       {shouldTruncate && (
                         <button
                           onClick={(e) => toggleDescription(olympiad.id, e)}
-                          className="ml-2 text-orange-500 hover:text-orange-600 font-medium transition-colors duration-200 inline-block"
+                          className="ml-2 text-[#ff8400] hover:text-[#ff8400] font-medium transition-colors duration-200 inline-block"
                         >
-                          {isExpanded ? "See less" : "See more"}
+                          {isExpanded ? "Хумих" : "Дэлгэрэнгүй"}
                         </button>
                       )}
                     </CardDescription>
 
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <div className="space-y-1 p-2 bg-gray-50 rounded-xl">
                         <div className="flex items-center gap-2 text-sm text-black">
-                          <Calendar className="w-4 h-4 text-orange-500" />
+                          <Calendar className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Олимпиадын огноо</span>
                         </div>
                         <div className="text-black font-semibold">
                           {formatDate(olympiad.occurringDay)}
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm text-black mt-3">
-                          <Trophy className="w-4 h-4 text-orange-500" />
+                        <div className="flex items-center gap-2 text-sm text-black mt-1">
+                          <Trophy className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Анги</span>
                         </div>
                         <div className="text-black font-semibold">
@@ -283,17 +279,17 @@ export const Olympiad = () => {
                         </div>
                       </div>
 
-                      <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
+                      <div className="space-y-1 p-2 bg-gray-50 rounded-xl">
                         <div className="flex items-center gap-2 text-sm text-black">
-                          <MapPin className="w-4 h-4 text-orange-500" />
+                          <MapPin className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Байршил</span>
                         </div>
                         <div className="text-black font-semibold">
                           {olympiad.location}
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm text-black mt-3">
-                          <Clock className="w-4 h-4 text-orange-500" />
+                        <div className="flex items-center gap-2 text-sm text-black mt-1">
+                          <Clock className="w-4 h-4 text-[#ff8400]" />
                           <span className="font-medium">Бүртгүүлэх огноо</span>
                         </div>
                         <div className="text-black font-semibold">
@@ -303,12 +299,12 @@ export const Olympiad = () => {
                     </div>
                   </div>
 
-                  <CardFooter className="pt-4 bg-gray-800/20 rounded-b-lg">
-                    {olympiad.status === "FINISHED" && (
+                  <CardFooter className="pt-2 pb-2 bg-white rounded-b-lg flex justify-center items-center">
+                    {(olympiad.status === "FINISHED" || olympiad.status === "CLOSED") && (
                       <PageTransition href={`/olympiad/${olympiad.id}`}>
                         <Button
                           variant="outline"
-                          className="w-full bg-orange-500 text-white  font-medium"
+                          className="bg-[#ff8400] text-white font-medium px-8"
                         >
                           Дэлгэрэнгүй
                         </Button>
@@ -324,7 +320,7 @@ export const Olympiad = () => {
         <div className="text-center mt-12">
           <Button
             onClick={() => router.push("/olympiads")}
-            className="bg-white  text-black border border-black   flex items-center gap-2 mx-auto"
+            className="bg-white  text-black border flex items-center gap-2 mx-auto hover:bg-[#ff8400] hover:text-white"
           >
             Бүх олимпиадууд үзэх
             <ArrowRight className="w-4 h-4" />
