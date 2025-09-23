@@ -7,7 +7,13 @@ const StudentDetailPage = () => {
   const params = useParams();
   const studentId = params.id as string;
 
-  return <StudentDetail studentId={studentId} />;
+  return (
+    <div className="p-6">
+      <div className="max-w-6xl mx-auto">
+        <StudentDetail studentId={studentId} />
+      </div>
+    </div>
+  );
 };
 
 export default StudentDetailPage;

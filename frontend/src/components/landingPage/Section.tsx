@@ -47,19 +47,17 @@ export const Section = () => {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-5xl lg:text-6xl font-bold text-black leading-tight">
-                Elevate Academic
+                Тавтай <br />
+                <span className="text-orange-500">морилно</span>
                 <br />
-                <span className="text-orange-500">Competition</span>
-                <br />
-                Excellence
+                уу
               </h1>
             </div>
 
-            <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-              Streamline Olympiad competition management by connecting
-              administrators, host organizations, and students through automated
-              registration, real-time scoring, and dynamic ranking
-              visualization.
+            <p className="text-xl text-black leading-relaxed max-w-lg">
+              Админ, зохион байгуулагч, оюутнуудыг автомат бүртгэл, шуурхай
+              онооны систем, динамик ранкын дүрслэлээр холбон, олимпиадын
+              удирдлагыг оновчтой болгоно.
             </p>
 
             <div className="grid grid-cols-3 gap-8 py-6">
@@ -67,36 +65,21 @@ export const Section = () => {
                 <div className="text-3xl font-bold text-orange-500">
                   {stats.activeStudents.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-400">Идэвхитэй оюутан</div>
+                <div className="text-sm text-black">Идэвхитэй оюутан</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-orange-500">
                   {stats.hostOrganizations.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-400">Зохион байгуулагчид</div>
+                <div className="text-sm text-black">Зохион байгуулагчид</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-orange-500">
                   {stats.competitionsHeld.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-black">
                   Зохион байгуулсан тэмцээнүүд
                 </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-6 pt-8">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Lock className="w-4 h-4 text-green-500" />
-                <span>SSL Secured</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Shield className="w-4 h-4 text-green-500" />
-                <span>Certified Platform</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Users className="w-4 h-4 text-green-500" />
-                <span>Trusted by Schools</span>
               </div>
             </div>
           </div>
@@ -113,27 +96,29 @@ export const Section = () => {
                 />
               </div>
 
-              <div className="absolute top-6 right-6 bg-gray-800/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-700">
+              <div className="absolute top-6 right-6 bg-white  rounded-xl px-4 py-3  border border-black">
                 <div className="flex items-center gap-2 text-black">
                   <Trophy className="w-5 h-5 text-orange-500" />
                   <div>
-                    <div className="font-bold text-sm">Top Performer</div>
+                    <div className="font-bold text-sm">Тэргүүлэгч оюутан</div>
                     <div className="text-xs text-gray-600">
                       {stats.topPerformer
                         ? `${stats.topPerformer.name} - Rank #${1}`
-                        : "No data available"}
+                        : "Мэдээлэл олдсонгүй"}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute bottom-6 left-6 bg-gray-800/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-700">
+              <div className="absolute bottom-6 left-6 bg-white  rounded-xl px-4 py-3  border border-black">
                 <div className="flex items-center gap-4 text-black">
                   <div className="text-center">
                     <div className="font-bold text-lg text-orange-500">
                       {stats.activeStudents > 0 ? "100%" : "0%"}
                     </div>
-                    <div className="text-xs text-gray-600">Active Rate</div>
+                    <div className="text-xs text-gray-600">
+                      Идэвхитэй оюутан
+                    </div>
                   </div>
                   <div className="w-px h-8 bg-gray-600"></div>
                   <div className="text-center">
@@ -142,7 +127,7 @@ export const Section = () => {
                         {stats.competitionsHeld > 0 ? "5.0" : "0.0"}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-600">Platform Rating</div>
+                    <div className="text-xs text-gray-600">Rating</div>
                   </div>
                 </div>
               </div>

@@ -75,7 +75,7 @@ export const StudentProfileHeader = ({
     }
   };
   return (
-    <div className="bg-gradient-to-r from-card to-card/80 rounded-xl border border-border/30 p-5">
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
       <div className="flex items-center justify-between">
         {/* Left: Profile Info */}
         <div className="flex items-center space-x-5">
@@ -148,7 +148,7 @@ export const StudentProfileHeader = ({
         <div className="flex items-center space-x-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">{totalMedals}</div>
-            <div className="text-xs text-gray-500">Medals</div>
+            <div className="text-xs text-gray-500">Медалууд</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-500">
@@ -156,7 +156,7 @@ export const StudentProfileHeader = ({
                 ? student.participatedOlympiads.length
                 : 0}
             </div>
-            <div className="text-xs text-gray-500">Olympiads</div>
+            <div className="text-xs text-gray-500">Олимпиад</div>
           </div>
         </div>
         {recentActivity.length > 0 && (

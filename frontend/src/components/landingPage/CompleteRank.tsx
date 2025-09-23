@@ -21,17 +21,17 @@ export const CompleteRank = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-center text-black mb-6">
-        Complete Rankings
+        Сурагчидын эрэмбэ
       </h1>
 
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6 ">
         {allStudents.slice(0, 5).map((person, index) => (
           <div
             key={person.id}
             className=" hover:shadow-md cursor-pointer"
             onClick={() => handleViewProfile(person.id)}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between bg-white rounded-lg border border-black">
               <div className="flex items-center space-x-6">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-black font-bold text-lg bg-gray-200">
                   {index + 1}
@@ -51,7 +51,7 @@ export const CompleteRank = () => {
                   <h3 className="text-lg font-bold text-black">
                     {person.name}
                   </h3>
-                  <p className="text-gray-400 text-sm">Student</p>
+                  <p className="text-black text-sm">Сурагч</p>
                 </div>
               </div>
 
@@ -60,7 +60,7 @@ export const CompleteRank = () => {
                   <div className="text-3xl font-bold text-orange-500">
                     {person.ranking.toLocaleString()}
                   </div>
-                  <p className="text-gray-400 text-sm">points</p>
+                  <p className="text-black text-sm">points</p>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -83,9 +83,9 @@ export const CompleteRank = () => {
 
                 <Button
                   onClick={() => handleViewProfile(person.id)}
-                  className="text-black bg-transparent border-0 font-medium text-sm hover:bg-transparent hover:text-gray-600 cursor-pointer"
+                  className="text-black  bg-transparent font-medium text-sm hover:bg-transparent hover:text-gray-600 cursor-pointer"
                 >
-                  View &gt;
+                  Үзэх &gt;
                 </Button>
               </div>
             </div>
@@ -96,10 +96,10 @@ export const CompleteRank = () => {
       <div className="text-center mt-8">
         <Button
           onClick={handleClickViewAllRankings}
-          className="inline-flex bg-transparent border border-gray-600 items-center space-x-2 text-black font-medium hover:bg-gray-200"
+          className="inline-flex bg-transparent border border-black items-center space-x-2 text-black font-medium hover:bg-gray-200"
         >
           <Users className="w-4 h-4" />
-          <span>View All Rankings</span>
+          <span>Бүх сурагчидын эрэмбэ</span>
         </Button>
       </div>
     </div>

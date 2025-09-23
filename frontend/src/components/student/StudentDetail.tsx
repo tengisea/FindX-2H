@@ -26,8 +26,8 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="content-wrapper container">
+      <div className="min-h-screen ">
+        <div className="">
           <div className="flex items-center gap-4 mb-8">
             <Button
               onClick={() => router.push("/")}
@@ -60,8 +60,8 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
 
   if (error || !student) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="content-wrapper container">
+      <div className="min-h-screen ">
+        <div className="">
           <div className="flex items-center gap-4 mb-8">
             <Button
               onClick={() => router.push("/")}
@@ -69,20 +69,20 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
               className="text-foreground hover:bg-muted"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
+              Буцах
             </Button>
             <h2 className="text-5xl font-bold text-foreground">
-              Student Profile
+              Сурагчийн мэдээлэл
             </h2>
           </div>
           <Card className="border-destructive/20 bg-destructive/10">
             <CardContent className="p-6">
               <p className="text-destructive text-center text-xl">
-                Error loading student data:{" "}
+                Сурагчийн мэдээлэл олсонгүй:{" "}
                 {error?.message || "Student not found"}
               </p>
               <div className="text-center mt-4">
-                <Button onClick={() => router.push("/")}>Back to Home</Button>
+                <Button onClick={() => router.push("/")}>Буцах</Button>
               </div>
             </CardContent>
           </Card>
@@ -99,8 +99,8 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
       : 0;
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="content-wrapper container">
+    <div className="min-h-screen ">
+      <div className="">
         {/* Header with Back Button */}
         <div className="flex items-center mb-12">
           <Button
@@ -109,7 +109,7 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
             className="text-foreground hover:bg-primary hover:text-primary-foreground border-2 border-primary/20 hover:border-primary transition-all duration-300 rounded-xl px-6 py-2 font-medium"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            Буцах
           </Button>
         </div>
 
@@ -121,13 +121,10 @@ export const StudentDetail = ({ studentId }: StudentDetailProps) => {
             formatGrade={formatGrade}
           />
 
-          {/* Stats Cards */}
           <StudentStatsCards student={student} totalMedals={totalMedals} />
 
-          {/* Medal Achievements */}
           <StudentAchievements student={student} />
 
-          {/* Ranking History */}
           <StudentRankingHistory student={student} />
         </div>
       </div>
