@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, {useMemo } from "react";
 
 interface RankingInterfaceProps {
     classType: any;
@@ -38,25 +38,19 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
     }, [studentAnswers]);
 
     const getRankColor = (rank: number) => {
-        if (rank === 1) return "text-yellow-600 bg-yellow-50 border-yellow-200";
-        if (rank === 2) return "text-gray-600 bg-gray-50 border-gray-200";
-        if (rank === 3) return "text-orange-600 bg-orange-50 border-orange-200";
-        if (rank <= 10) return "text-blue-600 bg-blue-50 border-blue-200";
+        if (rank <= 10) return "text-yellow-600 bg-yellow-50 border-yellow-200";
         return "text-muted-foreground bg-muted/50 border-border";
     };
 
     const getRankIcon = (rank: number) => {
-        if (rank === 1) return "🥇";
-        if (rank === 2) return "🥈";
-        if (rank === 3) return "🥉";
         if (rank <= 10) return "🏅";
         return "📊";
     };
 
     const getScoreColor = (score: number, maxScore: number) => {
         const percentage = (score / maxScore) * 100;
-        if (percentage >= 80) return "text-green-600";
-        if (percentage >= 60) return "text-yellow-600";
+        if (percentage >= 55) return "text-green-600";
+        if (percentage >= 20) return "text-yellow-600";
         return "text-red-600";
     };
 
@@ -134,6 +128,31 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                 </div>
             </div>
 
+            <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+                <h4 className="text-lg font-semibold text-primary mb-4">
+                Медалийн хуваарилалт
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center">
+                        <div className="text-3xl mb-2">🥇</div>
+                        <div className="text-sm text-muted-foreground">Алтан медаль</div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-3xl mb-2">🥈</div>
+                        <div className="text-sm text-muted-foreground">Мөнгөн медаль</div>
+                    </div>
+                    <div className="text-center">
+                        <div className="text-3xl mb-2">🥉</div>
+                        <div className="text-sm text-muted-foreground">Хүрэл медаль</div>
+                    </div>
+                </div>
+                <div className="mt-4 text-center">
+                    <p className="text-sm text-muted-foreground">
+                       Нийт медалийн тоо: <span className="font-semibold text-foreground">{classType.medalists}</span>
+                    </p>
+                </div>
+            </div>
+
             {/* Rankings Table */}
             <div className="bg-card rounded-xl border border-border overflow-hidden">
                 <div className="p-6 border-b border-border">
@@ -159,7 +178,7 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                                         {/* Rank */}
                                         <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${getRankColor(rank)}`}>
                                             <span className="font-bold text-lg">
-                                                {rank <= 10 ? rank : "..."}
+                                                {rank <= 15 ? rank : "..."}
                                             </span>
                                         </div>
                                         
@@ -190,8 +209,8 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                                     <div className="w-full bg-muted rounded-full h-2">
                                         <div
                                             className={`h-2 rounded-full transition-all duration-300 ${
-                                                percentage >= 80 ? "bg-green-500" :
-                                                percentage >= 60 ? "bg-yellow-500" : "bg-red-500"
+                                                percentage >= 55 ? "bg-green-500" :
+                                                percentage >= 20 ? "bg-yellow-500" : "bg-red-500"
                                             }`}
                                             style={{ width: `${Math.min(percentage, 100)}%` }}
                                         />
@@ -202,14 +221,8 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                                 {rank <= classType.medalists && (
                                     <div className="mt-3 flex items-center space-x-2">
                                         <span className="text-sm font-medium text-primary">
-                                            🏅 Medal Eligible
+                                            Шагналт байр
                                         </span>
-                                        {rank === 1 && <span className="text-sm text-yellow-600">🥇 Gold</span>}
-                                        {rank === 2 && <span className="text-sm text-gray-600">🥈 Silver</span>}
-                                        {rank === 3 && <span className="text-sm text-orange-600">🥉 Bronze</span>}
-                                        {rank > 3 && rank <= classType.medalists && (
-                                            <span className="text-sm text-blue-600">🏅 Medal</span>
-                                        )}
                                     </div>
                                 )}
                             </div>
@@ -218,34 +231,6 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                 </div>
             </div>
 
-            {/* Medal Distribution Info */}
-            <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
-                <h4 className="text-lg font-semibold text-primary mb-4">
-                    Medal Distribution
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center">
-                        <div className="text-3xl mb-2">🥇</div>
-                        <div className="text-sm text-muted-foreground">Gold Medal</div>
-                        <div className="font-semibold text-foreground">1st Place</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-3xl mb-2">🥈</div>
-                        <div className="text-sm text-muted-foreground">Silver Medal</div>
-                        <div className="font-semibold text-foreground">2nd Place</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-3xl mb-2">🥉</div>
-                        <div className="text-sm text-muted-foreground">Bronze Medal</div>
-                        <div className="font-semibold text-foreground">3rd Place</div>
-                    </div>
-                </div>
-                <div className="mt-4 text-center">
-                    <p className="text-sm text-muted-foreground">
-                        Total medals available: <span className="font-semibold text-foreground">{classType.medalists}</span>
-                    </p>
-                </div>
-            </div>
         </div>
     );
 };

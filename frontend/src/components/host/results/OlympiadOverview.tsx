@@ -10,6 +10,7 @@ interface OlympiadOverviewProps {
     onFinishOlympiad: () => void;
     onExportResults: (olympiadId: string) => void;
     onViewResults: (olympiadId: string) => void;
+    onViewFinalResults: (classTypeId: string) => void;
     getStatusColor: (status: string) => string;
     getStatusDescription: (status: string) => string;
 }
@@ -21,6 +22,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
     onFinishOlympiad,
     onExportResults,
     onViewResults,
+    onViewFinalResults,
     getStatusColor,
     getStatusDescription
 }) => {
@@ -114,14 +116,31 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
                             </div>
                             
                             <div className="pt-4 border-t border-border">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-muted-foreground">
-                                        Click to manage results
-                                    </span>
-                                    <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
+                                {olympiad.status === "FINISHED" ? (
+                                    <div className="space-y-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onViewFinalResults(classType.id);
+                                            }}
+                                            className="w-full px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                                        >
+                                            Эцсийн үр дүн харах
+                                        </button>
+                                        <div className="text-xs text-center text-muted-foreground">
+                                            Медаль олгогдсон
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-muted-foreground">
+                                            Click to manage results
+                                        </span>
+                                        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
