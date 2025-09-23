@@ -26,10 +26,6 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
     const organizer = organizerData?.getOrganizer;
     const olympiads = organizer?.Olympiads || [];
 
-    // Debug: Log olympiad data to see what we're getting
-    console.log("Olympiads from organizer query:", olympiads);
-    console.log("Sample olympiad:", olympiads[0]);
-
     // Date formatting function
     const formatDate = (dateString?: string | null) => {
         if (!dateString || dateString === null || dateString === undefined || dateString === "") {
@@ -85,36 +81,6 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
             </div>
         );
     }
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'OPEN':
-                return 'bg-green-100 text-green-800 border-green-200';
-            case 'UNDER_REVIEW':
-                return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-            case 'CLOSED':
-                return 'bg-gray-100 text-gray-800 border-gray-200';
-            case 'FINISHED':
-                return 'bg-blue-100 text-blue-800 border-blue-200';
-            default:
-                return 'bg-gray-100 text-gray-800 border-gray-200';
-        }
-    };
-
-    const getStatusText = (status: string) => {
-        switch (status) {
-            case 'OPEN':
-                return 'Active';
-            case 'UNDER_REVIEW':
-                return 'Under Review';
-            case 'CLOSED':
-                return 'Closed';
-            case 'FINISHED':
-                return 'Finished';
-            default:
-                return status;
-        }
-    };
 
     return (
         <div className="space-y-6">

@@ -49,10 +49,10 @@ const HostPage = () => {
             occurringTime: "9:00",
             classRoom: null,
             questions: [
-                { questionName: "Question1", maxScore: 5 },
-                { questionName: "Question2", maxScore: 5 },
-                { questionName: "Question3", maxScore: 5 },
-                { questionName: "Question4", maxScore: 5 },
+                { questionName: "Бодлого  1", maxScore: 5 },
+                { questionName: "Бодлого  2", maxScore: 5 },
+                { questionName: "Бодлого  3", maxScore: 5 },
+                { questionName: "Бодлого  4", maxScore: 5 },
             ],
         },
     ]);
@@ -78,10 +78,10 @@ const HostPage = () => {
                 occurringTime: "9:00",
                 classRoom: null,
                 questions: [
-                    { questionName: "Question1", maxScore: 5 },
-                    { questionName: "Question2", maxScore: 5 },
-                    { questionName: "Question3", maxScore: 5 },
-                    { questionName: "Question4", maxScore: 5 },
+                    { questionName: "Бодлого  1", maxScore: 5 },
+                    { questionName: "Бодлого  2", maxScore: 5 },
+                    { questionName: "Бодлого  3", maxScore: 5 },
+                    { questionName: "Бодлого  4", maxScore: 5 },
                 ],
             },
         ]);
@@ -125,8 +125,8 @@ const HostPage = () => {
                 occurringTime: "9:00",
                 classRoom: null,
                 questions: [
-                    { questionName: "Question1", maxScore: 5 },
-                    { questionName: "Question2", maxScore: 5 },
+                    { questionName: "Бодлого  1", maxScore: 5 },
+                    { questionName: "Бодлого  2", maxScore: 5 },
                 ],
             },
         ]);
@@ -139,7 +139,7 @@ const HostPage = () => {
     const addQuestion = (classTypeIndex: number) => {
         const updated = [...classTypes];
         updated[classTypeIndex].questions.push({
-            questionName: `Question${updated[classTypeIndex].questions.length + 1}`,
+            questionName: `Бодлого  ${updated[classTypeIndex].questions.length + 1}`,
             maxScore: 5,
         });
 
