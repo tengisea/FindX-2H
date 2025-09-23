@@ -10,6 +10,13 @@ import {
   OlympiadRankingType,
   OlympiadStatus
 } from "@/generated";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface OlympiadEditModalProps {
   olympiad: Olympiad | null;
@@ -247,13 +254,13 @@ export const OlympiadEditModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#1a1a1a] rounded-2xl shadow-2xl border border-border max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white text-black rounded-2xl shadow-2xl border border-gray-300 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">Edit Olympiad</h2>
+              <h2 className="text-2xl font-bold text-black">Edit Olympiad</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-600 hover:text-black transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -265,83 +272,86 @@ export const OlympiadEditModal = ({
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Olympiad Name *
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Location
                 </label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                   placeholder="Enter location"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Registration Close Date
                 </label>
                 <input
                   type="date"
                   value={formData.closeDay}
                   onChange={(e) => setFormData({ ...formData, closeDay: e.target.value })}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Olympiad Date
                 </label>
                 <input
                   type="date"
                   value={formData.occurringDay}
                   onChange={(e) => setFormData({ ...formData, occurringDay: e.target.value })}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Ranking Type *
                 </label>
-                <select
+                <Select
                   value={formData.rankingType}
-                  onChange={(e) => setFormData({ ...formData, rankingType: e.target.value as OlympiadRankingType })}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
-                  required
+                  onValueChange={(value) => setFormData({ ...formData, rankingType: value as OlympiadRankingType })}
                 >
-                  <option value={OlympiadRankingType.School}>School Level</option>
-                  <option value={OlympiadRankingType.District}>District Level</option>
-                  <option value={OlympiadRankingType.Regional}>Regional Level</option>
-                  <option value={OlympiadRankingType.National}>National Level</option>
-                  <option value={OlympiadRankingType.ATier}>A Tier</option>
-                  <option value={OlympiadRankingType.BTier}>B Tier</option>
-                  <option value={OlympiadRankingType.CTier}>C Tier</option>
-                </select>
+                  <SelectTrigger className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black">
+                    <SelectValue placeholder="Select ranking type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={OlympiadRankingType.School}>School Level</SelectItem>
+                    <SelectItem value={OlympiadRankingType.District}>District Level</SelectItem>
+                    <SelectItem value={OlympiadRankingType.Regional}>Regional Level</SelectItem>
+                    <SelectItem value={OlympiadRankingType.National}>National Level</SelectItem>
+                    <SelectItem value={OlympiadRankingType.ATier}>A Tier</SelectItem>
+                    <SelectItem value={OlympiadRankingType.BTier}>B Tier</SelectItem>
+                    <SelectItem value={OlympiadRankingType.CTier}>C Tier</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-black mb-2">
                   Status
                 </label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as OlympiadStatus })}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                 >
                   <option value={OlympiadStatus.Draft}>Draft</option>
                   <option value={OlympiadStatus.UnderReview}>Under Review</option>
@@ -353,14 +363,14 @@ export const OlympiadEditModal = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">
+              <label className="block text-sm font-medium text-black mb-2">
                 Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
               />
             </div>
 
@@ -372,7 +382,7 @@ export const OlympiadEditModal = ({
                 onChange={(e) => setFormData({ ...formData, invitation: e.target.checked })}
                 className="w-4 h-4 text-primary rounded focus:ring-primary"
               />
-              <label htmlFor="invitation" className="text-sm font-medium text-white">
+              <label htmlFor="invitation" className="text-sm font-medium text-black">
                 Send invitations to students
               </label>
             </div>
@@ -380,7 +390,7 @@ export const OlympiadEditModal = ({
             {/* Class Types */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-white">Class Types</h3>
+                <h3 className="text-lg font-semibold text-black">Class Types</h3>
                 <button
                   type="button"
                   onClick={addClassType}
@@ -392,9 +402,9 @@ export const OlympiadEditModal = ({
 
               <div className="space-y-4">
                 {classTypes.map((classType, classTypeIndex) => (
-                  <div key={classTypeIndex} className="border border-border rounded-xl p-4">
+                  <div key={classTypeIndex} className="border border-gray-300 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium text-white">
+                      <h4 className="font-medium text-black">
                         Class Type {classTypeIndex + 1}
                       </h4>
                       <button
@@ -410,13 +420,13 @@ export const OlympiadEditModal = ({
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <label className="block text-sm font-medium text-white mb-2">
+                        <label className="block text-sm font-medium text-black mb-2">
                           Class Year *
                         </label>
                         <select
                           value={classType.classYear}
                           onChange={(e) => updateClassType(classTypeIndex, 'classYear', e.target.value as ClassYear)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                           required
                         >
                           {Object.values(ClassYear).map((year) => (
@@ -428,27 +438,27 @@ export const OlympiadEditModal = ({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-white mb-2">
+                        <label className="block text-sm font-medium text-black mb-2">
                           Max Score *
                         </label>
                         <input
                           type="number"
                           value={classType.maxScore}
-                          className="w-full px-3 py-2 border border-border rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
                           disabled={true}
                           title="Max score is automatically calculated from the sum of all question scores"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-white mb-2">
+                        <label className="block text-sm font-medium text-black mb-2">
                           Occurring Time
                         </label>
                         <input
                           type="time"
                           value={classType.occurringTime}
                           onChange={(e) => updateClassType(classTypeIndex, 'occurringTime', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                         />
                       </div>
                     </div>
@@ -456,7 +466,7 @@ export const OlympiadEditModal = ({
                     {/* Questions */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h5 className="font-medium text-white">Questions</h5>
+                        <h5 className="font-medium text-black">Questions</h5>
                         <button
                           type="button"
                           onClick={() => addQuestion(classTypeIndex)}
@@ -474,14 +484,14 @@ export const OlympiadEditModal = ({
                               placeholder="Question name"
                               value={question.questionName}
                               onChange={(e) => updateQuestion(classTypeIndex, questionIndex, 'questionName', e.target.value)}
-                              className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                             />
                             <input
                               type="number"
                               placeholder="Max score"
                               value={question.maxScore}
                               onChange={(e) => updateQuestion(classTypeIndex, questionIndex, 'maxScore', parseInt(e.target.value))}
-                              className="w-24 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-white"
+                              className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                             />
                             <button
                               type="button"
@@ -502,11 +512,11 @@ export const OlympiadEditModal = ({
             </div>
 
             {/* Submit Buttons */}
-            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
+            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-gray-300">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-3 border border-border text-white rounded-lg hover:bg-accent transition-colors"
+                className="px-6 py-3 border border-gray-300 text-black rounded-lg hover:bg-accent transition-colors"
               >
                 Cancel
               </button>

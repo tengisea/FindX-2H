@@ -236,16 +236,6 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                 }}>
 
-                {/* Header */}
-                <div className="mb-6 sm:mb-8 pl-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                        Manage Results
-                    </h2>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                        Complete student answer management, scoring, and medal assignment system
-                    </p>
-                </div>
-
                 {/* Status Progress Indicator */}
                 {selectedOlympiadData && (
                     <StatusProgressIndicator
@@ -258,23 +248,6 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                 {/* Filters and Selection */}
                 <div className="mb-6 pl-8">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                        <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Filter by Status
-                            </label>
-                            <select
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base bg-white text-gray-900"
-                            >
-                                <option value="all">All Olympiads</option>
-                                <option value="DRAFT">Draft</option>
-                                <option value="OPEN">Open</option>
-                                <option value="CLOSED">Closed</option>
-                                <option value="MEDALS_PREVIEW">Medals Preview</option>
-                                <option value="FINISHED">Finished</option>
-                            </select>
-                        </div>
 
                         <div className="flex-1">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
