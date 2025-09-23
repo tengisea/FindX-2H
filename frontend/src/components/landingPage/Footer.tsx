@@ -471,7 +471,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4">
         {/* Partner Logos Section */}
         <div className="text-center mb-4">
-          <h3 className="text-lg font-semibold text-black mb-3">Trusted by Leading Organizations</h3>
+          <h3 className="text-lg font-semibold text-black mb-3">Тэргүүлэгч байгууллагуудын итгэлийг хүлээсэн.</h3>
           <div className="bg-white rounded-xl p-4">
             <LogoLoop
               logos={logos}
@@ -493,8 +493,8 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-3">
           <div className="text-center">
-            <div className="text-gray-400 text-sm">
-              © 2025 FindX. All rights reserved. | Built with passion for education.
+            <div className="text-black text-lg font-medium font-sans">
+            © 2025 FindX. Бүх эрх хуулиар хамгаалагдсан. | Боловсролын төлөө хүсэл эрмэлзлээр бүтээгдсэн.
             </div>
           </div>
         </div>
