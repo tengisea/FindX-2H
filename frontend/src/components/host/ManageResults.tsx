@@ -28,7 +28,6 @@ import { RankingInterface } from "./results/RankingInterface";
 import { MedalManagementInterface } from "./results/MedalManagementInterface";
 import { StatusProgressIndicator } from "./results/StatusProgressIndicator";
 import { FinalResultsTable } from "./results/FinalResultsTable";
-import { OlympiadStatus } from "@/generated";
 
 interface ManageResultsProps {
   olympiads: any[];
