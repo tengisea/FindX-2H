@@ -123,10 +123,10 @@ export const MedalManagementInterface: React.FC<
       });
 
       if (result.data?.updateMedalAssignments?.success) {
-        showSuccess("Medal assignments updated successfully!");
+        showSuccess("Медалийн олгох мэдээлэл амжилттай шинэчлэгдлээ!");
       } else {
         showError(
-          `Failed to update medals: ${
+          `Медалийн олгох мэдээлэл шинэчлэхэд алдаа гарлаа: ${
             result.data?.updateMedalAssignments?.message || "Unknown error"
           }`
         );
@@ -134,7 +134,7 @@ export const MedalManagementInterface: React.FC<
     } catch (error) {
       console.error("Error updating medal assignments:", error);
       showError(
-        `Error updating medal assignments: ${
+        `Медалийн олгох мэдээлэл шинэчлэхэд алдаа гарлаа: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );
@@ -197,25 +197,48 @@ export const MedalManagementInterface: React.FC<
             {olympiad.name} дүн хариуг нэгтгэх
           </p>
         </div>
-        <button
-          onClick={onBack}
-          className="px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors flex items-center space-x-2"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div className="flex items-center space-x-2">
+          {onRefreshMedalPreviews && (
+            <button
+              onClick={onRefreshMedalPreviews}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              <span>Refresh</span>
+            </button>
+          )}
+          <button
+            onClick={onBack}
+            className="px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors flex items-center space-x-2"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          <span>Буцах</span>
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            <span>Буцах</span>
+          </button>
+        </div>
       </div>
 
       {/* Status Information */}
@@ -289,15 +312,15 @@ export const MedalManagementInterface: React.FC<
         <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h4 className="text-lg font-semibold text-foreground">
-              Medal Assignments - Grade{" "}
-              {selectedClassTypeData.classYear.replace("GRADE_", "")}
+              Медалийн оноолт -{" "}
+              {selectedClassTypeData.classYear.replace("GRADE_", "")}р анги
             </h4>
             <div className="flex items-center space-x-2">
               <button
                 onClick={handleSaveMedalAssignments}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
-                Save Changes
+                Өөрчлөлт хадгалах
               </button>
             </div>
           </div>
@@ -323,10 +346,10 @@ export const MedalManagementInterface: React.FC<
                     </h5>
                     <div className="text-lg font-bold">{count}</div>
                     <div className="text-xs text-muted-foreground">
-                      {medalType === "gold" && "1st Place"}
-                      {medalType === "silver" && "2nd Place"}
-                      {medalType === "bronze" && "3rd Place"}
-                      {medalType === "top10" && "Top 10"}
+                      {medalType === "gold" && "1-р байр"}
+                      {medalType === "silver" && "2-р байр"}
+                      {medalType === "bronze" && "3-р байр"}
+                      {medalType === "top10" && "эхний 10 байр"}
                     </div>
                   </div>
                 </div>
@@ -358,9 +381,7 @@ export const MedalManagementInterface: React.FC<
 
           {/* Student Rankings and Medal Assignment */}
           <div className="space-y-4">
-            <h5 className="font-medium text-foreground">
-              Student Rankings & Medal Assignment
-            </h5>
+            <h5 className="font-medium text-foreground">Нэгтгэгдсэн дүн</h5>
 
             {/* Show students from medal preview if available, otherwise from participants */}
             {selectedMedalPreview ? (

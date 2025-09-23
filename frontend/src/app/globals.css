@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "react-day-picker/dist/style.css";
@@ -142,7 +143,8 @@
     background-color: white;
     background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px),
       linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
-    background-size: 40px 40px; /* сүлжээний хэмжээ */
+    background-size: 40px 40px;
+    /* сүлжээний хэмжээ */
   }
 
   /* Typography Hierarchy */
@@ -287,6 +289,11 @@
 }
 
 @layer utilities {
+
+  /* Font families */
+  .font-playfair-display {
+    font-family: "Playfair Display", serif;
+  }
 
   /* Spacing scale (8px / 16px scale) */
   .space-1 {

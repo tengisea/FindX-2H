@@ -34,7 +34,7 @@ export const Header = () => {
           className="flex font-[800] text-2xl cursor-pointer group transition-all duration-300 hover:scale-105 relative"
           onClick={() => router.push("/")}
         >
-          <span className="text-black group-hover:text-gray-600 transition-colors">
+          <span className="text-black group-hover:text-gray-600 transition-colors font-playfair-display font-semibold">
             Find
           </span>
           <Image

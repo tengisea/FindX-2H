@@ -13,6 +13,7 @@ import {
   useClassTypesByOlympiadQuery,
   useQuestionsByClassTypeQuery,
   ClassYear,
+  OlympiadStatus,
 } from "@/generated";
 import {
   Select,
@@ -75,6 +76,19 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
   const [medalPreviews, setMedalPreviews] = useState<any[]>([]);
   const [isFinishingOlympiad, setIsFinishingOlympiad] =
     useState<boolean>(false);
+
+  const getStatusDisplay = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      [OlympiadStatus.Draft]: "Идэвхгүй",
+      [OlympiadStatus.UnderReview]: "Шалгагдаж байна",
+      [OlympiadStatus.Open]: "Нээлттэй",
+      [OlympiadStatus.Closed]: "Хаалттай",
+      [OlympiadStatus.Finished]: "Дууссан",
+      [OlympiadStatus.Cancelled]: "Цуцлагдсан",
+      [OlympiadStatus.MedalsPreview]: "Медал урьдчилан харах",
+    };
+    return statusMap[status] || status;
+  };
 
   // GraphQL hooks
   const {
@@ -277,15 +291,15 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
   const getStatusDescription = (status: string) => {
     switch (status) {
       case "DRAFT":
-        return "Olympiad is being prepared";
+        return "Олимпиадын бэлтгэл явагдаж байна.";
       case "OPEN":
-        return "Registration is open";
+        return "Бүртгэл нээлттэй байна.";
       case "CLOSED":
-        return "Registration closed, ready for scoring";
+        return "Бүртгэл хаагдсан, оноо тооцоход бэлэн.";
       case "MEDALS_PREVIEW":
-        return "Medal assignments ready for review";
+        return "Медалийн хуваарилалт шалгахад бэлэн боллоо.";
       case "FINISHED":
-        return "Olympiad completed and medals finalized";
+        return "Олимпиад дууссан бөгөөд медалийн эцсийн дүн баталгаажлаа.";
       default:
         return "Unknown status";
     }
@@ -407,7 +421,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                 <SelectContent>
                   {filteredOlympiads.map((olympiad) => (
                     <SelectItem key={olympiad.id} value={olympiad.id}>
-                      {olympiad.name} - {olympiad.status}
+                      {olympiad.name} - {getStatusDisplay(olympiad.status)}
                     </SelectItem>
                   ))}
                 </SelectContent>

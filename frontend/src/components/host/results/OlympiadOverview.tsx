@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ClassYear } from "@/generated";
+import { ClassYear, OlympiadStatus } from "@/generated";
 
 interface OlympiadOverviewProps {
   olympiad: any;
@@ -26,6 +26,19 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
   getStatusDescription,
   isFinishingOlympiad = false,
 }) => {
+  const getStatusDisplay = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      [OlympiadStatus.Draft]: "Идэвхгүй",
+      [OlympiadStatus.UnderReview]: "Шалгагдаж байна",
+      [OlympiadStatus.Open]: "Нээлттэй",
+      [OlympiadStatus.Closed]: "Хаалттай",
+      [OlympiadStatus.Finished]: "Дууссан",
+      [OlympiadStatus.Cancelled]: "Цуцлагдсан",
+      [OlympiadStatus.MedalsPreview]: "Медал урьдчилан харах",
+    };
+    return statusMap[status] || status;
+  };
+
   if (!olympiad) return null;
 
   const canFinishOlympiad = olympiad.status === "CLOSED";
@@ -92,7 +105,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
               olympiad.status
             )}`}
           >
-            {olympiad.status}
+            {getStatusDisplay(olympiad.status)}
           </span>
         </div>
 
@@ -116,7 +129,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h5 className="text-lg font-semibold text-foreground mb-2">
-                    Grade {classType.classYear.replace("GRADE_", "")}
+                    {classType.classYear.replace("GRADE_", "")}-р анги
                   </h5>
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-2">
@@ -133,7 +146,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
                           d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
                         />
                       </svg>
-                      <span>Max Score: {classType.maxScore}</span>
+                      <span>Дээд оноо: {classType.maxScore}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <svg
@@ -149,7 +162,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
                           d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
                         />
                       </svg>
-                      <span>Medalists: {classType.medalists}</span>
+                      <span>Медалийн тоо: {classType.medalists}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <svg
@@ -165,7 +178,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
                           d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                         />
                       </svg>
-                      <span>Questions: {classType.questions?.length || 0}</span>
+                      <span>Бодлого: {classType.questions?.length || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -174,7 +187,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
                     {classType.participants?.length || 0}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Participants
+                    Оролцогчид
                   </div>
                 </div>
               </div>
@@ -182,7 +195,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
               <div className="pt-4 border-t border-border">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    Click to manage results
+                    Үр дүн удирдах
                   </span>
                   <svg
                     className="w-4 h-4 text-muted-foreground"
