@@ -26,7 +26,8 @@ import Image from "next/image";
 import { useStudentRanking } from "@/hooks/useStudentRanking";
 import { useAllOlympiadsQuery } from "@/generated";
 import { getRankingTypeDisplayName } from "@/utils/rankingUtils";
-import { mapClassToMongolian, mapClassToEnglish } from "@/utils/classUtils";
+import { mapClassToMongolian } from "@/utils/classUtils";
+import { getAllProvinceOptions } from "@/utils/province-utils";
 import {
   Popover,
   PopoverContent,
@@ -86,8 +87,8 @@ const getStudentOlympiads = (student: any) => {
 
 export const StudentsRanking = () => {
   const [searchStudentsName, setSearchStudentsName] = useState("");
-  const [selectedCity, setSelectedCity] = useState("12р анги");
-  const [selectedOrg, setSelectedOrg] = useState("Бүх аймаг");
+  const [selectedCity, setSelectedCity] = useState("Бүх анги");
+  const [selectedOrg, setSelectedOrg] = useState("Бүх аймаг болон дүүрэг");
   const [selectedOlympiads, setSelectedOlympiads] = useState<any[]>([]);
   const [displayCount, setDisplayCount] = useState(10);
 
@@ -176,7 +177,7 @@ export const StudentsRanking = () => {
         selectedCity === "Бүх анги" || userClassMongolian === selectedCity;
 
       const matchesProvince =
-        selectedOrg === "Бүх аймаг" || user.province === selectedOrg;
+        selectedOrg === "Бүх аймаг болон дүүрэг" || user.province === selectedOrg;
 
       return matchesName && matchesClass && matchesProvince;
     })
@@ -193,6 +194,8 @@ export const StudentsRanking = () => {
   const uniqueProvinces = Array.from(
     new Set(allStudents.map((student) => student.province))
   ).filter(Boolean);
+  
+  const provinceOptions = getAllProvinceOptions();
 
   return (
     <div className="p-6">
@@ -273,22 +276,16 @@ export const StudentsRanking = () => {
                 }}
               >
                 <SelectTrigger className="w-48 text-black border-gray-300">
-                  <SelectValue placeholder="Аймаг сонгох" />
+                  <SelectValue placeholder="Аймаг болон дүүрэг сонгох" />
                 </SelectTrigger>
                 <SelectContent className="text-black border-gray-300">
-                  <SelectItem
-                    value="Бүх аймаг"
-                    className="text-black focus:bg-[#ff8300]"
-                  >
-                    Бүх аймаг
-                  </SelectItem>
-                  {uniqueProvinces.map((province) => (
+                  {provinceOptions.map((option) => (
                     <SelectItem
-                      key={province}
-                      value={province}
+                      key={option.value}
+                      value={option.value}
                       className="text-black focus:bg-[#ff8300]"
                     >
-                      {province}
+                      {option.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

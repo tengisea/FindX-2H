@@ -46,16 +46,26 @@ const formatClassYear = (classYear: string | null | undefined) => {
   return classYearMapping[classYear] || classYear;
 };
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | null | undefined) => {
+  if (!dateString) return "Тодорхойгүй";
+  
   try {
     const date = new Date(dateString);
-    // Use a consistent format that works the same on server and client
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "Буруу огноо";
+    }
+    
+    // Use Mongolian locale for better formatting
     const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year} оны ${month} сарын ${day}`;
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}.${month}.${day}`;
   } catch (error) {
-    return dateString;
+    console.error("Date formatting error:", error, "for date:", dateString);
+    return "Буруу огноо";
   }
 };
 
@@ -103,6 +113,15 @@ export const Olympiad = () => {
   const filteredOlympiads = olympiads.filter(
     (olympiad) => olympiad.status === selectedStatus
   );
+
+  // Debug: Log the olympiad data to check date fields
+  console.log("Olympiads data:", olympiads.map(o => ({
+    id: o.id,
+    name: o.name,
+    occurringDay: o.occurringDay,
+    closeDay: o.closeDay,
+    status: o.status
+  })));
 
   if (loading) {
     return (
@@ -213,11 +232,11 @@ export const Olympiad = () => {
             {filteredOlympiads.map((olympiad) => {
               const isExpanded = expandedDescriptions[olympiad.id];
               const shouldTruncate =
-                olympiad.description.length > DESCRIPTION_LIMIT;
+                olympiad.description && olympiad.description.length > DESCRIPTION_LIMIT;
               const displayDescription =
                 shouldTruncate && !isExpanded
                   ? olympiad.description.substring(0, DESCRIPTION_LIMIT) + "..."
-                  : olympiad.description;
+                  : olympiad.description || "Тайлбар байхгүй";
 
               return (
                 <Card
@@ -271,11 +290,13 @@ export const Olympiad = () => {
                           <span className="font-medium">Анги</span>
                         </div>
                         <div className="text-black font-semibold">
-                          {olympiad.classtypes
-                            .map((classtype) =>
-                              formatClassYear(classtype.classYear)
-                            )
-                            .join(", ")}
+                          {olympiad.classtypes && olympiad.classtypes.length > 0
+                            ? olympiad.classtypes
+                                .map((classtype) =>
+                                  formatClassYear(classtype.classYear)
+                                )
+                                .join(", ")
+                            : "Тодорхойгүй"}
                         </div>
                       </div>
 
@@ -285,12 +306,12 @@ export const Olympiad = () => {
                           <span className="font-medium">Байршил</span>
                         </div>
                         <div className="text-black font-semibold">
-                          {olympiad.location}
+                          {olympiad.location || "Тодорхойгүй"}
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-black mt-1">
                           <Clock className="w-4 h-4 text-[#ff8400]" />
-                          <span className="font-medium">Бүртгүүлэх огноо</span>
+                          <span className="font-medium">Бүртгүүлэх хугацаа</span>
                         </div>
                         <div className="text-black font-semibold">
                           {formatDate(olympiad.closeDay)}
@@ -300,7 +321,7 @@ export const Olympiad = () => {
                   </div>
 
                   <CardFooter className="pt-2 pb-2 bg-white rounded-b-lg flex justify-center items-center">
-                    {(olympiad.status === "FINISHED" || olympiad.status === "CLOSED") && (
+                    {(olympiad.status === "FINISHED" || olympiad.status === "CLOSED" || olympiad.status === "OPEN") && (
                       <PageTransition href={`/olympiad/${olympiad.id}`}>
                         <Button
                           variant="outline"

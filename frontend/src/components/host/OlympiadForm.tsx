@@ -10,6 +10,13 @@ import {
   useCreateOlympiadMutation,
   OlympiadRankingType,
 } from "@/generated";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAlert } from "@/components/ui/alert-system";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -260,14 +267,20 @@ export const OlympiadForm = ({
       const input: CreateOlympiadRequestInput = {
         name: formData.name,
         description: formData.description,
-        closeDay: formData.closeDay?.toISOString() || null,
-        occurringDay: formData.occurringDay?.toISOString() || null,
         location: formData.location,
         organizerId: formData.organizerId,
         invitation: formData.invitation,
         rankingType: formData.rankingType,
         classtypes: cleanedClassTypes,
       };
+
+      // Only add dates if they are provided
+      if (formData.closeDay) {
+        input.closeDay = formData.closeDay.toISOString();
+      }
+      if (formData.occurringDay) {
+        input.occurringDay = formData.occurringDay.toISOString();
+      }
 
       console.log("Submitting olympiad with input:", input);
 
@@ -460,33 +473,36 @@ export const OlympiadForm = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2 pl-1">
                   Олимпиадын түвшин
                 </label>
-                <select
+                <Select
                   value={formData.rankingType}
-                  onChange={(e) =>
+                  onValueChange={(value) =>
                     onUpdateFormData(
                       "rankingType",
-                      e.target.value as OlympiadRankingType
+                      value as OlympiadRankingType
                     )
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-100 text-gray-700 focus:outline-none focus:bg-gray-50"
-                  required
                 >
-                  <option value={OlympiadRankingType.School}>
-                    Сургууль
-                  </option>
-                  <option value={OlympiadRankingType.District}>
-                    Аймаг/Дүүрэг
-                  </option>
-                  <option value={OlympiadRankingType.Regional}>
-                    Бүс
-                  </option>
-                  <option value={OlympiadRankingType.National}>
-                    Улс
-                  </option>
-                  <option value={OlympiadRankingType.ATier}>A зэрэглэл</option>
-                  <option value={OlympiadRankingType.BTier}>B зэрэглэл</option>
-                  <option value={OlympiadRankingType.CTier}>C зэрэглэл</option>
-                </select>
+                  <SelectTrigger className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-100 text-gray-700 focus:outline-none focus:bg-gray-50">
+                    <SelectValue placeholder="Олимпиадын түвшин сонгоно уу" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={OlympiadRankingType.School}>
+                      Сургууль
+                    </SelectItem>
+                    <SelectItem value={OlympiadRankingType.District}>
+                      Аймаг/Дүүрэг
+                    </SelectItem>
+                    <SelectItem value={OlympiadRankingType.Regional}>
+                      Бүс
+                    </SelectItem>
+                    <SelectItem value={OlympiadRankingType.National}>
+                      Улс
+                    </SelectItem>
+                    <SelectItem value={OlympiadRankingType.ATier}>A зэрэглэл</SelectItem>
+                    <SelectItem value={OlympiadRankingType.BTier}>B зэрэглэл</SelectItem>
+                    <SelectItem value={OlympiadRankingType.CTier}>C зэрэглэл</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="flex items-center space-x-3">

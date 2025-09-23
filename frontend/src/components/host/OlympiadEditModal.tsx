@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   useUpdateOlympiadComprehensiveMutation,
+  useUpdateOlympiadMutation,
   useDeleteClassTypeMutation,
   useAllClassRoomsQuery,
   Olympiad,
@@ -46,6 +47,7 @@ export const OlympiadEditModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [updateOlympiadComprehensive] = useUpdateOlympiadComprehensiveMutation();
+  const [updateOlympiad] = useUpdateOlympiadMutation();
   const [deleteClassType] = useDeleteClassTypeMutation();
   const { data: classRoomsData } = useAllClassRoomsQuery();
 
@@ -64,9 +66,9 @@ export const OlympiadEditModal = ({
 
       // Convert classtypes to editable format
       const editableClassTypes = olympiad.classtypes?.map(ct => {
-        const questions = ct.questions?.map(q => ({
+        const questions = ct.questions?.map((q, index) => ({
           id: q.id,
-          questionName: q.questionName,
+          questionName: q.questionName?.startsWith('Question') || q.questionName?.startsWith('Бодлого') ? `Бодлого ${index + 1}` : q.questionName,
           maxScore: q.maxScore,
         })) || [];
 
@@ -99,33 +101,80 @@ export const OlympiadEditModal = ({
 
     setIsSubmitting(true);
     try {
+      // Use comprehensive update since we need to update the name field
+      const updateInput: any = {
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        rankingType: formData.rankingType,
+        invitation: formData.invitation,
+        status: formData.status,
+      };
+      // Handle dates - include them even if empty to clear null values
+      if (formData.closeDay) {
+        const closeDate = new Date(formData.closeDay);
+        if (!isNaN(closeDate.getTime())) {
+          updateInput.closeDay = closeDate.toISOString();
+        }
+      } else {
+        // If closeDay is empty, set it to null to clear the existing null value
+        updateInput.closeDay = null;
+      }
+
+      if (formData.occurringDay) {
+        const occurringDate = new Date(formData.occurringDay);
+        if (!isNaN(occurringDate.getTime())) {
+          updateInput.occurringDay = occurringDate.toISOString();
+        }
+      } else {
+        // If occurringDay is empty, set it to null to clear the existing null value
+        updateInput.occurringDay = null;
+      }
+
+      // Add classTypes for comprehensive update
+      const classTypesData = classTypes.map((ct) => ({
+        id: ct.id,
+        classYear: ct.classYear,
+        maxScore: ct.maxScore,
+        occurringTime: ct.occurringTime,
+        medalists: ct.medalists,
+        questions: ct.questions.map((q: any) => ({
+          id: q.id,
+          questionName: q.questionName,
+          maxScore: q.maxScore,
+        })),
+      }));
+
+      updateInput.classTypes = classTypesData;
+
+      console.log("Update input:", updateInput);
+      console.log("Form data:", formData);
+      console.log("Individual field values:", {
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        rankingType: formData.rankingType,
+        invitation: formData.invitation,
+        status: formData.status,
+        closeDay: formData.closeDay,
+        occurringDay: formData.occurringDay
+      });
+
+      // Use comprehensive update mutation since we need to update the name field
       await updateOlympiadComprehensive({
         variables: {
           updateOlympiadComprehensiveId: olympiad.id,
-          input: {
-            ...formData,
-            location: formData.location,
-            closeDay: formData.closeDay ? new Date(formData.closeDay).toISOString() : null,
-            occurringDay: formData.occurringDay ? new Date(formData.occurringDay).toISOString() : null,
-            classTypes: classTypes.map(ct => ({
-              id: ct.id,
-              classYear: ct.classYear,
-              maxScore: ct.maxScore,
-              occurringTime: ct.occurringTime,
-              medalists: ct.medalists,
-              questions: ct.questions.map((q: any) => ({
-                id: q.id,
-                questionName: q.questionName,
-                maxScore: q.maxScore,
-              })),
-            })),
-          },
+          input: updateInput,
         },
       });
       onRefetch();
       onClose();
     } catch (error) {
       console.error("Update failed:", error);
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+        console.error("Error details:", error);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -172,7 +221,7 @@ export const OlympiadEditModal = ({
   const addQuestion = (classTypeIndex: number) => {
     const updated = [...classTypes];
     updated[classTypeIndex].questions.push({
-      questionName: `Question${updated[classTypeIndex].questions.length + 1}`,
+      questionName: `Бодлого ${updated[classTypeIndex].questions.length + 1}`,
       maxScore: 5,
     });
 
@@ -217,7 +266,7 @@ export const OlympiadEditModal = ({
     if (field === "maxScore") {
       const totalMaxScore = updated[classTypeIndex].questions.reduce(
         (sum: number, question: any) => {
-          const score = Number(question.maxScore) || 0;
+          const score = Number(question.maxScore) || 5;
           return sum + score;
         },
         0,
@@ -230,18 +279,18 @@ export const OlympiadEditModal = ({
 
   const getClassYearDisplay = (classYear: ClassYear) => {
     const yearMap: { [key in ClassYear]: string } = {
-      [ClassYear.Grade_1]: "Grade 1",
-      [ClassYear.Grade_2]: "Grade 2",
-      [ClassYear.Grade_3]: "Grade 3",
-      [ClassYear.Grade_4]: "Grade 4",
-      [ClassYear.Grade_5]: "Grade 5",
-      [ClassYear.Grade_6]: "Grade 6",
-      [ClassYear.Grade_7]: "Grade 7",
-      [ClassYear.Grade_8]: "Grade 8",
-      [ClassYear.Grade_9]: "Grade 9",
-      [ClassYear.Grade_10]: "Grade 10",
-      [ClassYear.Grade_11]: "Grade 11",
-      [ClassYear.Grade_12]: "Grade 12",
+      [ClassYear.Grade_1]: "1-р анги",
+      [ClassYear.Grade_2]: "2-р анги",
+      [ClassYear.Grade_3]: "3-р анги",
+      [ClassYear.Grade_4]: "4-р анги",
+      [ClassYear.Grade_5]: "5-р анги",
+      [ClassYear.Grade_6]: "6-р анги",
+      [ClassYear.Grade_7]: "7-р анги",
+      [ClassYear.Grade_8]: "8-р анги",
+      [ClassYear.Grade_9]: "9-р анги",
+      [ClassYear.Grade_10]: "10-р анги",
+      [ClassYear.Grade_11]: "11-р анги",
+      [ClassYear.Grade_12]: "12-р анги",
       [ClassYear.CClass]: "C Class",
       [ClassYear.DClass]: "D Class",
       [ClassYear.EClass]: "E Class",
@@ -257,7 +306,7 @@ export const OlympiadEditModal = ({
       <div className="bg-white text-black rounded-2xl shadow-2xl border border-gray-300 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-black">Edit Olympiad</h2>
+            <h2 className="text-2xl font-bold text-black">Олимпиад засах</h2>
             <button
               onClick={onClose}
               className="text-gray-600 hover:text-black transition-colors"
@@ -273,33 +322,34 @@ export const OlympiadEditModal = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  Olympiad Name *
+                  Олимпиадын нэр *
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
+                  placeholder="Олимпиадын нэр оруулна уу"
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  Location
+                  Байршил
                 </label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
-                  placeholder="Enter location"
+                  placeholder="Олимпиадын байршил оруулна уу"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  Registration Close Date
+                  Бүртгэл хаагдах огноо
                 </label>
                 <input
                   type="date"
@@ -311,7 +361,7 @@ export const OlympiadEditModal = ({
 
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  Olympiad Date
+                  Олимпиад болох огноо
                 </label>
                 <input
                   type="date"
@@ -323,54 +373,59 @@ export const OlympiadEditModal = ({
 
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  Ranking Type *
+                  Олимпиадын түвшин *
                 </label>
                 <Select
                   value={formData.rankingType}
                   onValueChange={(value) => setFormData({ ...formData, rankingType: value as OlympiadRankingType })}
                 >
                   <SelectTrigger className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black">
-                    <SelectValue placeholder="Select ranking type" />
+                    <SelectValue placeholder="Олимпиадын түвшин сонгоно уу" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={OlympiadRankingType.School}>School Level</SelectItem>
-                    <SelectItem value={OlympiadRankingType.District}>District Level</SelectItem>
-                    <SelectItem value={OlympiadRankingType.Regional}>Regional Level</SelectItem>
-                    <SelectItem value={OlympiadRankingType.National}>National Level</SelectItem>
-                    <SelectItem value={OlympiadRankingType.ATier}>A Tier</SelectItem>
-                    <SelectItem value={OlympiadRankingType.BTier}>B Tier</SelectItem>
-                    <SelectItem value={OlympiadRankingType.CTier}>C Tier</SelectItem>
+                    <SelectItem value={OlympiadRankingType.School}>Сургууль</SelectItem>
+                    <SelectItem value={OlympiadRankingType.District}>Аймаг/Дүүрэг</SelectItem>
+                    <SelectItem value={OlympiadRankingType.Regional}>Бүс</SelectItem>
+                    <SelectItem value={OlympiadRankingType.National}>Улс</SelectItem>
+                    <SelectItem value={OlympiadRankingType.ATier}>A зэрэглэл</SelectItem>
+                    <SelectItem value={OlympiadRankingType.BTier}>B зэрэглэл</SelectItem>
+                    <SelectItem value={OlympiadRankingType.CTier}>C зэрэглэл</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  Status
+                  Төлөв
                 </label>
-                <select
+                <Select
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as OlympiadStatus })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
+                  onValueChange={(value) => setFormData({ ...formData, status: value as OlympiadStatus })}
                 >
-                  <option value={OlympiadStatus.Draft}>Draft</option>
-                  <option value={OlympiadStatus.UnderReview}>Under Review</option>
-                  <option value={OlympiadStatus.Open}>Open</option>
-                  <option value={OlympiadStatus.Closed}>Closed</option>
-                  <option value={OlympiadStatus.Finished}>Finished</option>
-                </select>
+                  <SelectTrigger className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black">
+                    <SelectValue placeholder="Төлөв сонгоно уу" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={OlympiadStatus.Draft}>Идэвхгүй</SelectItem>
+                    <SelectItem value={OlympiadStatus.UnderReview}>Шалгагдаж байна</SelectItem>
+                    <SelectItem value={OlympiadStatus.Open}>Нээлттэй</SelectItem>
+                    <SelectItem value={OlympiadStatus.Closed}>Хаалттай</SelectItem>
+                    <SelectItem value={OlympiadStatus.Finished}>Дууссан</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Description
+                Дэлгэрэнгүй тайлбар
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
+                placeholder="Олимпиадын тайлбар оруулна уу"
               />
             </div>
 
@@ -383,30 +438,37 @@ export const OlympiadEditModal = ({
                 className="w-4 h-4 text-primary rounded focus:ring-primary"
               />
               <label htmlFor="invitation" className="text-sm font-medium text-black">
-                Send invitations to students
+                Хаалттай олимпиад болгох уу?
               </label>
             </div>
 
             {/* Class Types */}
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-black">Class Types</h3>
-                <button
-                  type="button"
-                  onClick={addClassType}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-                >
-                  Add Class Type
-                </button>
-              </div>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                 {classTypes.map((classType, classTypeIndex) => (
                   <div key={classTypeIndex} className="border border-gray-300 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium text-black">
-                        Class Type {classTypeIndex + 1}
-                      </h4>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">
+                          Анги *
+                        </label>
+                        <Select
+                          value={classType.classYear}
+                          onValueChange={(value) => updateClassType(classTypeIndex, 'classYear', value as ClassYear)}
+                        >
+                          <SelectTrigger className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black">
+                            <SelectValue placeholder="Анги сонгоно уу" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.values(ClassYear).map((year) => (
+                              <SelectItem key={year} value={year}>
+                                {getClassYearDisplay(year)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <button
                         type="button"
                         onClick={() => removeClassType(classTypeIndex)}
@@ -418,41 +480,24 @@ export const OlympiadEditModal = ({
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium text-black mb-2">
-                          Class Year *
-                        </label>
-                        <select
-                          value={classType.classYear}
-                          onChange={(e) => updateClassType(classTypeIndex, 'classYear', e.target.value as ClassYear)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
-                          required
-                        >
-                          {Object.values(ClassYear).map((year) => (
-                            <option key={year} value={year}>
-                              {getClassYearDisplay(year)}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                    <div className="flex items-center justify-between gap-4 mb-4">
 
                       <div>
                         <label className="block text-sm font-medium text-black mb-2">
-                          Max Score *
+                          Дээд оноо
                         </label>
                         <input
                           type="number"
                           value={classType.maxScore}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-muted text-muted-foreground cursor-not-allowed"
                           disabled={true}
-                          title="Max score is automatically calculated from the sum of all question scores"
+                          title="Дээд оноо нь бүх бодлогын онооны нийлбэрээр автоматаар тооцогдоно"
                         />
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-black mb-2">
-                          Occurring Time
+                          Эхлэх цаг
                         </label>
                         <input
                           type="time"
@@ -461,18 +506,31 @@ export const OlympiadEditModal = ({
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                         />
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-black mb-2">
+                          Медал
+                        </label>
+                        <input
+                          type="number"
+                          value={classType.medalists || 0}
+                          onChange={(e) => updateClassType(classTypeIndex, 'medalists', parseInt(e.target.value) || 0)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
+                          min="0"
+                        />
+                      </div>
                     </div>
+
 
                     {/* Questions */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h5 className="font-medium text-black">Questions</h5>
+                        <h5 className="font-medium text-black">Бодлого</h5>
                         <button
                           type="button"
                           onClick={() => addQuestion(classTypeIndex)}
                           className="px-3 py-1 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm"
                         >
-                          Add Question
+                          Бодлого нэмэх
                         </button>
                       </div>
 
@@ -481,16 +539,16 @@ export const OlympiadEditModal = ({
                           <div key={questionIndex} className="flex items-center space-x-2">
                             <input
                               type="text"
-                              placeholder="Question name"
+                              placeholder="Бодлого"
                               value={question.questionName}
                               onChange={(e) => updateQuestion(classTypeIndex, questionIndex, 'questionName', e.target.value)}
                               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                             />
                             <input
                               type="number"
-                              placeholder="Max score"
-                              value={question.maxScore}
-                              onChange={(e) => updateQuestion(classTypeIndex, questionIndex, 'maxScore', parseInt(e.target.value))}
+                              placeholder="Оноо"
+                              value={question.maxScore || ''}
+                              onChange={(e) => updateQuestion(classTypeIndex, questionIndex, 'maxScore', parseInt(e.target.value) || 0)}
                               className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-black"
                             />
                             <button
@@ -509,6 +567,15 @@ export const OlympiadEditModal = ({
                   </div>
                 ))}
               </div>
+              <div className="flex items-center justify-end mt-4">
+                <button
+                  type="button"
+                  onClick={addClassType}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  Анги нэмэх
+                </button>
+              </div>
             </div>
 
             {/* Submit Buttons */}
@@ -518,14 +585,14 @@ export const OlympiadEditModal = ({
                 onClick={onClose}
                 className="px-6 py-3 border border-gray-300 text-black rounded-lg hover:bg-accent transition-colors"
               >
-                Cancel
+                Цуцлах
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Updating..." : "Update Olympiad"}
+                {isSubmitting ? "Шинэчилж байна..." : " Шинэчлэх"}
               </button>
             </div>
           </form>
@@ -533,4 +600,4 @@ export const OlympiadEditModal = ({
       </div>
     </div>
   );
-};
+}

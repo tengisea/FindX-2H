@@ -72,23 +72,21 @@ const getTabIcon = (tab: string, isActive: boolean) => {
 const HostSidebar: React.FC<HostSidebarProps> = ({
   activeTab,
   onTabChange,
-  onExportData,
-  onQuickCreate,
   olympiadCount,
 }) => {
   const menuItems = [
     {
-      label: "Create Olympiad",
+      label: "Олимпиад үүсгэх",
       ariaLabel: "Navigate to create olympiad page",
       link: "#create",
     },
     {
-      label: "Manage Olympiads",
+      label: "Олимпиад засах",
       ariaLabel: "Navigate to manage olympiads page",
       link: "#manage",
     },
     {
-      label: "Manage Results",
+      label: "Дүн оруулах",
       ariaLabel: "Navigate to manage results page",
       link: "#results",
     },
@@ -116,9 +114,9 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
           </div>
           <div>
             <h1 className="text-2xl font-bold text-card-foreground">
-              Host Portal
+              Хост портал
             </h1>
-            <p className="text-muted-foreground text-sm">Olympiad Management</p>
+            <p className="text-muted-foreground text-sm">Олимпиадын удирдлага</p>
           </div>
         </div>
 
@@ -132,13 +130,13 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-card-foreground truncate">
-                Host Organization
+                Байгууллагын мэдээлэл
               </h3>
               <p className="text-xs text-muted-foreground truncate">
-                Olympiad Management System
+                Олимпиадын удирдлагын систем
               </p>
               <p className="text-xs text-muted-foreground/80 truncate">
-                Administrative Access
+                Удирдлагын эрх
               </p>
             </div>
           </div>
@@ -152,7 +150,7 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
                 {olympiadCount}
               </div>
               <div className="text-xs text-muted-foreground">
-                Total Olympiads
+                Нийт олимпиад
               </div>
             </div>
           </div>
@@ -161,7 +159,7 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
               <div className="text-2xl font-bold text-primary">
                 1
               </div>
-              <div className="text-xs text-muted-foreground">Organization</div>
+              <div className="text-xs text-muted-foreground">Байгууллага</div>
             </div>
           </div>
         </div>
@@ -173,18 +171,18 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
           {[
             {
               id: "create",
-              label: "Create Olympiad",
-              description: "Create new olympiad",
+              label: "Олимпиад үүсгэх",
+              description: "Шинэ олимпиад үүсгэх",
             },
             {
               id: "manage",
-              label: "Manage Olympiads",
-              description: "View and edit olympiads",
+              label: "Олимпиад засах",
+              description: "Олимпиадыг харах, засах",
             },
             {
               id: "results",
-              label: "Manage Results",
-              description: "View and export results",
+              label: "Дүн оруулах",
+              description: "Дүнг харах, экспорт хийх",
             },
           ].map((tab) => (
             <button
@@ -219,9 +217,9 @@ const HostSidebar: React.FC<HostSidebarProps> = ({
       {/* Footer */}
       <div className="p-8 pt-6 border-t border-border">
         <div className="text-center">
-          <p className="text-muted-foreground text-sm">FindX Olympiad System</p>
+          <p className="text-muted-foreground text-sm">FindX Олимпиадын систем</p>
           <p className="text-muted-foreground/80 text-xs mt-1">
-            Host Portal v1.0.0
+            Хост портал v1.0.0
           </p>
         </div>
       </div>

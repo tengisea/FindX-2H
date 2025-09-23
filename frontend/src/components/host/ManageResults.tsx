@@ -27,6 +27,8 @@ import { StudentScoringInterface } from "./results/StudentScoringInterface";
 import { RankingInterface } from "./results/RankingInterface";
 import { MedalManagementInterface } from "./results/MedalManagementInterface";
 import { StatusProgressIndicator } from "./results/StatusProgressIndicator";
+import { FinalResultsTable } from "./results/FinalResultsTable";
+import { OlympiadStatus } from "@/generated";
 
 interface ManageResultsProps {
   olympiads: any[];
@@ -62,13 +64,14 @@ interface ClassType {
   questions: Question[];
 }
 
-type ViewMode = "overview" | "scoring" | "ranking" | "medals";
+type ViewMode = "overview" | "scoring" | "ranking" | "medals" | "final-results";
 
 export const ManageResults: React.FC<ManageResultsProps> = ({
   olympiads,
   onExportResults,
   onViewResults,
 }) => {
+
   const [selectedOlympiad, setSelectedOlympiad] = useState<string>("");
   const [selectedClassType, setSelectedClassType] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -426,6 +429,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                   ))}
                 </SelectContent>
               </Select>
+
             </div>
           </div>
         </div>

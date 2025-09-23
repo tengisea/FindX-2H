@@ -4,6 +4,7 @@ import React from "react";
 import { ClassYear, OlympiadStatus } from "@/generated";
 
 interface OlympiadOverviewProps {
+
   olympiad: any;
   classTypes: any[];
   onClassTypeSelect: (classTypeId: string) => void;
@@ -38,6 +39,7 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
     };
     return statusMap[status] || status;
   };
+
 
   if (!olympiad) return null;
 

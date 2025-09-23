@@ -138,6 +138,7 @@ export const MedalManagementInterface: React.FC<
           error instanceof Error ? error.message : "Unknown error"
         }`
       );
+
     }
   };
 
@@ -312,15 +313,19 @@ export const MedalManagementInterface: React.FC<
         <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h4 className="text-lg font-semibold text-foreground">
+
               Медалийн оноолт -{" "}
               {selectedClassTypeData.classYear.replace("GRADE_", "")}р анги
+
             </h4>
             <div className="flex items-center space-x-2">
               <button
                 onClick={handleSaveMedalAssignments}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
+
                 Өөрчлөлт хадгалах
+
               </button>
             </div>
           </div>
@@ -362,13 +367,13 @@ export const MedalManagementInterface: React.FC<
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
               <div className="flex items-center space-x-2 mb-2">
                 <div className="text-blue-600">ℹ️</div>
-                <h5 className="font-semibold text-blue-800">
-                  Автомат медаль хуваарилсан
-                </h5>
+
+                <h5 className="font-semibold text-blue-800">Автоматаар оноосон медалиуд</h5>
               </div>
               <p className="text-sm text-blue-700">
-                Оюутнуудын оноогоор медаль автоматаар хуваарилагдсан. Эцсийн
-                болгохоосоо өмнө доорх хуваарилалтыг шалгаж, тохируулж болно.
+              Сурагчдын оноонд үндэслэн медалиуд автоматаар оноогдсон.
+              Эцэслэхийн өмнө доорх оноолтыг шалгаж, шаардлагатай бол өөрчлөлт оруулна уу
+
               </p>
               <div className="grid grid-cols-4 gap-4 mt-3 text-sm">
                 <div>Алт: {selectedMedalPreview.gold?.length || 0}</div>
@@ -399,6 +404,7 @@ export const MedalManagementInterface: React.FC<
                             {student.rank}
                           </span>
                         </div>
+
                         <div>
                           <div className="font-medium text-foreground">
                             {student.studentName}
@@ -406,6 +412,7 @@ export const MedalManagementInterface: React.FC<
                           <div className="text-sm text-muted-foreground">
                             Score: {student.score} | Rank #{student.rank}
                           </div>
+
                         </div>
                       </div>
 
