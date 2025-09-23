@@ -27,6 +27,7 @@ import { RankingInterface } from "./results/RankingInterface";
 import { MedalManagementInterface } from "./results/MedalManagementInterface";
 import { StatusProgressIndicator } from "./results/StatusProgressIndicator";
 import { FinalResultsTable } from "./results/FinalResultsTable";
+import { OlympiadStatus } from "@/generated";
 
 interface ManageResultsProps {
     olympiads: any[];
@@ -69,6 +70,18 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
     onExportResults,
     onViewResults,
 }) => {
+    const getStatusDisplay = (status: string) => {
+        const statusMap: { [key: string]: string } = {
+            [OlympiadStatus.Draft]: "Идэвхгүй",
+            [OlympiadStatus.UnderReview]: "Шалгагдаж байна",
+            [OlympiadStatus.Open]: "Нээлттэй",
+            [OlympiadStatus.Closed]: "Хаалттай",
+            [OlympiadStatus.Finished]: "Дууссан",
+            [OlympiadStatus.Cancelled]: "Цуцлагдсан",
+            [OlympiadStatus.MedalsPreview]: "Медал урьдчилан харах",
+        };
+        return statusMap[status] || status;
+    };
     const [selectedOlympiad, setSelectedOlympiad] = useState<string>("");
     const [selectedClassType, setSelectedClassType] = useState<string>("");
     const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -164,11 +177,11 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
     const getStatusDescription = (status: string) => {
         switch (status) {
-            case "DRAFT": return "Olympiad is being prepared";
-            case "OPEN": return "Registration is open";
-            case "CLOSED": return "Registration closed, ready for scoring";
-            case "MEDALS_PREVIEW": return "Medal assignments ready for review";
-            case "FINISHED": return "Olympiad completed and medals finalized";
+            case "DRAFT": return "Олимпиадын бэлтгэл явагдаж байна.";
+            case "OPEN": return "Бүртгэл нээлттэй байна.";
+            case "CLOSED": return "RБүртгэл хаагдсан, оноо тооцоход бэлэн.";
+            case "MEDALS_PREVIEW": return "Медалийн хуваарилалт шалгахад бэлэн боллоо.";
+            case "FINISHED": return "Олимпиад дууссан бөгөөд медалийн эцсийн дүн баталгаажлаа.";
             default: return "Unknown status";
         }
     };
@@ -298,7 +311,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                                 <SelectContent>
                                     {filteredOlympiads.map((olympiad) => (
                                         <SelectItem key={olympiad.id} value={olympiad.id}>
-                                            {olympiad.name} - {olympiad.status}
+                                            {olympiad.name} - {getStatusDisplay(olympiad.status)}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -328,7 +341,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                                     }`}
                                 disabled={!selectedClassType}
                             >
-                               Дүн оруулах
+                                Дүн оруулах
                             </button>
                             <button
                                 onClick={() => setViewMode("ranking")}

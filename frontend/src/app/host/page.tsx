@@ -392,7 +392,7 @@ const HostPage = () => {
                                 <span className="text-foreground font-medium">
                                     {activeTab === "profile" && "Байгууллагын мэдээлэл"}
                                     {activeTab === "create" && "Олимпиад үүсгэх"}
-                                    {activeTab === "manage" && "Олимпиадын засах"}
+                                    {activeTab === "manage" && "Олимпиад засах"}
                                     {activeTab === "results" && "Дүн оруулах"}
                                 </span>
                             </div>
@@ -400,7 +400,7 @@ const HostPage = () => {
                             <h1 className="text-4xl font-bold mb-2 text-black pl-8">
                                 {activeTab === "profile" && "Байгууллагын мэдээлэл"}
                                 {activeTab === "create" && "Олимпиад үүсгэх"}
-                                {activeTab === "manage" && "Олимпиадын засах"}
+                                {activeTab === "manage" && "Олимпиад засах"}
                                 {activeTab === "results" && "Дүн оруулах"}
                             </h1>
                         </div>
