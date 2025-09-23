@@ -92,7 +92,7 @@ const StudentPage = () => {
   const [selectedClassType, setSelectedClassType] = useState<any>(null);
 
   // Get student ID from centralized configuration
-  const studentId = "68cea0e1f67542d0abfd51c6";
+  const studentId = "68cbaa9cb20bdd534740f3dc";
 
   const {
     data: studentData,
@@ -208,7 +208,7 @@ const StudentPage = () => {
         );
 
       case "achievements":
-        return <AchievementsTab />;
+        return <AchievementsTab studentId={studentId} />;
       case "mandats":
         return <MandatDisplay studentId={studentId} />;
       case "settings":

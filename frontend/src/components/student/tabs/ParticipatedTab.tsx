@@ -13,11 +13,7 @@ const ParticipatedOlympiadRow = ({
   olympiadId,
   onViewDetails,
 }: ParticipatedOlympiadRowProps) => {
-  const {
-    data: olympiadsData,
-    loading,
-    error,
-  } = useAllOlympiadsQuery();
+  const { data: olympiadsData, loading, error } = useAllOlympiadsQuery();
 
   if (loading) {
     return (
@@ -41,8 +37,8 @@ const ParticipatedOlympiadRow = ({
     );
   }
 
-  const olympiad = olympiadsData.allOlympiads.find(o => o.id === olympiadId);
-  
+  const olympiad = olympiadsData.allOlympiads.find((o) => o.id === olympiadId);
+
   if (!olympiad) {
     return (
       <tr>
@@ -54,31 +50,31 @@ const ParticipatedOlympiadRow = ({
   }
 
   return (
-    <tr className="hover:bg-muted/50 transition-colors duration-200">
+    <tr className="hover:bg-gray-50 transition-colors duration-200">
       <td className="px-6 py-4 whitespace-nowrap">
         <div>
-          <div className="text-base font-medium text-foreground">
+          <div className="text-base font-medium text-gray-800">
             {olympiad.name}
           </div>
-          <div className="text-base text-muted-foreground truncate max-w-xs">
+          <div className="text-base text-gray-600 truncate max-w-xs">
             {olympiad.description}
           </div>
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-base text-foreground">
+      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">
         {safeFormatDate(olympiad.occurringDay)}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-base text-foreground">
+      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">
         {olympiad.location}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-base font-medium">
         <button
           onClick={() => onViewDetails(olympiad)}
-          className="text-primary hover:text-primary/80 mr-3"
+          className="text-orange-600 hover:text-orange-700 mr-3"
         >
           View Details
         </button>
-        <span className="text-muted-foreground">Participated</span>
+        <span className="text-gray-600">Participated</span>
       </td>
     </tr>
   );
@@ -103,14 +99,14 @@ const ParticipatedTab = ({
   ) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
+        <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
           Participated Olympiads
         </h2>
 
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardContent className="p-6 text-center">
             <svg
-              className="w-16 h-16 text-muted-foreground mx-auto mb-4"
+              className="w-16 h-16 text-gray-500 mx-auto mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -122,15 +118,15 @@ const ParticipatedTab = ({
                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
               />
             </svg>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
               No Participated Olympiads
             </h3>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-gray-600 text-lg">
               You haven&apos;t participated in any olympiads yet.
             </p>
             <button
               onClick={onBrowseOlympiads}
-              className="mt-4 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors duration-200"
+              className="mt-4 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200"
             >
               Browse Available Olympiads
             </button>
@@ -142,15 +138,15 @@ const ParticipatedTab = ({
 
   return (
     <div className="content-wrapper container">
-      <h2 className="text-4xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
+      <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
         Participated Olympiads
       </h2>
 
       <div className="space-y-8">
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-center text-foreground">
+              <h3 className="text-xl font-semibold text-center text-gray-800">
                 {student.participatedOlympiads.length} Olympiad
                 {student.participatedOlympiads.length !== 1 ? "s" : ""}{" "}
                 Participated
@@ -159,26 +155,26 @@ const ParticipatedTab = ({
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden">
+        <Card className="bg-white border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-muted">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
                     Olympiad Name
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
                     Location
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-card divide-y divide-border">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {student.participatedOlympiads.map((olympiadId: string) => (
                   <ParticipatedOlympiadRow
                     key={olympiadId}

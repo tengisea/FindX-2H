@@ -30,7 +30,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getProvinceName } from "@/lib/province-utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getProvinceName, PROVINCE_NAMES } from "@/lib/province-utils";
 
 interface SettingsTabProps {
   student: any;
@@ -55,7 +62,6 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
     name: student?.name || "",
     email: student?.email || "",
     school: student?.school || "",
-    region: student?.region || "",
     province: student?.province || "",
   });
 
@@ -103,7 +109,6 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
         email: student.email,
         school: student.school,
         grade: formatClassYear(student.class),
-        region: student.region,
         province: getProvinceName(student.province),
         memberSince: new Date().getFullYear(),
       },
@@ -145,17 +150,17 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
   if (loading) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
+        <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
           Settings
         </h2>
         <div className="animate-pulse space-y-6">
           {[1, 2, 3].map((i) => (
-            <Card key={i}>
+            <Card key={i} className="bg-white border border-gray-200">
               <CardContent className="p-6">
-                <div className="h-6 bg-muted rounded w-32 mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-32 mb-4"></div>
                 <div className="space-y-3">
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </div>
               </CardContent>
             </Card>
@@ -173,10 +178,8 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-8"
       >
-        <h2 className="text-4xl font-bold mb-2 pt-8 text-foreground">
-          Settings
-        </h2>
-        <p className="text-muted-foreground text-lg">
+        <h2 className="text-4xl font-bold mb-2 pt-8 text-gray-800">Settings</h2>
+        <p className="text-gray-600 text-lg">
           Manage your account preferences and settings
         </p>
       </motion.div>
@@ -190,12 +193,12 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           className="lg:col-span-2 space-y-6"
         >
           {/* Profile Information */}
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-muted/30">
+          <Card className="bg-white border border-gray-200 overflow-hidden">
+            <CardHeader className="bg-gray-50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <UserCircle className="w-6 h-6 text-primary" />
-                  <CardTitle className="text-2xl font-semibold text-foreground">
+                  <UserCircle className="w-6 h-6 text-orange-500" />
+                  <CardTitle className="text-2xl font-semibold text-gray-800">
                     Profile Information
                   </CardTitle>
                 </div>
@@ -234,7 +237,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
               )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="flex items-center space-x-2 text-base font-medium text-foreground">
+                  <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <User className="w-4 h-4" />
                     <span>Full Name</span>
                   </Label>
@@ -245,12 +248,16 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                       setEditData((prev) => ({ ...prev, name: e.target.value }))
                     }
                     readOnly={!isEditing}
-                    className={!isEditing ? "bg-muted" : ""}
+                    className={
+                      !isEditing
+                        ? "bg-gray-100 text-gray-600 border-gray-200 placeholder:text-gray-500"
+                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                    }
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="flex items-center space-x-2 text-base font-medium text-foreground">
+                  <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <Mail className="w-4 h-4" />
                     <span>Email</span>
                   </Label>
@@ -264,12 +271,16 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                       }))
                     }
                     readOnly={!isEditing}
-                    className={!isEditing ? "bg-muted" : ""}
+                    className={
+                      !isEditing
+                        ? "bg-gray-100 text-gray-600 border-gray-200 placeholder:text-gray-500"
+                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                    }
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="flex items-center space-x-2 text-base font-medium text-foreground">
+                  <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <School className="w-4 h-4" />
                     <span>School</span>
                   </Label>
@@ -283,66 +294,68 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                       }))
                     }
                     readOnly={!isEditing}
-                    className={!isEditing ? "bg-muted" : ""}
+                    className={
+                      !isEditing
+                        ? "bg-gray-100 text-gray-600 border-gray-200 placeholder:text-gray-500"
+                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                    }
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="flex items-center space-x-2 text-base font-medium text-foreground">
+                  <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <span className="text-lg">🎓</span>
                     <span>Grade</span>
                   </Label>
                   <Input
                     type="text"
                     value={formatClassYear(student?.class) || ""}
-                    className="bg-muted text-muted-foreground cursor-not-allowed"
+                    className="bg-gray-100 text-gray-600 cursor-not-allowed"
                     readOnly
                   />
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-gray-600">
                     Grade cannot be changed
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="flex items-center space-x-2 text-base font-medium text-foreground">
-                    <MapPin className="w-4 h-4" />
-                    <span>District</span>
-                  </Label>
-                  <Input
-                    type="text"
-                    value={isEditing ? editData.region : student?.region || ""}
-                    onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        region: e.target.value,
-                      }))
-                    }
-                    readOnly={!isEditing}
-                    className={!isEditing ? "bg-muted" : ""}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="flex items-center space-x-2 text-base font-medium text-foreground">
+                  <Label className="flex items-center space-x-2 text-base font-medium text-gray-800">
                     <MapPin className="w-4 h-4" />
                     <span>Province</span>
                   </Label>
-                  <Input
-                    type="text"
-                    value={
-                      isEditing
-                        ? editData.province
-                        : getProvinceName(student?.province || "")
-                    }
-                    onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        province: e.target.value,
-                      }))
-                    }
-                    readOnly={!isEditing}
-                    className={!isEditing ? "bg-muted" : ""}
-                  />
+                  {isEditing ? (
+                    <Select
+                      value={editData.province}
+                      onValueChange={(value) =>
+                        setEditData((prev) => ({
+                          ...prev,
+                          province: value,
+                        }))
+                      }
+                    >
+                      <SelectTrigger className="bg-white text-gray-800 border-gray-300 focus:border-orange-500 focus:ring-orange-500">
+                        <SelectValue placeholder="Select a province" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200">
+                        {Object.entries(PROVINCE_NAMES).map(([key, value]) => (
+                          <SelectItem
+                            key={key}
+                            value={key}
+                            className="text-gray-800 hover:bg-orange-50 focus:bg-orange-50"
+                          >
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      type="text"
+                      value={getProvinceName(student?.province || "")}
+                      className="bg-gray-100 text-gray-600 border-gray-200 cursor-not-allowed"
+                      readOnly
+                    />
+                  )}
                 </div>
               </div>
 
@@ -359,6 +372,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         variant="outline"
                         onClick={() => setIsEditing(false)}
                         disabled={isSaving}
+                        className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
                       >
                         Cancel
                       </Button>
@@ -387,11 +401,11 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           </Card>
 
           {/* Notification Settings */}
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-muted/30">
+          <Card className="bg-white border border-gray-200 overflow-hidden">
+            <CardHeader className="bg-gray-50">
               <div className="flex items-center space-x-3">
-                <Bell className="w-6 h-6 text-primary" />
-                <CardTitle className="text-2xl font-semibold text-foreground">
+                <Bell className="w-6 h-6 text-orange-500" />
+                <CardTitle className="text-2xl font-semibold text-gray-800">
                   Notification Preferences
                 </CardTitle>
               </div>
@@ -421,17 +435,17 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 + index * 0.1 }}
-                  className="flex items-center justify-between p-4 rounded-xl border border-border hover:border-primary/20 transition-colors duration-200"
+                  className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-orange-300 transition-colors duration-200"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-orange-100">
                       {notification.icon}
                     </div>
                     <div>
-                      <h4 className="font-medium text-foreground text-lg">
+                      <h4 className="font-medium text-gray-800 text-lg">
                         {notification.title}
                       </h4>
-                      <p className="text-base text-muted-foreground">
+                      <p className="text-base text-gray-600">
                         {notification.description}
                       </p>
                     </div>
@@ -448,7 +462,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         handleNotificationChange(notification.key)
                       }
                     />
-                    <div className="w-12 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-200 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
                   </motion.label>
                 </motion.div>
               ))}
@@ -464,9 +478,9 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           className="space-y-6"
         >
           {/* Quick Actions */}
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-muted/30">
-              <CardTitle className="text-xl font-semibold text-foreground">
+          <Card className="bg-white border border-gray-200 overflow-hidden">
+            <CardHeader className="bg-gray-50">
+              <CardTitle className="text-xl font-semibold text-gray-800">
                 Quick Actions
               </CardTitle>
             </CardHeader>
@@ -475,14 +489,14 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleExportData}
-                className="w-full flex items-center space-x-3 p-4 rounded-xl border border-border hover:border-green-300 hover:bg-green-50 transition-all duration-200"
+                className="w-full flex items-center space-x-3 p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200"
               >
                 <Download className="w-5 h-5 text-green-600" />
                 <div className="text-left">
-                  <div className="font-medium text-foreground text-lg">
+                  <div className="font-medium text-gray-800 text-lg">
                     Export Data
                   </div>
-                  <div className="text-base text-muted-foreground">
+                  <div className="text-base text-gray-600">
                     Download your data
                   </div>
                 </div>
@@ -492,14 +506,14 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowDeleteModal(true)}
-                className="w-full flex items-center space-x-3 p-4 rounded-xl border border-destructive/20 hover:border-destructive/30 hover:bg-destructive/5 transition-all duration-200"
+                className="w-full flex items-center space-x-3 p-4 rounded-xl border border-red-200 hover:border-red-300 hover:bg-red-50 transition-all duration-200"
               >
                 <Trash2 className="w-5 h-5 text-red-600" />
                 <div className="text-left">
-                  <div className="font-medium text-destructive text-lg">
+                  <div className="font-medium text-red-600 text-lg">
                     Delete Account
                   </div>
-                  <div className="text-base text-destructive/80">
+                  <div className="text-base text-red-500">
                     Permanently remove
                   </div>
                 </div>
@@ -508,34 +522,30 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           </Card>
 
           {/* Account Stats */}
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-muted/30">
-              <CardTitle className="text-xl font-semibold text-foreground">
+          <Card className="bg-white border border-gray-200 overflow-hidden">
+            <CardHeader className="bg-gray-50">
+              <CardTitle className="text-xl font-semibold text-gray-800">
                 Account Statistics
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-base">
-                  Member since
-                </span>
-                <span className="font-medium text-foreground text-lg">
+                <span className="text-gray-600 text-base">Member since</span>
+                <span className="font-medium text-gray-800 text-lg">
                   {new Date().getFullYear()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-base">
+                <span className="text-gray-600 text-base">
                   Olympiads joined
                 </span>
-                <span className="font-medium text-foreground text-lg">
+                <span className="font-medium text-gray-800 text-lg">
                   {student?.participatedOlympiads?.length || 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-base">
-                  Current ranking
-                </span>
-                <span className="font-medium text-foreground text-lg">
+                <span className="text-gray-600 text-base">Current ranking</span>
+                <span className="font-medium text-gray-800 text-lg">
                   {student?.ranking + " points" || "N/A"}
                 </span>
               </div>
@@ -558,17 +568,17 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl shadow-2xl max-w-md w-full p-6"
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center">
                 <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mx-auto mb-4">
                   <AlertTriangle className="w-8 h-8 text-red-600" />
                 </div>
-                <h3 className="text-2xl font-semibold text-foreground mb-2">
+                <h3 className="text-2xl font-semibold text-gray-800 mb-2">
                   Delete Account
                 </h3>
-                <p className="text-muted-foreground mb-6 text-lg">
+                <p className="text-gray-600 mb-6 text-lg">
                   Are you sure you want to delete your account? This action
                   cannot be undone and all your data will be permanently
                   removed.
@@ -578,13 +588,13 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
               <div className="flex justify-center space-x-3">
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="px-6 py-2 border border-border rounded-xl text-foreground hover:bg-muted transition-colors duration-200"
+                  className="px-6 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteAccount}
-                  className="px-6 py-2 bg-destructive text-destructive-foreground rounded-xl hover:bg-destructive/90 transition-colors duration-200"
+                  className="px-6 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors duration-200"
                 >
                   Delete Account
                 </button>

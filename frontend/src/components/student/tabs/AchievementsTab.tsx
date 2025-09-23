@@ -2,16 +2,24 @@
 
 import React, { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGetAllStudentQuery } from "@/generated";
+import {
+  useGetStudentQuery,
+  useAllOlympiadsQuery,
+  useGetAllOrganizersQuery,
+} from "@/generated";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Download } from "lucide-react";
+import { Download, Trophy, Award, Medal } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
 import { Certificate } from "../certificate";
 import { getProvinceName } from "@/lib/province-utils";
 
-interface MedalWinner {
+interface AchievementsTabProps {
+  studentId: string;
+}
+
+interface Student {
   id: string;
   name: string;
   gold: string[];
@@ -34,6 +42,7 @@ const PDFCertificate = React.forwardRef<
     rank: "gold" | "silver" | "bronze";
     rankLabel: string;
     score: number;
+    maxScore: number;
     category: string;
     completionTime: string;
     certificateId: string;
@@ -41,7 +50,17 @@ const PDFCertificate = React.forwardRef<
   }
 >(
   (
-    { name, event, rank, rankLabel, score, category, certificateId, date },
+    {
+      name,
+      event,
+      rank,
+      rankLabel,
+      score,
+      maxScore,
+      category,
+      certificateId,
+      date,
+    },
     ref
   ) => {
     const rankColor =
@@ -88,7 +107,7 @@ const PDFCertificate = React.forwardRef<
               >
                 {name}
               </h3>
-              <div className="w-96 h-1 bg-gray-800 mx-auto"></div>
+              <div className="w-96 h-1 bg-orange-500 mx-auto"></div>
             </div>
 
             <div className="text-lg text-gray-700 mb-8 leading-relaxed">
@@ -104,7 +123,7 @@ const PDFCertificate = React.forwardRef<
                 className="text-2xl font-bold mb-4"
                 style={{ color: rankColor }}
               >
-                Final Score: {score}/100
+                Final Score: {score}/{maxScore}
               </p>
               <p className="mb-4">Category: {category}</p>
               <p className="italic">
@@ -115,26 +134,28 @@ const PDFCertificate = React.forwardRef<
 
             <div className="flex justify-between items-end mt-16">
               <div className="text-center">
-                <div className="w-32 h-1 bg-gray-800 mb-2"></div>
-                <p className="text-sm font-semibold text-gray-700">SIGNATURE</p>
+                <div className="w-32 h-1 bg-orange-500 mb-2"></div>
+                <p className="text-base font-semibold text-gray-700">
+                  SIGNATURE
+                </p>
               </div>
 
               <div className="text-center">
-                <p className="text-sm font-semibold text-gray-700 mb-2">
+                <p className="text-base font-semibold text-gray-700 mb-2">
                   {date}
                 </p>
-                <p className="text-xs text-gray-600">DATE OF ISSUE</p>
+                <p className="text-sm text-gray-600">DATE OF ISSUE</p>
               </div>
 
               <div className="text-center">
-                <div className="w-32 h-1 bg-gray-800 mb-2"></div>
-                <p className="text-sm font-semibold text-gray-700">
+                <div className="w-32 h-1 bg-orange-500 mb-2"></div>
+                <p className="text-base font-semibold text-gray-700">
                   OFFICIAL SEAL
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 text-xs text-gray-500">
+            <div className="mt-8 text-sm text-gray-500">
               Certificate ID: {certificateId}
             </div>
           </div>
@@ -146,80 +167,240 @@ const PDFCertificate = React.forwardRef<
 
 PDFCertificate.displayName = "PDFCertificate";
 
-const AchievementsTab = () => {
+const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
   const [selectedMedalType, setSelectedMedalType] = useState<string>("all");
-  const [selectedStudent, setSelectedStudent] = useState<MedalWinner | null>(
-    null
-  );
+  const [selectedCertificate, setSelectedCertificate] = useState<{
+    olympiadId: string;
+    medalType: "gold" | "silver" | "bronze";
+  } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const certificateRef = useRef<HTMLDivElement>(null);
 
-  // Fetch all students with medal data
-  const { data: studentsData, loading, error } = useGetAllStudentQuery();
+  // Fetch specific student data
+  const {
+    data: studentData,
+    loading,
+    error,
+  } = useGetStudentQuery({
+    variables: { getStudentId: studentId },
+  });
 
-  // Filter students who have medals
-  const medalWinners = useMemo(() => {
-    if (!studentsData?.getAllStudent) return [];
+  // Fetch all olympiads data
+  const { data: olympiadsData } = useAllOlympiadsQuery();
 
-    return studentsData.getAllStudent.filter(
-      (student: any) =>
-        student.gold.length > 0 ||
-        student.silver.length > 0 ||
-        student.bronze.length > 0
-    ) as MedalWinner[];
-  }, [studentsData]);
+  // Fetch all organizers data
+  const { data: organizersData } = useGetAllOrganizersQuery();
 
-  // Simple filtering logic
-  const filteredWinners = useMemo(() => {
-    return medalWinners.filter((student) => {
+  const student = studentData?.getStudent;
+
+  // Helper function to get olympiad details
+  const getOlympiadDetails = (olympiadId: string) => {
+    const olympiad = olympiadsData?.allOlympiads?.find(
+      (o: any) => o.id === olympiadId
+    );
+
+    if (olympiad) {
+      console.log("Olympiad found:", olympiad);
+      console.log("Olympiad organizer:", olympiad.organizer);
+
+      // Try to get organizer name from different possible fields
+      let organizationName = "";
+
+      // Check if organizer is populated with organizationName
+      if (olympiad.organizer?.organizationName) {
+        organizationName = olympiad.organizer.organizationName;
+      }
+      // Check if organizer has a name field
+      else if (olympiad.organizer?.name) {
+        organizationName = olympiad.organizer.name;
+      }
+      // Check if there's a direct organizer field
+      else if (olympiad.organizerName) {
+        organizationName = olympiad.organizerName;
+      }
+      // Check if there's an organization field
+      else if (olympiad.organization) {
+        organizationName = olympiad.organization;
+      }
+      // Try to find in organizers data by ID
+      else if (olympiad.organizer?.id) {
+        const organizer = organizersData?.getAllOrganizers?.find(
+          (org: any) => org.id === olympiad.organizer.id
+        );
+        if (organizer?.organizationName) {
+          organizationName = organizer.organizationName;
+        }
+      }
+
+      // Fallback: Try to find organizer by matching olympiad ID in organizer's olympiads
+      if (!organizationName && organizersData?.getAllOrganizers) {
+        for (const organizer of organizersData.getAllOrganizers) {
+          if (organizer.Olympiads?.some((ol: any) => ol.id === olympiadId)) {
+            organizationName = organizer.organizationName;
+            break;
+          }
+        }
+      }
+
+      console.log("Organization name found:", organizationName);
+
+      return {
+        name: olympiad.name,
+        organization: organizationName || "Unknown Organization",
+      };
+    }
+
+    return null;
+  };
+
+  // Get student's achievements (olympiads where they won medals)
+  const studentAchievements = useMemo(() => {
+    if (!student) return [];
+
+    const achievements: Array<{
+      olympiadId: string;
+      medalType: "gold" | "silver" | "bronze";
+      olympiadDetails: any;
+    }> = [];
+
+    // Add gold medals
+    student.gold.forEach((olympiadId) => {
+      const olympiadDetails = getOlympiadDetails(olympiadId);
+      if (olympiadDetails) {
+        achievements.push({
+          olympiadId,
+          medalType: "gold",
+          olympiadDetails,
+        });
+      }
+    });
+
+    // Add silver medals
+    student.silver.forEach((olympiadId) => {
+      const olympiadDetails = getOlympiadDetails(olympiadId);
+      if (olympiadDetails) {
+        achievements.push({
+          olympiadId,
+          medalType: "silver",
+          olympiadDetails,
+        });
+      }
+    });
+
+    // Add bronze medals
+    student.bronze.forEach((olympiadId) => {
+      const olympiadDetails = getOlympiadDetails(olympiadId);
+      if (olympiadDetails) {
+        achievements.push({
+          olympiadId,
+          medalType: "bronze",
+          olympiadDetails,
+        });
+      }
+    });
+
+    return achievements;
+  }, [student, olympiadsData, organizersData]);
+
+  // Filter achievements based on medal type and search
+  const filteredAchievements = useMemo(() => {
+    return studentAchievements.filter((achievement) => {
       // Medal type filter
-      const hasMedal =
+      const matchesMedalType =
         selectedMedalType === "all" ||
-        (selectedMedalType === "gold" && student.gold.length > 0) ||
-        (selectedMedalType === "silver" && student.silver.length > 0) ||
-        (selectedMedalType === "bronze" && student.bronze.length > 0);
+        selectedMedalType === achievement.medalType;
 
       // Search filter
       const matchesSearch =
         !searchTerm ||
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.school.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        getProvinceName(student.province)
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+        (() => {
+          const searchLower = searchTerm.toLowerCase();
 
-      return hasMedal && matchesSearch;
+          // Search in olympiad name and organization
+          const olympiadMatch =
+            achievement.olympiadDetails.name
+              .toLowerCase()
+              .includes(searchLower) ||
+            achievement.olympiadDetails.organization
+              .toLowerCase()
+              .includes(searchLower);
+
+          // Search in class type details if available
+          const olympiad = olympiadsData?.allOlympiads?.find(
+            (o: any) => o.id === achievement.olympiadId
+          );
+          let classTypeMatch = false;
+
+          if (olympiad?.classtypes) {
+            classTypeMatch = olympiad.classtypes.some((classType: any) => {
+              return (
+                classType.classYear?.toLowerCase().includes(searchLower) ||
+                classType.maxScore?.toString().includes(searchTerm) ||
+                classType.occurringTime?.toLowerCase().includes(searchLower)
+              );
+            });
+          }
+
+          return olympiadMatch || classTypeMatch;
+        })();
+
+      return matchesMedalType && matchesSearch;
     });
-  }, [medalWinners, selectedMedalType, searchTerm]);
+  }, [studentAchievements, selectedMedalType, searchTerm, olympiadsData]);
 
-  // Generate certificate data for selected student
-  const getCertificateData = (student: MedalWinner) => {
-    let rank: "gold" | "silver" | "bronze" = "bronze";
-    let rankLabel = "Bronze Medalist";
-    let score = 75;
+  // Generate certificate data for specific achievement
+  const getCertificateData = (achievement: {
+    olympiadId: string;
+    medalType: "gold" | "silver" | "bronze";
+    olympiadDetails: any;
+  }) => {
+    if (!student) return null;
 
-    if (student.gold.length > 0) {
-      rank = "gold";
-      rankLabel = "Gold Medalist";
-      score = 95;
-    } else if (student.silver.length > 0) {
-      rank = "silver";
-      rankLabel = "Silver Medalist";
-      score = 85;
-    }
+    const rankLabels = {
+      gold: "Gold Medalist",
+      silver: "Silver Medalist",
+      bronze: "Bronze Medalist",
+    };
+
+    // Get the actual maxScore from the olympiad's class types
+    const olympiad = olympiadsData?.allOlympiads?.find(
+      (o: any) => o.id === achievement.olympiadId
+    );
+
+    // Find the class type that matches the student's grade
+    const studentClassType = olympiad?.classtypes?.find(
+      (ct: any) => ct.classYear === student.class
+    );
+
+    // Use the actual maxScore from the database, or fallback to medal-based scores
+    const maxScore = studentClassType?.maxScore || 100;
+
+    // Calculate score based on medal type and maxScore
+    const scorePercentages = {
+      gold: 0.95, // 95% of max score
+      silver: 0.85, // 85% of max score
+      bronze: 0.75, // 75% of max score
+    };
+
+    const actualScore = Math.round(
+      maxScore * scorePercentages[achievement.medalType]
+    );
 
     return {
       name: student.name,
-      event: `Olympiad Competition ${new Date().getFullYear()}`,
-      rank,
-      rankLabel,
-      score,
+      event: achievement.olympiadDetails.name,
+      rank: achievement.medalType,
+      rankLabel: rankLabels[achievement.medalType],
+      score: actualScore,
+      maxScore: maxScore,
       category: `Grade ${student.class.replace(
         "GRADE_",
         ""
       )} - ${getProvinceName(student.province)}`,
       completionTime: "60 minutes",
-      certificateId: `CERT-${student.id.slice(-8).toUpperCase()}`,
+      certificateId: `CERT-${student.id
+        .slice(-8)
+        .toUpperCase()}-${achievement.olympiadId.slice(-4).toUpperCase()}`,
       date: new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -231,7 +412,7 @@ const AchievementsTab = () => {
   // PDF print handler - capture the 3D certificate
   const handlePrint = useReactToPrint({
     contentRef: certificateRef,
-    documentTitle: `${selectedStudent?.name || "Student"}_Certificate`,
+    documentTitle: `${student?.name || "Student"}_Certificate`,
     pageStyle: `
       @page {
         size: A4 landscape;
@@ -247,14 +428,14 @@ const AchievementsTab = () => {
   if (loading) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
-          Achievements
+        <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 pt-10">
+          My Achievements
         </h2>
-        <Card className="p-6">
+        <Card className="bg-white border border-gray-200 p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-6 rounded w-1/3 bg-muted"></div>
-            <div className="h-4 rounded w-1/2 bg-muted"></div>
-            <div className="h-4 rounded w-1/4 bg-muted"></div>
+            <div className="h-6 rounded w-1/3 bg-gray-200"></div>
+            <div className="h-4 rounded w-1/2 bg-gray-200"></div>
+            <div className="h-4 rounded w-1/4 bg-gray-200"></div>
           </div>
         </Card>
       </div>
@@ -264,13 +445,36 @@ const AchievementsTab = () => {
   if (error) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
-          Achievements
+        <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 pt-10">
+          My Achievements
         </h2>
-        <Card className="border-destructive/20 bg-destructive/10">
+        <Card className="border-red-200 bg-red-50">
           <CardContent className="p-6">
-            <p className="text-destructive text-center text-xl">
-              Error loading medal winners: {error.message}
+            <p className="text-red-600 text-center text-xl">
+              Error loading achievements: {error.message}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!student) {
+    return (
+      <div className="content-wrapper container">
+        <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 pt-10">
+          My Achievements
+        </h2>
+        <Card className="bg-white border border-gray-200">
+          <CardContent className="p-12 text-center">
+            <div className="h-16 w-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-2xl text-gray-600">👤</span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              Student not found
+            </h3>
+            <p className="text-gray-600">
+              The requested student could not be found.
             </p>
           </CardContent>
         </Card>
@@ -280,20 +484,20 @@ const AchievementsTab = () => {
 
   return (
     <div className="content-wrapper container">
-      <h2 className="text-4xl font-bold mb-8 text-center text-foreground pt-10">
-        Certicate your achievements
+      <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 pt-10">
+        My Achievements
       </h2>
 
-      {/* Simple Search and Filter */}
-      <Card className="mb-6">
+      {/* Search and Filter */}
+      <Card className="bg-white border border-gray-200 mb-6">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="relative flex-1 max-w-md">
               <Input
-                placeholder="Search by name, school, or province..."
+                placeholder="Search by olympiad name, organization, or class type..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-4"
+                className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-orange-500 placeholder:text-gray-500 focus-visible:ring-orange-500"
               />
             </div>
 
@@ -302,8 +506,13 @@ const AchievementsTab = () => {
                 variant={selectedMedalType === "all" ? "default" : "outline"}
                 onClick={() => setSelectedMedalType("all")}
                 size="sm"
+                className={
+                  selectedMedalType === "all"
+                    ? "bg-orange-500 text-white hover:bg-orange-600"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
+                }
               >
-                All ({medalWinners.length})
+                All ({studentAchievements.length})
               </Button>
               <Button
                 variant={selectedMedalType === "gold" ? "default" : "outline"}
@@ -311,7 +520,7 @@ const AchievementsTab = () => {
                 size="sm"
                 className="text-yellow-600 border-yellow-600 hover:bg-yellow-50"
               >
-                Gold ({medalWinners.filter((s) => s.gold.length > 0).length})
+                Gold ({student.gold.length})
               </Button>
               <Button
                 variant={selectedMedalType === "silver" ? "default" : "outline"}
@@ -319,8 +528,7 @@ const AchievementsTab = () => {
                 size="sm"
                 className="text-gray-600 border-gray-600 hover:bg-gray-50"
               >
-                Silver ({medalWinners.filter((s) => s.silver.length > 0).length}
-                )
+                Silver ({student.silver.length})
               </Button>
               <Button
                 variant={selectedMedalType === "bronze" ? "default" : "outline"}
@@ -328,108 +536,121 @@ const AchievementsTab = () => {
                 size="sm"
                 className="text-orange-600 border-orange-600 hover:bg-orange-50"
               >
-                Bronze ({medalWinners.filter((s) => s.bronze.length > 0).length}
-                )
+                Bronze ({student.bronze.length})
               </Button>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Medal Winners Grid */}
-      {filteredWinners.length === 0 ? (
-        <Card>
+      {/* Achievements Grid */}
+      {filteredAchievements.length === 0 ? (
+        <Card className="bg-white border border-gray-200">
           <CardContent className="p-12 text-center">
-            <div className="h-16 w-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
-              <span className="text-2xl text-muted-foreground">★</span>
+            <div className="h-16 w-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-2xl text-gray-600">🏆</span>
             </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {searchTerm
-                ? "No medal winners found matching your search."
-                : "No medal winners found."}
+                ? "No achievements found matching your search."
+                : "No achievements yet."}
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600">
               {searchTerm
                 ? "Try adjusting your search terms."
-                : "Check back later for new achievements!"}
+                : "Participate in olympiads to earn medals and certificates!"}
             </p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredWinners.map((student) => (
-            <motion.div
-              key={student.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer group">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{student.name}</CardTitle>
-                    <div className="flex gap-1">
-                      {student.gold.length > 0 && (
-                        <span className="text-yellow-500 font-bold">Gold</span>
-                      )}
-                      {student.silver.length > 0 && (
-                        <span className="text-gray-400 font-bold">Silver</span>
-                      )}
-                      {student.bronze.length > 0 && (
-                        <span className="text-orange-600 font-bold">Bronze</span>
-                      )}
+          {filteredAchievements.map((achievement) => {
+            const medalType =
+              achievement.medalType.charAt(0).toUpperCase() +
+              achievement.medalType.slice(1);
+            const medalColor =
+              achievement.medalType === "gold"
+                ? "text-yellow-600"
+                : achievement.medalType === "silver"
+                ? "text-gray-600"
+                : "text-orange-600";
+
+            return (
+              <motion.div
+                key={`${achievement.olympiadId}-${achievement.medalType}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer group">
+                  <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50 border-b border-orange-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-xl font-bold text-gray-800 mb-1">
+                          {achievement.olympiadDetails.name}
+                        </CardTitle>
+                        <p className="text-base text-gray-600 font-medium">
+                          {achievement.olympiadDetails.organization}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-2xl font-bold ${medalColor}`}>
+                          {medalType}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Medal Winner
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                    <p>
-                      <strong>School:</strong> {student.school}
-                    </p>
-                    <p>
-                      <strong>Grade:</strong>{" "}
-                      {student.class.replace("GRADE_", "")}
-                    </p>
-                    <p>
-                      <strong>Location:</strong> {student.region},{" "}
-                      {getProvinceName(student.province)}
-                    </p>
-                  </div>
+                  </CardHeader>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {student.gold.length > 0 && (
-                      <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">
-                        {student.gold.length} Gold
-                      </span>
-                    )}
-                    {student.silver.length > 0 && (
-                      <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">
-                        {student.silver.length} Silver
-                      </span>
-                    )}
-                    {student.bronze.length > 0 && (
-                      <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs">
-                        {student.bronze.length} Bronze
-                      </span>
-                    )}
-                  </div>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {/* Achievement Details */}
+                      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-6 border border-yellow-200">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-2xl font-bold text-gray-800 mb-2">
+                              {medalType} Medal Winner
+                            </div>
+                            <div className="text-base text-gray-600">
+                              Congratulations on your outstanding performance in
+                              this olympiad!
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-center">
+                            {achievement.medalType === "gold" && (
+                              <Trophy className="w-16 h-16 text-yellow-500" />
+                            )}
+                            {achievement.medalType === "silver" && (
+                              <Award className="w-16 h-16 text-gray-400" />
+                            )}
+                            {achievement.medalType === "bronze" && (
+                              <Medal className="w-16 h-16 text-orange-600" />
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
-                  <Button
-                    onClick={() => setSelectedStudent(student)}
-                    className="w-full group-hover:bg-primary/90"
-                  >
-                    View Certificate
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                      {/* Action Button */}
+                      <Button
+                        onClick={() => setSelectedCertificate(achievement)}
+                        className="w-full bg-orange-500 text-white hover:bg-orange-600 py-3 text-base font-medium"
+                      >
+                        View Full Certificate
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       )}
 
       {/* 3D Certificate Modal */}
       <AnimatePresence>
-        {selectedStudent && (
+        {selectedCertificate && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -440,12 +661,12 @@ const AchievementsTab = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-background rounded-lg max-w-6xl w-full max-h-[95vh] overflow-hidden relative"
+              className="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] overflow-hidden relative border border-gray-200"
             >
               {/* PDF Download Button - Outside the border */}
               <Button
                 onClick={handlePrint}
-                className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-primary hover:bg-primary/90"
+                className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-orange-500 text-white hover:bg-orange-600"
                 size="sm"
               >
                 <Download className="h-4 w-4" />
@@ -455,8 +676,8 @@ const AchievementsTab = () => {
               {/* Close Button */}
               <Button
                 variant="outline"
-                onClick={() => setSelectedStudent(null)}
-                className="absolute top-4 left-4 z-10 bg-primary border-primary"
+                onClick={() => setSelectedCertificate(null)}
+                className="absolute top-4 left-4 z-10 bg-orange-500 border-orange-500 text-white hover:bg-orange-600"
                 size="sm"
               >
                 Close
@@ -468,7 +689,9 @@ const AchievementsTab = () => {
                 data-certificate-container
                 ref={certificateRef}
               >
-                <Certificate {...getCertificateData(selectedStudent)} />
+                {getCertificateData(selectedCertificate) && (
+                  <Certificate {...getCertificateData(selectedCertificate)!} />
+                )}
               </div>
             </motion.div>
           </motion.div>

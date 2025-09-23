@@ -104,7 +104,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                   )}
                 </div>
                 {currentStudentRank && (
-                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded-full shadow-md">
                     #{currentStudentRank}
                   </div>
                 )}
@@ -298,7 +298,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                 <div className="text-2xl font-bold text-orange-600">
                   {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
-                <div className="text-sm text-orange-600">Current Ranking</div>
+                <div className="text-base text-orange-600">Current Ranking</div>
               </div>
 
               <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
@@ -318,14 +318,14 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-sm text-orange-600">Last Change</div>
+                <div className="text-base text-orange-600">Last Change</div>
               </div>
 
               <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
                 <div className="text-2xl font-bold text-orange-600">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-sm text-orange-600">
+                <div className="text-base text-orange-600">
                   Olympiads Participated
                 </div>
               </div>

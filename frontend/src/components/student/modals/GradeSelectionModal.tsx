@@ -83,7 +83,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
 
           {/* Modal */}
           <motion.div
-            className="relative bg-card rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border"
+            className="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -91,14 +91,14 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
             {/* Header */}
-            <CardHeader className="bg-muted/30">
+            <CardHeader className="bg-gray-50">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-3xl font-bold text-foreground mb-2">
+                  <CardTitle className="text-3xl font-bold text-gray-800 mb-2">
                     Select Grade Level
                   </CardTitle>
-                  <div className="flex items-center space-x-2 text-base text-muted-foreground">
-                    <Trophy className="w-4 h-4 text-primary" />
+                  <div className="flex items-center space-x-2 text-base text-gray-600">
+                    <Trophy className="w-4 h-4 text-orange-500" />
                     <span className="font-medium">{olympiad.name}</span>
                   </div>
                 </div>
@@ -106,9 +106,9 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onClose}
-                  className="w-10 h-10 bg-muted hover:bg-muted/80 rounded-full flex items-center justify-center transition-colors duration-200"
+                  className="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors duration-200"
                 >
-                  <X className="w-5 h-5 text-muted-foreground" />
+                  <X className="w-5 h-5 text-gray-600" />
                 </motion.button>
               </div>
             </CardHeader>
@@ -116,11 +116,11 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
             {/* Content */}
             <CardContent className="p-6">
               <div className="mb-6">
-                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4">
+                <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-primary">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-orange-500">
                       <svg
-                        className="w-3 h-3 text-primary-foreground"
+                        className="w-3 h-3 text-white"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -132,10 +132,10 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-base font-semibold text-foreground mb-1">
+                      <h4 className="text-base font-semibold text-gray-800 mb-1">
                         Important
                       </h4>
-                      <p className="text-base text-muted-foreground">
+                      <p className="text-base text-gray-600">
                         Choose the grade level you want to register for. Make
                         sure to select the appropriate level based on your
                         current grade.
@@ -156,8 +156,8 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                       whileHover={{ scale: 1.02 }}
                       className={`border-2 rounded-2xl p-6 cursor-pointer transition-all duration-200 ${
                         selectedClassType?.id === classType.id
-                          ? "shadow-lg border-primary bg-primary/5"
-                          : "border-border hover:border-primary/30 hover:shadow-md"
+                          ? "shadow-lg border-orange-500 bg-orange-50"
+                          : "border-gray-200 hover:border-orange-300 hover:shadow-md"
                       }`}
                       onClick={() => onSelectClassType(classType)}
                     >
@@ -167,21 +167,21 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                             <div
                               className={`w-8 h-8 rounded-full flex items-center justify-center ${
                                 selectedClassType?.id === classType.id
-                                  ? "bg-primary"
-                                  : "bg-muted"
+                                  ? "bg-orange-500"
+                                  : "bg-gray-200"
                               }`}
                             >
                               {selectedClassType?.id === classType.id ? (
-                                <CheckCircle className="w-5 h-5 text-primary-foreground" />
+                                <CheckCircle className="w-5 h-5 text-white" />
                               ) : (
-                                <Target className="w-4 h-4 text-muted-foreground" />
+                                <Target className="w-4 h-4 text-gray-600" />
                               )}
                             </div>
-                            <h5 className="text-xl font-semibold text-foreground">
+                            <h5 className="text-xl font-semibold text-gray-800">
                               {classType.classYear.replace("GRADE_", "Grade ")}
                             </h5>
                           </div>
-                          <div className="flex items-center space-x-4 text-base text-muted-foreground">
+                          <div className="flex items-center space-x-4 text-base text-gray-600">
                             <span className="flex items-center space-x-1">
                               <Trophy className="w-4 h-4" />
                               <span>
@@ -194,19 +194,19 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                         <div
                           className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                             selectedClassType?.id === classType.id
-                              ? "border-primary bg-primary"
-                              : "border-border"
+                              ? "border-orange-500 bg-orange-500"
+                              : "border-gray-300"
                           }`}
                         >
                           {selectedClassType?.id === classType.id && (
-                            <div className="w-2 h-2 bg-primary-foreground rounded-full"></div>
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
                           )}
                         </div>
                       </div>
 
                       {classType.questions.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-border">
-                          <h6 className="text-base font-medium text-foreground mb-2">
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <h6 className="text-base font-medium text-gray-800 mb-2">
                             Sample Questions:
                           </h6>
                           <div className="space-y-2">
@@ -215,16 +215,16 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                                 key={question.id}
                                 className="flex justify-between items-center text-base"
                               >
-                                <span className="text-muted-foreground">
+                                <span className="text-gray-600">
                                   • {question.questionName}
                                 </span>
-                                <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                                <span className="text-base text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
                                   {question.maxScore} pts
                                 </span>
                               </div>
                             ))}
                             {classType.questions.length > 3 && (
-                              <div className="text-sm text-muted-foreground">
+                              <div className="text-base text-gray-600">
                                 ... and {classType.questions.length - 3} more
                                 questions
                               </div>
@@ -237,13 +237,13 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Target className="w-8 h-8 text-muted-foreground" />
+                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Target className="w-8 h-8 text-gray-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     No Available Grades
                   </h3>
-                  <p className="text-muted-foreground text-lg">
+                  <p className="text-gray-600 text-lg">
                     There are no available grade levels for your current level.
                   </p>
                 </div>
@@ -251,13 +251,13 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
             </CardContent>
 
             {/* Footer */}
-            <div className="p-6 border-t border-border bg-muted/30">
+            <div className="p-6 border-t border-gray-200 bg-gray-50">
               <div className="flex space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={onClose}
-                  className="flex-1 px-6 py-3 bg-muted text-muted-foreground rounded-xl font-medium hover:bg-muted/80 transition-colors duration-200"
+                  className="flex-1 px-6 py-3 bg-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-300 transition-colors duration-200"
                 >
                   Cancel
                 </motion.button>
