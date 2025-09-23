@@ -124,6 +124,21 @@ export const MedalManagementInterface: React.FC<
     }
   };
 
+  const getMedalColorTable = (medalType: string) => {
+    switch (medalType) {
+      case "gold":
+        return "bg-yellow-500 border-yellow-200";
+      case "silver":
+        return " bg-gray-500 border-gray-200";
+      case "bronze":
+        return "bg-orange-500 border-orange-200";
+      case "top10":
+        return "bg-blue-500 border-blue-200";
+      default:
+        return "bg-blue-500 border-blue-200";
+    }
+  }
+
   if (!olympiad) return null;
 
   return (
@@ -318,7 +333,7 @@ export const MedalManagementInterface: React.FC<
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 ">
                       {["gold", "silver", "bronze", "top10"].map((medalType) => (
                         <button
                           key={medalType}
@@ -332,12 +347,12 @@ export const MedalManagementInterface: React.FC<
                               ]?.includes(student.studentId)
                             )
                           }
-                          className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-200 ${
+                          className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold transition-all duration-200 transform hover:scale-110 active:scale-95 cursor-pointer ${
                             medalAssignments[selectedClassType]?.[
                               medalType
                             ]?.includes(student.studentId)
-                              ? getMedalColor(medalType)
-                              : "bg-muted text-muted-foreground hover:bg-muted/80"
+                              ? `${getMedalColorTable(medalType)} border-4 border-opacity-100 shadow-2xl ring-4 ring-opacity-30 scale-105`
+                              : "bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 border-2 border-gray-400 hover:from-gray-200 hover:to-gray-300 hover:border-gray-600 hover:text-gray-800 hover:shadow-lg hover:scale-105"
                           }`}
                         >
                           {getMedalIcon(medalType)}
@@ -390,7 +405,7 @@ export const MedalManagementInterface: React.FC<
                               medalAssignments[selectedClassType]?.[
                                 medalType
                               ]?.includes(studentId)
-                                ? getMedalColor(medalType)
+                                ? getMedalColorTable(medalType)
                                 : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                           >
