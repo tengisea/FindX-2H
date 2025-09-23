@@ -118,27 +118,23 @@ export class MedalCalculator {
   }
 
   /**
-   * Calculate ranking points based on position and olympiad score
+   * Calculate ranking points based on medal type and olympiad score
    *
-   * Formula: (scoreOfAward * positionMultiplier) / 10
-   * Where positionMultiplier = max(0, 11 - position)
+   * Medal-based point system:
+   * - Gold: 100% of scoreOfAward
+   * - Silver: 80% of scoreOfAward
+   * - Bronze: 60% of scoreOfAward
+   * - Top10 (no medal): 40% of scoreOfAward
+   * - No medal: 0 points
    *
-   * @param position - Student's rank position (1-based)
+   * @param medalType - Type of medal earned
    * @param scoreOfAward - Base score for the olympiad
    * @returns Calculated ranking points
    */
   static calculateRankingPoints(
-    position: number,
+    medalType: "gold" | "silver" | "bronze" | "top10" | null,
     scoreOfAward: number
   ): number {
-    if (position < 1) {
-      throw new RankingError(
-        "Position must be at least 1",
-        RANKING_ERROR_CODES.VALIDATION_ERROR,
-        { position }
-      );
-    }
-
     if (scoreOfAward < 0) {
       throw new RankingError(
         "Score of award cannot be negative",
@@ -147,8 +143,29 @@ export class MedalCalculator {
       );
     }
 
-    const positionMultiplier = Math.max(0, 11 - position);
-    return Math.round((scoreOfAward * positionMultiplier) / 10);
+    if (!medalType) {
+      return 0; // No medal = no points
+    }
+
+    let multiplier: number;
+    switch (medalType) {
+      case "gold":
+        multiplier = 1.0; // 100% of scoreOfAward
+        break;
+      case "silver":
+        multiplier = 0.8; // 80% of scoreOfAward
+        break;
+      case "bronze":
+        multiplier = 0.6; // 60% of scoreOfAward
+        break;
+      case "top10":
+        multiplier = 0.4; // 40% of scoreOfAward
+        break;
+      default:
+        multiplier = 0;
+    }
+
+    return Math.round(scoreOfAward * multiplier);
   }
 
   /**

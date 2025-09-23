@@ -594,14 +594,15 @@ export class RankingServiceV2 {
     return studentAnswers.map((answer, index) => {
       const studentId = (answer.studentId as any)?._id || answer.studentId;
       const position = index + 1;
-      const rankingPoints = MedalCalculator.calculateRankingPoints(
-        position,
-        scoreOfAward
-      );
 
       const medalType = MedalCalculator.getMedalTypeForPosition(
         position,
         medalDistribution
+      );
+
+      const rankingPoints = MedalCalculator.calculateRankingPoints(
+        medalType,
+        scoreOfAward
       );
 
       const isTop10 = position <= medalDistribution.top10Count;
@@ -613,7 +614,9 @@ export class RankingServiceV2 {
           rankingHistory: {
             changedBy: null, // System update
             changedTo: rankingPoints, // Points gained
-            reason: `Olympiad performance - Position ${position} (+${rankingPoints} points)`,
+            reason: `Olympiad performance - ${
+              medalType ? medalType.toUpperCase() + " medal" : "No medal"
+            } (+${rankingPoints} points)`,
             olympiadId,
             date: new Date(),
             pointsGained: rankingPoints,

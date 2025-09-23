@@ -11,6 +11,8 @@ import {
   mapClassYearToGraphQL,
 } from "@/lib/enumUtils";
 import { sendOlympiadFinishedNotification } from "@/utils/email-services";
+import { RankingServiceV2 } from "@/services/rankingServiceV2";
+import { InvitationService } from "@/services/invitationService";
 import {
   createGraphQLError,
   ErrorCodes,
@@ -34,7 +36,7 @@ export const finalizeMedals = async (_: unknown, { id }: { id: string }) => {
       );
     }
 
-    // Update status to FINISHED
+    // Update status to FINISHED (skip automatic processing since we handle it explicitly)
     const updatedOlympiad = await OlympiadModel.findByIdAndUpdate(
       id,
       { $set: { status: "FINISHED" } },
@@ -58,6 +60,11 @@ export const finalizeMedals = async (_: unknown, { id }: { id: string }) => {
         select: "organizationName email logo",
       });
 
+    // Set flag to skip automatic processing in post-save middleware
+    if (updatedOlympiad) {
+      (updatedOlympiad as any).$locals = { skipAutomaticProcessing: true };
+    }
+
     if (!updatedOlympiad) {
       throw createGraphQLError(
         "Failed to update olympiad status",
@@ -65,76 +72,54 @@ export const finalizeMedals = async (_: unknown, { id }: { id: string }) => {
       );
     }
 
-    // Update student rankings based on final medal assignments
+    // Process rankings to give students their points based on medal assignments
+    console.log(`🎯 Processing rankings to give students their points...`);
     let totalEmailsSent = 0;
 
-    for (const classType of updatedOlympiad.classtypes) {
-      if (!classType) continue;
+    try {
+      const rankingResult = await RankingServiceV2.processOlympiadRankings(id, {
+        useTransactions: true,
+        batchSize: 1000,
+      });
 
-      // Type assertion for populated classType
-      const populatedClassType = classType as any;
+      console.log(
+        `✅ Rankings processed: ${rankingResult.classTypesProcessed} class types, ${rankingResult.totalStudentsProcessed} students received points`
+      );
+    } catch (rankingError) {
+      console.error("❌ Error processing rankings:", rankingError);
+      throw createGraphQLError(
+        "Failed to process student rankings",
+        ErrorCodes.INTERNAL_ERROR
+      );
+    }
 
-      // Get all student answers for this class type
-      const studentAnswers = await StudentAnswerModel.find({
-        classTypeId: populatedClassType._id.toString(),
-      }).populate("studentId", "name email");
+    // Process invitations for private olympiads
+    try {
+      const invitationResults = await InvitationService.processInvitations(id);
 
-      // Update student rankings based on medal assignments
-      const goldStudentIds = populatedClassType.gold || [];
-      const silverStudentIds = populatedClassType.silver || [];
-      const bronzeStudentIds = populatedClassType.bronze || [];
-      const top10StudentIds = populatedClassType.top10 || [];
-
-      // Update medal assignments for each student
-      for (const answer of studentAnswers) {
-        const studentId = (
-          (answer.studentId as any)?._id || answer.studentId
-        ).toString();
-
-        // Update student's medal arrays based on their performance
-        // Students can have multiple medal types (e.g., gold medalist is also in top10)
-        const medalUpdates: any = {};
-        
-        if (goldStudentIds.some((id: any) => id.toString() === studentId)) {
-          medalUpdates.gold = id;
-          console.log(
-            `✅ Added gold medal for student ${studentId} in olympiad ${id}`
-          );
-        }
-        
-        if (silverStudentIds.some((id: any) => id.toString() === studentId)) {
-          medalUpdates.silver = id;
-          console.log(
-            `✅ Added silver medal for student ${studentId} in olympiad ${id}`
-          );
-        }
-        
-        if (bronzeStudentIds.some((id: any) => id.toString() === studentId)) {
-          medalUpdates.bronze = id;
-          console.log(
-            `✅ Added bronze medal for student ${studentId} in olympiad ${id}`
-          );
-        }
-        
-        if (top10StudentIds.some((id: any) => id.toString() === studentId)) {
-          medalUpdates.top10 = id;
-          console.log(
-            `✅ Added top10 for student ${studentId} in olympiad ${id}`
-          );
-        }
-
-        // Apply all medal updates at once
-        if (Object.keys(medalUpdates).length > 0) {
-          await StudentModel.findByIdAndUpdate(studentId, {
-            $addToSet: medalUpdates,
-          });
-        }
-
-        // Always add to participatedOlympiads
-        await StudentModel.findByIdAndUpdate(studentId, {
-          $addToSet: { participatedOlympiads: id },
+      if (invitationResults.length > 0) {
+        console.log(
+          `🎯 Invitation processing completed for ${updatedOlympiad.name}:`
+        );
+        invitationResults.forEach((result, index) => {
+          if (result.success) {
+            console.log(
+              `  ✅ Class ${index + 1}: ${
+                result.invitedStudents
+              } students invited to ${result.targetOlympiadName}`
+            );
+          } else {
+            console.log(`  ⚠️ Class ${index + 1}: ${result.message}`);
+          }
         });
+      } else {
+        console.log(
+          `ℹ️ No invitations processed for ${updatedOlympiad.name} (not a private olympiad or no target olympiads found)`
+        );
       }
+    } catch (invitationError) {
+      console.error("❌ Error processing invitations:", invitationError);
+      // Don't throw error to avoid breaking the finalization
     }
 
     // Send thank you emails to all participants

@@ -98,6 +98,15 @@ olympiadSchema.pre("save", function (next) {
 // Post-save middleware to automatically process rankings, send emails, and process invitations when Olympiad is finished
 olympiadSchema.post("save", async function (doc) {
   if (this.isModified("status") && doc.status === "FINISHED") {
+    // Skip automatic processing if called from finalizeMedals resolver
+    // (which handles ranking processing explicitly)
+    if (this.$locals?.skipAutomaticProcessing) {
+      console.log(
+        "⏭️ Skipping automatic processing (handled by finalizeMedals resolver)"
+      );
+      return;
+    }
+
     try {
       // Import here to avoid circular dependency
       const { RankingServiceV2 } = await import("../services/rankingServiceV2");
