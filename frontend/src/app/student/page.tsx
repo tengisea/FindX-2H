@@ -92,7 +92,7 @@ const StudentPage = () => {
   const [selectedClassType, setSelectedClassType] = useState<any>(null);
 
   // Get student ID from centralized configuration
-  const studentId = "68cbaa9cb20bdd534740f3dc";
+  const studentId = "68ce9f79038c70f37d8fe031";
 
   const {
     data: studentData,
