@@ -6,9 +6,8 @@ interface StudentAnswerFormProps {
     studentAnswer: any;
     questions: any[];
     classType: any;
-    onUpdateScore: (studentAnswerId: string, questionId: string, score: number) => Promise<any>;
-    onAddResult: (input: any) => Promise<any>;
-    editingMode: "view" | "edit";
+    onUpdateScore: (options: { variables: { studentAnswerId: string; questionId: string; score: number } }) => Promise<any>;
+    onAddResult: (options: { variables: { input: any } }) => Promise<any>;
 }
 
 export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
@@ -16,17 +15,17 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
     questions,
     classType,
     onUpdateScore,
-    onAddResult,
-    editingMode
+    onAddResult
 }) => {
     const [answers, setAnswers] = useState<any[]>([]);
     const [uploadedImages, setUploadedImages] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [updateTimeout, setUpdateTimeout] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        if (studentAnswer?.answers) {
+        if (studentAnswer?.answers && studentAnswer.answers.length > 0) {
             setAnswers([...studentAnswer.answers]);
-        } else {
+        } else if (questions.length > 0) {
             // Initialize with empty answers for each question
             const initialAnswers = questions.map(question => ({
                 questionId: question.id,
@@ -34,36 +33,94 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                 description: ""
             }));
             setAnswers(initialAnswers);
+        } else {
+            setAnswers([]);
         }
     }, [studentAnswer, questions]);
 
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+        };
+    }, [updateTimeout]);
+
     const handleScoreChange = async (questionId: string, newScore: number) => {
+        
         const question = questions.find(q => q.id === questionId);
-        if (!question) return;
+        if (!question) {
+            console.error("❌ Question not found for ID:", questionId);
+            return;
+        }
 
         // Validate score is within bounds
         const score = Math.max(0, Math.min(newScore, question.maxScore));
 
-        // Update local state
-        setAnswers(prev => prev.map(answer => 
-            answer.questionId === questionId 
-                ? { ...answer, score }
-                : answer
-        ));
+        // Store previous score for potential revert
+        const previousAnswer = answers.find(a => a.questionId === questionId);
+        const previousScore = previousAnswer?.score || 0;
 
-        // Update in database if student answer exists
-        if (studentAnswer?.id) {
-            try {
-                await onUpdateScore(studentAnswer.id, questionId, score);
-            } catch (error) {
-                console.error("Error updating score:", error);
-                // Revert local state on error
-                setAnswers(prev => prev.map(answer => 
+        // Update local state - ensure we have an answer for this question
+        setAnswers(prev => {
+            const existingAnswer = prev.find(a => a.questionId === questionId);
+            
+            if (existingAnswer) {
+                // Update existing answer
+                const updated = prev.map(answer => 
                     answer.questionId === questionId 
-                        ? { ...answer, score: answer.score }
+                        ? { ...answer, score }
                         : answer
-                ));
+                );
+                return updated;
+            } else {
+                // Add new answer for this question only
+                const newAnswer = {
+                    questionId,
+                    score,
+                    description: ""
+                };
+                const updated = [...prev, newAnswer];
+                return updated;
             }
+        });
+
+        // Update in database if student answer exists (with debounce)
+        if (studentAnswer?.id) {
+            // Clear existing timeout
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+            
+            // Set new timeout for debounced update
+            const timeout = setTimeout(async () => {
+                try {
+                    await onUpdateScore({
+                        variables: { studentAnswerId: studentAnswer.id, questionId, score }
+                    });
+                } catch (error) {
+                    console.error("Error updating score:", error);
+                    
+                    // Check if it's a version conflict error
+                    if (error instanceof Error && error.message && error.message.includes("No matching document found")) {
+                        // Don't revert on version conflict, let the parent component refetch
+                        return;
+                    }
+                    
+                    // Revert local state on other errors
+                    setAnswers(prev => {
+                        const updated = prev.map(answer => 
+                            answer.questionId === questionId 
+                                ? { ...answer, score: previousScore }
+                                : answer
+                        );
+                        return updated;
+                    });
+                }
+            }, 500); // 500ms debounce
+            
+            setUpdateTimeout(timeout);
         }
     };
 
@@ -91,11 +148,19 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
         try {
             const imageUrls = uploadedImages.map(file => URL.createObjectURL(file)); // In real app, upload to server
             
+            // Filter answers to only include those with actual scores or descriptions
+            const validAnswers = answers.filter(answer => 
+                answer.score > 0 || (answer.description && answer.description.trim() !== "")
+            );
+            
+            
             await onAddResult({
-                input: {
-                    studentAnswerId: studentAnswer.id,
-                    answers,
-                    image: imageUrls
+                variables: {
+                    input: {
+                        studentAnswerId: studentAnswer.id,
+                        answers: validAnswers,
+                        image: imageUrls
+                    }
                 }
             });
         } catch (error) {
@@ -179,20 +244,8 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                         max={question.maxScore}
                                         value={score}
                                         onChange={(e) => handleScoreChange(question.id, parseInt(e.target.value) || 0)}
-                                        disabled={editingMode === "view"}
                                         className="w-24 px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
                                     />
-                                    <div className="flex-1">
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max={question.maxScore}
-                                            value={score}
-                                            onChange={(e) => handleScoreChange(question.id, parseInt(e.target.value))}
-                                            disabled={editingMode === "view"}
-                                            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
-                                        />
-                                    </div>
                                 </div>
                             </div>
 
@@ -204,7 +257,6 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                 <textarea
                                     value={answer?.description || ""}
                                     onChange={(e) => handleDescriptionChange(question.id, e.target.value)}
-                                    disabled={editingMode === "view"}
                                     placeholder="Add notes about the student's answer..."
                                     className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                                     rows={3}
@@ -216,8 +268,7 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
             </div>
 
             {/* Image Upload */}
-            {editingMode === "edit" && (
-                <div className="bg-card rounded-lg border border-border p-6">
+            <div className="bg-card rounded-lg border border-border p-6">
                     <h5 className="text-lg font-semibold text-foreground mb-4">Upload Student's Exam Paper</h5>
                     
                     <div className="mb-4">
@@ -254,11 +305,9 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                         </div>
                     )}
                 </div>
-            )}
 
             {/* Action Buttons */}
-            {editingMode === "edit" && (
-                <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
+            <div className="flex items-center justify-end space-x-4 pt-6 border-t border-border">
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting}
@@ -274,7 +323,6 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                         <span>{isSubmitting ? "Saving..." : "Save Results"}</span>
                     </button>
                 </div>
-            )}
 
             {/* Existing Images Display */}
             {studentAnswer.image && studentAnswer.image.length > 0 && (
