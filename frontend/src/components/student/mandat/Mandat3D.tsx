@@ -6,6 +6,8 @@ import * as THREE from "three";
 import { getProvinceName } from "@/lib/province-utils";
 import { formatClassYear } from "@/lib/dateUtils";
 import { formatDateMongolian, formatDateShortMongolian } from "@/lib/dateUtils";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface MandatData {
   mandatNumber: string;
@@ -23,6 +25,7 @@ interface MandatData {
   organizerName: string;
   organizerLogo?: string;
   registrationDate: string;
+  studentPhoto?: string;
 }
 
 interface Props {
@@ -30,6 +33,7 @@ interface Props {
   variant?: "classic" | "modern" | "elegant" | "premium";
   onBack?: () => void;
   showBackButton?: boolean;
+  hideControls?: boolean;
 }
 
 // Enhanced lighting setup
@@ -62,9 +66,11 @@ function PremiumLighting() {
 function PremiumMandatMesh({
   mandatData,
   variant = "premium",
+  onShowModal,
 }: {
   mandatData: MandatData;
   variant: "classic" | "modern" | "elegant" | "premium";
+  onShowModal?: () => void;
 }) {
   const ref = useRef<THREE.Group>(null!);
   const cardRef = useRef<THREE.Mesh>(null!);
@@ -76,21 +82,13 @@ function PremiumMandatMesh({
     if (ref.current && cardRef.current) {
       const time = state.clock.elapsedTime;
 
-      // Complex floating animation
-      ref.current.position.y =
-        Math.sin(time * 0.6) * 0.2 +
-        Math.sin(time * 0.4) * 0.1 +
-        Math.sin(time * 1.2) * 0.05;
-
-      ref.current.position.x = Math.sin(time * 0.3) * 0.1;
-      ref.current.position.z = Math.cos(time * 0.5) * 0.08;
+      // Gentle floating animation
+      ref.current.position.y = Math.sin(time * 0.8) * 0.15;
+      ref.current.position.x = Math.sin(time * 0.4) * 0.08;
+      ref.current.position.z = Math.cos(time * 0.6) * 0.05;
 
       // Smooth rotation transitions
-      const targetRotationY = showBack
-        ? Math.PI
-        : hovered
-        ? Math.sin(time * 0.5) * 0.1
-        : 0;
+      const targetRotationY = showBack ? Math.PI : 0;
       cardRef.current.rotation.y = THREE.MathUtils.lerp(
         cardRef.current.rotation.y,
         targetRotationY,
@@ -98,24 +96,24 @@ function PremiumMandatMesh({
       );
 
       // Subtle breathing effect
-      const baseScale = hovered ? 1.05 : 1.0;
-      const breathScale = 1 + Math.sin(time * 1.5) * 0.015;
+      const baseScale = hovered ? 1.03 : 1.0;
+      const breathScale = 1 + Math.sin(time * 1.2) * 0.01;
       const targetScale = baseScale * breathScale;
 
       cardRef.current.scale.setScalar(
-        THREE.MathUtils.lerp(cardRef.current.scale.x, targetScale, 5 * delta)
+        THREE.MathUtils.lerp(cardRef.current.scale.x, targetScale, 4 * delta)
       );
 
       // Gentle rotation on hover
       if (hovered) {
         cardRef.current.rotation.x = THREE.MathUtils.lerp(
           cardRef.current.rotation.x,
-          Math.sin(time * 0.8) * 0.05,
+          Math.sin(time * 0.6) * 0.03,
           2 * delta
         );
         cardRef.current.rotation.z = THREE.MathUtils.lerp(
           cardRef.current.rotation.z,
-          Math.cos(time * 0.6) * 0.03,
+          Math.cos(time * 0.4) * 0.02,
           2 * delta
         );
       }
@@ -125,40 +123,44 @@ function PremiumMandatMesh({
   const getVariantColors = () => {
     const variants = {
       classic: {
-        primary: "#1e3a8a",
-        secondary: "#3b82f6",
-        accent: "#60a5fa",
-        gold: "#f59e0b",
+        primary: "#ffffff",
+        secondary: "#ffffff",
+        accent: "#ffffff",
+        gold: "#000000",
         background: "#ffffff",
-        text: "#1e293b",
-        border: "#1e40af",
+        text: "#000000",
+        border: "#ffffff",
+        header: "#ffffff",
       },
       modern: {
-        primary: "#0f172a",
-        secondary: "#334155",
-        accent: "#64748b",
-        gold: "#fbbf24",
-        background: "#f8fafc",
-        text: "#0f172a",
-        border: "#3b82f6",
+        primary: "#ffffff",
+        secondary: "#ffffff",
+        accent: "#ffffff",
+        gold: "#000000",
+        background: "#ffffff",
+        text: "#000000",
+        border: "#ffffff",
+        header: "#ffffff",
       },
       elegant: {
-        primary: "#7c2d12",
-        secondary: "#dc2626",
-        accent: "#f97316",
-        gold: "#eab308",
-        background: "#fffbeb",
-        text: "#431407",
-        border: "#dc2626",
+        primary: "#ffffff",
+        secondary: "#ffffff",
+        accent: "#ffffff",
+        gold: "#000000",
+        background: "#ffffff",
+        text: "#000000",
+        border: "#ffffff",
+        header: "#ffffff",
       },
       premium: {
-        primary: "#111827",
-        secondary: "#374151",
-        accent: "#6366f1",
-        gold: "#f59e0b",
+        primary: "#ffffff",
+        secondary: "#ffffff",
+        accent: "#ffffff",
+        gold: "#000000",
         background: "#ffffff",
-        text: "#111827",
-        border: "#6366f1",
+        text: "#000000",
+        border: "#ffffff",
+        header: "#ffffff",
       },
     };
     return variants[variant];
@@ -182,118 +184,144 @@ function PremiumMandatMesh({
         }}
         onClick={(e) => {
           e.stopPropagation();
+          // Only flip the card, don't open modal when already in a modal
           setClicked(!clicked);
           setShowBack(!showBack);
         }}
       >
-        {/* Simple certificate background */}
-        <RoundedBox args={[3.5, 2.2, 0.01]} radius={0.02}>
+        {/* Main Card Background - Vertical ID Card Style */}
+        <RoundedBox args={[2.2, 3.5, 0.02]} radius={0.08}>
           <meshStandardMaterial
-            color="#ffffff"
+            color={colors.background}
             metalness={0.0}
             roughness={1.0}
           />
         </RoundedBox>
 
-        {/* Simple border */}
-        <RoundedBox
-          args={[3.6, 2.3, 0.005]}
-          radius={0.03}
-          position={[0, 0, -0.002]}
-        >
-          <meshStandardMaterial
-            color="#000000"
-            metalness={0.0}
-            roughness={1.0}
-          />
-        </RoundedBox>
-
-        {/* Front Side Content - Standard Certificate */}
+        {/* Front Side Content - ID Card Style */}
         {!showBack && (
           <>
-            {/* Certificate Title */}
+            {/* Header Title */}
             <Text
-              position={[0, 0.9, 0.008]}
-              fontSize={0.14}
-              color="#000000"
-              anchorX="center"
-              anchorY="middle"
-            >
-              ОЛИМПИАД МАНДАТ
-            </Text>
-
-            {/* Certificate Number */}
-            <Text
-              position={[0, 0.6, 0.008]}
-              fontSize={0.08}
-              color="#000000"
-              anchorX="center"
-              anchorY="middle"
-            >
-              № {mandatData.mandatNumber}
-            </Text>
-
-            {/* Student Name */}
-            <Text
-              position={[0, 0.3, 0.008]}
+              position={[0, 1.4, 0.02]}
               fontSize={0.12}
               color="#000000"
               anchorX="center"
               anchorY="middle"
+              fontWeight="bold"
+            >
+              ОЛИМПИАД МАНДАТ
+            </Text>
+
+            {/* Mandat Number */}
+            <Text
+              position={[0, 1.1, 0.02]}
+              fontSize={0.08}
+              color="#000000"
+              anchorX="center"
+              anchorY="middle"
+              fontWeight="bold"
+            >
+              № {mandatData.mandatNumber}
+            </Text>
+
+            {/* Student Photo */}
+            <RoundedBox
+              args={[0.6, 0.8, 0.01]}
+              radius={0.05}
+              position={[-0.7, 0.4, 0.01]}
+            >
+              <meshStandardMaterial
+                color="#ffffff"
+                metalness={0.0}
+                roughness={1.0}
+              />
+            </RoundedBox>
+
+            {/* Photo Text or Image */}
+            {mandatData.studentPhoto ? (
+              <Text
+                position={[-0.7, 0.4, 0.02]}
+                fontSize={0.04}
+                color="#000000"
+                anchorX="center"
+                anchorY="middle"
+              >
+                [ФОТО]
+              </Text>
+            ) : (
+              <Text
+                position={[-0.7, 0.4, 0.02]}
+                fontSize={0.04}
+                color="#000000"
+                anchorX="center"
+                anchorY="middle"
+              >
+                ЗУРАГ
+              </Text>
+            )}
+
+            {/* Student Name */}
+            <Text
+              position={[-0.3, 0.6, 0.02]}
+              fontSize={0.1}
+              color="#000000"
+              anchorX="left"
+              anchorY="middle"
+              fontWeight="bold"
             >
               {mandatData.studentName}
             </Text>
 
             {/* School */}
             <Text
-              position={[0, 0.1, 0.008]}
-              fontSize={0.07}
+              position={[-0.3, 0.4, 0.02]}
+              fontSize={0.06}
               color="#000000"
-              anchorX="center"
+              anchorX="left"
               anchorY="middle"
-              maxWidth={3.0}
+              maxWidth={1.2}
             >
               {mandatData.school}
             </Text>
 
             {/* Class */}
             <Text
-              position={[0, -0.1, 0.008]}
-              fontSize={0.07}
+              position={[-0.3, 0.2, 0.02]}
+              fontSize={0.06}
               color="#000000"
-              anchorX="center"
+              anchorX="left"
               anchorY="middle"
             >
               {formatClassYear(mandatData.class)}
             </Text>
 
-            {/* Event */}
+            {/* Event Title */}
             <Text
-              position={[0, -0.3, 0.008]}
-              fontSize={0.06}
+              position={[0, 0.0, 0.02]}
+              fontSize={0.08}
               color="#000000"
               anchorX="center"
               anchorY="middle"
-              maxWidth={3.0}
+              fontWeight="bold"
             >
               {mandatData.olympiadName}
             </Text>
 
-            {/* Location */}
+            {/* Event Details */}
             <Text
-              position={[0, -0.5, 0.008]}
+              position={[0, -0.15, 0.02]}
               fontSize={0.05}
               color="#000000"
               anchorX="center"
               anchorY="middle"
-              maxWidth={3.0}
+              maxWidth={1.8}
             >
               {mandatData.olympiadLocation}
             </Text>
 
-            {/* Date */}
             <Text
-              position={[0, -0.7, 0.008]}
+              position={[0, -0.3, 0.02]}
               fontSize={0.05}
               color="#000000"
               anchorX="center"
@@ -302,50 +330,87 @@ function PremiumMandatMesh({
               {formatDateShortMongolian(mandatData.olympiadDate)}
             </Text>
 
-            {/* Organizer */}
+            {/* Organizer Section */}
             <Text
-              position={[0, -0.9, 0.008]}
+              position={[0, -0.7, 0.02]}
+              fontSize={0.06}
+              color="#000000"
+              anchorX="center"
+              anchorY="middle"
+              maxWidth={2.0}
+            >
+              Зохион байгуулагч: {mandatData.organizerName}
+            </Text>
+
+            {/* Registration Date */}
+            <Text
+              position={[0, -0.9, 0.02]}
               fontSize={0.05}
               color="#000000"
               anchorX="center"
               anchorY="middle"
-              maxWidth={3.0}
             >
-              Зохион байгуулагч: {mandatData.organizerName}
+              Бүртгүүлсэн:{" "}
+              {formatDateShortMongolian(mandatData.registrationDate)}
             </Text>
+
+            {/* Room Number if available */}
+            {mandatData.roomNumber && (
+              <Text
+                position={[0, -1.1, 0.02]}
+                fontSize={0.05}
+                color="#000000"
+                anchorX="center"
+                anchorY="middle"
+              >
+                Өрөө: {mandatData.roomNumber}
+              </Text>
+            )}
           </>
         )}
 
-        {/* Back Side Content - Simple Information */}
+        {/* Back Side Content - Additional Information */}
         {showBack && (
           <>
-            {/* Header */}
             <Text
-              position={[0, 0.8, -0.008]}
+              position={[0, 1.4, -0.02]}
               fontSize={0.12}
               color="#000000"
               anchorX="center"
               anchorY="middle"
               rotation={[0, Math.PI, 0]}
+              fontWeight="bold"
             >
               ДЭЛГЭРЭНГҮЙ МЭДЭЭЛЭЛ
             </Text>
 
             {/* Contact Information */}
             <Text
-              position={[0, 0.4, -0.008]}
+              position={[0, 0.8, -0.02]}
+              fontSize={0.08}
+              color="#000000"
+              anchorX="center"
+              anchorY="middle"
+              rotation={[0, Math.PI, 0]}
+              fontWeight="bold"
+            >
+              Холбоо барих мэдээлэл
+            </Text>
+
+            <Text
+              position={[0, 0.5, -0.02]}
               fontSize={0.06}
               color="#000000"
               anchorX="center"
               anchorY="middle"
               rotation={[0, Math.PI, 0]}
-              maxWidth={3.0}
+              maxWidth={2.0}
             >
-              Холбоо барих: {mandatData.organizerName}
+              {mandatData.organizerName}
             </Text>
 
             <Text
-              position={[0, 0.1, -0.008]}
+              position={[0, 0.2, -0.02]}
               fontSize={0.05}
               color="#000000"
               anchorX="center"
@@ -357,7 +422,7 @@ function PremiumMandatMesh({
             </Text>
 
             <Text
-              position={[0, -0.2, -0.008]}
+              position={[0, -0.1, -0.02]}
               fontSize={0.05}
               color="#000000"
               anchorX="center"
@@ -365,6 +430,29 @@ function PremiumMandatMesh({
               rotation={[0, Math.PI, 0]}
             >
               {getProvinceName(mandatData.province)}, {mandatData.region}
+            </Text>
+
+            {/* Security Features */}
+            <Text
+              position={[0, -0.6, -0.02]}
+              fontSize={0.04}
+              color="#000000"
+              anchorX="center"
+              anchorY="middle"
+              rotation={[0, Math.PI, 0]}
+            >
+              Энэ мандат зөвхөн хууль ёсны зорилгоор ашиглагдана
+            </Text>
+
+            <Text
+              position={[0, -0.8, -0.02]}
+              fontSize={0.04}
+              color="#000000"
+              anchorX="center"
+              anchorY="middle"
+              rotation={[0, Math.PI, 0]}
+            >
+              © 2025 FindX
             </Text>
           </>
         )}
@@ -377,36 +465,44 @@ function FallbackMandat({ mandatData, variant = "premium" }: Props) {
   const getVariantStyles = () => {
     const variants = {
       classic: {
-        primaryColor: "#1e3a8a",
-        secondaryColor: "#3b82f6",
-        accentColor: "#60a5fa",
-        backgroundColor: "#f8fafc",
-        textColor: "#1e293b",
-        borderColor: "#1e40af",
+        primaryColor: "#ffffff",
+        secondaryColor: "#ffffff",
+        accentColor: "#ffffff",
+        backgroundColor: "#ffffff",
+        textColor: "#000000",
+        borderColor: "#ffffff",
+        headerColor: "#ffffff",
+        goldColor: "#000000",
       },
       modern: {
-        primaryColor: "#0f172a",
-        secondaryColor: "#334155",
-        accentColor: "#64748b",
-        backgroundColor: "#f1f5f9",
-        textColor: "#0f172a",
-        borderColor: "#3b82f6",
+        primaryColor: "#ffffff",
+        secondaryColor: "#ffffff",
+        accentColor: "#ffffff",
+        backgroundColor: "#ffffff",
+        textColor: "#000000",
+        borderColor: "#ffffff",
+        headerColor: "#ffffff",
+        goldColor: "#000000",
       },
       elegant: {
-        primaryColor: "#7c2d12",
-        secondaryColor: "#dc2626",
-        accentColor: "#f97316",
-        backgroundColor: "#fffbeb",
-        textColor: "#431407",
-        borderColor: "#dc2626",
+        primaryColor: "#ffffff",
+        secondaryColor: "#ffffff",
+        accentColor: "#ffffff",
+        backgroundColor: "#ffffff",
+        textColor: "#000000",
+        borderColor: "#ffffff",
+        headerColor: "#ffffff",
+        goldColor: "#000000",
       },
       premium: {
-        primaryColor: "#111827",
-        secondaryColor: "#374151",
-        accentColor: "#6366f1",
+        primaryColor: "#ffffff",
+        secondaryColor: "#ffffff",
+        accentColor: "#ffffff",
         backgroundColor: "#ffffff",
-        textColor: "#111827",
-        borderColor: "#6366f1",
+        textColor: "#000000",
+        borderColor: "#ffffff",
+        headerColor: "#ffffff",
+        goldColor: "#000000",
       },
     };
     return variants[variant || "premium"];
@@ -418,154 +514,162 @@ function FallbackMandat({ mandatData, variant = "premium" }: Props) {
     <div
       style={{
         width: "100%",
-        maxWidth: "600px",
+        maxWidth: "400px",
         margin: "0 auto",
-        background: "#ffffff",
-        border: "2px solid #000000",
-        borderRadius: "5px",
-        padding: "30px",
+        background: colors.backgroundColor,
+        border: "none",
+        borderRadius: "0px",
+        padding: "0",
         fontFamily: "system-ui, -apple-system, sans-serif",
         color: colors.textColor,
         position: "relative",
         overflow: "hidden",
+        boxShadow: "none",
       }}
     >
-      {/* Content */}
-      <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Header */}
-        <div
+      {/* Header Section */}
+      <div
+        style={{
+          background: colors.backgroundColor,
+          color: colors.textColor,
+          padding: "20px",
+          textAlign: "center",
+          position: "relative",
+        }}
+      >
+        <h1
           style={{
-            textAlign: "center",
-            marginBottom: "35px",
-            borderBottom: `4px solid ${colors.primaryColor}`,
-            paddingBottom: "20px",
-            position: "relative",
+            fontSize: "18px",
+            fontWeight: "bold",
+            margin: "0 0 8px 0",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
           }}
         >
-          {/* Organization Logo */}
+          ОЛИМПИАД МАНДАТ
+        </h1>
+        <div
+          style={{
+            display: "inline-block",
+            background: colors.backgroundColor,
+            color: colors.textColor,
+            padding: "4px 12px",
+            borderRadius: "0px",
+            fontSize: "12px",
+            fontWeight: "bold",
+            border: "none",
+          }}
+        >
+          № {mandatData.mandatNumber}
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div style={{ padding: "20px" }}>
+        {/* Student Photo and Info Section */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "20px",
+            gap: "15px",
+          }}
+        >
+          {/* Photo Placeholder */}
           <div
             style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              width: "60px",
-              height: "60px",
-              border: "1px solid #cccccc",
-              borderRadius: "3px",
-              backgroundImage: `url('${
-                mandatData.organizerLogo || "/images/MCS_Group_Logo.png"
-              }')`,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
+              width: "80px",
+              height: "100px",
+              background: colors.backgroundColor,
+              border: "none",
+              borderRadius: "0px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "10px",
+              color: colors.textColor,
+              fontWeight: "bold",
+              backgroundImage: mandatData.studentPhoto
+                ? `url(${mandatData.studentPhoto})`
+                : "none",
+              backgroundSize: "cover",
               backgroundPosition: "center",
             }}
-          />
-          <h1
-            style={{
-              fontSize: "28px",
-              fontWeight: "bold",
-              color: "#000000",
-              margin: "0 0 10px 0",
-              textTransform: "uppercase",
-            }}
           >
-            ОЛИМПИАД МАНДАТ
-          </h1>
-          <div
-            style={{
-              display: "inline-block",
-              background: "#f0f0f0",
-              color: "#000000",
-              padding: "5px 15px",
-              borderRadius: "3px",
-              fontSize: "14px",
-              fontWeight: "normal",
-              border: "1px solid #cccccc",
-            }}
-          >
-            № {mandatData.mandatNumber}
+            {!mandatData.studentPhoto && "ЗУРАГ"}
+          </div>
+
+          {/* Student Information */}
+          <div style={{ flex: 1 }}>
+            <h2
+              style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+                color: colors.textColor,
+                margin: "0 0 8px 0",
+                lineHeight: "1.2",
+              }}
+            >
+              {mandatData.studentName}
+            </h2>
+            <p
+              style={{
+                fontSize: "12px",
+                color: colors.textColor,
+                margin: "4px 0",
+                lineHeight: "1.3",
+              }}
+            >
+              {mandatData.school}
+            </p>
+            <div
+              style={{
+                display: "inline-block",
+                background: colors.backgroundColor,
+                color: colors.textColor,
+                padding: "2px 8px",
+                borderRadius: "0px",
+                fontSize: "11px",
+                border: "none",
+                marginTop: "4px",
+              }}
+            >
+              {formatClassYear(mandatData.class)}
+            </div>
           </div>
         </div>
 
-        {/* Student Information */}
+        {/* Event Information Section */}
         <div
           style={{
-            textAlign: "center",
-            marginBottom: "25px",
+            background: colors.backgroundColor,
+            border: "none",
+            borderRadius: "0px",
             padding: "15px",
-            background: "#ffffff",
-            border: "1px solid #cccccc",
-            borderRadius: "3px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "24px",
-              fontWeight: "bold",
-              color: "#000000",
-              margin: "0 0 10px 0",
-            }}
-          >
-            {mandatData.studentName}
-          </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#000000",
-              margin: "5px 0",
-            }}
-          >
-            {mandatData.school}
-          </p>
-          <div
-            style={{
-              display: "inline-block",
-              background: "#f0f0f0",
-              color: "#000000",
-              padding: "3px 10px",
-              borderRadius: "3px",
-              fontSize: "14px",
-              border: "1px solid #cccccc",
-            }}
-          >
-            {formatClassYear(mandatData.class)}
-          </div>
-        </div>
-
-        {/* Event Information */}
-        <div
-          style={{
-            padding: "15px",
-            background: "#ffffff",
-            border: "1px solid #cccccc",
-            borderRadius: "3px",
-            marginBottom: "20px",
+            marginBottom: "15px",
           }}
         >
           <h3
             style={{
-              fontSize: "16px",
-              color: "#000000",
+              fontSize: "14px",
+              color: colors.headerColor,
               margin: "0 0 10px 0",
               fontWeight: "bold",
+              textAlign: "center",
             }}
           >
-            Олимпиадын мэдээлэл
+            {mandatData.olympiadName}
           </h3>
-          <div style={{ fontSize: "14px", lineHeight: "1.6" }}>
-            <p style={{ margin: "5px 0" }}>
-              <strong>Нэр:</strong> {mandatData.olympiadName}
+          <div style={{ fontSize: "11px", lineHeight: "1.4" }}>
+            <p style={{ margin: "3px 0", textAlign: "center" }}>
+              📍 {mandatData.olympiadLocation}
             </p>
-            <p style={{ margin: "5px 0" }}>
-              <strong>Байршил:</strong> {mandatData.olympiadLocation}
-            </p>
-            <p style={{ margin: "5px 0" }}>
-              <strong>Огноо:</strong>{" "}
-              {formatDateShortMongolian(mandatData.olympiadDate)}
+            <p style={{ margin: "3px 0", textAlign: "center" }}>
+              📅 {formatDateShortMongolian(mandatData.olympiadDate)}
             </p>
             {mandatData.roomNumber && (
-              <p style={{ margin: "5px 0" }}>
-                <strong>Өрөө:</strong> {mandatData.roomNumber}
+              <p style={{ margin: "3px 0", textAlign: "center" }}>
+                🏢 Өрөө: {mandatData.roomNumber}
               </p>
             )}
           </div>
@@ -574,49 +678,59 @@ function FallbackMandat({ mandatData, variant = "premium" }: Props) {
         {/* Organizer Information */}
         <div
           style={{
-            background: "#ffffff",
-            padding: "15px",
-            border: "1px solid #cccccc",
-            borderRadius: "3px",
-            marginBottom: "20px",
+            textAlign: "center",
+            marginBottom: "15px",
           }}
         >
-          <h3
+          <p
             style={{
-              fontSize: "16px",
-              color: "#000000",
-              margin: "0 0 10px 0",
-              fontWeight: "bold",
+              fontSize: "11px",
+              color: colors.textColor,
+              margin: "3px 0",
             }}
           >
-            Зохион байгуулагч
-          </h3>
-          <p style={{ margin: "5px 0", fontSize: "14px" }}>
-            {mandatData.organizerName}
+            <strong>Зохион байгуулагч:</strong> {mandatData.organizerName}
+          </p>
+          <p
+            style={{
+              fontSize: "10px",
+              color: colors.textColor,
+              margin: "3px 0",
+            }}
+          >
+            Бүртгүүлсэн: {formatDateShortMongolian(mandatData.registrationDate)}
           </p>
         </div>
+      </div>
 
-        {/* Footer */}
-        <div
-          style={{
-            textAlign: "center",
-            borderTop: "1px solid #cccccc",
-            paddingTop: "15px",
-            fontSize: "12px",
-            color: "#000000",
-          }}
-        >
-          <p style={{ margin: "0" }}>© 2025 Олимпиад Мандат Систем</p>
-        </div>
+      {/* Footer */}
+      <div
+        style={{
+          background: colors.backgroundColor,
+          borderTop: "none",
+          padding: "10px",
+          textAlign: "center",
+          fontSize: "9px",
+          color: colors.textColor,
+        }}
+      >
+        <p style={{ margin: "0" }}>© 2025 FindX</p>
       </div>
     </div>
   );
 }
 
 export default function EnhancedMandat3D(props: Props) {
-  const { variant = "premium", onBack, showBackButton = false } = props;
+  const {
+    variant = "premium",
+    onBack,
+    showBackButton = false,
+    hideControls = false,
+  } = props;
   const [webglError, setWebglError] = useState(false); // Default to 3D view
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [show3DModal, setShow3DModal] = useState(false);
 
   // Debug: Log the mandat data to see what logo is being passed
   React.useEffect(() => {
@@ -641,6 +755,8 @@ export default function EnhancedMandat3D(props: Props) {
     organizerName: "Боловсролын Яам",
     organizerLogo: "/images/MCS_Group_Logo.png", // Add sample logo
     registrationDate: "2025-09-20",
+    studentPhoto:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
   };
 
   React.useEffect(() => {
@@ -701,8 +817,8 @@ export default function EnhancedMandat3D(props: Props) {
   return (
     <div
       style={{
-        width: "100%",
-        height: "100vh",
+        width: "700px",
+        height: "700px",
         background: getBackgroundGradient(),
         display: "flex",
         flexDirection: "column",
@@ -713,50 +829,45 @@ export default function EnhancedMandat3D(props: Props) {
       }}
     >
       {/* Control Panel */}
-      <div
-        style={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          zIndex: 10,
-        }}
-      >
-        {showBackButton && onBack && (
-          <button
-            onClick={onBack}
-            style={{
-              padding: "12px 20px",
-              background: "rgba(239, 68, 68, 0.9)",
-              color: "white",
-              border: "none",
-              borderRadius: "12px",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: "14px",
-              backdropFilter: "blur(10px)",
-              transition: "all 0.3s ease",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            🔙 Буцах
-          </button>
-        )}
+      {!hideControls && (
+        <div
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            zIndex: 10,
+          }}
+        >
+          {showBackButton && onBack && (
+            <button
+              onClick={onBack}
+              style={{
+                padding: "12px 20px",
+                background: "#ffffff",
+                color: "#000000",
+                border: "none",
+                borderRadius: "0px",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: "14px",
+                backdropFilter: "none",
+                transition: "none",
+              }}
+            >
+              🔙 Буцах
+            </button>
+          )}
 
-        <button
-          onClick={() => {
-            const printContent = document.querySelector("[data-print]");
-            if (printContent) {
-              const newWindow = window.open("", "_blank");
-              if (newWindow) {
-                newWindow.document.write(`
+          <button
+            onClick={() => {
+              const printContent = document.querySelector("[data-print]");
+              if (printContent) {
+                const newWindow = window.open("", "_blank");
+                if (newWindow) {
+                  newWindow.document.write(`
                   <html>
                     <head>
                       <title>Олимпиад мандат - ${sampleData.mandatNumber}</title>
@@ -769,59 +880,64 @@ export default function EnhancedMandat3D(props: Props) {
                     <body>${printContent.innerHTML}</body>
                   </html>
                 `);
-                newWindow.document.close();
-                newWindow.print();
+                  newWindow.document.close();
+                  newWindow.print();
+                }
               }
-            }
-          }}
-          style={{
-            padding: "12px 20px",
-            background: "rgba(16, 185, 129, 0.9)",
-            color: "white",
-            border: "none",
-            borderRadius: "12px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "14px",
-            backdropFilter: "blur(10px)",
-            transition: "all 0.3s ease",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-        >
-          🖨️ Хэвлэх
-        </button>
+            }}
+            style={{
+              padding: "12px 20px",
+              background: "#ffffff",
+              color: "#000000",
+              border: "none",
+              borderRadius: "0px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "14px",
+              backdropFilter: "none",
+              transition: "none",
+            }}
+          >
+            🖨️ Хэвлэх
+          </button>
 
-        <button
-          onClick={() => setWebglError(!webglError)}
-          style={{
-            padding: "12px 20px",
-            background: webglError
-              ? "rgba(59, 130, 246, 0.9)"
-              : "rgba(107, 114, 128, 0.9)",
-            color: "white",
-            border: "none",
-            borderRadius: "12px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "14px",
-            backdropFilter: "blur(10px)",
-            transition: "all 0.3s ease",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-        >
-          {webglError ? "🎮 3D харах" : "📄 2D харах"}
-        </button>
-      </div>
+          <button
+            onClick={() => setWebglError(!webglError)}
+            style={{
+              padding: "12px 20px",
+              background: "#ffffff",
+              color: "#000000",
+              border: "none",
+              borderRadius: "0px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "14px",
+              backdropFilter: "none",
+              transition: "none",
+            }}
+          >
+            {webglError ? "🎮 3D харах" : "📄 2D харах"}
+          </button>
+
+          <button
+            onClick={() => setShowModal(true)}
+            style={{
+              padding: "12px 20px",
+              background: "#ffffff",
+              color: "#000000",
+              border: "none",
+              borderRadius: "0px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "14px",
+              backdropFilter: "none",
+              transition: "none",
+            }}
+          >
+            🏆 Сертификат харах
+          </button>
+        </div>
+      )}
 
       {/* Main Content */}
       {webglError ? (
@@ -842,11 +958,11 @@ export default function EnhancedMandat3D(props: Props) {
             style={{
               marginTop: "30px",
               padding: "20px",
-              background: "rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
-              borderRadius: "12px",
+              background: "#ffffff",
+              backdropFilter: "none",
+              borderRadius: "0px",
               textAlign: "center",
-              color: "white",
+              color: "#000000",
             }}
           >
             <p
@@ -896,7 +1012,7 @@ export default function EnhancedMandat3D(props: Props) {
             }
           >
             <Canvas
-              camera={{ position: [0, 0, 8], fov: 45 }}
+              camera={{ position: [0, 0, 6], fov: 50 }}
               style={{ width: "100%", height: "100%" }}
               dpr={[1, 2]}
               onCreated={({ gl, scene }) => {
@@ -907,21 +1023,25 @@ export default function EnhancedMandat3D(props: Props) {
               }}
             >
               <PremiumLighting />
-              <PremiumMandatMesh mandatData={sampleData} variant={variant} />
+              <PremiumMandatMesh
+                mandatData={sampleData}
+                variant={variant}
+                onShowModal={() => setShow3DModal(true)}
+              />
 
               <OrbitControls
                 enablePan={false}
                 enableZoom={true}
                 enableRotate={true}
-                minDistance={5}
-                maxDistance={15}
-                maxPolarAngle={Math.PI / 1.8}
-                minPolarAngle={Math.PI / 6}
+                minDistance={4}
+                maxDistance={12}
+                maxPolarAngle={Math.PI / 1.6}
+                minPolarAngle={Math.PI / 8}
                 enableDamping
-                dampingFactor={0.03}
+                dampingFactor={0.05}
                 autoRotate={false}
-                rotateSpeed={0.8}
-                zoomSpeed={0.8}
+                rotateSpeed={1.0}
+                zoomSpeed={1.0}
               />
             </Canvas>
           </Suspense>
@@ -953,6 +1073,349 @@ export default function EnhancedMandat3D(props: Props) {
           }
         `}
       </style>
+
+      {/* Certificate Modal */}
+      {showModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px",
+          }}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+              width: "800px",
+              height: "600px",
+              position: "relative",
+              overflow: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "20px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#000000",
+                }}
+              >
+                Олимпиад Мандат Сертификат
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowModal(false)}
+                style={{
+                  padding: "8px",
+                  minWidth: "auto",
+                }}
+              >
+                <X size={20} />
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div
+              style={{
+                flex: 1,
+                padding: "40px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#f9fafb",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: "600px",
+                  backgroundColor: "#ffffff",
+                  padding: "40px",
+                  textAlign: "center",
+                  position: "relative",
+                }}
+              >
+                {/* Certificate Header */}
+                <div style={{ marginBottom: "30px" }}>
+                  <h1
+                    style={{
+                      fontSize: "32px",
+                      fontWeight: "bold",
+                      color: "#000000",
+                      margin: "0 0 10px 0",
+                      textTransform: "uppercase",
+                      letterSpacing: "2px",
+                    }}
+                  >
+                    ОЛИМПИАД МАНДАТ
+                  </h1>
+                  <p
+                    style={{
+                      fontSize: "18px",
+                      color: "#000000",
+                      margin: "0",
+                      fontWeight: "600",
+                    }}
+                  >
+                    № {sampleData.mandatNumber}
+                  </p>
+                </div>
+
+                {/* Student Information */}
+                <div style={{ marginBottom: "30px" }}>
+                  <h2
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      color: "#000000",
+                      margin: "0 0 20px 0",
+                    }}
+                  >
+                    {sampleData.studentName}
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#000000",
+                      margin: "5px 0",
+                    }}
+                  >
+                    {sampleData.school}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#000000",
+                      margin: "5px 0",
+                    }}
+                  >
+                    {formatClassYear(sampleData.class)}
+                  </p>
+                </div>
+
+                {/* Event Information */}
+                <div style={{ marginBottom: "30px" }}>
+                  <h3
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      color: "#000000",
+                      margin: "0 0 15px 0",
+                    }}
+                  >
+                    {sampleData.olympiadName}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#000000",
+                      margin: "5px 0",
+                    }}
+                  >
+                    {sampleData.olympiadLocation}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#000000",
+                      margin: "5px 0",
+                    }}
+                  >
+                    {formatDateShortMongolian(sampleData.olympiadDate)}
+                  </p>
+                </div>
+
+                {/* Organizer */}
+                <div style={{ marginBottom: "30px" }}>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#000000",
+                      margin: "5px 0",
+                    }}
+                  >
+                    Зохион байгуулагч: {sampleData.organizerName}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      color: "#000000",
+                      margin: "5px 0",
+                    }}
+                  >
+                    Бүртгүүлсэн:{" "}
+                    {formatDateShortMongolian(sampleData.registrationDate)}
+                  </p>
+                </div>
+
+                {/* Footer */}
+                <div
+                  style={{
+                    borderTop: "1px solid #e5e7eb",
+                    paddingTop: "20px",
+                    marginTop: "30px",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#000000",
+                      margin: "0",
+                    }}
+                  >
+                    © 2025 Олимпиад Мандат Систем
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3D Mandat Modal */}
+      {show3DModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px",
+          }}
+          onClick={() => setShow3DModal(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+              width: "800px",
+              height: "600px",
+              position: "relative",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "20px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#000000",
+                }}
+              >
+                3D Олимпиад Мандат
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShow3DModal(false)}
+                style={{
+                  padding: "8px",
+                  minWidth: "auto",
+                }}
+              >
+                <X size={20} />
+              </Button>
+            </div>
+
+            {/* 3D Content */}
+            <div
+              style={{
+                flex: 1,
+                position: "relative",
+                backgroundColor: "#f9fafb",
+              }}
+            >
+              <Suspense fallback={<div>Loading 3D...</div>}>
+                <Canvas
+                  camera={{
+                    position: [0, 0, 6],
+                    fov: 50,
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    background: "transparent",
+                  }}
+                >
+                  <ambientLight intensity={0.6} />
+                  <directionalLight
+                    position={[10, 10, 5]}
+                    intensity={1}
+                    castShadow
+                    shadow-mapSize-width={2048}
+                    shadow-mapSize-height={2048}
+                  />
+                  <pointLight position={[-10, -10, -10]} intensity={0.5} />
+
+                  <PremiumMandatMesh
+                    mandatData={sampleData}
+                    variant={variant}
+                    onShowModal={() => setShow3DModal(true)}
+                  />
+
+                  <OrbitControls
+                    enablePan={true}
+                    enableZoom={true}
+                    enableRotate={true}
+                    minDistance={4}
+                    maxDistance={12}
+                    maxPolarAngle={Math.PI / 1.6}
+                    minPolarAngle={Math.PI / 8}
+                    dampingFactor={0.05}
+                    rotateSpeed={1.0}
+                    zoomSpeed={1.0}
+                  />
+                </Canvas>
+              </Suspense>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

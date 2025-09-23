@@ -41,7 +41,6 @@ const StudentPage = () => {
   const [selectedOlympiad, setSelectedOlympiad] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  // StaggeredMenu configuration
   const menuItems = [
     { label: "Profile", ariaLabel: "View your profile", link: "#profile" },
     {
@@ -70,7 +69,6 @@ const StudentPage = () => {
 
   const socialItems: any[] = [];
 
-  // Handle menu item clicks to switch tabs
   const handleMenuClick = (link: string) => {
     const tab = link.replace("#", "") as typeof activeTab;
     if (
@@ -92,7 +90,7 @@ const StudentPage = () => {
   const [selectedClassType, setSelectedClassType] = useState<any>(null);
 
   // Get student ID from centralized configuration
-  const studentId = "68cbaa9cb20bdd534740f3dc";
+  const studentId = "68ce9f79038c70f37d8fe031";
 
   const {
     data: studentData,
@@ -196,7 +194,7 @@ const StudentPage = () => {
           />
         );
       case "tournaments":
-        return null; // This case is empty in the original code
+        return null;
 
       case "results":
         return (
@@ -219,7 +217,17 @@ const StudentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen"
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+          linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px',
+        backgroundColor: 'white'
+      }}
+    >
       {/* StaggeredMenu Navigation */}
       <StaggeredMenu
         position="left"
@@ -236,8 +244,6 @@ const StudentPage = () => {
         onMenuClose={() => console.log("Student menu closed")}
         onMenuItemClick={handleMenuClick}
       />
-
-      {/* Original StudentSidebar (hidden but kept for reference) */}
       <div className="hidden">
         <StudentSidebar
           activeTab={activeTab}
@@ -247,9 +253,20 @@ const StudentPage = () => {
       </div>
 
       {/* Main content with left margin for left-positioned StaggeredMenu */}
-      <div className="w-full pl-20 bg-white">{renderContent()}</div>
+      <div 
+        className="w-full pl-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          backgroundColor: 'white'
+        }}
+      >
+        {renderContent()}
+      </div>
 
-      {/* Modals */}
       <OlympiadDetailsModal
         isOpen={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}

@@ -41,12 +41,12 @@ export const Section = () => {
   }, [studentsData, olympiadsData, organizersData]);
 
   return (
-    <div className="bg-black px-6 pt-8 pb-16">
+    <div className="px-6 pt-8 pb-16">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight">
+              <h1 className="text-5xl lg:text-6xl font-bold text-black leading-tight">
                 Elevate Academic
                 <br />
                 <span className="text-orange-500">Competition</span>
@@ -55,7 +55,7 @@ export const Section = () => {
               </h1>
             </div>
 
-            <p className="text-xl text-gray-300 leading-relaxed max-w-lg">
+            <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
               Streamline Olympiad competition management by connecting
               administrators, host organizations, and students through automated
               registration, real-time scoring, and dynamic ranking
@@ -114,11 +114,11 @@ export const Section = () => {
               </div>
 
               <div className="absolute top-6 right-6 bg-gray-800/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-700">
-                <div className="flex items-center gap-2 text-white">
+                <div className="flex items-center gap-2 text-black">
                   <Trophy className="w-5 h-5 text-orange-500" />
                   <div>
                     <div className="font-bold text-sm">Top Performer</div>
-                    <div className="text-xs text-gray-300">
+                    <div className="text-xs text-gray-600">
                       {stats.topPerformer
                         ? `${stats.topPerformer.name} - Rank #${1}`
                         : "No data available"}
@@ -128,12 +128,12 @@ export const Section = () => {
               </div>
 
               <div className="absolute bottom-6 left-6 bg-gray-800/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-700">
-                <div className="flex items-center gap-4 text-white">
+                <div className="flex items-center gap-4 text-black">
                   <div className="text-center">
                     <div className="font-bold text-lg text-orange-500">
                       {stats.activeStudents > 0 ? "100%" : "0%"}
                     </div>
-                    <div className="text-xs text-gray-300">Active Rate</div>
+                    <div className="text-xs text-gray-600">Active Rate</div>
                   </div>
                   <div className="w-px h-8 bg-gray-600"></div>
                   <div className="text-center">
@@ -142,7 +142,7 @@ export const Section = () => {
                         {stats.competitionsHeld > 0 ? "5.0" : "0.0"}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-300">Platform Rating</div>
+                    <div className="text-xs text-gray-600">Platform Rating</div>
                   </div>
                 </div>
               </div>
