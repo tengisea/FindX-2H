@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useGetStudentMandatsQuery } from "@/generated";
+import { useGetStudentsByStudentIdQuery } from "@/generated";
 import Mandat3D from "./Mandat3D";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,12 +16,12 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
   const [selectedMandat, setSelectedMandat] = useState<any>(null);
   const [show3D, setShow3D] = useState(false);
 
-  const { data, loading, error } = useGetStudentMandatsQuery({
+  const { data, loading, error } = useGetStudentsByStudentIdQuery({
     variables: { studentId },
     skip: !studentId,
   });
 
-  const mandats = data?.getStudentMandats || [];
+  const mandats = data?.getStudentsByStudentId || [];
 
   // Debug: Log the mandat data to see what's being fetched
   React.useEffect(() => {

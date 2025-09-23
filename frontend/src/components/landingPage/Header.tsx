@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Trophy, Home, Menu, X, BookOpen } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export const Header = () => {
   const router = useRouter();
@@ -31,45 +31,44 @@ export const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div
-          className="flex font-[800] text-2xl cursor-pointer group transition-all duration-300 hover:scale-105"
+          className="flex font-[800] text-2xl cursor-pointer group transition-all duration-300 hover:scale-105 relative"
           onClick={() => router.push("/")}
         >
           <span className="text-white group-hover:text-slate-200 transition-colors">
             Find
           </span>
-          <div className="flex font-[800] text-2xl text-orange-500 group-hover:text-orange-400 transition-colors">
-            X
-          </div>
+          <Image
+            src="/images/Remove.png"
+            alt="logo"
+            width={40}
+            height={40}
+            className="absolute top-0.5 right-[-30px]"
+          />
         </div>
 
-        {/* Desktop Navigation & Actions */}
         <div className="hidden md:flex items-center gap-1.5">
-          <Link href="/" className={cn(
-            "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
-            pathname === "/" 
-              ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
-              : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
-          )}>
+          <Link
+            href="/"
+            className={cn(
+              "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
+              pathname === "/"
+                ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
+            )}
+          >
             <Home className="w-3.5 h-3.5 mr-1" />
             Home
           </Link>
-          
-          <Link href="/olympiads" className={cn(
-            "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
-            pathname === "/olympiads" 
-              ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
-              : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
-          )}>
-            <BookOpen className="w-3.5 h-3.5 mr-1" />
-            Olympiads
-          </Link>
-          
-          <Link href="/students-rankings" className={cn(
-            "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
-            pathname === "/students-rankings" 
-              ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
-              : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
-          )}>
+
+          <Link
+            href="/students-rankings"
+            className={cn(
+              "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200 no-underline",
+              pathname === "/students-rankings"
+                ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
+            )}
+          >
             <Trophy className="w-3.5 h-3.5 mr-1" />
             Ranking
           </Link>
@@ -77,20 +76,20 @@ export const Header = () => {
           <button
             className={cn(
               "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200",
-              pathname === "/host" 
-                ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+              pathname === "/host"
+                ? "bg-orange-500 text-white border-orange-500 shadow-sm"
                 : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
             )}
             onClick={handleHostClick}
           >
             Host
           </button>
-          
+
           <button
             className={cn(
               "inline-flex h-7 items-center justify-center rounded-md border px-2.5 py-1 text-xs font-medium transition-all duration-200",
-              pathname === "/student" 
-                ? "bg-orange-500 text-white border-orange-500 shadow-sm" 
+              pathname === "/student"
+                ? "bg-orange-500 text-white border-orange-500 shadow-sm"
                 : "bg-slate-800/50 hover:bg-orange-500/10 border-slate-700 hover:border-orange-500/50 text-white hover:text-orange-400"
             )}
             onClick={handleStudentClick}
@@ -106,7 +105,11 @@ export const Header = () => {
           className="md:hidden text-white hover:bg-slate-800 p-2"
           onClick={toggleMobileMenu}
         >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {mobileMenuOpen ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <Menu className="w-5 h-5" />
+          )}
         </Button>
       </div>
 
@@ -119,8 +122,8 @@ export const Header = () => {
               href="/"
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline",
-                pathname === "/" 
-                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30" 
+                pathname === "/"
+                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30"
                   : "text-white hover:text-orange-400 hover:bg-slate-800/50"
               )}
               onClick={() => setMobileMenuOpen(false)}
@@ -128,13 +131,13 @@ export const Header = () => {
               <Home className="w-4 h-4" />
               Home
             </Link>
-            
+
             <Link
               href="/olympiads"
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline",
-                pathname === "/olympiads" 
-                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30" 
+                pathname === "/olympiads"
+                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30"
                   : "text-white hover:text-orange-400 hover:bg-slate-800/50"
               )}
               onClick={() => setMobileMenuOpen(false)}
@@ -142,13 +145,13 @@ export const Header = () => {
               <BookOpen className="w-4 h-4" />
               Olympiads
             </Link>
-            
+
             <Link
               href="/students-rankings"
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 no-underline",
-                pathname === "/students-rankings" 
-                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30" 
+                pathname === "/students-rankings"
+                  ? "text-orange-400 bg-orange-500/10 border border-orange-500/30"
                   : "text-white hover:text-orange-400 hover:bg-slate-800/50"
               )}
               onClick={() => setMobileMenuOpen(false)}
@@ -156,16 +159,16 @@ export const Header = () => {
               <Trophy className="w-4 h-4" />
               Student Ranking
             </Link>
-            
+
             <Separator className="my-2 bg-slate-700/50" />
-            
+
             <Button
               variant="outline"
               size="sm"
               className={cn(
                 "justify-start transition-all duration-200",
-                pathname === "/host" 
-                  ? "text-white bg-orange-500 border-orange-500 hover:bg-orange-600" 
+                pathname === "/host"
+                  ? "text-white bg-orange-500 border-orange-500 hover:bg-orange-600"
                   : "text-orange-400 border-orange-500/50 hover:bg-orange-500 hover:text-white"
               )}
               onClick={() => {

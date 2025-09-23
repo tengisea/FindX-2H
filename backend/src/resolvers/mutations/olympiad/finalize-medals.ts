@@ -92,40 +92,42 @@ export const finalizeMedals = async (_: unknown, { id }: { id: string }) => {
         ).toString();
 
         // Update student's medal arrays based on their performance
+        // Students can have multiple medal types (e.g., gold medalist is also in top10)
+        const medalUpdates: any = {};
+        
         if (goldStudentIds.some((id: any) => id.toString() === studentId)) {
-          await StudentModel.findByIdAndUpdate(studentId, {
-            $addToSet: { gold: id },
-          });
+          medalUpdates.gold = id;
           console.log(
             `✅ Added gold medal for student ${studentId} in olympiad ${id}`
           );
-        } else if (
-          silverStudentIds.some((id: any) => id.toString() === studentId)
-        ) {
-          await StudentModel.findByIdAndUpdate(studentId, {
-            $addToSet: { silver: id },
-          });
+        }
+        
+        if (silverStudentIds.some((id: any) => id.toString() === studentId)) {
+          medalUpdates.silver = id;
           console.log(
             `✅ Added silver medal for student ${studentId} in olympiad ${id}`
           );
-        } else if (
-          bronzeStudentIds.some((id: any) => id.toString() === studentId)
-        ) {
-          await StudentModel.findByIdAndUpdate(studentId, {
-            $addToSet: { bronze: id },
-          });
+        }
+        
+        if (bronzeStudentIds.some((id: any) => id.toString() === studentId)) {
+          medalUpdates.bronze = id;
           console.log(
             `✅ Added bronze medal for student ${studentId} in olympiad ${id}`
           );
-        } else if (
-          top10StudentIds.some((id: any) => id.toString() === studentId)
-        ) {
-          await StudentModel.findByIdAndUpdate(studentId, {
-            $addToSet: { top10: id },
-          });
+        }
+        
+        if (top10StudentIds.some((id: any) => id.toString() === studentId)) {
+          medalUpdates.top10 = id;
           console.log(
             `✅ Added top10 for student ${studentId} in olympiad ${id}`
           );
+        }
+
+        // Apply all medal updates at once
+        if (Object.keys(medalUpdates).length > 0) {
+          await StudentModel.findByIdAndUpdate(studentId, {
+            $addToSet: medalUpdates,
+          });
         }
 
         // Always add to participatedOlympiads

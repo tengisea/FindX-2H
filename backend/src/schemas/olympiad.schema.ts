@@ -174,6 +174,7 @@ export const OlympiadTypeDefs = gql`
     gold: [ID!]!
     silver: [ID!]!
     bronze: [ID!]!
+    top10: [ID!]!
   }
 
   type FinalizeMedalsResponse {

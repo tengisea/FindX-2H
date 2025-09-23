@@ -1,6 +1,7 @@
 import { StudentAnswerModel } from "../../../../models";
 import { GraphQLError } from "graphql";
 import { transformDocument } from "@/lib/enumUtils";
+import { Schema } from "mongoose";
 
 export const updateStudentAnswerScore = async (
   _: unknown,
@@ -11,23 +12,37 @@ export const updateStudentAnswerScore = async (
   }: { studentAnswerId: string; questionId: string; score: number }
 ) => {
   try {
+    console.log("🚀 MUTATION CALLED - updateStudentAnswerScore");
+    console.log("🎯 Updating score for:", { studentAnswerId, questionId, score });
+    
     const studentAnswer = await StudentAnswerModel.findById(studentAnswerId);
 
     if (!studentAnswer) {
       throw new GraphQLError("Student answer not found");
     }
 
+    console.log("📝 Student answer found:", studentAnswer.mandatNumber);
+    console.log("📋 Current answers:", studentAnswer.answers);
+
     // Find and update the specific answer
-    const answerIndex = studentAnswer.answers.findIndex(
+    let answerIndex = studentAnswer.answers.findIndex(
       (answer: any) => answer.questionId.toString() === questionId
     );
 
+    // If answer doesn't exist, create it
     if (answerIndex === -1) {
-      throw new GraphQLError("Question answer not found");
+      console.log("➕ Creating new answer for questionId:", questionId);
+      studentAnswer.answers.push({
+        questionId: questionId as any, // Let mongoose handle the ObjectId conversion
+        score: score,
+        description: "Scored by host"
+      });
+      answerIndex = studentAnswer.answers.length - 1;
+    } else {
+      console.log("✏️ Updating existing answer at index:", answerIndex);
+      // Update the existing score
+      studentAnswer.answers[answerIndex].score = score;
     }
-
-    // Update the score
-    studentAnswer.answers[answerIndex].score = score;
 
     // Recalculate total score
     studentAnswer.totalScoreofOlympiad = studentAnswer.answers.reduce(
