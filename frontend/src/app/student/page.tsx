@@ -42,7 +42,7 @@ const StudentPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   // Get student ID from centralized configuration
-  const studentId = "68ce9f79038c70f37d8fe031";
+  const studentId = "68cea02b038c70f37d8fe04d";
 
   const {
     data: studentData,
