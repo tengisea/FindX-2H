@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface MedalManagementInterfaceProps {
   olympiad: any;
   classTypes: any[];
+  medalPreviews?: any[]; // Auto-generated medal previews
   onFinalizeMedals: () => void;
   onUpdateMedalAssignments: (variables: any) => Promise<any>;
   onBack: () => void;
@@ -15,6 +16,7 @@ export const MedalManagementInterface: React.FC<
 > = ({
   olympiad,
   classTypes,
+  medalPreviews = [],
   onFinalizeMedals,
   onUpdateMedalAssignments,
   onBack,
@@ -26,9 +28,29 @@ export const MedalManagementInterface: React.FC<
     (ct) => ct.id === selectedClassType
   );
 
+  // Get medal preview data for the selected class type
+  const selectedMedalPreview = medalPreviews.find(
+    (preview) => preview.classTypeId === selectedClassType
+  );
+
+  // Initialize medal assignments from classType data or preview data
+  React.useEffect(() => {
+    if (selectedClassTypeData && !medalAssignments[selectedClassType]) {
+      setMedalAssignments((prev: any) => ({
+        ...prev,
+        [selectedClassType]: {
+          gold: selectedClassTypeData.gold || [],
+          silver: selectedClassTypeData.silver || [],
+          bronze: selectedClassTypeData.bronze || [],
+          top10: selectedClassTypeData.top10 || [],
+        },
+      }));
+    }
+  }, [selectedClassType, selectedClassTypeData]);
+
   const handleMedalAssignment = (
     classTypeId: string,
-    medalType: "gold" | "silver" | "bronze",
+    medalType: "gold" | "silver" | "bronze" | "top10",
     studentId: string,
     assigned: boolean
   ) => {
@@ -54,6 +76,7 @@ export const MedalManagementInterface: React.FC<
         gold: medals.gold || [],
         silver: medals.silver || [],
         bronze: medals.bronze || [],
+        top10: medals.top10 || [],
       })
     );
 
@@ -79,6 +102,8 @@ export const MedalManagementInterface: React.FC<
         return "🥈";
       case "bronze":
         return "🥉";
+      case "top10":
+        return "🏆";
       default:
         return "🏅";
     }
@@ -92,6 +117,8 @@ export const MedalManagementInterface: React.FC<
         return "text-gray-600 bg-gray-50 border-gray-200";
       case "bronze":
         return "text-orange-600 bg-orange-50 border-orange-200";
+      case "top10":
+        return "text-blue-600 bg-blue-50 border-blue-200";
       default:
         return "text-blue-600 bg-blue-50 border-blue-200";
     }
@@ -214,77 +241,102 @@ export const MedalManagementInterface: React.FC<
             </div>
           </div>
 
-          {/* Medal Distribution */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {["gold", "silver", "bronze"].map((medalType) => (
-              <div
-                key={medalType}
-                className={`rounded-xl p-6 border-2 ${getMedalColor(
-                  medalType
-                )}`}
-              >
-                <div className="text-center">
-                  <div className="text-3xl mb-2">{getMedalIcon(medalType)}</div>
-                  <h5 className="font-semibold capitalize mb-2">
-                    {medalType} Medal
-                  </h5>
-                  <div className="text-sm text-muted-foreground">
-                    {medalType === "gold" && "1st Place"}
-                    {medalType === "silver" && "2nd Place"}
-                    {medalType === "bronze" && "3rd Place"}
+          {/* Medal Distribution Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {["gold", "silver", "bronze", "top10"].map((medalType) => {
+              const count = medalAssignments[selectedClassType]?.[medalType]?.length || 0;
+              return (
+                <div
+                  key={medalType}
+                  className={`rounded-xl p-4 border-2 ${getMedalColor(medalType)}`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">{getMedalIcon(medalType)}</div>
+                    <h5 className="font-semibold capitalize mb-1">
+                      {medalType === "top10" ? "Top 10" : `${medalType} Medal`}
+                    </h5>
+                    <div className="text-lg font-bold">{count}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {medalType === "gold" && "1st Place"}
+                      {medalType === "silver" && "2nd Place"}
+                      {medalType === "bronze" && "3rd Place"}
+                      {medalType === "top10" && "Top 10"}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Student List for Medal Assignment */}
+          {/* Auto-Assigned Preview Info */}
+          {selectedMedalPreview && (
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="text-blue-600">ℹ️</div>
+                <h5 className="font-semibold text-blue-800">Auto-Assigned Medals</h5>
+              </div>
+              <p className="text-sm text-blue-700">
+                Medals have been automatically assigned based on student scores. 
+                You can review and adjust the assignments below before finalizing.
+              </p>
+              <div className="grid grid-cols-4 gap-4 mt-3 text-sm">
+                <div>Gold: {selectedMedalPreview.gold?.length || 0}</div>
+                <div>Silver: {selectedMedalPreview.silver?.length || 0}</div>
+                <div>Bronze: {selectedMedalPreview.bronze?.length || 0}</div>
+                <div>Top 10: {selectedMedalPreview.top10?.length || 0}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Student Rankings and Medal Assignment */}
           <div className="space-y-4">
             <h5 className="font-medium text-foreground">
-              Assign Medals to Students
+              Student Rankings & Medal Assignment
             </h5>
-            <div className="space-y-2">
-              {selectedClassTypeData.participants
-                ?.slice(0, 10)
-                .map((studentId: string, index: number) => (
+            
+            {/* Show students from medal preview if available, otherwise from participants */}
+            {selectedMedalPreview ? (
+              <div className="space-y-2">
+                {/* Show all students from preview (ranked by score) */}
+                {selectedMedalPreview.top10?.map((student: any, index: number) => (
                   <div
-                    key={studentId}
+                    key={student.studentId}
                     className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
                   >
                     <div className="flex items-center space-x-4">
                       <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
                         <span className="text-primary font-semibold text-sm">
-                          {index + 1}
+                          {student.rank}
                         </span>
                       </div>
                       <div>
                         <div className="font-medium text-foreground">
-                          Student {studentId.slice(-4)}
+                          {student.studentName}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          Rank #{index + 1}
+                          Score: {student.score} | Rank #{student.rank}
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      {["gold", "silver", "bronze"].map((medalType) => (
+                      {["gold", "silver", "bronze", "top10"].map((medalType) => (
                         <button
                           key={medalType}
                           onClick={() =>
                             handleMedalAssignment(
                               selectedClassType,
-                              medalType as "gold" | "silver" | "bronze",
-                              studentId,
+                              medalType as "gold" | "silver" | "bronze" | "top10",
+                              student.studentId,
                               !medalAssignments[selectedClassType]?.[
                                 medalType
-                              ]?.includes(studentId)
+                              ]?.includes(student.studentId)
                             )
                           }
                           className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-200 ${
                             medalAssignments[selectedClassType]?.[
                               medalType
-                            ]?.includes(studentId)
+                            ]?.includes(student.studentId)
                               ? getMedalColor(medalType)
                               : "bg-muted text-muted-foreground hover:bg-muted/80"
                           }`}
@@ -295,7 +347,62 @@ export const MedalManagementInterface: React.FC<
                     </div>
                   </div>
                 ))}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {selectedClassTypeData.participants
+                  ?.slice(0, 10)
+                  .map((studentId: string, index: number) => (
+                    <div
+                      key={studentId}
+                      className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                          <span className="text-primary font-semibold text-sm">
+                            {index + 1}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="font-medium text-foreground">
+                            Student {studentId.slice(-4)}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Rank #{index + 1}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        {["gold", "silver", "bronze", "top10"].map((medalType) => (
+                          <button
+                            key={medalType}
+                            onClick={() =>
+                              handleMedalAssignment(
+                                selectedClassType,
+                                medalType as "gold" | "silver" | "bronze" | "top10",
+                                studentId,
+                                !medalAssignments[selectedClassType]?.[
+                                  medalType
+                                ]?.includes(studentId)
+                              )
+                            }
+                            className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-200 ${
+                              medalAssignments[selectedClassType]?.[
+                                medalType
+                              ]?.includes(studentId)
+                                ? getMedalColor(medalType)
+                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            }`}
+                          >
+                            {getMedalIcon(medalType)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         </div>
       )}

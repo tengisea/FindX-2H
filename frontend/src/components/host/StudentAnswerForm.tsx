@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { uploadMultipleToCloudinary } from "@/utils/cloudinary";
 
 interface StudentAnswerFormProps {
     studentAnswer: any;
@@ -146,13 +147,29 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
 
         setIsSubmitting(true);
         try {
-            const imageUrls = uploadedImages.map(file => URL.createObjectURL(file)); // In real app, upload to server
+            // Upload images to Cloudinary
+            let imageUrls: string[] = [];
+            if (uploadedImages.length > 0) {
+                console.log("Uploading images to Cloudinary...");
+                try {
+                    imageUrls = await uploadMultipleToCloudinary(uploadedImages);
+                    console.log("Images uploaded successfully:", imageUrls);
+                } catch (cloudinaryError) {
+                    console.error("Cloudinary upload failed:", cloudinaryError);
+                    // Fallback: use local blob URLs temporarily
+                    console.log("Using local blob URLs as fallback...");
+                    imageUrls = uploadedImages.map(file => URL.createObjectURL(file));
+                    alert("Image upload to Cloudinary failed. Using temporary URLs. Please set up Cloudinary upload preset for permanent storage.");
+                }
+            }
             
-            // Filter answers to only include those with actual scores or descriptions
+            // Include all answers (including those with score 0)
             const validAnswers = answers.filter(answer => 
-                answer.score > 0 || (answer.description && answer.description.trim() !== "")
+                answer.score >= 0 || (answer.description && answer.description.trim() !== "")
             );
             
+            console.log("Submitting answers:", validAnswers);
+            console.log("Image URLs:", imageUrls);
             
             await onAddResult({
                 variables: {
@@ -163,8 +180,11 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                     }
                 }
             });
+            
+            console.log("Result submitted successfully!");
         } catch (error) {
             console.error("Error submitting result:", error);
+            alert("Error submitting result. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
