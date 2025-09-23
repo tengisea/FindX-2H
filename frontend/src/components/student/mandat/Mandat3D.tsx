@@ -4,8 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, OrbitControls, Text, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import { getProvinceName } from "@/lib/province-utils";
-import { formatClassYear } from "@/lib/dateUtils";
-import { formatDateMongolian, formatDateShortMongolian } from "@/lib/dateUtils";
+import { formatClassYear, formatDateShortMongolian } from "@/lib/dateUtils";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
