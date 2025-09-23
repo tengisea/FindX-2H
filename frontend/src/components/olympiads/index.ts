@@ -1,1 +1,0 @@
-export { OlympiadCard } from './OlympiadCard';
