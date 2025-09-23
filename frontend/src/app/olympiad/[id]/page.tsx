@@ -44,16 +44,26 @@ const formatClassYear = (classYear: string | null | undefined) => {
   return classYearMapping[classYear] || classYear;
 };
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | null | undefined) => {
+  if (!dateString || dateString === null || dateString === undefined) {
+    return "Огноо тодорхойлогдоогүй";
+  }
+  
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString("mn-MN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return "Огноо тодорхойлогдоогүй";
+    }
+    
+    // Format as YYYY.MM.DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
   } catch (error) {
-    return dateString;
+    return "Огноо тодорхойлогдоогүй";
   }
 };
 
