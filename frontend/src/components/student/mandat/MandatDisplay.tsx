@@ -197,7 +197,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
               />
             </div>
             <div className="flex gap-2">
-              <Badge variant="secondary" className="text-lg px-4 py-2">
+              <Badge className="text-lg px-4 py-2">
                 {filteredMandats.length}{" "}
                 {filteredMandats.length === 1 ? "Мандат" : "Мандат"}
               </Badge>
