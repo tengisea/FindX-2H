@@ -50,11 +50,14 @@ export class RankingServiceV2 {
       skipValidation = false,
     } = options;
 
-    console.log(`🔍 Processing rankings for ClassType: ${classTypeId}`, {
-      batchSize,
-      useTransactions,
-      retryCount,
-    });
+    console.log(
+      `🔍 Processing rankings for ClassType: ${classTypeId} at ${new Date().toISOString()}`,
+      {
+        batchSize,
+        useTransactions,
+        retryCount,
+      }
+    );
 
     try {
       // Validate input
@@ -406,36 +409,113 @@ export class RankingServiceV2 {
     startTime: number,
     context?: Context
   ): Promise<RankingResult> {
+    // Get current class type to preserve existing medal assignments BEFORE starting transaction
+    const currentClassType = await ClassTypeModel.findById(classTypeId);
+
     return TransactionHelper.withTransaction(async (session) => {
-      // Update class type with medal assignments
-      await ClassTypeModel.findByIdAndUpdate(
-        classTypeId,
-        {
-          gold: this.extractStudentIds(
-            studentAnswers,
-            0,
-            medalDistribution.goldCount
-          ),
-          silver: this.extractStudentIds(
-            studentAnswers,
-            medalDistribution.goldCount,
-            medalDistribution.goldCount + medalDistribution.silverCount
-          ),
-          bronze: this.extractStudentIds(
-            studentAnswers,
-            medalDistribution.goldCount + medalDistribution.silverCount,
-            medalDistribution.goldCount +
-              medalDistribution.silverCount +
-              medalDistribution.bronzeCount
-          ),
-          top10: this.extractStudentIds(
-            studentAnswers,
-            0,
-            medalDistribution.top10Count
-          ),
-        },
-        { session, new: true }
+      // Check if there are any manual medal assignments
+      const hasManualAssignments = !!(
+        (currentClassType?.gold && currentClassType.gold.length > 0) ||
+        (currentClassType?.silver && currentClassType.silver.length > 0) ||
+        (currentClassType?.bronze && currentClassType.bronze.length > 0) ||
+        (currentClassType?.top10 && currentClassType.top10.length > 0)
       );
+
+      // Use existing medal assignments if they exist, otherwise use automatic assignments
+      const medalAssignments: any = {};
+
+      if (hasManualAssignments) {
+        // If there are ANY manual assignments, use ONLY manual assignments (no automatic)
+        console.log(
+          `🎯 Manual assignments detected - using ONLY manual assignments, no automatic assignments`
+        );
+
+        medalAssignments.gold = currentClassType?.gold || [];
+        medalAssignments.silver = currentClassType?.silver || [];
+        medalAssignments.bronze = currentClassType?.bronze || [];
+        medalAssignments.top10 = currentClassType?.top10 || [];
+
+        console.log(`✅ Using ONLY manual assignments:`, {
+          gold: medalAssignments.gold.length,
+          silver: medalAssignments.silver.length,
+          bronze: medalAssignments.bronze.length,
+          top10: medalAssignments.top10.length,
+        });
+      } else {
+        // Only use automatic assignments if there are NO manual assignments at all
+        console.log(
+          `🔄 No manual assignments found - using automatic assignments`
+        );
+
+        medalAssignments.gold = this.extractStudentIds(
+          studentAnswers,
+          0,
+          medalDistribution.goldCount
+        );
+        medalAssignments.silver = this.extractStudentIds(
+          studentAnswers,
+          medalDistribution.goldCount,
+          medalDistribution.goldCount + medalDistribution.silverCount
+        );
+        medalAssignments.bronze = this.extractStudentIds(
+          studentAnswers,
+          medalDistribution.goldCount + medalDistribution.silverCount,
+          medalDistribution.goldCount +
+            medalDistribution.silverCount +
+            medalDistribution.bronzeCount
+        );
+        medalAssignments.top10 = this.extractStudentIds(
+          studentAnswers,
+          0,
+          medalDistribution.top10Count
+        );
+
+        console.log(`🔄 Using automatic assignments:`, {
+          gold: medalAssignments.gold.length,
+          silver: medalAssignments.silver.length,
+          bronze: medalAssignments.bronze.length,
+          top10: medalAssignments.top10.length,
+        });
+      }
+
+      console.log(`🏆 Using medal assignments for ClassType ${classTypeId}:`, {
+        gold: medalAssignments.gold.length,
+        silver: medalAssignments.silver.length,
+        bronze: medalAssignments.bronze.length,
+        top10: medalAssignments.top10.length,
+        source: hasManualAssignments ? "manual" : "automatic",
+      });
+
+      console.log(`🔍 Current ClassType medal data:`, {
+        gold: currentClassType?.gold || "undefined",
+        silver: currentClassType?.silver || "undefined",
+        bronze: currentClassType?.bronze || "undefined",
+        top10: currentClassType?.top10 || "undefined",
+        goldLength: currentClassType?.gold?.length || 0,
+        silverLength: currentClassType?.silver?.length || 0,
+        bronzeLength: currentClassType?.bronze?.length || 0,
+        top10Length: currentClassType?.top10?.length || 0,
+      });
+
+      console.log(`🔍 Manual assignment check:`, {
+        hasGold: !!(currentClassType?.gold && currentClassType.gold.length > 0),
+        hasSilver: !!(
+          currentClassType?.silver && currentClassType.silver.length > 0
+        ),
+        hasBronze: !!(
+          currentClassType?.bronze && currentClassType.bronze.length > 0
+        ),
+        hasTop10: !!(
+          currentClassType?.top10 && currentClassType.top10.length > 0
+        ),
+        hasManualAssignments: hasManualAssignments,
+      });
+
+      // Update class type with medal assignments (preserving manual assignments if they exist)
+      await ClassTypeModel.findByIdAndUpdate(classTypeId, medalAssignments, {
+        session,
+        new: true,
+      });
 
       // Update student rankings
       await this.updateStudentRankingsWithSession(
@@ -472,31 +552,112 @@ export class RankingServiceV2 {
     startTime: number,
     context?: Context
   ): Promise<RankingResult> {
-    // Update class type with medal assignments
-    await ClassTypeModel.findByIdAndUpdate(classTypeId, {
-      gold: this.extractStudentIds(
+    // Get current class type to preserve existing medal assignments
+    const currentClassType = await ClassTypeModel.findById(classTypeId);
+
+    // Check if there are any manual medal assignments
+    const hasManualAssignments = !!(
+      (currentClassType?.gold && currentClassType.gold.length > 0) ||
+      (currentClassType?.silver && currentClassType.silver.length > 0) ||
+      (currentClassType?.bronze && currentClassType.bronze.length > 0) ||
+      (currentClassType?.top10 && currentClassType.top10.length > 0)
+    );
+
+    // Use existing medal assignments if they exist, otherwise use automatic assignments
+    const medalAssignments: any = {};
+
+    if (hasManualAssignments) {
+      // If there are ANY manual assignments, use ONLY manual assignments (no automatic)
+      console.log(
+        `🎯 Manual assignments detected (no transaction) - using ONLY manual assignments, no automatic assignments`
+      );
+
+      medalAssignments.gold = currentClassType?.gold || [];
+      medalAssignments.silver = currentClassType?.silver || [];
+      medalAssignments.bronze = currentClassType?.bronze || [];
+      medalAssignments.top10 = currentClassType?.top10 || [];
+
+      console.log(`✅ Using ONLY manual assignments (no transaction):`, {
+        gold: medalAssignments.gold.length,
+        silver: medalAssignments.silver.length,
+        bronze: medalAssignments.bronze.length,
+        top10: medalAssignments.top10.length,
+      });
+    } else {
+      // Only use automatic assignments if there are NO manual assignments at all
+      console.log(
+        `🔄 No manual assignments found (no transaction) - using automatic assignments`
+      );
+
+      medalAssignments.gold = this.extractStudentIds(
         studentAnswers,
         0,
         medalDistribution.goldCount
-      ),
-      silver: this.extractStudentIds(
+      );
+      medalAssignments.silver = this.extractStudentIds(
         studentAnswers,
         medalDistribution.goldCount,
         medalDistribution.goldCount + medalDistribution.silverCount
-      ),
-      bronze: this.extractStudentIds(
+      );
+      medalAssignments.bronze = this.extractStudentIds(
         studentAnswers,
         medalDistribution.goldCount + medalDistribution.silverCount,
         medalDistribution.goldCount +
           medalDistribution.silverCount +
           medalDistribution.bronzeCount
-      ),
-      top10: this.extractStudentIds(
+      );
+      medalAssignments.top10 = this.extractStudentIds(
         studentAnswers,
         0,
         medalDistribution.top10Count
-      ),
+      );
+
+      console.log(`🔄 Using automatic assignments (no transaction):`, {
+        gold: medalAssignments.gold.length,
+        silver: medalAssignments.silver.length,
+        bronze: medalAssignments.bronze.length,
+        top10: medalAssignments.top10.length,
+      });
+    }
+
+    console.log(
+      `🏆 Using medal assignments for ClassType ${classTypeId} (no transaction):`,
+      {
+        gold: medalAssignments.gold.length,
+        silver: medalAssignments.silver.length,
+        bronze: medalAssignments.bronze.length,
+        top10: medalAssignments.top10.length,
+        source: hasManualAssignments ? "manual" : "automatic",
+      }
+    );
+
+    console.log(`🔍 Current ClassType medal data (no transaction):`, {
+      gold: currentClassType?.gold || "undefined",
+      silver: currentClassType?.silver || "undefined",
+      bronze: currentClassType?.bronze || "undefined",
+      top10: currentClassType?.top10 || "undefined",
+      goldLength: currentClassType?.gold?.length || 0,
+      silverLength: currentClassType?.silver?.length || 0,
+      bronzeLength: currentClassType?.bronze?.length || 0,
+      top10Length: currentClassType?.top10?.length || 0,
     });
+
+    console.log(`🔍 Manual assignment check (no transaction):`, {
+      hasGold: !!(currentClassType?.gold && currentClassType.gold.length > 0),
+      hasSilver: !!(
+        currentClassType?.silver && currentClassType.silver.length > 0
+      ),
+      hasBronze: !!(
+        currentClassType?.bronze && currentClassType.bronze.length > 0
+      ),
+      hasTop10: !!(
+        currentClassType?.top10 && currentClassType.top10.length > 0
+      ),
+      hasManualAssignments: hasManualAssignments,
+    });
+
+    // Update class type with medal assignments (preserving manual assignments if they exist)
+    await ClassTypeModel.findByIdAndUpdate(classTypeId, medalAssignments);
 
     // Update student rankings
     await this.updateStudentRankingsWithoutSession(

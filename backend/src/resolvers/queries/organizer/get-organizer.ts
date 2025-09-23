@@ -19,6 +19,22 @@ export const getOrganizer = async (_: unknown, { id }: { id: string }) => {
       Olympiads: organizer.Olympiads.map((olympiad: any) => ({
         id: olympiad._id.toString(),
         name: olympiad.name,
+        occurringDay: olympiad.occurringDay,
+        closeDay: olympiad.closeDay,
+        location: olympiad.location,
+        rankingType: olympiad.rankingType,
+        invitation: olympiad.invitation,
+        status: olympiad.status,
+        classTypes: olympiad.classTypes.map((classType: any) => ({
+          id: classType._id.toString(),
+          name: classType.name,
+          occurringTime: classType.occurringTime,
+        })),
+        questions: olympiad.questions.map((question: any) => ({
+          id: question._id.toString(),
+          name: question.name,
+          maxScore: question.maxScore,
+        })),
       })),
     };
   } catch (error: any) {
@@ -26,3 +42,4 @@ export const getOrganizer = async (_: unknown, { id }: { id: string }) => {
     throw new GraphQLError(error.message || "Failed to get organizer");
   }
 };
+ 

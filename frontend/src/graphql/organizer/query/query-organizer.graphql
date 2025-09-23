@@ -7,9 +7,13 @@ query GetOrganizer($getOrganizerId: ID!) {
     Olympiads {
       id
       name
-      description
+      occurringDay
       closeDay
       location
+      description
+      rankingType
+      invitation
+      status
       organizer {
         id
         organizationName
@@ -93,7 +97,6 @@ query GetAllOrganizers {
         bronze
         top10
       }
-      
       scoreOfAward
       status
       rankingType
