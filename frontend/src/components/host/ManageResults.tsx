@@ -14,6 +14,13 @@ import {
     useQuestionsByClassTypeQuery,
     ClassYear
 } from "@/generated";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { OlympiadOverview } from "./results/OlympiadOverview";
 import { StudentScoringInterface } from "./results/StudentScoringInterface";
 import { RankingInterface } from "./results/RankingInterface";
@@ -169,13 +176,13 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
         if (!selectedOlympiad) {
             return (
                 <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-[#ff8400]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Select an Olympiad</h3>
-                    <p className="text-gray-600">Choose an olympiad from the dropdown above to view and manage its results.</p>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Олимпиад сонгоно уу</h3>
+                    <p className="text-gray-600">Дээрх цэснээс сонгож, түүний үр дүнг харах болон удирдах боломжтой.</p>
                 </div>
             );
         }
@@ -231,7 +238,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
     return (
         <div className="w-full">
-            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200 p-4 sm:p-6 lg:p-8 relative overflow-hidden"
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200  p-4 sm:p-6 lg:p-8 relative overflow-hidden"
                 style={{
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                 }}>
@@ -250,21 +257,24 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
 
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Select Olympiad
+                            <label className="block text-sm font-medium text-gray-700 mb-2 ">
+                                Дүн оруулах олимпиад сонгох
                             </label>
-                            <select
+                            <Select
                                 value={selectedOlympiad}
-                                onChange={(e) => handleOlympiadSelect(e.target.value)}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base bg-white text-gray-900"
+                                onValueChange={(value) => handleOlympiadSelect(value)}
                             >
-                                <option value="">Choose an olympiad...</option>
-                                {filteredOlympiads.map((olympiad) => (
-                                    <option key={olympiad.id} value={olympiad.id}>
-                                        {olympiad.name} - {olympiad.status}
-                                    </option>
-                                ))}
-                            </select>
+                                <SelectTrigger className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#ff8400] focus:border-transparent text-sm sm:text-base bg-white text-gray-900">
+                                    <SelectValue placeholder="сонгоно уу..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {filteredOlympiads.map((olympiad) => (
+                                        <SelectItem key={olympiad.id} value={olympiad.id}>
+                                            {olympiad.name} - {olympiad.status}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </div>
@@ -276,41 +286,41 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                             <button
                                 onClick={() => setViewMode("overview")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "overview"
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-[#ff8400] text-white"
                                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                             >
-                                Overview
+                                Бүх ангилал
                             </button>
                             <button
                                 onClick={() => setViewMode("scoring")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "scoring"
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-[#ff8400] text-white"
                                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                                 disabled={!selectedClassType}
                             >
-                                Student Scoring
+                               Дүн оруулах
                             </button>
                             <button
                                 onClick={() => setViewMode("ranking")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "ranking"
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-[#ff8400] text-white"
                                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                                 disabled={!selectedClassType}
                             >
-                                Rankings
+                                Нэгдсэн дүн
                             </button>
                             <button
                                 onClick={() => setViewMode("medals")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "medals"
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-[#ff8400] text-white"
                                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                                 disabled={selectedOlympiadData?.status !== "MEDALS_PREVIEW" && selectedOlympiadData?.status !== "FINISHED"}
                             >
-                                Medal Management
+                                Шагнал олгох
                             </button>
                         </div>
                     </div>

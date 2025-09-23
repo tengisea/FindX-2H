@@ -128,14 +128,14 @@ export const MedalManagementInterface: React.FC<
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-2xl font-bold text-foreground">
-            Medal Management
+            Медаль олгох
           </h3>
           <p className="text-muted-foreground">
-            Review and finalize medal assignments for {olympiad.name}
+             {olympiad.name} дүн хариуг нэгтгэх
           </p>
         </div>
         <button
@@ -155,7 +155,7 @@ export const MedalManagementInterface: React.FC<
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          <span>Back to Overview</span>
+          <span>Буцах</span>
         </button>
       </div>
 
@@ -163,7 +163,7 @@ export const MedalManagementInterface: React.FC<
       <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-lg font-semibold text-primary">
-            Olympiad Status: {olympiad.status}
+            Төлөв: {olympiad.status}
           </h4>
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -173,22 +173,21 @@ export const MedalManagementInterface: React.FC<
             }`}
           >
             {olympiad.status === "MEDALS_PREVIEW"
-              ? "Ready for Review"
-              : "Finalized"}
+              ? "Хянагдахад бэлэн"
+              : "Дууссан"}
           </span>
         </div>
         <p className="text-sm text-muted-foreground">
           {olympiad.status === "MEDALS_PREVIEW"
-            ? "Medal assignments have been automatically generated. Review and adjust as needed before finalizing."
-            : "Medal assignments have been finalized and students have been notified."}
+            ? "Медалийн хуваарилалт автоматаар үүсгэгдлээ. Эцэслэхийн өмнө шалгаж, шаардлагатай бол өөрчлөлт оруулна уу."
+            : "Медалийн хуваарилалт эцэслэгдэж, сурагчдад мэдэгдсэн."}
         </p>
       </div>
 
       {/* Class Type Selection */}
       <div>
         <h4 className="text-lg font-semibold text-foreground mb-4">
-          Select Class Type to Manage Medals
-        </h4>
+        Медаль олгох ангиллаа сонгоно уу.        </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {classTypes.map((classType) => (
             <div
@@ -202,18 +201,18 @@ export const MedalManagementInterface: React.FC<
             >
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary mb-2">
-                  Grade {classType.classYear.replace("GRADE_", "")}
+                 {classType.classYear.replace("GRADE_", "")} Анги 
                 </div>
                 <div className="text-sm text-muted-foreground mb-4">
-                  {classType.participants?.length || 0} participants
+                  {classType.participants?.length || 0} оролцогч
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Max Score:</span>
+                    <span className="text-muted-foreground">Боломжит оноо:</span>
                     <span className="font-medium">{classType.maxScore}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Medalists:</span>
+                    <span className="text-muted-foreground">Медалийн тоо:</span>
                     <span className="font-medium">{classType.medalists}</span>
                   </div>
                 </div>
