@@ -234,19 +234,19 @@ const HostPage = () => {
 
     // StaggeredMenu configuration
     const menuItems = [
-        { label: "Profile", ariaLabel: "View host profile", link: "#profile" },
+        { label: "Байгууллагын мэдээлэл", ariaLabel: "View host profile", link: "#profile" },
         {
-            label: "Create Olympiad",
+            label: "Олимпиад үүсгэх",
             ariaLabel: "Create new olympiad",
             link: "#create",
         },
         {
-            label: "Manage Olympiads",
+            label: "Олимпиад засах",
             ariaLabel: "Manage existing olympiads",
             link: "#manage",
         },
         {
-            label: "Manage Results",
+            label: "Дүн оруулах",
             ariaLabel: "Manage olympiad results",
             link: "#results",
         },
@@ -390,25 +390,19 @@ const HostPage = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
                                 <span className="text-foreground font-medium">
-                                    {activeTab === "profile" && "Profile"}
-                                    {activeTab === "create" && "Create Olympiad"}
-                                    {activeTab === "manage" && "Manage Olympiads"}
-                                    {activeTab === "results" && "Manage Results"}
+                                    {activeTab === "profile" && "Байгууллагын мэдээлэл"}
+                                    {activeTab === "create" && "Олимпиад үүсгэх"}
+                                    {activeTab === "manage" && "Олимпиадын засах"}
+                                    {activeTab === "results" && "Дүн оруулах"}
                                 </span>
                             </div>
 
                             <h1 className="text-4xl font-bold mb-2 text-black pl-8">
-                                {activeTab === "profile" && "Profile"}
-                                {activeTab === "create" && "Create Olympiad"}
-                                {activeTab === "manage" && "Manage Olympiads"}
-                                {activeTab === "results" && "Manage Results"}
+                                {activeTab === "profile" && "Байгууллагын мэдээлэл"}
+                                {activeTab === "create" && "Олимпиад үүсгэх"}
+                                {activeTab === "manage" && "Олимпиадын засах"}
+                                {activeTab === "results" && "Дүн оруулах"}
                             </h1>
-                            <p className="text-lg text-muted-foreground pl-8">
-                                {activeTab === "profile" && "View and manage your host organization profile"}
-                                {activeTab === "create" && "Create and submit new olympiad requests for approval"}
-                                {activeTab === "manage" && "View, edit, and manage your existing olympiads"}
-                                {activeTab === "results" && "View, export, and manage results for your olympiads"}
-                            </p>
                         </div>
 
                         {/* Error Display */}
