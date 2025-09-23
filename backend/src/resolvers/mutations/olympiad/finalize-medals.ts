@@ -19,7 +19,11 @@ import {
   handleAsyncError,
 } from "@/utils/errorHandler";
 
-export const finalizeMedals = async (_: unknown, { id }: { id: string }) => {
+export const finalizeMedals = async (
+  _: unknown,
+  { id }: { id: string },
+  context: any
+) => {
   return await handleAsyncError(async () => {
     console.log(`🏆 Finalizing medals for Olympiad: ${id}`);
 
@@ -77,10 +81,14 @@ export const finalizeMedals = async (_: unknown, { id }: { id: string }) => {
     let totalEmailsSent = 0;
 
     try {
-      const rankingResult = await RankingServiceV2.processOlympiadRankings(id, {
-        useTransactions: true,
-        batchSize: 1000,
-      });
+      const rankingResult = await RankingServiceV2.processOlympiadRankings(
+        id,
+        {
+          useTransactions: true,
+          batchSize: 1000,
+        },
+        context
+      );
 
       console.log(
         `✅ Rankings processed: ${rankingResult.classTypesProcessed} class types, ${rankingResult.totalStudentsProcessed} students received points`

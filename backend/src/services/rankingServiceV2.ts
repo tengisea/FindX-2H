@@ -14,6 +14,7 @@ import {
   StudentRankingInfo,
   MedalDistribution,
 } from "@/types/ranking.types";
+import { Context } from "@/types/context";
 import mongoose from "mongoose";
 
 /**
@@ -38,7 +39,8 @@ export class RankingServiceV2 {
    */
   static async processClassTypeRankings(
     classTypeId: string,
-    options: RankingProcessingOptions = {}
+    options: RankingProcessingOptions = {},
+    context?: Context
   ): Promise<RankingResult> {
     const startTime = Date.now();
     const {
@@ -111,7 +113,8 @@ export class RankingServiceV2 {
           studentAnswers,
           medalDistribution,
           classType.olympiadId.toString(),
-          startTime
+          startTime,
+          context
         );
       } else {
         return await this.processRankingsWithoutTransaction(
@@ -119,7 +122,8 @@ export class RankingServiceV2 {
           studentAnswers,
           medalDistribution,
           classType.olympiadId.toString(),
-          startTime
+          startTime,
+          context
         );
       }
     } catch (error) {
@@ -151,7 +155,8 @@ export class RankingServiceV2 {
    */
   static async processOlympiadRankings(
     olympiadId: string,
-    options: RankingProcessingOptions = {}
+    options: RankingProcessingOptions = {},
+    context?: Context
   ): Promise<OlympiadRankingResult> {
     const startTime = Date.now();
 
@@ -185,7 +190,11 @@ export class RankingServiceV2 {
       // Process all class types in parallel with error handling
       const results = await Promise.allSettled(
         classTypes.map((classType) =>
-          this.processClassTypeRankings(classType._id.toString(), options)
+          this.processClassTypeRankings(
+            classType._id.toString(),
+            options,
+            context
+          )
         )
       );
 
@@ -394,7 +403,8 @@ export class RankingServiceV2 {
     studentAnswers: any[],
     medalDistribution: MedalDistribution,
     olympiadId: string,
-    startTime: number
+    startTime: number,
+    context?: Context
   ): Promise<RankingResult> {
     return TransactionHelper.withTransaction(async (session) => {
       // Update class type with medal assignments
@@ -432,7 +442,8 @@ export class RankingServiceV2 {
         studentAnswers,
         olympiadId,
         medalDistribution,
-        session
+        session,
+        context
       );
 
       return this.createRankingResult(
@@ -458,7 +469,8 @@ export class RankingServiceV2 {
     studentAnswers: any[],
     medalDistribution: MedalDistribution,
     olympiadId: string,
-    startTime: number
+    startTime: number,
+    context?: Context
   ): Promise<RankingResult> {
     // Update class type with medal assignments
     await ClassTypeModel.findByIdAndUpdate(classTypeId, {
@@ -490,7 +502,8 @@ export class RankingServiceV2 {
     await this.updateStudentRankingsWithoutSession(
       studentAnswers,
       olympiadId,
-      medalDistribution
+      medalDistribution,
+      context
     );
 
     return this.createRankingResult(
@@ -512,7 +525,8 @@ export class RankingServiceV2 {
     studentAnswers: any[],
     olympiadId: string,
     medalDistribution: MedalDistribution,
-    session: mongoose.ClientSession
+    session: mongoose.ClientSession,
+    context?: Context
   ): Promise<void> {
     const olympiad = await OlympiadModel.findById(olympiadId);
     if (!olympiad) {
@@ -524,11 +538,32 @@ export class RankingServiceV2 {
     }
 
     const scoreOfAward = olympiad.scoreOfAward || 0;
+
+    // Get current student rankings to calculate new totals
+    const studentIds = studentAnswers.map(
+      (answer) => (answer.studentId as any)?._id || answer.studentId
+    );
+
+    const currentStudents = await StudentModel.find(
+      { _id: { $in: studentIds } },
+      { _id: 1, ranking: 1 },
+      { session }
+    );
+
+    const currentRankings = new Map(
+      currentStudents.map((student) => [
+        student._id.toString(),
+        student.ranking,
+      ])
+    );
+
     const bulkOps = this.createBulkOperations(
       studentAnswers,
       olympiadId,
       medalDistribution,
-      scoreOfAward
+      scoreOfAward,
+      context,
+      currentRankings
     );
 
     if (bulkOps.length > 0) {
@@ -549,7 +584,8 @@ export class RankingServiceV2 {
   private static async updateStudentRankingsWithoutSession(
     studentAnswers: any[],
     olympiadId: string,
-    medalDistribution: MedalDistribution
+    medalDistribution: MedalDistribution,
+    context?: Context
   ): Promise<void> {
     const olympiad = await OlympiadModel.findById(olympiadId);
     if (!olympiad) {
@@ -561,11 +597,31 @@ export class RankingServiceV2 {
     }
 
     const scoreOfAward = olympiad.scoreOfAward || 0;
+
+    // Get current student rankings to calculate new totals
+    const studentIds = studentAnswers.map(
+      (answer) => (answer.studentId as any)?._id || answer.studentId
+    );
+
+    const currentStudents = await StudentModel.find(
+      { _id: { $in: studentIds } },
+      { _id: 1, ranking: 1 }
+    );
+
+    const currentRankings = new Map(
+      currentStudents.map((student) => [
+        student._id.toString(),
+        student.ranking,
+      ])
+    );
+
     const bulkOps = this.createBulkOperations(
       studentAnswers,
       olympiadId,
       medalDistribution,
-      scoreOfAward
+      scoreOfAward,
+      context,
+      currentRankings
     );
 
     if (bulkOps.length > 0) {
@@ -589,7 +645,9 @@ export class RankingServiceV2 {
     studentAnswers: any[],
     olympiadId: string,
     medalDistribution: MedalDistribution,
-    scoreOfAward: number
+    scoreOfAward: number,
+    context?: Context,
+    currentRankings?: Map<string, number>
   ): mongoose.AnyBulkWriteOperation<any>[] {
     return studentAnswers.map((answer, index) => {
       const studentId = (answer.studentId as any)?._id || answer.studentId;
@@ -607,13 +665,17 @@ export class RankingServiceV2 {
 
       const isTop10 = position <= medalDistribution.top10Count;
 
+      // Get current ranking and calculate new total
+      const currentRanking = currentRankings?.get(studentId.toString()) || 0;
+      const newTotalRanking = currentRanking + rankingPoints;
+
       const updateObj: any = {
         $inc: { ranking: rankingPoints },
         $addToSet: { participatedOlympiads: olympiadId },
         $push: {
           rankingHistory: {
-            changedBy: null, // System update
-            changedTo: rankingPoints, // Points gained
+            changedBy: rankingPoints, // Points gained (the difference)
+            changedTo: newTotalRanking, // New total ranking (current + points gained)
             reason: `Olympiad performance - ${
               medalType ? medalType.toUpperCase() + " medal" : "No medal"
             } (+${rankingPoints} points)`,
