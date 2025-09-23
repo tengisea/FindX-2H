@@ -29,13 +29,13 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
     // Date formatting function
     const formatDate = (dateString?: string | null) => {
         if (!dateString || dateString === null || dateString === undefined || dateString === "") {
-            return "Set date";
+            return "Огноо тогтоох";
         }
 
         try {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) {
-                return "Invalid date";
+                return "Буруу огноо";
             }
             return date.toLocaleDateString("en-US", {
                 year: "numeric",
@@ -44,7 +44,7 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
             });
         } catch (error) {
             console.error("Date formatting error:", error, "for date:", dateString);
-            return "Invalid date";
+            return "Буруу огноо";
         }
     };
 
@@ -77,7 +77,7 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
     if (!organizer) {
         return (
             <div className="p-4 bg-muted/10 border border-muted/20 rounded-lg">
-                <p className="text-muted-foreground text-sm">No profile data available</p>
+                <p className="text-muted-foreground text-base">No profile data available</p>
             </div>
         );
     }
@@ -122,18 +122,18 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
                                     onClick={() => setIsEditModalOpen(true)}
                                     className="text-white hover:opacity-80 text-sm font-medium bg-[#FF8400]"
                                 >
-                                    Edit Profile
+                                    Мэдээлэл засах
                                 </Button>
                             </div>
                         </div>
-                        <p className="text-muted-foreground mb-4">{organizer.email}</p>
+                        <p className="text-muted-foreground mb-4 text-base">@  {organizer.email}</p>
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center   space-x-2">
-                                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span className="text-sm text-muted-foreground">
-                                    Member since {new Date().getFullYear()}
+                                <span className="text-base text-muted-foreground">
+                                    Нэгдсэн огноо: {new Date().getFullYear()}
                                 </span>
                             </div>
                         </div>
@@ -144,7 +144,7 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
             {/* Recent Olympiads */}
             <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-black">Recent Olympiads</h3>
+                    <h3 className="text-xl font-semibold text-black">Бүх олимпиадууд</h3>
                 </div>
 
                 {olympiads.length === 0 ? (
@@ -167,33 +167,40 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
                                     <div className="flex items-center space-x-2 mb-2">
                                         <h4 className="font-medium text-black">{olympiad.name}</h4>
                                         <span className="px-3 py-1 rounded-full text-sm font-medium  bg-[#ff8400] text-white">
-                                            {olympiad.status}
+                                            {olympiad.status === 'OPEN' ? 'Идэвхитэй' :
+                                                olympiad.status === 'FINISHED' ? 'Дууссан' :
+                                                    olympiad.status === 'CLOSED' ? 'Хаагдсан' :
+                                                        olympiad.status === 'DRAFT' ? 'Идэвхигүй' :
+                                                            olympiad.status}
                                         </span>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mb-2">{olympiad.description}</p>
 
+                                    </div>
+                                    <p className="text-base text-muted-foreground mb-2">{olympiad.description}</p>
                                     {/* Date Information */}
-                                    <div className="flex items-center space-x-4 text-xs">
+                                    <div className="flex items-center space-x-4 text-sm">
                                         <div className="flex items-center space-x-1">
-                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            <span className={!olympiad.closeDay ? "text-orange-500" : "text-muted-foreground"}>
-                                                Close: {formatDate(olympiad.closeDay)}
+                                            <span className={!olympiad.closeDay ? "text-black" : "text-muted-foreground"}>
+                                                Бүртгэл хаагдах огноо: {formatDate(olympiad.closeDay)}
                                             </span>
                                         </div>
                                         <div className="flex items-center space-x-1">
-                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            <span className={!olympiad.occurringDay ? "text-orange-500" : "text-muted-foreground"}>
-                                                Event: {formatDate(olympiad.occurringDay)}
+                                            <span className={!olympiad.occurringDay ? "text-black" : "text-muted-foreground"}>
+                                                Олимпиад болох огноо: {formatDate(olympiad.occurringDay)}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+
                         ))}
+
                     </div>
                 )}
             </Card>

@@ -11,6 +11,10 @@ import {
   OlympiadRankingType,
 } from "@/generated";
 import { useAlert } from "@/components/ui/alert-system";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import SuccessAlert from "@/components/ui/success-alert";
 
 interface FormData {
   name: string;
@@ -46,6 +50,7 @@ interface OlympiadFormProps {
   onResetForm: () => void;
   isSubmitting: boolean;
   onRefetch?: () => void;
+  onNavigateToManage?: () => void;
 }
 
 export const OlympiadForm = ({
@@ -63,13 +68,16 @@ export const OlympiadForm = ({
   onResetForm,
   isSubmitting,
   onRefetch,
+  onNavigateToManage,
 }: OlympiadFormProps) => {
   const { showSuccess, showError, showWarning } = useAlert();
+  const router = useRouter();
   const [createOlympiad, { loading: mutationLoading, error: mutationError }] =
     useCreateOlympiadMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [validationErrors, setValidationErrors] = useState<{ [step: number]: string }>({});
   const [fieldErrors, setFieldErrors] = useState<{ [field: string]: string }>({});
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   // Validation functions for each step
   const validateStep1 = (): boolean => {
@@ -210,6 +218,15 @@ export const OlympiadForm = ({
     }
   };
 
+  const handleGoToManageOlympiad = () => {
+    setShowSuccessAlert(false);
+    if (onNavigateToManage) {
+      onNavigateToManage();
+    } else {
+      router.push('/host');
+    }
+  };
+
   const handleFinalSubmit = async () => {
     // Validate required fields
     if (!formData.name || !formData.description || !formData.location) {
@@ -260,6 +277,7 @@ export const OlympiadForm = ({
 
       if (result.data?.createOlympiad) {
         showSuccess("Olympiad created successfully!", "Success");
+        setShowSuccessAlert(true);
         onResetForm();
         setCurrentStep(1);
         // Refetch data to show the new olympiad
@@ -279,6 +297,11 @@ export const OlympiadForm = ({
 
   return (
     <div className="w-full">
+      {/* Success Alert */}
+      {showSuccessAlert && (
+        <SuccessAlert handleGoToManageOlympiad={handleGoToManageOlympiad} />
+      )}
+
       <Stepper
         initialStep={currentStep}
         onStepChange={(step) => {
@@ -317,11 +340,11 @@ export const OlympiadForm = ({
                     onUpdateFormData("name", e.target.value);
                     clearValidationError(1, "name");
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${fieldErrors.name
+                  className={`w-full px-4 py-3 border rounded-xl text-sm text-gray-700 focus:outline-none focus:bg-gray-50 ${fieldErrors.name
                     ? 'border-red-300 bg-red-50'
                     : formData.name
-                      ? 'border-gray-200 bg-gray-100'
-                      : 'border-gray-200 bg-gray-300'
+                      ? 'border-gray-200 bg-gray-50'
+                      : 'border-gray-200 bg-gray-100'
                     }`}
                   placeholder="Олимпиадын нэр оруулна уу"
                   required
@@ -342,11 +365,11 @@ export const OlympiadForm = ({
                     clearValidationError(1, "description");
                   }}
                   rows={4}
-                  className={`w-full px-4 py-3 border rounded-xl resize-none text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${fieldErrors.description
+                  className={`w-full px-4 py-3 border rounded-xl resize-none text-sm text-gray-700 focus:outline-none focus:bg-gray-50 ${fieldErrors.description
                     ? 'border-red-300 bg-red-50'
                     : formData.description
-                      ? 'border-gray-200 bg-gray-100'
-                      : 'border-gray-200 bg-gray-300'
+                      ? 'border-gray-200 bg-gray-50'
+                      : 'border-gray-200 bg-gray-100'
                     }`}
                   placeholder="Олимпиадын тайлбар оруулна уу"
                   required
@@ -367,11 +390,11 @@ export const OlympiadForm = ({
                     onUpdateFormData("location", e.target.value);
                     clearValidationError(1, "location");
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${fieldErrors.location
+                  className={`w-full px-4 py-3 border rounded-xl text-sm text-gray-700 focus:outline-none focus:bg-gray-50 ${fieldErrors.location
                     ? 'border-red-300 bg-red-50'
                     : formData.location
-                      ? 'border-gray-200 bg-gray-100'
-                      : 'border-gray-200 bg-gray-300'
+                      ? 'border-gray-200 bg-gray-50'
+                      : 'border-gray-200 bg-gray-100'
                     }`}
                   placeholder="Олимпиадын байршил оруулна уу"
                   required
@@ -445,7 +468,7 @@ export const OlympiadForm = ({
                       e.target.value as OlympiadRankingType
                     )
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-200 text-gray-900 focus:outline-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-100 text-gray-700 focus:outline-none focus:bg-gray-50"
                   required
                 >
                   <option value={OlympiadRankingType.School}>
