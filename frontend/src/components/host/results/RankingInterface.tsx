@@ -13,8 +13,6 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
     studentAnswers,
     onBack
 }) => {
-    const [sortBy, setSortBy] = useState<"score" | "name" | "mandat">("score");
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
     const calculateTotalScore = (answers: any[]) => {
         return answers.reduce((sum, answer) => sum + (answer.score || 0), 0);
@@ -30,21 +28,14 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
             };
         });
 
-        // Sort by score first, then by mandat number for ties
+        // Always sort by score in descending order (highest to lowest), then by mandat number for ties
         return studentsWithScores.sort((a, b) => {
-            if (sortBy === "score") {
-                if (a.totalScore !== b.totalScore) {
-                    return sortOrder === "desc" ? b.totalScore - a.totalScore : a.totalScore - b.totalScore;
-                }
-                return parseInt(a.mandatNumber) - parseInt(b.mandatNumber);
-            } else if (sortBy === "mandat") {
-                return sortOrder === "desc" 
-                    ? parseInt(b.mandatNumber) - parseInt(a.mandatNumber)
-                    : parseInt(a.mandatNumber) - parseInt(b.mandatNumber);
+            if (a.totalScore !== b.totalScore) {
+                return b.totalScore - a.totalScore; // Descending order by score
             }
-            return 0;
+            return parseInt(a.mandatNumber) - parseInt(b.mandatNumber); // Ascending by mandat for ties
         });
-    }, [studentAnswers, sortBy, sortOrder]);
+    }, [studentAnswers]);
 
     const getRankColor = (rank: number) => {
         if (rank === 1) return "text-yellow-600 bg-yellow-50 border-yellow-200";
@@ -92,10 +83,10 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-2xl font-bold text-foreground">
-                        Rankings - Grade {classType.classYear.replace('GRADE_', '')}
+                        Нэгдсэн дүн - {classType.classYear.replace('GRADE_', '')} Анги
                     </h3>
                     <p className="text-muted-foreground">
-                        Student rankings based on total scores
+                    Сурагчдын нийлбэр оноонд үндэслэсэн эрэмбэ
                     </p>
                 </div>
                 <button
@@ -105,7 +96,7 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    <span>Back to Overview</span>
+                    <span>Буцах</span>
                 </button>
             </div>
 
@@ -115,57 +106,31 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                     <div className="text-2xl font-bold text-primary">
                         {statistics.totalStudents}
                     </div>
-                    <div className="text-sm text-muted-foreground">Total Students</div>
+                    <div className="text-sm text-muted-foreground">Бүх оролцогчид</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-green-600">
                         {statistics.answeredStudents}
                     </div>
-                    <div className="text-sm text-muted-foreground">Answered</div>
+                    <div className="text-sm text-muted-foreground">Дүн оруулсан</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-blue-600">
                         {statistics.averageScore}
                     </div>
-                    <div className="text-sm text-muted-foreground">Average Score</div>
+                    <div className="text-sm text-muted-foreground">Дундаж оноо</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-green-600">
                         {statistics.highestScore}
                     </div>
-                    <div className="text-sm text-muted-foreground">Highest Score</div>
+                    <div className="text-sm text-muted-foreground">Хамгийн их оноо</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-red-600">
                         {statistics.lowestScore}
                     </div>
-                    <div className="text-sm text-muted-foreground">Lowest Score</div>
-                </div>
-            </div>
-
-            {/* Sorting Controls */}
-            <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium text-foreground">Sort by:</label>
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as "score" | "name" | "mandat")}
-                        className="px-3 py-1 border border-border rounded-lg bg-background text-foreground text-sm"
-                    >
-                        <option value="score">Score</option>
-                        <option value="mandat">Mandat Number</option>
-                    </select>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium text-foreground">Order:</label>
-                    <select
-                        value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-                        className="px-3 py-1 border border-border rounded-lg bg-background text-foreground text-sm"
-                    >
-                        <option value="desc">Descending</option>
-                        <option value="asc">Ascending</option>
-                    </select>
+                    <div className="text-sm text-muted-foreground">Хамгийн бага оноо</div>
                 </div>
             </div>
 
@@ -173,7 +138,7 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
             <div className="bg-card rounded-xl border border-border overflow-hidden">
                 <div className="p-6 border-b border-border">
                     <h4 className="text-lg font-semibold text-foreground">
-                        Student Rankings
+                       Оноогоор эрэмбэлэгдсэн сурагчдын жагсаалт
                     </h4>
                 </div>
                 
@@ -202,16 +167,10 @@ export const RankingInterface: React.FC<RankingInterfaceProps> = ({
                                         <div>
                                             <div className="flex items-center space-x-2">
                                                 <h5 className="font-medium text-foreground">
-                                                    Student {student.mandatNumber}
+                                                    № {student.mandatNumber}
                                                 </h5>
                                                 <span className="text-lg">{getRankIcon(rank)}</span>
                                             </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                {student.hasAnswers 
-                                                    ? `${student.answers.length} questions answered` 
-                                                    : "No answers submitted"
-                                                }
-                                            </p>
                                         </div>
                                     </div>
                                     

@@ -23,8 +23,16 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
     onBack
 }) => {
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
     if (!classType) return null;
+
+    // Filter student answers based on mandat number search
+    const filteredStudentAnswers = studentAnswers.filter(studentAnswer => {
+        if (!searchTerm) return true;
+        const mandatNumber = studentAnswer.mandatNumber?.toString() || "";
+        return mandatNumber.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     const handleScoreUpdate = async (options: { variables: { studentAnswerId: string; questionId: string; score: number } }) => {
         try {
@@ -62,11 +70,8 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-2xl font-bold text-foreground">
-                        Student Scoring - Grade {classType.classYear.replace('GRADE_', '')}
+                       Дүн нэгтгэх - {classType.classYear.replace('GRADE_', '')} Анги 
                     </h3>
-                    <p className="text-muted-foreground">
-                        Manage student answers and scores for {questions.length} questions
-                    </p>
                 </div>
                 <button
                     onClick={onBack}
@@ -75,7 +80,7 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    <span>Back to Overview</span>
+                    <span>Буцах</span>
                 </button>
             </div>
 
@@ -85,38 +90,65 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                     <div className="text-2xl font-bold text-primary">
                         {studentAnswers.length}
                     </div>
-                    <div className="text-sm text-muted-foreground">Total Students</div>
+                    <div className="text-sm text-muted-foreground">Бүх оролцогчид</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-green-600">
                         {studentAnswers.filter(sa => sa.answers && sa.answers.length > 0).length}
                     </div>
-                    <div className="text-sm text-muted-foreground">Answered</div>
+                    <div className="text-sm text-muted-foreground">Дүн оруулсан</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-yellow-600">
                         {studentAnswers.filter(sa => !sa.answers || sa.answers.length === 0).length}
                     </div>
-                    <div className="text-sm text-muted-foreground">Pending</div>
+                    <div className="text-sm text-muted-foreground">Хүлээгдэж байгаа</div>
                 </div>
                 <div className="bg-card rounded-lg p-4 border border-border">
                     <div className="text-2xl font-bold text-primary">
                         {classType.maxScore}
                     </div>
-                    <div className="text-sm text-muted-foreground">Max Score</div>
+                    <div className="text-sm text-muted-foreground">Боломжит авах оноо</div>
                 </div>
             </div>
 
             {/* Student List */}
             <div className="bg-card rounded-xl border border-border">
+                <div className="flex justify-between">
                 <div className="p-6 border-b border-border">
                     <h4 className="text-lg font-semibold text-foreground">
-                        Student Answers ({studentAnswers.length})
+                        Сурагчдын дүн ({filteredStudentAnswers.length}/{studentAnswers.length})
                     </h4>
+                </div>
+
+                <div className="p-4 border-b border-border">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Мандат дугаараар хайх..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff8400] focus:border-transparent bg-white text-gray-900"
+                        />
+                        <svg
+                            className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                            />
+                        </svg>
+                    </div>
+                </div>
                 </div>
                 
                 <div className="divide-y divide-border">
-                    {studentAnswers.map((studentAnswer) => {
+                    {filteredStudentAnswers.map((studentAnswer) => {
                         const hasAnswers = studentAnswer.answers && studentAnswer.answers.length > 0;
                         const totalScore = hasAnswers ? calculateTotalScore(studentAnswer.answers) : 0;
                         
@@ -130,24 +162,17 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-4">
-                                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                                            <span className="text-primary font-semibold">
-                                                {studentAnswer.mandatNumber}
-                                            </span>
-                                        </div>
+                                     
                                         <div>
-                                            <h5 className="font-medium text-foreground">
-                                                Student {studentAnswer.mandatNumber}
+                                            <h5 className="font-medium text-[#ff8400]">
+                                           № {studentAnswer.mandatNumber}
                                             </h5>
-                                            <p className="text-sm text-muted-foreground">
-                                                {hasAnswers ? `${studentAnswer.answers.length} questions answered` : "No answers submitted"}
-                                            </p>
                                         </div>
                                     </div>
                                     
                                     <div className="flex items-center space-x-4">
-                                        <div className="text-right">
-                                            <div className={`text-lg font-bold ${getScoreColor(totalScore, classType.maxScore)}`}>
+                                        <div className="text-right ">
+                                            <div className="text-lg font-bold text-black">
                                                 {totalScore}/{classType.maxScore}
                                             </div>
                                             <div className="text-xs text-muted-foreground">
@@ -157,10 +182,10 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                                         
                                         <div className={`px-3 py-1 rounded-full text-xs font-medium ${
                                             hasAnswers 
-                                                ? "bg-green-100 text-green-800" 
+                                                ? "bg-orange-100 text-[#ff8400]" 
                                                 : "bg-yellow-100 text-yellow-800"
                                         }`}>
-                                            {hasAnswers ? "Scored" : "Pending"}
+                                            {hasAnswers ? "хариу орсон" : "хүлээгдэж буй"}
                                         </div>
                                         
                                         <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +204,7 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
                                                     <div className="text-xs text-muted-foreground">
                                                         Q{index + 1}
                                                     </div>
-                                                    <div className={`font-medium ${getScoreColor(answer.score, question?.maxScore || 1)}`}>
+                                                    <div className="font-medium text-black">
                                                         {answer.score}/{question?.maxScore || 1}
                                                     </div>
                                                 </div>

@@ -28,7 +28,7 @@ export const StatusProgressIndicator: React.FC<StatusProgressIndicatorProps> = (
             <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-primary">
-                        Olympiad Status
+                        Олимпиадын төлөв
                     </h3>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}>
                         {status}
