@@ -192,7 +192,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
                 placeholder="Search by olympiad name, organizer, location, or mandat number..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-orange-500 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
                 aria-label="Search mandats"
               />
             </div>
@@ -310,7 +310,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
                     {/* Action Button */}
                     <Button
                       onClick={() => handleView3D(mandat)}
-                      className="w-full bg-orange-500 text-white hover:bg-orange-600 py-3 text-base font-medium flex items-center justify-center gap-2"
+                      className="w-full bg-[#FF8400] text-white hover:bg-[#FF8400]/90 py-3 text-base font-medium flex items-center justify-center gap-2"
                       aria-label={`View 3D mandat for ${mandat.olympiadName}`}
                     >
                       <Eye className="h-4 w-4" />

@@ -197,7 +197,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
             <CardHeader className="bg-gray-50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <UserCircle className="w-6 h-6 text-orange-500" />
+                  <UserCircle className="w-6 h-6 text-[#FF8400]" />
                   <CardTitle className="text-2xl font-semibold text-gray-800">
                     Profile Information
                   </CardTitle>
@@ -251,7 +251,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                     className={
                       !isEditing
                         ? "bg-gray-100 text-gray-600 border-gray-200 placeholder:text-gray-500"
-                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
                     }
                   />
                 </div>
@@ -274,7 +274,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                     className={
                       !isEditing
                         ? "bg-gray-100 text-gray-600 border-gray-200 placeholder:text-gray-500"
-                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
                     }
                   />
                 </div>
@@ -297,7 +297,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                     className={
                       !isEditing
                         ? "bg-gray-100 text-gray-600 border-gray-200 placeholder:text-gray-500"
-                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                        : "bg-white text-gray-800 border-gray-300 placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
                     }
                   />
                 </div>
@@ -333,7 +333,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         }))
                       }
                     >
-                      <SelectTrigger className="bg-white text-gray-800 border-gray-300 focus:border-orange-500 focus:ring-orange-500">
+                      <SelectTrigger className="bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] focus:ring-[#FF8400]">
                         <SelectValue placeholder="Select a province" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border border-gray-200">
@@ -341,7 +341,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                           <SelectItem
                             key={key}
                             value={key}
-                            className="text-gray-800 hover:bg-orange-50 focus:bg-orange-50"
+                            className="text-gray-800 hover:bg-[#FF8400]/10 focus:bg-[#FF8400]/10"
                           >
                             {value}
                           </SelectItem>
@@ -372,7 +372,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         variant="outline"
                         onClick={() => setIsEditing(false)}
                         disabled={isSaving}
-                        className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
+                        className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                       >
                         Cancel
                       </Button>
@@ -404,7 +404,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
           <Card className="bg-white border border-gray-200 overflow-hidden">
             <CardHeader className="bg-gray-50">
               <div className="flex items-center space-x-3">
-                <Bell className="w-6 h-6 text-orange-500" />
+                <Bell className="w-6 h-6 text-[#FF8400]" />
                 <CardTitle className="text-2xl font-semibold text-gray-800">
                   Notification Preferences
                 </CardTitle>
@@ -435,10 +435,10 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 + index * 0.1 }}
-                  className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-orange-300 transition-colors duration-200"
+                  className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-[#FF8400]/30 transition-colors duration-200"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-orange-100">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#FF8400]/10">
                       {notification.icon}
                     </div>
                     <div>
@@ -462,7 +462,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         handleNotificationChange(notification.key)
                       }
                     />
-                    <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-200 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                    <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF8400]/20 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF8400]"></div>
                   </motion.label>
                 </motion.div>
               ))}
