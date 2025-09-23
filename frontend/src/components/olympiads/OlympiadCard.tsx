@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Calendar,
   MapPin,
@@ -12,8 +12,8 @@ import {
   Trophy,
   Award,
   Eye,
-  Users
-} from 'lucide-react';
+  Users,
+} from "lucide-react";
 
 interface OlympiadCardProps {
   olympiad: {
@@ -59,30 +59,34 @@ interface OlympiadCardProps {
   onViewDetails?: (olympiadId: string) => void;
 }
 
-export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCardProps) => {
+export const OlympiadCard = ({
+  olympiad,
+  index = 0,
+  onViewDetails,
+}: OlympiadCardProps) => {
   const router = useRouter();
 
   const formatDate = (dateString?: string | null) => {
-    if (!dateString) return 'Not set';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    if (!dateString) return "Not set";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'OPEN':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'CLOSED':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'FINISHED':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'DRAFT':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "Нээллттэй олимпиад":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "Дууссан олимпиад":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "Дууссан олимпиад":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "DRAFT":
+        return "bg-gray-100 text-gray-800 border-gray-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -104,12 +108,12 @@ export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCar
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.3, delay: index * 0.05 }
+      transition: { duration: 0.3, delay: index * 0.05 },
     },
     hover: {
       scale: 1.02,
-      transition: { duration: 0.2 }
-    }
+      transition: { duration: 0.2 },
+    },
   };
 
   return (
@@ -146,12 +150,16 @@ export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCar
 
             <div className="flex items-center gap-3 text-sm text-gray-600">
               <MapPin className="h-4 w-4 text-green-500" />
-              <span className="line-clamp-1">{olympiad.location || 'Location TBD'}</span>
+              <span className="line-clamp-1">
+                {olympiad.location || "Location TBD"}
+              </span>
             </div>
 
             <div className="flex items-center gap-3 text-sm text-gray-600">
               <Building2 className="h-4 w-4 text-purple-500" />
-              <span className="line-clamp-1">{olympiad.organizer?.organizationName || 'Unknown Organizer'}</span>
+              <span className="line-clamp-1">
+                {olympiad.organizer?.organizationName || "Unknown Organizer"}
+              </span>
             </div>
 
             {olympiad.rankingType && (
@@ -173,7 +181,11 @@ export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCar
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <Users className="h-4 w-4 text-indigo-500" />
                 <span>
-                  {olympiad.classtypes.reduce((total, ct) => total + (ct.participants || 0), 0)} participants
+                  {olympiad.classtypes.reduce(
+                    (total, ct) => total + (ct.participants || 0),
+                    0
+                  )}{" "}
+                  participants
                 </span>
               </div>
             )}
@@ -183,14 +195,20 @@ export const OlympiadCard = ({ olympiad, index = 0, onViewDetails }: OlympiadCar
           {olympiad.classtypes && olympiad.classtypes.length > 0 && (
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Available Grades</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Available Grades
+                </span>
                 <Badge variant="secondary" className="text-xs">
                   {olympiad.classtypes.length} grades
                 </Badge>
               </div>
               <div className="flex flex-wrap gap-1">
                 {olympiad.classtypes.slice(0, 3).map((classType) => (
-                  <Badge key={classType.id} variant="outline" className="text-xs">
+                  <Badge
+                    key={classType.id}
+                    variant="outline"
+                    className="text-xs"
+                  >
                     Grade {getGradeNumber(classType.classYear)}
                   </Badge>
                 ))}

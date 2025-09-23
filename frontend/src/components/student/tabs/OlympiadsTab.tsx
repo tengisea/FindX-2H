@@ -248,7 +248,7 @@ const OlympiadsTab = ({
         variants={itemVariants}
         transition={{ duration: 0.4 }}
       >
-        Available Olympiads
+        Боломжит олимпиад
       </motion.h2>
       <motion.div className="space-y-8" variants={containerVariants}>
         {/* Search and Filter Controls */}
@@ -265,7 +265,7 @@ const OlympiadsTab = ({
                 >
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                   <Input
-                    placeholder="Search olympiads by name..."
+                    placeholder="Олимпиадын нэрээр хайх"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 pr-4 bg-white text-gray-800 border-gray-300 focus-visible:ring-0 focus-visible:border-[#FF8400] focus:ring-0 focus:border-[#FF8400] focus:outline-none placeholder:text-gray-500"
@@ -301,10 +301,10 @@ const OlympiadsTab = ({
                         variant="outline"
                         size="sm"
                         onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
+                        className="flex items-center gap-2 border-gray-300 text-gray-700  "
                       >
                         <Filter className="w-4 h-4" />
-                        Filters
+                        Шүүлтүүр
                       </Button>
                     </motion.div>
                     <AnimatePresence>
@@ -320,9 +320,9 @@ const OlympiadsTab = ({
                             variant="ghost"
                             size="sm"
                             onClick={clearAllFilters}
-                            className="text-gray-600 hover:text-gray-800"
+                            className="text-gray-600 hover:text-gray-800　border border-gray-300"
                           >
-                            Clear All
+                            Цэвэрлэх
                           </Button>
                         </motion.div>
                       )}
@@ -335,7 +335,7 @@ const OlympiadsTab = ({
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.2 }}
                   >
-                    {filteredOlympiads.length} of {openOlympiadsCount} olympiads
+                    {filteredOlympiads.length} of {openOlympiadsCount} олимпиад
                   </motion.div>
                 </motion.div>
 
@@ -358,7 +358,7 @@ const OlympiadsTab = ({
                         transition={{ delay: 0.1 }}
                       >
                         <Label className="text-base font-medium">
-                          Ranking Type
+                          Олимпиадын түвшин
                         </Label>
                         <Select
                           value={selectedRankingType}
@@ -368,7 +368,7 @@ const OlympiadsTab = ({
                             <SelectValue placeholder="All ranking types" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">All Types</SelectItem>
+                            <SelectItem value="all">Бүх түвшин</SelectItem>
                             {uniqueRankingTypes.map((type) => (
                               <SelectItem key={type} value={type}>
                                 {type}
@@ -385,9 +385,7 @@ const OlympiadsTab = ({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
                       >
-                        <Label className="text-base font-medium">
-                          Grade Level
-                        </Label>
+                        <Label className="text-base font-medium">Анги</Label>
                         <Select
                           value={selectedGrade}
                           onValueChange={setSelectedGrade}
@@ -396,7 +394,7 @@ const OlympiadsTab = ({
                             <SelectValue placeholder="All grades" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">All Grades</SelectItem>
+                            <SelectItem value="all">Бүх анги</SelectItem>
                             {uniqueGrades.map((grade) => (
                               <SelectItem key={grade} value={grade}>
                                 {grade.replace("GRADE_", "Grade ")}
@@ -413,7 +411,9 @@ const OlympiadsTab = ({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
                       >
-                        <Label className="text-base font-medium">Region</Label>
+                        <Label className="text-base font-medium">
+                          Олимпиадын төрөл
+                        </Label>
                         <Select
                           value={selectedRegion}
                           onValueChange={setSelectedRegion}
@@ -422,7 +422,7 @@ const OlympiadsTab = ({
                             <SelectValue placeholder="All regions" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">All Regions</SelectItem>
+                            <SelectItem value="all">Бүх төрөл</SelectItem>
                             {uniqueRegions.map((region) => (
                               <SelectItem key={region} value={region}>
                                 {region}
@@ -457,20 +457,20 @@ const OlympiadsTab = ({
                   />
                 </svg>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  No Olympiads Available
+                  Боломжит олимпиад олдсонгүй
                 </h3>
                 <p className="text-gray-600 text-lg">
                   {hasActiveFilters
-                    ? "No olympiads match your current filters. Try adjusting your search criteria."
-                    : "There are currently no approved olympiads available for registration."}
+                    ? "Боломжит олимпиад олдсонгүй. Шүүлтүүрүүдийг өөрчлөх."
+                    : "Боломжит олимпиад олдсонгүй. Шүүлтүүрүүдийг өөрчлөх."}
                 </p>
                 {hasActiveFilters && (
                   <Button
                     variant="outline"
                     onClick={clearAllFilters}
-                    className="mt-4 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
+                    className="mt-4 border-gray-300 text-gray-700  "
                   >
-                    Clear All Filters
+                    Бүх шүүлтүүр цэвэрлэх
                   </Button>
                 )}
               </CardContent>

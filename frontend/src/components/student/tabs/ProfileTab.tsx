@@ -82,7 +82,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
   return (
     <div className="content-wrapper container">
       <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
-        Profile
+        Хувийн мэдээлэл
       </h2>
 
       <div className="space-y-8">
@@ -279,12 +279,8 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
         {/* Ranking History Chart */}
         <Card className="bg-white border border-gray-200">
           <CardHeader>
-            <CardTitle className="text-center text-gray-800">
-              Ranking History
-            </CardTitle>
-            <p className="text-center text-gray-600">
-              Track your ranking progress over time
-            </p>
+            <CardTitle className="text-center text-gray-800">Түүх</CardTitle>
+            <p className="text-center text-gray-600">Түүх</p>
           </CardHeader>
           <CardContent>
             <RankingChart
@@ -298,7 +294,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                 <div className="text-2xl font-bold text-[#FF8400]">
                   {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
-                <div className="text-base text-[#FF8400]">Current Ranking</div>
+                <div className="text-base text-orange-600">Одоогийн байр</div>
               </div>
 
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
@@ -318,15 +314,17 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-base text-[#FF8400]">Last Change</div>
+                <div className="text-base text-orange-600">
+                  Сүүлийн өөрчлөлт
+                </div>
               </div>
 
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-base text-[#FF8400]">
-                  Olympiads Participated
+                <div className="text-base text-orange-600">
+                  Олимпиад оролцсон тоо
                 </div>
               </div>
             </div>

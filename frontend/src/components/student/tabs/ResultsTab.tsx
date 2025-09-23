@@ -154,7 +154,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
   return (
     <div className="content-wrapper container">
       <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
-        Results & Performance
+        Үр дүн & Гүйцэтгэл
       </h2>
 
       <div className="space-y-8">
@@ -162,40 +162,40 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
         <Card className="bg-white border border-gray-200">
           <CardHeader>
             <CardTitle className="text-center text-gray-800 text-2xl">
-              Performance Overview
+              Гүйцэтгэл үнэлгээ
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
-                <div className="text-3xl font-bold text-[#FF8400]">
-                  {student?.ranking + " points" || "N/A"}
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">
+                  {student?.ranking + " оноо" || "N/A"}
                 </div>
-                <div className="text-base text-[#FF8400]">Current Ranking</div>
+                <div className="text-base text-orange-600">Одоогийн байр</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.gold) ? student.gold.length : 0}
                 </div>
-                <div className="text-base text-[#FF8400]">Gold Medals</div>
+                <div className="text-base text-orange-600">Алт медаль</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.silver) ? student.silver.length : 0}
                 </div>
-                <div className="text-base text-[#FF8400]">Silver Medals</div>
+                <div className="text-base text-orange-600">Мөнгөн медаль</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.bronze) ? student.bronze.length : 0}
                 </div>
-                <div className="text-base text-[#FF8400]">Bronze Medals</div>
+                <div className="text-base text-orange-600">Хүрэл медаль</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.top10) ? student.top10.length : 0}
                 </div>
-                <div className="text-base text-[#FF8400]">Top 10 Finishes</div>
+                <div className="text-base text-orange-600">Top 10 дүн</div>
               </div>
             </div>
           </CardContent>
@@ -205,7 +205,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
         <Card className="bg-white border border-gray-200">
           <CardHeader>
             <CardTitle className="text-center text-gray-800 text-2xl">
-              Recent Results
+              Сүүлийн үр дүн
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -225,7 +225,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
               <div className="space-y-4">
                 {studentAnswers.map((studentAnswer) => {
                   const totalScore = studentAnswer.totalScoreofOlympiad || 0;
-                  const maxScore = maxScores[studentAnswer.classTypeId] || 100; // Use actual maxScore from classType data
+                  const maxScore = maxScores[studentAnswer.classTypeId] || 100;
                   const percentage =
                     maxScore > 0
                       ? Math.round((totalScore / maxScore) * 100)
@@ -269,25 +269,25 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-base">
                           <div>
-                            <span className="text-gray-600">Score:</span>
+                            <span className="text-gray-600">Дүн:</span>
                             <span className="ml-2 font-semibold text-gray-800">
                               {totalScore}/{maxScore}
                             </span>
                           </div>
                           <div>
-                            <span className="text-gray-600">Questions:</span>
+                            <span className="text-gray-600">Асуултууд:</span>
                             <span className="ml-2 font-semibold text-gray-800">
                               {studentAnswer.answers?.length || 0}
                             </span>
                           </div>
                           <div>
-                            <span className="text-gray-600">Percentage:</span>
+                            <span className="text-gray-600">Хувь:</span>
                             <span className="ml-2 font-semibold text-gray-800">
                               {percentage}%
                             </span>
                           </div>
                           <div>
-                            <span className="text-gray-600">Grade:</span>
+                            <span className="text-gray-600">Анги:</span>
                             <ClassTypeGrade
                               classTypeId={studentAnswer.classTypeId}
                               olympiadsData={olympiadsData}
@@ -304,7 +304,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                         {/* Progress Bar */}
                         <div className="mt-3">
                           <div className="flex justify-between text-sm text-gray-600 mb-1">
-                            <span>Performance</span>
+                            <span>Гүйцэтгэл</span>
                             <span>{percentage}%</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -355,7 +355,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                 />
                               </svg>
-                              <span>View Details</span>
+                              <span>Дэлгэрэнгүй харах</span>
                             </motion.button>
                             <motion.button
                               onClick={() => toggleExpanded(studentAnswer.id)}
@@ -387,8 +387,8 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                               </motion.svg>
                               <span>
                                 {expandedResults[studentAnswer.id]
-                                  ? "Hide"
-                                  : "Quick View"}
+                                  ? "Хаах"
+                                  : "Тойм харах"}
                               </span>
                             </motion.button>
                           </div>
@@ -418,7 +418,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                       transition={{ delay: 0.1, duration: 0.3 }}
                                     >
                                       <h5 className="text-base font-semibold text-gray-800 mb-2">
-                                        Submitted Image
+                                        Оруулсан зураг{" "}
                                       </h5>
                                       <div className="relative">
                                         <img
@@ -437,7 +437,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                           }}
                                         />
                                         <div className="hidden w-full max-w-md h-32 bg-gray-100 rounded-lg border border-gray-200 items-center justify-center text-gray-600 text-base">
-                                          Image could not be loaded
+                                          Зураг оруулж чадсангүй
                                         </div>
                                       </div>
                                     </motion.div>
@@ -455,7 +455,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                         }}
                                       >
                                         <h5 className="text-base font-semibold text-gray-800 mb-3">
-                                          Question Answers
+                                          Асуултын хариултууд
                                         </h5>
                                         <div className="space-y-3">
                                           {studentAnswer.answers.map(
@@ -472,10 +472,10 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                               >
                                                 <div className="flex justify-between items-start mb-2">
                                                   <span className="text-base font-medium text-gray-600">
-                                                    Question {index + 1}
+                                                    Асуулт {index + 1}
                                                   </span>
-                                                  <span className="text-base font-semibold text-[#FF8400]">
-                                                    {answer.score || 0} points
+                                                  <span className="text-base font-semibold text-orange-600">
+                                                    {answer.score || 0} оноо
                                                   </span>
                                                 </div>
                                                 {answer.description && (
@@ -503,8 +503,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                           duration: 0.3,
                                         }}
                                       >
-                                        No detailed answers available for this
-                                        submission.
+                                        Бүрэн дэлгэрэнгүй хариултууд олдсонгүй
                                       </motion.div>
                                     )}
                                 </div>

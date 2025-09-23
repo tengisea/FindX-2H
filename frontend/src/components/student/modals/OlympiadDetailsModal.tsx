@@ -44,7 +44,7 @@ const OlympiadDetailsModal = ({
           <div className="space-y-4">
             <div>
               <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                Description
+                Тайлбар
               </h4>
               <p className="text-gray-600 text-base">{olympiad.description}</p>
             </div>
@@ -52,7 +52,7 @@ const OlympiadDetailsModal = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                  Date
+                  Огноо
                 </h4>
                 <p className="text-gray-600 text-base">
                   {safeFormatDate(olympiad.occurringDay)}
@@ -60,13 +60,13 @@ const OlympiadDetailsModal = ({
               </div>
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                  Location
+                  Байршил
                 </h4>
                 <p className="text-gray-600 text-base">{olympiad.location}</p>
               </div>
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                  Organizer
+                  Зохион байгуулагч
                 </h4>
                 <p className="text-gray-600 text-base">
                   {olympiad.organizer?.organizationName || "Unknown"}
@@ -74,7 +74,7 @@ const OlympiadDetailsModal = ({
               </div>
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                  Status
+                  Төлөв
                 </h4>
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-semibold ${
@@ -90,7 +90,7 @@ const OlympiadDetailsModal = ({
 
             <div>
               <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                Available Grades
+                Боломжит анги
               </h4>
               <div className="flex flex-wrap gap-2">
                 {olympiad.classtypes.map((classType: any) => (
@@ -109,9 +109,7 @@ const OlympiadDetailsModal = ({
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-800 mb-2 text-lg">
-                Scoring
-              </h4>
+              <h4 className="font-semibold text-gray-800 mb-2 text-lg">Дүн</h4>
               <div className="space-y-2">
                 {olympiad.classtypes.map((classType: any) => (
                   <div
@@ -123,13 +121,13 @@ const OlympiadDetailsModal = ({
                         {classType.classYear.replace("GRADE_", "Grade ")}
                       </span>
                       <span className="text-base text-gray-600">
-                        {classType.questions.length} questions • Max Score:{" "}
+                        {classType.questions.length} асуулт • Дүн:{" "}
                         {classType.maxScore}
                       </span>
                     </div>
                     <div className="mt-2">
                       <h5 className="text-base font-medium text-gray-800 mb-1">
-                        Questions:
+                        Асуултууд:
                       </h5>
                       <div className="space-y-1">
                         {classType.questions.map((question: any) => (
@@ -137,8 +135,7 @@ const OlympiadDetailsModal = ({
                             key={question.id}
                             className="text-base text-gray-600"
                           >
-                            • {question.questionName} ({question.maxScore}{" "}
-                            points)
+                            • {question.questionName} ({question.maxScore} оноо)
                           </div>
                         ))}
                       </div>
@@ -163,11 +160,11 @@ const OlympiadDetailsModal = ({
                   : {}
               }
             >
-              Close
+              Хаах
             </button>
             {isStudentRegistered ? (
               <button className="flex-1 bg-gray-200 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed border-0 outline-none">
-                Already Registered
+                Аль хэдийн бүртгэлтэй
               </button>
             ) : (
               <button
@@ -176,7 +173,7 @@ const OlympiadDetailsModal = ({
                 className="flex-1 bg-[#FF8400] text-white px-4 py-2 rounded-lg hover:bg-[#FF8400]/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-0 outline-none"
                 style={{ backgroundColor: "#FF8400", color: "white" }}
               >
-                Select Grade & Register
+                Анги сонгох & Бүртгэх
               </button>
             )}
           </div>

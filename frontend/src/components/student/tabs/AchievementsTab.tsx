@@ -474,7 +474,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
   return (
     <div className="content-wrapper container">
       <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 pt-10">
-        My Achievements
+        Миний амжилтууд
       </h2>
 
       {/* Search and Filter */}
@@ -483,7 +483,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="relative flex-1 max-w-md">
               <Input
-                placeholder="Search by olympiad name, organization, or class type..."
+                placeholder="Олимпиадын нэр, зохион байгуулагчид, ангиллын төрөл..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
@@ -497,35 +497,35 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 size="sm"
                 className={
                   selectedMedalType === "all"
-                    ? "bg-[#FF8400] text-white hover:bg-[#FF8400]/90"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
+                    ? "bg-orange-500 text-white hover:bg-orange-600"
+                    : "text-black hover:bg-[#ff8400] hover:text-black"
                 }
               >
-                All ({studentAchievements.length})
+                Бүгд ({studentAchievements.length})
               </Button>
               <Button
                 variant={selectedMedalType === "gold" ? "default" : "outline"}
                 onClick={() => setSelectedMedalType("gold")}
                 size="sm"
-                className="text-yellow-600 border-yellow-600 hover:bg-yellow-50"
+                className="text-black hover:bg-[#ff8400] hover:text-white"
               >
-                Gold ({student.gold.length})
+                Алт ({student.gold.length})
               </Button>
               <Button
                 variant={selectedMedalType === "silver" ? "default" : "outline"}
                 onClick={() => setSelectedMedalType("silver")}
                 size="sm"
-                className="text-gray-600 border-gray-600 hover:bg-gray-50"
+                className="text-black hover:bg-[#ff8400] hover:text-white"
               >
-                Silver ({student.silver.length})
+                Мөнгөн медаль ({student.silver.length})
               </Button>
               <Button
                 variant={selectedMedalType === "bronze" ? "default" : "outline"}
                 onClick={() => setSelectedMedalType("bronze")}
                 size="sm"
-                className="text-[#FF8400] border-[#FF8400] hover:bg-[#FF8400]/10"
+                className="text-black hover:bg-[#ff8400] hover:text-white"
               >
-                Bronze ({student.bronze.length})
+                Хүрэл медаль ({student.bronze.length})
               </Button>
             </div>
           </div>
@@ -541,13 +541,13 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {searchTerm
-                ? "No achievements found matching your search."
-                : "No achievements yet."}
+                ? "Хэрэглэгчийн хайсан амжилтууд олдсонгүй."
+                : "Таны амжилтууд олдсонгүй."}
             </h3>
             <p className="text-gray-600">
               {searchTerm
-                ? "Try adjusting your search terms."
-                : "Participate in olympiads to earn medals and certificates!"}
+                ? "Хайлтын үгээ засах."
+                : "Олимпиадад оролдож медаль авна уу!"}
             </p>
           </CardContent>
         </Card>
@@ -588,7 +588,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                           {medalType}
                         </div>
                         <div className="text-sm text-gray-500">
-                          Medal Winner
+                          Медаль авсан
                         </div>
                       </div>
                     </div>
@@ -601,11 +601,11 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                         <div className="flex items-center justify-between h-full">
                           <div className="flex-1 min-w-0">
                             <div className="text-2xl font-bold text-gray-800 mb-2">
-                              {medalType} Medal Winner
+                              {medalType} Медаль авсан
                             </div>
                             <div className="text-base text-gray-600">
-                              Congratulations on your outstanding performance in
-                              this olympiad!
+                              Энэхүү олимпиадад үзүүлсэн таны онцгой гүйцэтгэлд
+                              баяр хүргэе!
                             </div>
                           </div>
                           <div className="flex items-center justify-center flex-shrink-0 ml-4">
@@ -625,9 +625,9 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                       {/* Action Button */}
                       <Button
                         onClick={() => setSelectedCertificate(achievement)}
-                        className="w-full bg-[#FF8400] text-white hover:bg-[#FF8400]/90 py-3 text-base font-medium flex-shrink-0"
+                        className="text-black hover:bg-[#ff8400] hover:text-white"
                       >
-                        View Full Certificate
+                        Гэрчилгээг бүрэн харах
                       </Button>
                     </div>
                   </CardContent>
@@ -660,7 +660,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 size="sm"
               >
                 <Download className="h-4 w-4" />
-                Download PDF
+                PDF татах
               </Button>
 
               {/* Close Button */}
@@ -670,7 +670,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 className="absolute top-4 left-4 z-10 bg-[#FF8400] border-[#FF8400] text-white hover:bg-[#FF8400]/90"
                 size="sm"
               >
-                Close
+                Хаах
               </Button>
 
               {/* 3D Certificate Display */}

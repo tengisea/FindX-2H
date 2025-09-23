@@ -72,9 +72,9 @@ const ParticipatedOlympiadRow = ({
           onClick={() => onViewDetails(olympiad)}
           className="text-[#FF8400] hover:text-[#FF8400]/80 mr-3"
         >
-          View Details
+          Дэлгэрэнгүй харах
         </button>
-        <span className="text-gray-600">Participated</span>
+        {/* <span className="text-gray-600">Оролцсон</span> */}
       </td>
     </tr>
   );
@@ -139,7 +139,7 @@ const ParticipatedTab = ({
   return (
     <div className="content-wrapper container">
       <h2 className="text-4xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
-        Participated Olympiads
+        Оролцосон олимпиад
       </h2>
 
       <div className="space-y-8">
@@ -147,9 +147,8 @@ const ParticipatedTab = ({
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-semibold text-center text-gray-800">
-                {student.participatedOlympiads.length} Olympiad
-                {student.participatedOlympiads.length !== 1 ? "s" : ""}{" "}
-                Participated
+                {student.participatedOlympiads.length} олимпиад
+                {student.participatedOlympiads.length !== 1 ? "с" : ""} Оролцсон
               </h3>
             </div>
           </CardContent>
@@ -161,16 +160,16 @@ const ParticipatedTab = ({
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
-                    Olympiad Name
+                    Олимпиадын нэр
                   </th>
                   <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
-                    Date
+                    Огноо
                   </th>
                   <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
-                    Location
+                    Байршил
                   </th>
                   <th className="px-6 py-3 text-left text-base font-medium text-gray-600 uppercase tracking-wider">
-                    Actions
+                    Дэлгэрэнгүй
                   </th>
                 </tr>
               </thead>
