@@ -35,7 +35,7 @@ const ResponsiveLoading: React.FC<ResponsiveLoadingProps> = ({
             <div className="flex flex-col items-center justify-center space-y-6">
               {/* Loading Spinner */}
               <motion.div
-                className="w-16 h-16 border-4 border-orange-200 border-t-orange-500 rounded-full"
+                className="w-16 h-16 border-4 border-[#FF8400]/20 border-t-[#FF8400] rounded-full"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
@@ -51,7 +51,7 @@ const ResponsiveLoading: React.FC<ResponsiveLoadingProps> = ({
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    className="w-2 h-2 bg-orange-500 rounded-full"
+                    className="w-2 h-2 bg-[#FF8400] rounded-full"
                     animate={{
                       scale: [1, 1.2, 1],
                       opacity: [0.5, 1, 0.5],

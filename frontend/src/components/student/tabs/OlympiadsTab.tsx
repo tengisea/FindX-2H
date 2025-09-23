@@ -268,7 +268,7 @@ const OlympiadsTab = ({
                     placeholder="Search olympiads by name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 bg-white text-gray-800 border-gray-300 focus-visible:ring-0 focus-visible:border-orange-500 focus:ring-0 focus:border-orange-500 focus:outline-none placeholder:text-gray-500"
+                    className="pl-10 pr-4 bg-white text-gray-800 border-gray-300 focus-visible:ring-0 focus-visible:border-[#FF8400] focus:ring-0 focus:border-[#FF8400] focus:outline-none placeholder:text-gray-500"
                   />
                   <AnimatePresence>
                     {searchTerm && (
@@ -301,7 +301,7 @@ const OlympiadsTab = ({
                         variant="outline"
                         size="sm"
                         onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
+                        className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                       >
                         <Filter className="w-4 h-4" />
                         Filters
@@ -468,7 +468,7 @@ const OlympiadsTab = ({
                   <Button
                     variant="outline"
                     onClick={clearAllFilters}
-                    className="mt-4 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
+                    className="mt-4 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                   >
                     Clear All Filters
                   </Button>
@@ -497,7 +497,7 @@ const OlympiadsTab = ({
                     <CardContent className="p-6 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h4 className="text-xl font-bold mb-2 text-orange-600">
+                          <h4 className="text-xl font-bold mb-2 text-[#FF8400]">
                             {olympiad.name}
                           </h4>
                           <p className="text-base mb-3 line-clamp-3 text-gray-600 min-h-[3.5rem]">
@@ -507,7 +507,7 @@ const OlympiadsTab = ({
                         <div
                           className={`px-3 py-1 rounded-full text-base font-semibold ${
                             olympiad.status === "OPEN"
-                              ? "bg-orange-100 text-orange-600"
+                              ? "bg-[#FF8400]/10 text-[#FF8400]"
                               : "bg-yellow-100 text-yellow-600"
                           }`}
                         >
@@ -518,7 +518,7 @@ const OlympiadsTab = ({
                       <div className="space-y-3 mb-4">
                         <div className="flex items-center text-base text-gray-600">
                           <svg
-                            className="w-4 h-4 mr-2 text-orange-500"
+                            className="w-4 h-4 mr-2 text-[#FF8400]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -534,7 +534,7 @@ const OlympiadsTab = ({
                         </div>
                         <div className="flex items-center text-base text-gray-600">
                           <svg
-                            className="w-4 h-4 mr-2 text-orange-500"
+                            className="w-4 h-4 mr-2 text-[#FF8400]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -557,7 +557,7 @@ const OlympiadsTab = ({
 
                         <div className="flex items-center text-base text-gray-600">
                           <svg
-                            className="w-4 h-4 mr-2 text-orange-500"
+                            className="w-4 h-4 mr-2 text-[#FF8400]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -611,7 +611,7 @@ const OlympiadsTab = ({
                                   key={classType.id}
                                   className={`px-3 py-2 rounded-lg text-base font-semibold transition-all duration-200 ${
                                     isStudentGrade
-                                      ? "bg-orange-100 text-orange-600 border border-orange-200 shadow-sm"
+                                      ? "bg-[#FF8400]/10 text-[#FF8400] border border-[#FF8400]/20 shadow-sm"
                                       : isHigherGrade
                                       ? "bg-green-100 text-green-700 border border-green-200 shadow-sm"
                                       : isLowerGrade
@@ -670,7 +670,7 @@ const OlympiadsTab = ({
                             whileTap={{ scale: 0.98 }}
                             onClick={() => onRegister(olympiad)}
                             disabled={registering}
-                            className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-orange-500 text-white hover:bg-orange-600"
+                            className="flex-1 px-3 py-2 rounded-lg transition-colors duration-200 text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-[#FF8400] text-white hover:bg-[#FF8400]/90"
                           >
                             {registering ? "Registering..." : "Register"}
                           </motion.button>

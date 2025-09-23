@@ -167,35 +167,35 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-3xl font-bold text-[#FF8400]">
                   {student?.ranking + " points" || "N/A"}
                 </div>
-                <div className="text-base text-orange-600">Current Ranking</div>
+                <div className="text-base text-[#FF8400]">Current Ranking</div>
               </div>
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.gold) ? student.gold.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Gold Medals</div>
+                <div className="text-base text-[#FF8400]">Gold Medals</div>
               </div>
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.silver) ? student.silver.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Silver Medals</div>
+                <div className="text-base text-[#FF8400]">Silver Medals</div>
               </div>
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.bronze) ? student.bronze.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Bronze Medals</div>
+                <div className="text-base text-[#FF8400]">Bronze Medals</div>
               </div>
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.top10) ? student.top10.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Top 10 Finishes</div>
+                <div className="text-base text-[#FF8400]">Top 10 Finishes</div>
               </div>
             </div>
           </CardContent>
@@ -313,7 +313,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                 percentage >= 90
                                   ? "bg-green-500"
                                   : percentage >= 80
-                                  ? "bg-orange-500"
+                                  ? "bg-[#FF8400]"
                                   : percentage >= 70
                                   ? "bg-yellow-500"
                                   : "bg-red-500"
@@ -332,7 +332,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                               onClick={() =>
                                 handleViewAnswerDetails(studentAnswer.id)
                               }
-                              className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors duration-200 flex items-center justify-center space-x-2"
+                              className="flex-1 px-4 py-2 bg-[#FF8400] text-white rounded-lg font-medium hover:bg-[#FF8400]/90 transition-colors duration-200 flex items-center justify-center space-x-2"
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                             >
@@ -474,7 +474,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                                   <span className="text-base font-medium text-gray-600">
                                                     Question {index + 1}
                                                   </span>
-                                                  <span className="text-base font-semibold text-orange-600">
+                                                  <span className="text-base font-semibold text-[#FF8400]">
                                                     {answer.score || 0} points
                                                   </span>
                                                 </div>
@@ -562,15 +562,15 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
 
             {/* Ranking Summary */}
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.ranking || 0}
                 </div>
-                <div className="text-base text-orange-600">Current Ranking</div>
+                <div className="text-base text-[#FF8400]">Current Ranking</div>
               </div>
 
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.rankingHistory && student.rankingHistory.length > 0
                     ? (() => {
                         const lastEntry =
@@ -586,14 +586,14 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-base text-orange-600">Last Change</div>
+                <div className="text-base text-[#FF8400]">Last Change</div>
               </div>
 
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-base text-orange-600">
+                <div className="text-base text-[#FF8400]">
                   Olympiads Participated
                 </div>
               </div>

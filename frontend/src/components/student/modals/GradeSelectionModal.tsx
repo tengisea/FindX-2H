@@ -98,7 +98,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                     Select Grade Level
                   </CardTitle>
                   <div className="flex items-center space-x-2 text-base text-gray-600">
-                    <Trophy className="w-4 h-4 text-orange-500" />
+                    <Trophy className="w-4 h-4 text-[#FF8400]" />
                     <span className="font-medium">{olympiad.name}</span>
                   </div>
                 </div>
@@ -116,9 +116,9 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
             {/* Content */}
             <CardContent className="p-6">
               <div className="mb-6">
-                <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
+                <div className="bg-[#FF8400]/10 border border-[#FF8400]/20 rounded-xl p-4 mb-4">
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-orange-500">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#FF8400]">
                       <svg
                         className="w-3 h-3 text-white"
                         fill="currentColor"
@@ -156,8 +156,8 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                       whileHover={{ scale: 1.02 }}
                       className={`border-2 rounded-2xl p-6 cursor-pointer transition-all duration-200 ${
                         selectedClassType?.id === classType.id
-                          ? "shadow-lg border-orange-500 bg-orange-50"
-                          : "border-gray-200 hover:border-orange-300 hover:shadow-md"
+                          ? "shadow-lg border-[#FF8400] bg-[#FF8400]/10"
+                          : "border-gray-200 hover:border-[#FF8400]/30 hover:shadow-md"
                       }`}
                       onClick={() => onSelectClassType(classType)}
                     >
@@ -167,7 +167,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                             <div
                               className={`w-8 h-8 rounded-full flex items-center justify-center ${
                                 selectedClassType?.id === classType.id
-                                  ? "bg-orange-500"
+                                  ? "bg-[#FF8400]"
                                   : "bg-gray-200"
                               }`}
                             >
@@ -194,7 +194,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                         <div
                           className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                             selectedClassType?.id === classType.id
-                              ? "border-orange-500 bg-orange-500"
+                              ? "border-[#FF8400] bg-[#FF8400]"
                               : "border-gray-300"
                           }`}
                         >
@@ -266,7 +266,7 @@ const GradeSelectionModal: React.FC<GradeSelectionModalProps> = ({
                   whileTap={{ scale: 0.98 }}
                   onClick={onRegister}
                   disabled={!selectedClassType || registering}
-                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-[#FF8400] text-white rounded-xl font-medium hover:bg-[#FF8400]/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                 >
                   <Trophy className="w-5 h-5" />
                   <span>{registering ? "Registering..." : "Register"}</span>

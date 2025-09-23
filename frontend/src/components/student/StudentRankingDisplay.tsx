@@ -72,12 +72,16 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
         bg: "bg-green-500/10",
       };
     if (percentage <= 25)
-      return { text: "Top 25%", color: "text-orange-600", bg: "bg-orange-100" };
+      return {
+        text: "Top 25%",
+        color: "text-[#FF8400]",
+        bg: "bg-[#FF8400]/10",
+      };
     if (percentage <= 50)
       return {
         text: "Top 50%",
-        color: "text-orange-500",
-        bg: "bg-orange-500/10",
+        color: "text-[#FF8400]",
+        bg: "bg-[#FF8400]/10",
       };
     return {
       text: "Keep improving!",
@@ -98,7 +102,7 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
             <p className="text-base font-medium text-gray-600 mb-1">
               Current Ranking
             </p>
-            <p className="text-3xl font-bold text-orange-600">
+            <p className="text-3xl font-bold text-[#FF8400]">
               #{currentStudentRank}
             </p>
             {showDetails && (
@@ -109,9 +113,9 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
               </p>
             )}
           </div>
-          <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-orange-100">
+          <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-[#FF8400]/10">
             <svg
-              className="w-7 h-7 text-orange-600"
+              className="w-7 h-7 text-[#FF8400]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

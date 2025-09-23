@@ -59,12 +59,12 @@ const ResponsiveError: React.FC<ResponsiveErrorProps> = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <Button
                     onClick={onRetry}
-                    className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-2"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="bg-[#FF8400] text-white hover:bg-[#FF8400]/90 flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
                     <span>Try Again</span>

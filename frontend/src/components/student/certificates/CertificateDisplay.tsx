@@ -30,17 +30,22 @@ const GET_STUDENT_CERTIFICATES = gql`
   }
 `;
 
-
 interface CertificateDisplayProps {
   studentId: string;
 }
 
-export default function CertificateDisplay({ studentId }: CertificateDisplayProps) {
+export default function CertificateDisplay({
+  studentId,
+}: CertificateDisplayProps) {
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   const [show3D, setShow3D] = useState(false);
 
   // Fetch student data with medal achievements
-  const { data: studentData, loading: studentLoading, error: studentError } = useQuery(GET_STUDENT_CERTIFICATES, {
+  const {
+    data: studentData,
+    loading: studentLoading,
+    error: studentError,
+  } = useQuery(GET_STUDENT_CERTIFICATES, {
     variables: { getStudentId: studentId },
     skip: !studentId,
   });
@@ -54,16 +59,16 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
     if (!student) return [];
 
     const certs: any[] = [];
-    
+
     // Gold medals
     if (student.gold && student.gold.length > 0) {
       student.gold.forEach((olympiadId: string) => {
         certs.push({
           id: `gold-${olympiadId}`,
-          medalType: 'GOLD',
-          medalColor: 'text-yellow-600',
-          medalBg: 'bg-yellow-100',
-          medalIcon: '🥇',
+          medalType: "GOLD",
+          medalColor: "text-yellow-600",
+          medalBg: "bg-yellow-100",
+          medalIcon: "🥇",
           olympiadId,
           studentName: student.name,
           studentEmail: student.email,
@@ -80,10 +85,10 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
       student.silver.forEach((olympiadId: string) => {
         certs.push({
           id: `silver-${olympiadId}`,
-          medalType: 'SILVER',
-          medalColor: 'text-gray-600',
-          medalBg: 'bg-gray-100',
-          medalIcon: '🥈',
+          medalType: "SILVER",
+          medalColor: "text-gray-600",
+          medalBg: "bg-gray-100",
+          medalIcon: "🥈",
           olympiadId,
           studentName: student.name,
           studentEmail: student.email,
@@ -100,10 +105,10 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
       student.bronze.forEach((olympiadId: string) => {
         certs.push({
           id: `bronze-${olympiadId}`,
-          medalType: 'BRONZE',
-          medalColor: 'text-orange-600',
-          medalBg: 'bg-orange-100',
-          medalIcon: '🥉',
+          medalType: "BRONZE",
+          medalColor: "text-[#FF8400]",
+          medalBg: "bg-[#FF8400]/10",
+          medalIcon: "🥉",
           olympiadId,
           studentName: student.name,
           studentEmail: student.email,
@@ -120,10 +125,10 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
       student.top10.forEach((olympiadId: string) => {
         certs.push({
           id: `top10-${olympiadId}`,
-          medalType: 'TOP10',
-          medalColor: 'text-blue-600',
-          medalBg: 'bg-blue-100',
-          medalIcon: '🏆',
+          medalType: "TOP10",
+          medalColor: "text-blue-600",
+          medalBg: "bg-blue-100",
+          medalIcon: "🏆",
           olympiadId,
           studentName: student.name,
           studentEmail: student.email,
@@ -142,10 +147,7 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
   React.useEffect(() => {
     console.log("CertificateDisplay - Fetched certificates:", certificates);
     if (certificates.length > 0) {
-      console.log(
-        "CertificateDisplay - First certificate:",
-        certificates[0]
-      );
+      console.log("CertificateDisplay - First certificate:", certificates[0]);
     }
   }, [certificates]);
 
@@ -199,7 +201,8 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
                 No Certificates Yet
               </h3>
               <p className="text-muted-foreground">
-                You haven't received any medals or achievements yet. Keep participating in olympiads!
+                You haven't received any medals or achievements yet. Keep
+                participating in olympiads!
               </p>
             </div>
           </CardContent>
@@ -240,7 +243,8 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
         <div className="flex items-center justify-between">
           <div className="text-center flex-1">
             <Badge variant="secondary" className="text-lg px-4 py-2">
-              {certificates.length} {certificates.length === 1 ? "Certificate" : "Certificates"}
+              {certificates.length}{" "}
+              {certificates.length === 1 ? "Certificate" : "Certificates"}
             </Badge>
           </div>
         </div>
@@ -256,11 +260,15 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{certificate.medalIcon}</span>
-                    <CardTitle className={`text-lg font-semibold ${certificate.medalColor}`}>
+                    <CardTitle
+                      className={`text-lg font-semibold ${certificate.medalColor}`}
+                    >
                       {certificate.medalType} Medal
                     </CardTitle>
                   </div>
-                  <Badge className={`${certificate.medalBg} ${certificate.medalColor} border-0`}>
+                  <Badge
+                    className={`${certificate.medalBg} ${certificate.medalColor} border-0`}
+                  >
                     {certificate.medalType}
                   </Badge>
                 </div>
@@ -280,7 +288,8 @@ export default function CertificateDisplay({ studentId }: CertificateDisplayProp
                     <span>{certificate.school}</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    <span className="font-medium">Class:</span> {certificate.class}
+                    <span className="font-medium">Class:</span>{" "}
+                    {certificate.class}
                   </div>
                 </div>
 

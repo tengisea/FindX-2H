@@ -70,7 +70,7 @@ const ParticipatedOlympiadRow = ({
       <td className="px-6 py-4 whitespace-nowrap text-base font-medium">
         <button
           onClick={() => onViewDetails(olympiad)}
-          className="text-orange-600 hover:text-orange-700 mr-3"
+          className="text-[#FF8400] hover:text-[#FF8400]/80 mr-3"
         >
           View Details
         </button>
@@ -126,7 +126,7 @@ const ParticipatedTab = ({
             </p>
             <button
               onClick={onBrowseOlympiads}
-              className="mt-4 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200"
+              className="mt-4 bg-[#FF8400] text-white px-4 py-2 rounded-lg hover:bg-[#FF8400]/90 transition-colors duration-200"
             >
               Browse Available Olympiads
             </button>

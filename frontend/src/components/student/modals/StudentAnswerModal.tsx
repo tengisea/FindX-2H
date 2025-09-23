@@ -83,8 +83,8 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
           <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 p-6 rounded-t-3xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 rounded-full bg-[#FF8400]/10 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-[#FF8400]" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-800">
@@ -150,17 +150,17 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                 <Card className="bg-white border border-gray-200">
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2 text-gray-800">
-                      <Trophy className="w-5 h-5 text-orange-600" />
+                      <Trophy className="w-5 h-5 text-[#FF8400]" />
                       <span>Answer Summary</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="text-center p-4 bg-orange-100 rounded-lg">
-                        <div className="text-2xl font-bold text-orange-600">
+                      <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg">
+                        <div className="text-2xl font-bold text-[#FF8400]">
                           {studentAnswer.totalScoreofOlympiad || 0}
                         </div>
-                        <div className="text-base text-orange-600">
+                        <div className="text-base text-[#FF8400]">
                           Total Score
                         </div>
                       </div>
@@ -203,7 +203,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <Card className="bg-white border border-gray-200">
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2 text-gray-800">
-                        <ImageIcon className="w-5 h-5 text-orange-600" />
+                        <ImageIcon className="w-5 h-5 text-[#FF8400]" />
                         <span>Submitted Images</span>
                       </CardTitle>
                     </CardHeader>
@@ -248,7 +248,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <Card className="bg-white border border-gray-200">
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2 text-gray-800">
-                        <FileText className="w-5 h-5 text-orange-600" />
+                        <FileText className="w-5 h-5 text-[#FF8400]" />
                         <span>Question Answers</span>
                       </CardTitle>
                     </CardHeader>
@@ -264,8 +264,8 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                           >
                             <div className="flex justify-between items-start mb-3">
                               <div className="flex items-center space-x-2">
-                                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                                  <span className="text-base font-bold text-orange-600">
+                                <div className="w-8 h-8 rounded-full bg-[#FF8400]/10 flex items-center justify-center">
+                                  <span className="text-base font-bold text-[#FF8400]">
                                     {index + 1}
                                   </span>
                                 </div>
@@ -277,7 +277,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                                 <span className="text-base text-gray-600">
                                   Score:
                                 </span>
-                                <span className="text-lg font-bold text-orange-600">
+                                <span className="text-lg font-bold text-[#FF8400]">
                                   {answer.score || 0} points
                                 </span>
                               </div>

@@ -175,7 +175,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-base font-medium bg-orange-100 text-orange-600">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-base font-medium bg-[#FF8400]/10 text-[#FF8400]">
                     <svg
                       className="w-4 h-4 mr-1"
                       fill="currentColor"
@@ -226,7 +226,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                   <p className="text-base font-medium text-gray-600 mb-1">
                     Total Medals
                   </p>
-                  <p className="text-4xl font-bold text-orange-600">
+                  <p className="text-4xl font-bold text-[#FF8400]">
                     {totalMedals}
                   </p>
                 </div>
@@ -250,7 +250,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                   <p className="text-base font-medium text-gray-600 mb-1">
                     Olympiads
                   </p>
-                  <p className="text-4xl font-bold text-orange-600">
+                  <p className="text-4xl font-bold text-[#FF8400]">
                     {Array.isArray(student.participatedOlympiads)
                       ? student.participatedOlympiads.length
                       : 0}
@@ -294,15 +294,15 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
 
             {/* Ranking Summary */}
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-2xl font-bold text-[#FF8400]">
                   {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
-                <div className="text-base text-orange-600">Current Ranking</div>
+                <div className="text-base text-[#FF8400]">Current Ranking</div>
               </div>
 
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.rankingHistory && student.rankingHistory.length > 0
                     ? (() => {
                         const lastEntry =
@@ -318,14 +318,14 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-base text-orange-600">Last Change</div>
+                <div className="text-base text-[#FF8400]">Last Change</div>
               </div>
 
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-base text-orange-600">
+                <div className="text-base text-[#FF8400]">
                   Olympiads Participated
                 </div>
               </div>

@@ -15,4 +15,5 @@ export { default as OlympiadsTab } from "./tabs/OlympiadsTab";
 export { default as RankingChart } from "./charts/RankingChart";
 
 // Student modals
-export {  StudentSidebar } from "./StudentSidebar";      
+export { StudentSidebar } from "./StudentSidebar";
+export { StudentStaggeredMenu } from "./StudentStaggeredMenu";

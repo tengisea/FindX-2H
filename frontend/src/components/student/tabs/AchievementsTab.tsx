@@ -107,7 +107,7 @@ const PDFCertificate = React.forwardRef<
               >
                 {name}
               </h3>
-              <div className="w-96 h-1 bg-orange-500 mx-auto"></div>
+              <div className="w-96 h-1 bg-[#FF8400] mx-auto"></div>
             </div>
 
             <div className="text-lg text-gray-700 mb-8 leading-relaxed">
@@ -134,7 +134,7 @@ const PDFCertificate = React.forwardRef<
 
             <div className="flex justify-between items-end mt-16">
               <div className="text-center">
-                <div className="w-32 h-1 bg-orange-500 mb-2"></div>
+                <div className="w-32 h-1 bg-[#FF8400] mb-2"></div>
                 <p className="text-base font-semibold text-gray-700">
                   SIGNATURE
                 </p>
@@ -148,7 +148,7 @@ const PDFCertificate = React.forwardRef<
               </div>
 
               <div className="text-center">
-                <div className="w-32 h-1 bg-orange-500 mb-2"></div>
+                <div className="w-32 h-1 bg-[#FF8400] mb-2"></div>
                 <p className="text-base font-semibold text-gray-700">
                   OFFICIAL SEAL
                 </p>
@@ -486,7 +486,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 placeholder="Search by olympiad name, organization, or class type..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-orange-500 placeholder:text-gray-500 focus-visible:ring-orange-500"
+                className="pl-4 bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] placeholder:text-gray-500 focus-visible:ring-[#FF8400]"
               />
             </div>
 
@@ -497,8 +497,8 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 size="sm"
                 className={
                   selectedMedalType === "all"
-                    ? "bg-orange-500 text-white hover:bg-orange-600"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
+                    ? "bg-[#FF8400] text-white hover:bg-[#FF8400]/90"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                 }
               >
                 All ({studentAchievements.length})
@@ -523,7 +523,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 variant={selectedMedalType === "bronze" ? "default" : "outline"}
                 onClick={() => setSelectedMedalType("bronze")}
                 size="sm"
-                className="text-orange-600 border-orange-600 hover:bg-orange-50"
+                className="text-[#FF8400] border-[#FF8400] hover:bg-[#FF8400]/10"
               >
                 Bronze ({student.bronze.length})
               </Button>
@@ -562,7 +562,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 ? "text-yellow-600"
                 : achievement.medalType === "silver"
                 ? "text-gray-600"
-                : "text-orange-600";
+                : "text-[#FF8400]";
 
             return (
               <motion.div
@@ -570,19 +570,20 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
+                className="h-full"
               >
-                <Card className="bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer group">
-                  <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50 border-b border-orange-200">
+                <Card className="bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 cursor-pointer group h-full flex flex-col">
+                  <CardHeader className="bg-gradient-to-r from-[#FF8400]/10 to-yellow-50 border-b border-[#FF8400]/20 flex-shrink-0">
                     <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-xl font-bold text-gray-800 mb-1">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-xl font-bold text-gray-800 mb-1 truncate">
                           {achievement.olympiadDetails.name}
                         </CardTitle>
-                        <p className="text-base text-gray-600 font-medium">
+                        <p className="text-base text-gray-600 font-medium truncate">
                           {achievement.olympiadDetails.organization}
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right flex-shrink-0 ml-2">
                         <div className={`text-2xl font-bold ${medalColor}`}>
                           {medalType}
                         </div>
@@ -593,12 +594,12 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                     </div>
                   </CardHeader>
 
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
+                  <CardContent className="p-6 flex-1 flex flex-col">
+                    <div className="space-y-4 flex-1 flex flex-col">
                       {/* Achievement Details */}
-                      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-6 border border-yellow-200">
-                        <div className="flex items-center justify-between">
-                          <div>
+                      <div className="bg-gradient-to-r from-yellow-50 to-[#FF8400]/10 rounded-lg p-6 border border-yellow-200 flex-1">
+                        <div className="flex items-center justify-between h-full">
+                          <div className="flex-1 min-w-0">
                             <div className="text-2xl font-bold text-gray-800 mb-2">
                               {medalType} Medal Winner
                             </div>
@@ -607,7 +608,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                               this olympiad!
                             </div>
                           </div>
-                          <div className="flex items-center justify-center">
+                          <div className="flex items-center justify-center flex-shrink-0 ml-4">
                             {achievement.medalType === "gold" && (
                               <Trophy className="w-16 h-16 text-yellow-500" />
                             )}
@@ -615,7 +616,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                               <Award className="w-16 h-16 text-gray-400" />
                             )}
                             {achievement.medalType === "bronze" && (
-                              <Medal className="w-16 h-16 text-orange-600" />
+                              <Medal className="w-16 h-16 text-[#FF8400]" />
                             )}
                           </div>
                         </div>
@@ -624,7 +625,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                       {/* Action Button */}
                       <Button
                         onClick={() => setSelectedCertificate(achievement)}
-                        className="w-full bg-orange-500 text-white hover:bg-orange-600 py-3 text-base font-medium"
+                        className="w-full bg-[#FF8400] text-white hover:bg-[#FF8400]/90 py-3 text-base font-medium flex-shrink-0"
                       >
                         View Full Certificate
                       </Button>
@@ -655,7 +656,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
               {/* PDF Download Button - Outside the border */}
               <Button
                 onClick={handlePrint}
-                className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-orange-500 text-white hover:bg-orange-600"
+                className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-[#FF8400] text-white hover:bg-[#FF8400]/90"
                 size="sm"
               >
                 <Download className="h-4 w-4" />
@@ -666,7 +667,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
               <Button
                 variant="outline"
                 onClick={() => setSelectedCertificate(null)}
-                className="absolute top-4 left-4 z-10 bg-orange-500 border-orange-500 text-white hover:bg-orange-600"
+                className="absolute top-4 left-4 z-10 bg-[#FF8400] border-[#FF8400] text-white hover:bg-[#FF8400]/90"
                 size="sm"
               >
                 Close

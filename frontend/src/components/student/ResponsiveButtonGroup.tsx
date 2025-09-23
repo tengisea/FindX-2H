@@ -46,6 +46,8 @@ const ResponsiveButtonGroup: React.FC<ResponsiveButtonGroupProps> = ({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, delay: index * 0.05 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           <Button
             variant={
@@ -57,11 +59,9 @@ const ResponsiveButtonGroup: React.FC<ResponsiveButtonGroupProps> = ({
             onClick={() => onButtonClick(button.id)}
             className={`transition-all duration-200 ${
               button.id === activeButton
-                ? "bg-orange-500 text-white hover:bg-orange-600 shadow-md"
-                : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-orange-500"
+                ? "bg-[#FF8400] text-white hover:bg-[#FF8400]/90 shadow-md"
+                : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
             } ${button.className || ""}`}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
           >
             {button.label}
             {button.count !== undefined && (
