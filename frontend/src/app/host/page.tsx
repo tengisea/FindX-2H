@@ -308,7 +308,31 @@ const HostPage = () => {
 
     return (
         <>
-            <div className="min-h-screen ">
+            <div className="min-h-screen relative bg-white">
+                {/* Notebook Paper Background */}
+                <div className="absolute inset-0 bg-white"></div>
+                <div
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+                        `,
+                        backgroundSize: '20px 20px',
+                        backgroundPosition: '0 0, 0 0'
+                    }}
+                ></div>
+                <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, #d1d5db 1px, transparent 1px)
+                        `,
+                        backgroundSize: '80px 100%',
+                        backgroundPosition: '0 0'
+                    }}
+                ></div>
+
                 {/* StaggeredMenu Navigation */}
                 <StaggeredMenu
                     position="left"
@@ -338,11 +362,12 @@ const HostPage = () => {
                 </div>
 
                 {/* Main content with left margin for left-positioned StaggeredMenu */}
-                <div className="w-full pl-20 bg-[#27272a]">
+                <div className="w-full pl-20 relative z-10">
                     <div className="max-w-7xl mx-auto p-8">
                         {/* Header */}
-                        <div className="mb-8">
-                            <div className="flex items-center space-x-4 mb-4">
+                        <div className="mb-8 bg-white rounded-2xl p-6 border border-gray-200 relative overflow-hidden"
+                        >
+                            <div className="flex items-center space-x-4 mb-4 pl-8">
                                 <span className="text-muted-foreground">Home</span>
                                 <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -355,69 +380,18 @@ const HostPage = () => {
                                 </span>
                             </div>
 
-                            <h1 className="text-4xl font-bold mb-2 text-foreground">
+                            <h1 className="text-4xl font-bold mb-2 text-black pl-8">
                                 {activeTab === "profile" && "Profile"}
                                 {activeTab === "create" && "Create Olympiad"}
                                 {activeTab === "manage" && "Manage Olympiads"}
                                 {activeTab === "results" && "Manage Results"}
                             </h1>
-                            <p className="text-lg text-muted-foreground">
+                            <p className="text-lg text-muted-foreground pl-8">
                                 {activeTab === "profile" && "View and manage your host organization profile"}
                                 {activeTab === "create" && "Create and submit new olympiad requests for approval"}
                                 {activeTab === "manage" && "View, edit, and manage your existing olympiads"}
                                 {activeTab === "results" && "View, export, and manage results for your olympiads"}
                             </p>
-                        </div>
-
-                        {/* Metrics Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div className="text-3xl font-bold text-foreground">
-                                            {organizerLoading ? "..." : myOlympiads.length}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">Total Olympiads</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div className="text-3xl font-bold text-foreground">1</div>
-                                        <div className="text-sm text-muted-foreground">Host Organization</div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div className="text-3xl font-bold text-foreground">
-                                            {organizerLoading ? "..." : myOlympiads.filter(o => o.status === 'OPEN').length}
-                                        </div>
-
-                                        <div className="text-sm text-muted-foreground">Active Competitions</div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         {/* Error Display */}

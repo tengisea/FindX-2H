@@ -1,0 +1,61 @@
+"use client"
+
+import * as React from "react"
+import { DayPicker } from "react-day-picker"
+
+import { cn } from "@/lib/utils"
+
+export type CustomCalendarProps = React.ComponentProps<typeof DayPicker>
+
+function CustomCalendar({
+    className,
+    classNames,
+    showOutsideDays = true,
+    ...props
+}: CustomCalendarProps) {
+    return (
+        <DayPicker
+            showOutsideDays={showOutsideDays}
+            showWeekNumber={false}
+            className={cn("p-3 bg-white border border-gray-200 rounded-lg shadow-sm", className)}
+            classNames={{
+                months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 bg-white",
+                month: "space-y-4 bg-white",
+                caption: "flex justify-center pt-1 relative items-center bg-white",
+                caption_label: "text-sm font-medium text-black bg-white",
+                nav: "space-x-1 flex items-center",
+                nav_button: cn(
+                    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                    "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 cursor-pointer"
+                ),
+                nav_button_previous: "absolute left-1 bg-[#FF8400]",
+                nav_button_next: "absolute right-1 bg-[#FF8400]",
+                table: "w-full border-collapse space-y-1 bg-white",
+                head_row: "flex justify-between w-full bg-white mb-2 !important z-40",
+                head_cell:
+                    "text-[#FF8400] !important rounded-md w-9 font-bold text-[0.8rem] text-center bg-white p-1 z-40",
+                row: "flex w-full mt-2",
+                cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                day: cn(
+                    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-100 hover:text-black text-black",
+                    "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
+                ),
+                day_range_end: "day-range-end",
+                day_selected:
+                    "bg-[#FF8400] text-black hover:bg-[#FF8400] hover:text-black focus:bg-[#FF8400] focus:text-black",
+                day_today: "bg-gray-200 text-black",
+                day_outside:
+                    "day-outside text-gray-400 opacity-50 aria-selected:bg-gray-100 aria-selected:text-gray-600 aria-selected:opacity-30",
+                day_disabled: "text-gray-400 opacity-50",
+                day_range_middle:
+                    "aria-selected:bg-gray-100 aria-selected:text-black",
+                day_hidden: "invisible",
+                ...classNames,
+            }}
+            {...props}
+        />
+    )
+}
+CustomCalendar.displayName = "CustomCalendar"
+
+export { CustomCalendar }

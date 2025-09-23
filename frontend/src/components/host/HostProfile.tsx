@@ -148,7 +148,7 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-foreground mb-2">
+                            <h2 className="text-2xl font-bold text-black mb-2">
                                 {organizer.organizationName}
                             </h2>
                             <div className="flex items-center space-x-2">
@@ -178,7 +178,7 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
             {/* Recent Olympiads */}
             <Card className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-foreground">Recent Olympiads</h3>
+                    <h3 className="text-xl font-semibold text-black">Recent Olympiads</h3>
                 </div>
 
                 {olympiads.length === 0 ? (
@@ -194,13 +194,13 @@ const HostProfile = ({ organizerId, onNavigateToManage }: HostProfileProps) => {
                         {olympiads.slice(0, 5).map((olympiad) => (
                             <div
                                 key={olympiad.id}
-                                className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border cursor-pointer hover:bg-muted/50 transition-colors"
+                                className="flex items-center justify-between p-4 bg-white rounded-lg border-b border-gray-200 cursor-pointer hover:bg-white transition-colors"
                                 onClick={() => setSelectedOlympiadId(olympiad.id)}
                             >
                                 <div className="flex-1">
                                     <div className="flex items-center space-x-2 mb-2">
-                                        <h4 className="font-medium text-foreground">{olympiad.name}</h4>
-                                        <span className="px-3 py-1 rounded-full text-sm font-medium border text-[#ff8400]">
+                                        <h4 className="font-medium text-black">{olympiad.name}</h4>
+                                        <span className="px-3 py-1 rounded-full text-sm font-medium  bg-[#ff8400] text-white">
                                             {olympiad.status}
                                         </span>
                                     </div>

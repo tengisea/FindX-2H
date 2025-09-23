@@ -130,14 +130,15 @@ export const ManageOlympiads = ({ organizerId, olympiads, onRefetch }: ManageOly
 
   if (!myOlympiads || myOlympiads.length === 0) {
     return (
-      <div className="bg-card rounded-2xl shadow-xl border border-border p-8 text-center">
-        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center relative overflow-hidden"
+      >
+        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
         </div>
-        <h3 className="text-2xl font-bold text-foreground mb-2">No Olympiads Yet</h3>
-        <p className="text-muted-foreground">You haven&apos;t created any olympiad requests yet.</p>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2 pl-8">No Olympiads Yet</h3>
+        <p className="text-gray-600 pl-8">You haven&apos;t created any olympiad requests yet.</p>
       </div>
     );
   }
@@ -145,30 +146,26 @@ export const ManageOlympiads = ({ organizerId, olympiads, onRefetch }: ManageOly
   return (
     <div className="space-y-6">
       {/* Header with Stats */}
-      <div className="bg-card rounded-2xl shadow-lg border border-border p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">Manage Olympiads</h2>
-            <p className="text-muted-foreground">Manage and update your olympiad competitions</p>
-          </div>s
-        </div>
+      <div className="bg-white rounded-2xl  border border-gray-200 p-6 relative overflow-hidden"
+      >
+
 
         {/* Search and Filter Controls */}
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 pl-8">
           <div className="flex-1">
             <input
               type="text"
               placeholder="Search olympiads, locations, or descriptions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
             />
           </div>
           <div className="flex gap-4">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+              className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
             >
               <option value="all">All Status</option>
               <option value={OlympiadStatus.Draft}>Draft</option>
@@ -180,7 +177,7 @@ export const ManageOlympiads = ({ organizerId, olympiads, onRefetch }: ManageOly
             <select
               value={rankingFilter}
               onChange={(e) => setRankingFilter(e.target.value)}
-              className="px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+              className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
             >
               <option value="all">All Rankings</option>
               <option value={OlympiadRankingType.School}>School Level</option>

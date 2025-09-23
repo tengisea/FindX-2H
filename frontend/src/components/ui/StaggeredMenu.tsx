@@ -179,11 +179,10 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         {isOpen && (
           <motion.div
             key="menu-panel"
-            className="fixed top-0 z-[9998] h-full w-80 flex flex-col justify-center items-center shadow-2xl"
+            className="fixed top-0 z-[9998] h-full w-80 flex flex-col justify-center items-center shadow-2xl bg-white"
             style={{
               [position]: 0,
-              background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`,
-              backdropFilter: "blur(10px)",
+              backgroundColor: "white",
             }}
             variants={menuVariants as Variants}
             initial="closed"
@@ -222,7 +221,7 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 >
                   <Link
                     href={item.link}
-                    className="flex items-center justify-start space-x-4 text-gray-800 text-2xl font-medium hover:text-gray-600 transition-colors duration-200"
+                    className="flex items-center justify-start space-x-4 text-gray-900 text-2xl font-medium  transition-colors duration-200"
                     aria-label={item.ariaLabel}
                     onClick={(e) => {
                       if (onMenuItemClick) {

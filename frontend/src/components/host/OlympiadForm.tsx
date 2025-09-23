@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Stepper, { Step } from "../ui/Stepper";
 import { ClassTypeSection } from "./ClassTypeSection";
-import { DateTimePicker } from "../ui/date-picker";
+import { CustomDateTimePicker } from "../ui/custom-date-picker";
 import {
   type CreateClassTypeInput,
   type CreateOlympiadRequestInput,
@@ -129,8 +129,7 @@ export const OlympiadForm = ({
     } catch (error) {
       console.error("Error creating olympiad:", error);
       showError(
-        `Failed to create olympiad: ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Failed to create olympiad: ${error instanceof Error ? error.message : "Unknown error"
         }`,
         "Creation Failed"
       );
@@ -145,8 +144,8 @@ export const OlympiadForm = ({
           setCurrentStep(step);
         }}
         onFinalStepCompleted={handleFinalSubmit}
-        backButtonText="Previous"
-        nextButtonText="Next"
+        backButtonText="Өмнөх"
+        nextButtonText="Дараах"
         nextButtonProps={{
           disabled: mutationLoading,
         }}
@@ -155,32 +154,33 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Olympiad Information
+              <h2 className="text-xl font-bold text-gray-900 mb-1 pl-1">
+                Олимпиадын мэдээлэл
               </h2>
-              <p className="text-sm text-muted-foreground">
-                Enter the basic details for your olympiad
+              <p className="text-sm text-gray-600 pl-1">
+                Олимпиадын мэдээлэл оруулна уу
               </p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Olympiad Name *
+                <label className="block text-sm font-medium text-gray-700 mb-2 pl-1">
+                  Олимпиадын нэр *
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => onUpdateFormData("name", e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
-                  placeholder="Enter olympiad name"
+                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${formData.name ? 'bg-gray-100' : 'bg-gray-300'
+                    }`}
+                  placeholder="Олимпиадын нэр оруулна уу"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Description *
+                <label className="block text-sm font-medium text-gray-700 mb-2 pl-1">
+                  Дэлгэрэнгүй тайлбар *
                 </label>
                 <textarea
                   value={formData.description}
@@ -188,22 +188,24 @@ export const OlympiadForm = ({
                     onUpdateFormData("description", e.target.value)
                   }
                   rows={4}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-sm bg-background text-foreground"
-                  placeholder="Describe the olympiad event..."
+                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl resize-none text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${formData.description ? 'bg-gray-100' : 'bg-gray-300'
+                    }`}
+                  placeholder="Олимпиадын тайлбар оруулна уу"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Location *
+                <label className="block text-sm font-medium text-gray-700 mb-2 pl-1">
+                  Байршил *
                 </label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => onUpdateFormData("location", e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
-                  placeholder="Enter event location"
+                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:bg-gray-100 ${formData.location ? 'bg-gray-100' : 'bg-gray-300'
+                    }`}
+                  placeholder="Олимпиадын байршил оруулна уу"
                   required
                 />
               </div>
@@ -215,42 +217,42 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Dates & Settings
+              <h2 className="text-xl font-bold text-black mb-1">
+                Онцгой огноо & Тохиргоо
               </h2>
-              <p className="text-sm text-muted-foreground">
-                Set the dates and configuration for your olympiad
+              <p className="text-sm text-gray-600">
+                Олимпиадын бүртгэл хаагдах огноо
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Registration Close Date
+                <label className="block text-sm font-medium text-black mb-2">
+                  Бүртгэл хаагдах огноо
                 </label>
-                <DateTimePicker
+                <CustomDateTimePicker
                   value={formData.closeDay}
                   onChange={(date) => onUpdateFormData("closeDay", date)}
-                  placeholder="Select registration close date and time"
+                  placeholder="Бүртгэл хаагдах огноо сонгоно уу"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Olympiad Date
+                <label className="block text-sm font-medium text-black mb-2">
+                  Олимпиад болох огноо
                 </label>
-                <DateTimePicker
+                <CustomDateTimePicker
                   value={formData.occurringDay}
                   onChange={(date) => onUpdateFormData("occurringDay", date)}
-                  placeholder="Select olympiad date and time"
+                  placeholder="Олимпиадын болох огноо сонгоно уу"
                 />
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Ranking Type *
+                <label className="block text-sm font-medium text-gray-700 mb-2 pl-1">
+                  Олимпиадын түвшин
                 </label>
                 <select
                   value={formData.rankingType}
@@ -260,7 +262,7 @@ export const OlympiadForm = ({
                       e.target.value as OlympiadRankingType
                     )
                   }
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-background text-foreground"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-200 text-gray-900 focus:outline-none"
                   required
                 >
                   <option value={OlympiadRankingType.School}>
@@ -289,15 +291,18 @@ export const OlympiadForm = ({
                   onChange={(e) =>
                     onUpdateFormData("invitation", e.target.checked)
                   }
-                  className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary"
+                  className="w-4 h-4 rounded border border-gray-300 
+               accent-[#FF8400]"
                 />
                 <label
                   htmlFor="invitation"
-                  className="text-sm font-medium text-foreground"
+                  className="text-sm font-medium text-gray-700 pl-1"
                 >
-                  Require invitation to participate
+                  Хаалттай олимпиад болгох уу?
                 </label>
               </div>
+
+
             </div>
           </div>
         </Step>
@@ -306,12 +311,7 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Class Types & Questions
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Configure the grade levels and questions for your olympiad
-              </p>
+
             </div>
 
             <ClassTypeSection
@@ -331,57 +331,64 @@ export const OlympiadForm = ({
         <Step>
           <div className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Review & Submit
+              <h2 className="text-xl font-bold text-gray-900 mb-1 pl-1">
+                Шалгах & Илгээх
               </h2>
-              <p className="text-sm text-muted-foreground">
-                Review your olympiad details before submitting
+              <p className="text-sm text-gray-600 pl-8">
+                Олимпиадын мэдээлэл шалгаж, илгээх
               </p>
             </div>
 
-            <div className="bg-card rounded-xl p-6 border border-border">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 relative overflow-hidden pl-1"
+              style={{
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+              }}>
+              {/* Notebook margin line */}
+              <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-b from-red-200 to-red-300 opacity-30"></div>
+              <div className="absolute left-6 top-0 bottom-0 w-px bg-red-300 opacity-50"></div>
+
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 pl-1">
                 Olympiad Summary
               </h3>
 
-              <div className="space-y-3">
+              <div className="space-y-3 pl-1">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Name:</span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-600">Name:</span>
+                  <span className="text-gray-900 font-medium">
                     {formData.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Location:</span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-600">Location:</span>
+                  <span className="text-gray-900 font-medium">
                     {formData.location}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">
+                  <span className="text-gray-600">
                     Registration Closes:
                   </span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-900 font-medium">
                     {formData.closeDay?.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Olympiad Date:</span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-600">Olympiad Date:</span>
+                  <span className="text-gray-900 font-medium">
                     {formData.occurringDay?.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Class Types:</span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-600">Class Types:</span>
+                  <span className="text-gray-900 font-medium">
                     {classTypes.length}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">
+                  <span className="text-gray-600">
                     Total Questions:
                   </span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-900 font-medium">
                     {classTypes.reduce(
                       (total, ct) => total + ct.questions.length,
                       0
