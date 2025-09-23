@@ -40,6 +40,13 @@ export default function RootLayout({
       <ApolloWrapper>
         <body
           className={`${inter.variable} ${libreBaskerville.variable} ${greatVibes.variable} font-sans antialiased bg-background text-foreground`}
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+              linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px'
+          }}
         >
           <AlertProvider>
             <div className="flex justify-end">

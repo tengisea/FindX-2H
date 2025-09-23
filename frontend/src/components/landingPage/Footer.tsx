@@ -282,7 +282,7 @@ const LogoLoop: React.FC<LogoLoopProps> = ({
         </span>
       ) : (
         <div className={cx(
-          "h-[var(--logoloop-logoHeight)] w-[var(--logoloop-logoHeight)] flex items-center justify-center bg-white rounded-lg p-4",
+          "h-[var(--logoloop-logoHeight)] w-[var(--logoloop-logoHeight)] flex items-center justify-center rounded-lg p-4",
           "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
           "hover:scale-125 cursor-pointer",
         )}>
@@ -467,12 +467,23 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-white text-black py-8">
+    <footer 
+      className="text-black py-8"
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+          linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px',
+        backgroundPosition: '0px 0px',
+        backgroundColor: 'white'
+      }}
+    >
       <div className="max-w-6xl mx-auto px-4">
         {/* Partner Logos Section */}
         <div className="text-center mb-4">
           <h3 className="text-lg font-semibold text-black mb-3">Тэргүүлэгч байгууллагуудын итгэлийг хүлээсэн.</h3>
-          <div className="bg-white rounded-xl p-4">
+          <div className="rounded-xl p-4">
             <LogoLoop
               logos={logos}
               speed={80}
@@ -481,7 +492,7 @@ export default function Footer() {
               gap={28}
               pauseOnHover={true}
               fadeOut={true}
-              fadeOutColor="#ffffff"
+              fadeOutColor="#transparent-20%"
               scaleOnHover={true}
               ariaLabel="Our partner companies"
               className="py-2"

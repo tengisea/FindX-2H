@@ -325,7 +325,17 @@ const HostPage = () => {
 
   return (
     <>
-      <div className="min-h-screen ">
+      <div 
+        className="min-h-screen"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          backgroundColor: 'white'
+        }}
+      >
         {/* StaggeredMenu Navigation */}
         <StaggeredMenu
           position="left"
