@@ -217,7 +217,17 @@ const StudentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen"
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+          linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px',
+        backgroundColor: 'white'
+      }}
+    >
       {/* StaggeredMenu Navigation */}
       <StaggeredMenu
         position="left"
@@ -243,7 +253,19 @@ const StudentPage = () => {
       </div>
 
       {/* Main content with left margin for left-positioned StaggeredMenu */}
-      <div className="w-full pl-20 bg-white">{renderContent()}</div>
+      <div 
+        className="w-full pl-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          backgroundColor: 'white'
+        }}
+      >
+        {renderContent()}
+      </div>
 
       <OlympiadDetailsModal
         isOpen={showDetailsModal}
