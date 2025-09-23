@@ -161,10 +161,58 @@ const AllOlympiadsPage = () => {
         return "bg-red-100 text-red-800 border-red-200";
       case "FINISHED":
         return "bg-blue-100 text-blue-800 border-blue-200";
-      case "DRAFT":
+      case "CANCELLED":
         return "bg-gray-100 text-gray-800 border-gray-200";
+      case "DRAFT":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "UNDER_REVIEW":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      case "MEDALS_PREVIEW":
+        return "bg-orange-100 text-orange-800 border-orange-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getStatusDisplayName = (status: string) => {
+    switch (status) {
+      case "OPEN":
+        return "Нээлттэй";
+      case "CLOSED":
+        return "Хаагдсан";
+      case "FINISHED":
+        return "Дууссан";
+      case "CANCELLED":
+        return "Цуцлагдсан";
+      case "DRAFT":
+        return "Draft";
+      case "UNDER_REVIEW":
+        return "Шалгагдаж байна";
+      case "MEDALS_PREVIEW":
+        return "Урьдчилсан дүнг харах";
+      default:
+        return status;
+    }
+  };
+
+  const getRankingTypeDisplayName = (rankingType: string) => {
+    switch (rankingType) {
+      case "NATIONAL":
+        return "Үндэсний";
+      case "REGIONAL":
+        return "Бүс нутгийн";
+      case "DISTRICT":
+        return "Дүүргийн";
+      case "SCHOOL":
+        return "Сургуулийн";
+      case "A_TIER":
+        return "A түвшин";
+      case "B_TIER":
+        return "B түвшин";
+      case "C_TIER":
+        return "C түвшин";
+      default:
+        return rankingType;
     }
   };
 
@@ -204,7 +252,7 @@ const AllOlympiadsPage = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2"></h2>
             <p className="text-gray-600">
-              Please wait while we fetch all available competitions...
+              Олимпиадуудыг хайж байна...
             </p>
           </div>
         </div>
@@ -220,7 +268,7 @@ const AllOlympiadsPage = () => {
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2"></h2>
             <p className="text-red-600 mb-4">{error.message}</p>
-            <Button onClick={() => window.location.reload()}>Try Again</Button>
+            <Button onClick={() => window.location.reload()}>Дахин оролдоно уу</Button>
           </div>
         </div>
       </div>
@@ -302,7 +350,7 @@ const AllOlympiadsPage = () => {
                       <SelectItem value="all">Бүх төлөвүүд</SelectItem>
                       {filterOptions.statuses.map((status) => (
                         <SelectItem key={status} value={status}>
-                          {status}
+                          {getStatusDisplayName(status)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -324,7 +372,7 @@ const AllOlympiadsPage = () => {
                       <SelectItem value="all">Бүх эрэмбүүд</SelectItem>
                       {filterOptions.rankingTypes.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {type}
+                          {getRankingTypeDisplayName(type)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -343,7 +391,7 @@ const AllOlympiadsPage = () => {
                       <SelectItem value="all">Бүх ангиуд</SelectItem>
                       {filterOptions.grades.map((grade) => (
                         <SelectItem key={grade} value={grade}>
-                          Grade {getGradeNumber(grade)}
+                          {getGradeNumber(grade)}-р анги
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -421,11 +469,10 @@ const AllOlympiadsPage = () => {
           <div className="text-center py-20">
             <div className="text-gray-400 text-6xl mb-4">🔍</div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              No Olympiads Found
+              Олимпиадууд олдсонгүй
             </h3>
             <p className="text-gray-600 mb-6">
-              Try adjusting your search criteria or filters to find more
-              competitions.
+              Шүүлтүүрүүдийг өөрчлөх эсвэл хайх нөхцөлүүдийг өөрчлөөд оролдоно уу.
             </p>
             <Button
               variant="outline"
@@ -438,7 +485,7 @@ const AllOlympiadsPage = () => {
                 setOrganizerFilter("all");
               }}
             >
-              Clear All Filters
+              Бүх шүүлтүүр цэвэрлэх
             </Button>
           </div>
         ) : (
@@ -476,7 +523,7 @@ const AllOlympiadsPage = () => {
                             olympiad.status
                           )}`}
                         >
-                          {olympiad.status}
+                          {getStatusDisplayName(olympiad.status)}
                         </Badge>
                       </div>
 
@@ -489,7 +536,7 @@ const AllOlympiadsPage = () => {
                         <div className="flex items-center gap-3 text-sm text-gray-600">
                           <MapPin className="h-4 w-4 text-green-500" />
                           <span className="line-clamp-1">
-                            {olympiad.location || "Location TBD"}
+                            {olympiad.location || "Байршил олдсонгүй"}
                           </span>
                         </div>
 
@@ -497,21 +544,21 @@ const AllOlympiadsPage = () => {
                           <Building2 className="h-4 w-4 text-purple-500" />
                           <span className="line-clamp-1">
                             {olympiad.organizer?.organizationName ||
-                              "Unknown Organizer"}
+                              "Зохион байгуулагч олдсонгүй"}
                           </span>
                         </div>
 
                         {olympiad.rankingType && (
                           <div className="flex items-center gap-3 text-sm text-gray-600">
                             <Trophy className="h-4 w-4 text-yellow-500" />
-                            <span>{olympiad.rankingType}</span>
+                            <span>{getRankingTypeDisplayName(olympiad.rankingType)}</span>
                           </div>
                         )}
 
                         {olympiad.scoreOfAward && (
                           <div className="flex items-center gap-3 text-sm text-gray-600">
                             <Award className="h-4 w-4 text-orange-500" />
-                            <span>Score: {olympiad.scoreOfAward}</span>
+                            <span>Дүн: {olympiad.scoreOfAward}</span>
                           </div>
                         )}
                       </div>
@@ -521,13 +568,13 @@ const AllOlympiadsPage = () => {
                           <div className="mb-4">
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-sm font-medium text-gray-700">
-                                Available Grades
+                                Ангиуд
                               </span>
                               <Badge
                                 variant="secondary"
                                 className="text-xs bg-blue-100 text-blue-800 border-gray-300"
                               >
-                                {olympiad.classtypes.length} grades
+                                {olympiad.classtypes.length} анги
                               </Badge>
                             </div>
                             <div className="flex flex-wrap gap-1">
@@ -539,7 +586,7 @@ const AllOlympiadsPage = () => {
                                     variant="outline"
                                     className="text-xs bg-green-100 text-green-800 border-gray-300"
                                   >
-                                    Grade {getGradeNumber(classType.classYear)}
+                                    {getGradeNumber(classType.classYear)}-р анги
                                   </Badge>
                                 ))}
                               {olympiad.classtypes.length > 3 && (
@@ -555,18 +602,16 @@ const AllOlympiadsPage = () => {
                         )}
 
                       <div className="flex gap-2 pt-4 border-t">
-                        {olympiad.status === "FINISHED" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1 bg-orange-500 "
-                            onClick={() =>
-                              router.push(`/olympiad/${olympiad.id}`)
-                            }
-                          >
-                            Дэлгэрэнгүй
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 bg-orange-500 "
+                          onClick={() =>
+                            router.push(`/olympiad/${olympiad.id}`)
+                          }
+                        >
+                          Дэлгэрэнгүй
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
