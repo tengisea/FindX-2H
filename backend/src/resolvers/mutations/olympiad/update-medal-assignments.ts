@@ -28,6 +28,7 @@ export const updateMedalAssignments = async (
       gold: string[];
       silver: string[];
       bronze: string[];
+      top10: string[];
     }>;
   }
 ) => {
@@ -49,7 +50,7 @@ export const updateMedalAssignments = async (
 
     // Update medal assignments for each class type
     for (const assignment of assignments) {
-      const { classTypeId, gold, silver, bronze } = assignment;
+      const { classTypeId, gold, silver, bronze, top10 } = assignment;
 
       // Verify class type belongs to this olympiad
       const classType = await ClassTypeModel.findById(classTypeId);
@@ -61,7 +62,7 @@ export const updateMedalAssignments = async (
       }
 
       // Validate that all student IDs exist and have submitted answers
-      const allStudentIds = [...gold, ...silver, ...bronze];
+      const allStudentIds = [...new Set([...gold, ...silver, ...bronze, ...top10])]; // Remove duplicates
       const studentAnswers = await StudentAnswerModel.find({
         classTypeId,
         studentId: { $in: allStudentIds },
@@ -79,10 +80,11 @@ export const updateMedalAssignments = async (
         gold,
         silver,
         bronze,
+        top10,
       });
 
       console.log(
-        `✅ Updated medals for ClassType ${classTypeId}: Gold(${gold.length}), Silver(${silver.length}), Bronze(${bronze.length})`
+        `✅ Updated medals for ClassType ${classTypeId}: Gold(${gold.length}), Silver(${silver.length}), Bronze(${bronze.length}), Top10(${top10.length})`
       );
     }
 

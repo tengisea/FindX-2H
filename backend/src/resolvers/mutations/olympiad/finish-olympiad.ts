@@ -120,12 +120,14 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
           top10.push(studentInfo);
         }
 
-        // Assign medals based on position
+        // Assign medals based on position (students can have multiple medal types)
         if (index < goldCount) {
           gold.push(studentInfo);
-        } else if (index < goldCount + silverCount) {
+        }
+        if (index >= goldCount && index < goldCount + silverCount) {
           silver.push(studentInfo);
-        } else if (index < goldCount + silverCount + bronzeCount) {
+        }
+        if (index >= goldCount + silverCount && index < goldCount + silverCount + bronzeCount) {
           bronze.push(studentInfo);
         }
       });
@@ -140,6 +142,23 @@ export const finishOlympiad = async (_: unknown, { id }: { id: string }) => {
         totalParticipants: studentAnswers.length,
         medalists: populatedClassType.medalists,
       });
+
+      // Auto-apply the initial medal assignments to the classType
+      const goldStudentIds = gold.map((g) => g.studentId);
+      const silverStudentIds = silver.map((s) => s.studentId);
+      const bronzeStudentIds = bronze.map((b) => b.studentId);
+      const top10StudentIds = top10.map((t) => t.studentId);
+
+      await ClassTypeModel.findByIdAndUpdate(populatedClassType._id, {
+        gold: goldStudentIds,
+        silver: silverStudentIds,
+        bronze: bronzeStudentIds,
+        top10: top10StudentIds,
+      });
+
+      console.log(
+        `✅ Auto-applied initial medals for ClassType ${populatedClassType._id}: Gold(${goldStudentIds.length}), Silver(${silverStudentIds.length}), Bronze(${bronzeStudentIds.length}), Top10(${top10StudentIds.length})`
+      );
     }
 
     // Get the updated olympiad with MEDALS_PREVIEW status
