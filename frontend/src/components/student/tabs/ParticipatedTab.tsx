@@ -49,6 +49,9 @@ const ParticipatedOlympiadRow = ({
     );
   }
 
+  console.log(olympiad.occurringDay);
+  
+
   return (
     <tr className="hover:bg-gray-50 transition-colors duration-200">
       <td className="px-6 py-4 whitespace-nowrap">

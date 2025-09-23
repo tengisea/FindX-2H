@@ -50,9 +50,9 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
     olympiad.status === "FINISHED";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 min-h-[600px]">
       {/* Olympiad Information */}
-      <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+      <div className="bg-primary/5 rounded-xl p-8 border border-primary/20 min-h-[200px]">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-2">
@@ -117,15 +117,15 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
       </div>
 
       {/* Class Types */}
-      <div>
-        <h4 className="text-lg font-semibold text-foreground mb-4">
+      <div className="min-h-[400px]">
+        <h4 className="text-xl font-semibold text-foreground mb-6">
           Ангилал {classTypes.length}
         </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {classTypes.map((classType) => (
             <div
               key={classType.id}
-              className="bg-card rounded-xl shadow-lg border border-border p-6 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:shadow-primary/10"
+              className="bg-card rounded-xl shadow-lg border border-border p-6 cursor-pointer transition-all duration-200 hover:border-primary/50 hover:shadow-primary/10 min-h-[280px] flex flex-col"
               onClick={() => onClassTypeSelect(classType.id)}
             >
               <div className="flex items-start justify-between mb-4">
@@ -237,12 +237,12 @@ export const OlympiadOverview: React.FC<OlympiadOverviewProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border">
+      <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-border min-h-[100px]">
         {canFinishOlympiad && (
           <button
             onClick={onFinishOlympiad}
             disabled={isFinishingOlympiad}
-            className={`flex-1 px-6 py-3 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg ${
+            className={`flex-1 px-8 py-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg h-14 ${
               isFinishingOlympiad
                 ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                 : "bg-primary text-primary-foreground hover:bg-primary/90"
