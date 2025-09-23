@@ -19,8 +19,8 @@ export const CompleteRank = () => {
   };
 
   return (
-    <div className="bg-black p-6">
-      <h1 className="text-3xl font-bold text-center text-white mb-6">
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-center text-black mb-6">
         Complete Rankings
       </h1>
 
@@ -33,7 +33,7 @@ export const CompleteRank = () => {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg bg-gray-600">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-black font-bold text-lg bg-gray-200">
                   {index + 1}
                 </div>
 
@@ -48,7 +48,7 @@ export const CompleteRank = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-black">
                     {person.name}
                   </h3>
                   <p className="text-gray-400 text-sm">Student</p>
@@ -83,7 +83,7 @@ export const CompleteRank = () => {
 
                 <Button
                   onClick={() => handleViewProfile(person.id)}
-                  className="text-white bg-transparent border-0 font-medium text-sm hover:bg-transparent hover:text-gray-300 cursor-pointer"
+                  className="text-black bg-transparent border-0 font-medium text-sm hover:bg-transparent hover:text-gray-600 cursor-pointer"
                 >
                   View &gt;
                 </Button>
@@ -96,7 +96,7 @@ export const CompleteRank = () => {
       <div className="text-center mt-8">
         <Button
           onClick={handleClickViewAllRankings}
-          className="inline-flex bg-transparent border border-gray-600 items-center space-x-2 text-white font-medium hover:bg-gray-700"
+          className="inline-flex bg-transparent border border-gray-600 items-center space-x-2 text-black font-medium hover:bg-gray-200"
         >
           <Users className="w-4 h-4" />
           <span>View All Rankings</span>

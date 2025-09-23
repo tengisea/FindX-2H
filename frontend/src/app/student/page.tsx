@@ -41,7 +41,6 @@ const StudentPage = () => {
   const [selectedOlympiad, setSelectedOlympiad] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  // StaggeredMenu configuration
   const menuItems = [
     { label: "Profile", ariaLabel: "View your profile", link: "#profile" },
     {
@@ -70,7 +69,6 @@ const StudentPage = () => {
 
   const socialItems: any[] = [];
 
-  // Handle menu item clicks to switch tabs
   const handleMenuClick = (link: string) => {
     const tab = link.replace("#", "") as typeof activeTab;
     if (
@@ -196,7 +194,7 @@ const StudentPage = () => {
           />
         );
       case "tournaments":
-        return null; // This case is empty in the original code
+        return null;
 
       case "results":
         return (
@@ -236,8 +234,6 @@ const StudentPage = () => {
         onMenuClose={() => console.log("Student menu closed")}
         onMenuItemClick={handleMenuClick}
       />
-
-      {/* Original StudentSidebar (hidden but kept for reference) */}
       <div className="hidden">
         <StudentSidebar
           activeTab={activeTab}
@@ -249,7 +245,6 @@ const StudentPage = () => {
       {/* Main content with left margin for left-positioned StaggeredMenu */}
       <div className="w-full pl-20 bg-white">{renderContent()}</div>
 
-      {/* Modals */}
       <OlympiadDetailsModal
         isOpen={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
