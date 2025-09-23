@@ -194,7 +194,7 @@ export const StudentsRanking = () => {
   const uniqueProvinces = Array.from(
     new Set(allStudents.map((student) => student.province))
   ).filter(Boolean);
-  
+
   const provinceOptions = getAllProvinceOptions();
 
   return (
@@ -308,9 +308,7 @@ export const StudentsRanking = () => {
                   <th className="px-6 py-4 text-left text-sm font-semibold ">
                     Хэрэглэгч
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold ">
-                    Бүртгүүлсэн огноо
-                  </th>
+
                   <th className="px-6 py-4 text-left text-sm font-semibold ">
                     Шагнал
                   </th>
@@ -339,11 +337,11 @@ export const StudentsRanking = () => {
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                           {user.profilePicture &&
-                          user.profilePicture.trim() !== "" &&
-                          user.profilePicture !== ".////" &&
-                          (user.profilePicture.startsWith("http") ||
-                            user.profilePicture.startsWith("/") ||
-                            user.profilePicture.startsWith("data:")) ? (
+                            user.profilePicture.trim() !== "" &&
+                            user.profilePicture !== ".////" &&
+                            (user.profilePicture.startsWith("http") ||
+                              user.profilePicture.startsWith("/") ||
+                              user.profilePicture.startsWith("data:")) ? (
                             <Image
                               src={user.profilePicture}
                               alt={user.name}
@@ -359,16 +357,15 @@ export const StudentsRanking = () => {
                             />
                           ) : null}
                           <span
-                            className={` font-semibold text-lg ${
-                              user.profilePicture &&
+                            className={` font-semibold text-lg ${user.profilePicture &&
                               user.profilePicture.trim() !== "" &&
                               user.profilePicture !== ".////" &&
                               (user.profilePicture.startsWith("http") ||
                                 user.profilePicture.startsWith("/") ||
                                 user.profilePicture.startsWith("data:"))
-                                ? "hidden"
-                                : ""
-                            }`}
+                              ? "hidden"
+                              : ""
+                              }`}
                           >
                             {user.name?.charAt(0)?.toUpperCase()}
                           </span>
@@ -384,7 +381,6 @@ export const StudentsRanking = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 ">-</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1">
