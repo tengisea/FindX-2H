@@ -70,7 +70,6 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
   onExportResults,
   onViewResults,
 }) => {
-
   const [selectedOlympiad, setSelectedOlympiad] = useState<string>("");
   const [selectedClassType, setSelectedClassType] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -346,6 +345,10 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
             onFinishOlympiad={handleFinishOlympiad}
             onExportResults={onExportResults}
             onViewResults={onViewResults}
+            onViewFinalResults={(classTypeId) => {
+              setSelectedClassType(classTypeId);
+              setViewMode("final-results");
+            }}
             getStatusColor={getStatusColor}
             getStatusDescription={getStatusDescription}
             isFinishingOlympiad={isFinishingOlympiad}
@@ -382,6 +385,38 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
             onBack={() => setViewMode("overview")}
             onRefreshMedalPreviews={refreshMedalPreviews}
           />
+        );
+      case "final-results":
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div></div>
+              <button
+                onClick={() => setViewMode("overview")}
+                className="px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors flex items-center space-x-2"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                <span>Буцах</span>
+              </button>
+            </div>
+            <FinalResultsTable
+              classType={classTypes.find((ct) => ct.id === selectedClassType)}
+              studentAnswers={studentAnswers}
+              questions={questions}
+            />
+          </div>
         );
       default:
         return null;
@@ -428,7 +463,6 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                   ))}
                 </SelectContent>
               </Select>
-
             </div>
           </div>
         </div>
