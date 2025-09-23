@@ -300,7 +300,7 @@ export const Olympiad = () => {
                   </div>
 
                   <CardFooter className="pt-2 pb-2 bg-white rounded-b-lg flex justify-center items-center">
-                    {(olympiad.status === "FINISHED" || olympiad.status === "CLOSED") && (
+                    {(olympiad.status === "FINISHED" || olympiad.status === "CLOSED" || olympiad.status === "OPEN") && (
                       <PageTransition href={`/olympiad/${olympiad.id}`}>
                         <Button
                           variant="outline"
