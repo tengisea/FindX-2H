@@ -47,34 +47,31 @@ export const Section = () => {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-5xl lg:text-6xl font-bold text-black leading-tight">
-                Тавтай <br />
-                <span className="text-orange-500">морилно</span>
-                <br />
-                уу
+                Тавтай <span className="text-[#ff8400]">морилно</span> уу
               </h1>
             </div>
 
             <p className="text-xl text-black leading-relaxed max-w-lg">
-              Админ, зохион байгуулагч, оюутнуудыг автомат бүртгэл, шуурхай
+              Олимпиад зохион байгуулагч, сурагчдын автомат бүртгэл, шуурхай
               онооны систем, динамик ранкын дүрслэлээр холбон, олимпиадын
               удирдлагыг оновчтой болгоно.
             </p>
 
             <div className="grid grid-cols-3 gap-8 py-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">
+                <div className="text-3xl font-bold text-[#ff8400]">
                   {stats.activeStudents.toLocaleString()}
                 </div>
-                <div className="text-sm text-black">Идэвхитэй оюутан</div>
+                <div className="text-sm text-black">Идэвхитэй сурагчид</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">
+                <div className="text-3xl font-bold text-[#ff8400]">
                   {stats.hostOrganizations.toLocaleString()}
                 </div>
                 <div className="text-sm text-black">Зохион байгуулагчид</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-500">
+                <div className="text-3xl font-bold text-[#ff8400]">
                   {stats.competitionsHeld.toLocaleString()}
                 </div>
                 <div className="text-sm text-black">
@@ -86,9 +83,9 @@ export const Section = () => {
 
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <div className="w-full h-[600px] bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+              <div className="w-[800px] h-[400px] bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                 <Image
-                  src="/images/photo.avif"
+                  src="/images/section_image_2.png"
                   alt="Students collaborating"
                   width={600}
                   height={600}
@@ -96,38 +93,38 @@ export const Section = () => {
                 />
               </div>
 
-              <div className="absolute top-6 right-6 bg-white  rounded-xl px-4 py-3  border border-black">
-                <div className="flex items-center gap-2 text-black">
-                  <Trophy className="w-5 h-5 text-orange-500" />
+              <div className="absolute top-6 right-6 bg-white  rounded-xl px-4 py-3">
+                <div className="flex items-center gap-2 text-black-600">
+                  <Trophy className="w-5 h-5 text-[#ff8400]" />
                   <div>
-                    <div className="font-bold text-sm">Тэргүүлэгч оюутан</div>
-                    <div className="text-xs text-gray-600">
+                    <div className="font-bold text-sm">Тэргүүлэгч сурагч</div>
+                    <div className="text-xs text-black-600">
                       {stats.topPerformer
-                        ? `${stats.topPerformer.name} - Rank #${1}`
+                        ? `${stats.topPerformer.name} - Байр #${1}`
                         : "Мэдээлэл олдсонгүй"}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute bottom-6 left-6 bg-white  rounded-xl px-4 py-3  border border-black">
-                <div className="flex items-center gap-4 text-black">
+              <div className="absolute bottom-6 left-6 bg-white  rounded-xl px-4 py-3">
+                <div className="flex items-center gap-4 text-black-600">
                   <div className="text-center">
-                    <div className="font-bold text-lg text-orange-500">
+                    <div className="font-bold text-lg text-[#ff8400]">
                       {stats.activeStudents > 0 ? "100%" : "0%"}
                     </div>
-                    <div className="text-xs text-gray-600">
-                      Идэвхитэй оюутан
+                    <div className="text-xs text-black-600">
+                      Идэвхитэй сурагч
                     </div>
                   </div>
                   <div className="w-px h-8 bg-gray-600"></div>
                   <div className="text-center">
-                    <div className="flex items-center gap-1">
-                      <span className="font-bold text-lg text-orange-500">
+                    <div className="flex items-center gap-1 text-black-600">
+                      <span className="font-bold text-lg text-[#ff8400]">
                         {stats.competitionsHeld > 0 ? "5.0" : "0.0"}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-600">Rating</div>
+                    <div className="text-xs text-black-600">Үнэлгээ</div>
                   </div>
                 </div>
               </div>
