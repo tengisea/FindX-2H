@@ -333,7 +333,7 @@ const SettingsTab = ({ student, loading }: SettingsTabProps) => {
                         }))
                       }
                     >
-                      <SelectTrigger className="bg-white text-gray-800 border-gray-300 focus:border-orange-500 focus:ring-orange-500">
+                      <SelectTrigger className="bg-white text-gray-800 border-gray-300 focus:border-[#FF8400] focus:ring-[#FF8400]">
                         <SelectValue placeholder="Аймаг/Дүүрэг сонгох" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border border-gray-200">

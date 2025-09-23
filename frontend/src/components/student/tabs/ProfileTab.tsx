@@ -294,7 +294,8 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                 <div className="text-2xl font-bold text-[#FF8400]">
                   {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
-                <div className="text-base text-orange-600">Одоогийн байр</div>
+
+                <div className="text-base text-[#FF8400]">Одоогийн байр</div>
               </div>
 
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
@@ -314,7 +315,9 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-base text-orange-600">
+
+                <div className="text-base text-[#FF8400]">
+                  {" "}
                   Сүүлийн өөрчлөлт
                 </div>
               </div>
@@ -323,7 +326,8 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                 <div className="text-2xl font-bold text-[#FF8400]">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-base text-orange-600">
+
+                <div className="text-base text-[#FF8400]">
                   Олимпиад оролцсон тоо
                 </div>
               </div>

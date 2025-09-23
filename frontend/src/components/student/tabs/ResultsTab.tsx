@@ -167,35 +167,39 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-3xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
+                <div className="text-3xl font-bold text-[#FF8400]">
                   {student?.ranking + " оноо" || "N/A"}
                 </div>
-                <div className="text-base text-orange-600">Одоогийн байр</div>
+                <div className="text-base text-[#FF8400]">Одоогийн байр</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.gold) ? student.gold.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Алт медаль</div>
+
+                <div className="text-base text-[#FF8400]">Алт медаль</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.silver) ? student.silver.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Мөнгөн медаль</div>
+
+                <div className="text-base text-[#FF8400]">Мөнгөн медаль</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.bronze) ? student.bronze.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Хүрэл медаль</div>
+
+                <div className="text-base text-[#FF8400]">Хүрэл медаль</div>
               </div>
               <div className="text-center p-4 bg-[#FF8400]/10 rounded-lg border border-[#FF8400]/20">
                 <div className="text-3xl font-bold text-[#FF8400]">
                   {Array.isArray(student?.top10) ? student.top10.length : 0}
                 </div>
-                <div className="text-base text-orange-600">Top 10 дүн</div>
+
+                <div className="text-base text-[#FF8400]">Top 10 дүн</div>
               </div>
             </div>
           </CardContent>
@@ -474,7 +478,8 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                                   <span className="text-base font-medium text-gray-600">
                                                     Асуулт {index + 1}
                                                   </span>
-                                                  <span className="text-base font-semibold text-orange-600">
+
+                                                  <span className="text-base font-semibold text-[#FF8400]">
                                                     {answer.score || 0} оноо
                                                   </span>
                                                 </div>

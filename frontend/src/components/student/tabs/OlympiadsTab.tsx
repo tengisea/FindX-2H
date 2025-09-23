@@ -301,7 +301,7 @@ const OlympiadsTab = ({
                         variant="outline"
                         size="sm"
                         onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-2 border-gray-300 text-gray-700  "
+                        className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                       >
                         <Filter className="w-4 h-4" />
                         Шүүлтүүр
@@ -468,7 +468,7 @@ const OlympiadsTab = ({
                   <Button
                     variant="outline"
                     onClick={clearAllFilters}
-                    className="mt-4 border-gray-300 text-gray-700  "
+                    className="mt-4 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                   >
                     Бүх шүүлтүүр цэвэрлэх
                   </Button>

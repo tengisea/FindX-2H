@@ -497,8 +497,8 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 size="sm"
                 className={
                   selectedMedalType === "all"
-                    ? "bg-orange-500 text-white hover:bg-orange-600"
-                    : "text-black hover:bg-[#ff8400] hover:text-black"
+                    ? "bg-[#FF8400] text-white hover:bg-[#FF8400]/90"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#FF8400]"
                 }
               >
                 Бүгд ({studentAchievements.length})

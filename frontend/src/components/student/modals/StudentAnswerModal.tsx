@@ -150,7 +150,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                 <Card className="bg-white border border-gray-200">
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2 text-gray-800">
-                      <Trophy className="w-5 h-5 text-orange-600" />
+                      <Trophy className="w-5 h-5 text-[#FF8400]" />
                       <span>Хариултын тойм</span>
                     </CardTitle>
                   </CardHeader>
@@ -160,9 +160,8 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                         <div className="text-2xl font-bold text-[#FF8400]">
                           {studentAnswer.totalScoreofOlympiad || 0}
                         </div>
-                        <div className="text-base text-orange-600">
-                          Нийт дүн
-                        </div>
+
+                        <div className="text-base text-[#FF8400]">Нийт дүн</div>
                       </div>
                       <div className="text-center p-4 bg-blue-500/10 rounded-lg">
                         <div className="text-2xl font-bold text-blue-500">
@@ -205,7 +204,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <Card className="bg-white border border-gray-200">
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2 text-gray-800">
-                        <ImageIcon className="w-5 h-5 text-orange-600" />
+                        <ImageIcon className="w-5 h-5 text-[#FF8400]" />
                         <span>Оруулсан зураг</span>
                       </CardTitle>
                     </CardHeader>
@@ -250,7 +249,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   <Card className="bg-white border border-gray-200">
                     <CardHeader>
                       <CardTitle className="flex items-center space-x-2 text-gray-800">
-                        <FileText className="w-5 h-5 text-orange-600" />
+                        <FileText className="w-5 h-5 text-[#FF8400]" />
                         <span>Асуултын хариултууд</span>
                       </CardTitle>
                     </CardHeader>
@@ -279,7 +278,8 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                                 <span className="text-base text-gray-600">
                                   Дүн:
                                 </span>
-                                <span className="text-lg font-bold text-orange-600">
+
+                                <span className="text-lg font-bold text-[#FF8400]">
                                   {answer.score || 0} оноо
                                 </span>
                               </div>
