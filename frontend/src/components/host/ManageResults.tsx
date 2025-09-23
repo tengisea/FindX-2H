@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 // Import sub-components for results management
-import { 
+import {
     useStudentAnswersByClassTypeQuery,
     useUpdateStudentAnswerScoreMutation,
     useAddStudentResultMutation,
@@ -15,9 +15,9 @@ import {
     ClassYear
 } from "@/generated";
 import { OlympiadOverview } from "./results/OlympiadOverview";
-import { StudentScoringInterface } from "./results/StudentScoringInterface"; 
+import { StudentScoringInterface } from "./results/StudentScoringInterface";
 import { RankingInterface } from "./results/RankingInterface";
-import { MedalManagementInterface } from "./results/MedalManagementInterface"; 
+import { MedalManagementInterface } from "./results/MedalManagementInterface";
 import { StatusProgressIndicator } from "./results/StatusProgressIndicator";
 
 interface ManageResultsProps {
@@ -113,12 +113,12 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
     const handleFinishOlympiad = async () => {
         if (!selectedOlympiad) return;
-        
+
         try {
             const result = await finishOlympiad({
                 variables: { finishOlympiadId: selectedOlympiad }
             });
-            
+
             if (result.data?.finishOlympiad) {
                 setViewMode("medals");
                 // Refetch olympiad data to get updated status
@@ -131,7 +131,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
     const handleFinalizeMedals = async () => {
         if (!selectedOlympiad) return;
-        
+
         try {
             await finalizeMedals({
                 variables: { finalizeMedalsId: selectedOlympiad }
@@ -169,13 +169,13 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
         if (!selectedOlympiad) {
             return (
                 <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-foreground mb-2">Select an Olympiad</h3>
-                    <p className="text-muted-foreground">Choose an olympiad from the dropdown above to view and manage its results.</p>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Select an Olympiad</h3>
+                    <p className="text-gray-600">Choose an olympiad from the dropdown above to view and manage its results.</p>
                 </div>
             );
         }
@@ -231,13 +231,17 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
     return (
         <div className="w-full">
-            <div className="bg-card rounded-2xl sm:rounded-3xl shadow-xl border border-border p-4 sm:p-6 lg:p-8">
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200 p-4 sm:p-6 lg:p-8 relative overflow-hidden"
+                style={{
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                }}>
+
                 {/* Header */}
-                <div className="mb-6 sm:mb-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                <div className="mb-6 sm:mb-8 pl-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                         Manage Results
                     </h2>
-                    <p className="text-muted-foreground text-sm sm:text-base">
+                    <p className="text-gray-600 text-sm sm:text-base">
                         Complete student answer management, scoring, and medal assignment system
                     </p>
                 </div>
@@ -252,16 +256,16 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                 )}
 
                 {/* Filters and Selection */}
-                <div className="mb-6">
+                <div className="mb-6 pl-8">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-foreground mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Filter by Status
                             </label>
                             <select
                                 value={filterStatus}
                                 onChange={(e) => setFilterStatus(e.target.value)}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base bg-background text-foreground"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base bg-white text-gray-900"
                             >
                                 <option value="all">All Olympiads</option>
                                 <option value="DRAFT">Draft</option>
@@ -273,13 +277,13 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                         </div>
 
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-foreground mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Select Olympiad
                             </label>
                             <select
                                 value={selectedOlympiad}
                                 onChange={(e) => handleOlympiadSelect(e.target.value)}
-                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-border rounded-lg sm:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base bg-background text-foreground"
+                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base bg-white text-gray-900"
                             >
                                 <option value="">Choose an olympiad...</option>
                                 {filteredOlympiads.map((olympiad) => (
@@ -294,47 +298,43 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
 
                 {/* View Mode Navigation */}
                 {selectedOlympiad && (
-                    <div className="mb-6">
+                    <div className="mb-6 pl-8">
                         <div className="flex flex-wrap gap-2">
                             <button
                                 onClick={() => setViewMode("overview")}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                    viewMode === "overview"
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
-                                }`}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "overview"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                    }`}
                             >
                                 Overview
                             </button>
                             <button
                                 onClick={() => setViewMode("scoring")}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                    viewMode === "scoring"
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
-                                }`}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "scoring"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                    }`}
                                 disabled={!selectedClassType}
                             >
                                 Student Scoring
                             </button>
                             <button
                                 onClick={() => setViewMode("ranking")}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                    viewMode === "ranking"
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
-                                }`}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "ranking"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                    }`}
                                 disabled={!selectedClassType}
                             >
                                 Rankings
                             </button>
                             <button
                                 onClick={() => setViewMode("medals")}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                    viewMode === "medals"
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
-                                }`}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === "medals"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                    }`}
                                 disabled={selectedOlympiadData?.status !== "MEDALS_PREVIEW" && selectedOlympiadData?.status !== "FINISHED"}
                             >
                                 Medal Management
@@ -344,7 +344,7 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                 )}
 
                 {/* Main Content */}
-                <div className="relative">
+                <div className="relative pl-8">
                     {renderContent()}
                 </div>
             </div>

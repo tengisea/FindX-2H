@@ -223,6 +223,7 @@
 }
 
 @layer components {
+
   /* Custom button styles with soft shadows */
   .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-[#E67300];
@@ -286,22 +287,28 @@
 }
 
 @layer utilities {
+
   /* Spacing scale (8px / 16px scale) */
   .space-1 {
     margin: 0.5rem;
   }
+
   .space-2 {
     margin: 1rem;
   }
+
   .space-3 {
     margin: 1.5rem;
   }
+
   .space-4 {
     margin: 2rem;
   }
+
   .space-5 {
     margin: 2.5rem;
   }
+
   .space-6 {
     margin: 3rem;
   }
@@ -309,18 +316,23 @@
   .p-1 {
     padding: 0.5rem;
   }
+
   .p-2 {
     padding: 1rem;
   }
+
   .p-3 {
     padding: 1.5rem;
   }
+
   .p-4 {
     padding: 2rem;
   }
+
   .p-5 {
     padding: 2.5rem;
   }
+
   .p-6 {
     padding: 3rem;
   }

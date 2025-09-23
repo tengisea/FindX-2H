@@ -412,33 +412,179 @@ const HostPage = () => {
               </p>
             </div>
 
-            {/* Metrics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-2xl border border-black p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-primary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold text-foreground">
-                      {organizerLoading ? "..." : myOlympiads.length}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Total Olympiads
-                    </div>
-                  </div>
+
+        if (field === "maxScore") {
+            const totalMaxScore = updated[classTypeIndex].questions.reduce(
+                (sum: number, question: any) => {
+                    const score = Number(question.maxScore) || 0;
+                    return sum + score;
+                },
+                0,
+            );
+            updated[classTypeIndex].maxScore = totalMaxScore;
+        }
+
+        setClassTypes(updated);
+    };
+
+    const handleExportData = () => {
+        // Handle export data functionality
+        console.log("Exporting data...");
+        // Add your export logic here
+    };
+
+    const handleQuickCreate = () => {
+        // Handle quick create functionality
+        console.log("Quick create...");
+        setActiveTab("create");
+        // You could also reset form to default values for quick create
+    };
+
+    const handleExportResults = (olympiadId: string) => {
+        // Handle export results functionality
+        console.log("Exporting results for olympiad:", olympiadId);
+        // Add your export logic here
+    };
+
+    const handleViewResults = (olympiadId: string) => {
+        // Handle view results functionality
+        console.log("Viewing results for olympiad:", olympiadId);
+        // Add your view results logic here
+    };
+
+    // StaggeredMenu configuration
+    const menuItems = [
+        { label: "Profile", ariaLabel: "View host profile", link: "#profile" },
+        { label: "Create Olympiad", ariaLabel: "Create new olympiad", link: "#create" },
+        { label: "Manage Olympiads", ariaLabel: "Manage existing olympiads", link: "#manage" },
+        { label: "Manage Results", ariaLabel: "Manage olympiad results", link: "#results" },
+    ];
+
+    const socialItems: any[] = [];
+
+    // Handle menu item clicks to switch tabs
+    const handleMenuClick = (link: string) => {
+        switch (link) {
+            case "#profile":
+                setActiveTab("profile");
+                break;
+            case "#create":
+                setActiveTab("create");
+                break;
+            case "#manage":
+                setActiveTab("manage");
+                break;
+            case "#results":
+                setActiveTab("results");
+                break;
+            default:
+                break;
+        }
+    };
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case "profile":
+                return (
+                    <HostProfile
+                        organizerId={ORGANIZER_ID}
+                        onNavigateToManage={() => setActiveTab("manage")}
+                    />
+                );
+            case "create":
+                return (
+                    <OlympiadForm
+                        formData={formData}
+                        classTypes={classTypes}
+                        editingOlympiad={editingOlympiad}
+                        onSubmit={handleSubmit}
+                        onUpdateFormData={updateFormData}
+                        onUpdateClassType={updateClassType}
+                        onAddClassType={addClassType}
+                        onRemoveClassType={removeClassType}
+                        onAddQuestion={addQuestion}
+                        onRemoveQuestion={removeQuestion}
+                        onUpdateQuestion={updateQuestion}
+                        onResetForm={resetForm}
+                        isSubmitting={isSubmitting}
+                        onRefetch={refetch}
+                    />
+                );
+            case "manage":
+                return (
+                    <ManageOlympiads
+                        organizerId={ORGANIZER_ID}
+                        olympiads={myOlympiads}
+                        onRefetch={refetch}
+                    />
+                );
+            case "results":
+                return (
+                    <ManageResults
+                        olympiads={myOlympiads}
+                        onExportResults={handleExportResults}
+                        onViewResults={handleViewResults}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <>
+            <div className="min-h-screen relative bg-white">
+                {/* Notebook Paper Background */}
+                <div className="absolute inset-0 bg-white"></div>
+                <div
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
+                        `,
+                        backgroundSize: '20px 20px',
+                        backgroundPosition: '0 0, 0 0'
+                    }}
+                ></div>
+                <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, #d1d5db 1px, transparent 1px)
+                        `,
+                        backgroundSize: '80px 100%',
+                        backgroundPosition: '0 0'
+                    }}
+                ></div>
+
+                {/* StaggeredMenu Navigation */}
+                <StaggeredMenu
+                    position="left"
+                    items={menuItems}
+                    socialItems={socialItems}
+                    displaySocials={false}
+                    displayItemNumbering={true}
+                    menuButtonColor="#ff8400"
+                    openMenuButtonColor="#ffffff"
+                    changeMenuColorOnOpen={true}
+                    colors={["var(--card)", "var(--card)"]}
+                    accentColor="#ff8400"
+                    onMenuOpen={() => console.log("Host menu opened")}
+                    onMenuClose={() => console.log("Host menu closed")}
+                    onMenuItemClick={handleMenuClick}
+                />
+
+                {/* Original HostSidebar (hidden but kept for reference) */}
+                <div className="hidden">
+                    <HostSidebar
+                        activeTab={activeTab as "create" | "manage" | "results"}
+                        onTabChange={setActiveTab as (tab: "create" | "manage" | "results") => void}
+                        onExportData={handleExportData}
+                        onQuickCreate={handleQuickCreate}
+                        olympiadCount={myOlympiads.length}
+                    />
+
                 </div>
               </div>
 
@@ -492,8 +638,62 @@ const HostPage = () => {
                         : myOlympiads.filter((o) => o.status === "OPEN").length}
                     </div>
 
-                    <div className="text-sm text-muted-foreground">
-                      Active Competitions
+                {/* Main content with left margin for left-positioned StaggeredMenu */}
+                <div className="w-full pl-20 relative z-10">
+                    <div className="max-w-7xl mx-auto p-8">
+                        {/* Header */}
+                        <div className="mb-8 bg-white rounded-2xl p-6 border border-gray-200 relative overflow-hidden"
+                        >
+                            <div className="flex items-center space-x-4 mb-4 pl-8">
+                                <span className="text-muted-foreground">Home</span>
+                                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                                <span className="text-foreground font-medium">
+                                    {activeTab === "profile" && "Profile"}
+                                    {activeTab === "create" && "Create Olympiad"}
+                                    {activeTab === "manage" && "Manage Olympiads"}
+                                    {activeTab === "results" && "Manage Results"}
+                                </span>
+                            </div>
+
+                            <h1 className="text-4xl font-bold mb-2 text-black pl-8">
+                                {activeTab === "profile" && "Profile"}
+                                {activeTab === "create" && "Create Olympiad"}
+                                {activeTab === "manage" && "Manage Olympiads"}
+                                {activeTab === "results" && "Manage Results"}
+                            </h1>
+                            <p className="text-lg text-muted-foreground pl-8">
+                                {activeTab === "profile" && "View and manage your host organization profile"}
+                                {activeTab === "create" && "Create and submit new olympiad requests for approval"}
+                                {activeTab === "manage" && "View, edit, and manage your existing olympiads"}
+                                {activeTab === "results" && "View, export, and manage results for your olympiads"}
+                            </p>
+                        </div>
+
+                        {/* Error Display */}
+                        {organizerError && (
+                            <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                                <p className="text-destructive text-sm">
+                                    Error loading data: {organizerError.message}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Content */}
+                        <div className="relative h-screen w-full">
+                            {organizerLoading ? (
+                                <div className="flex items-center justify-center py-12 w-full h-full">
+                                    <div className="text-center w-full h-full">
+                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                                        <p className="text-muted-foreground">Loading olympiads...</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                renderContent()
+                            )}
+                        </div>
+
                     </div>
                   </div>
                 </div>
