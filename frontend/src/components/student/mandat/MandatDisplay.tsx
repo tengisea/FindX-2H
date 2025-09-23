@@ -77,6 +77,10 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
     if (mandats.length > 0) {
       // eslint-disable-next-line no-console
       console.log("MandatDisplay - First mandat data:", mandats[0]);
+      // eslint-disable-next-line no-console
+      console.log("MandatDisplay - Organizer name:", mandats[0].organizerName);
+      // eslint-disable-next-line no-console
+      console.log("MandatDisplay - Organizer logo:", mandats[0].organizerLogo);
     }
   }, [mandats]);
 
@@ -238,7 +242,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
                         {mandat.olympiadName}
                       </CardTitle>
                       <p className="text-base text-gray-600 font-medium">
-                        {mandat.organizerName}
+                        {mandat.organizerName || "Organizer not specified"}
                       </p>
                     </div>
                     <div className="text-right">
@@ -405,9 +409,7 @@ export default function MandatDisplay({ studentId }: MandatDisplayProps) {
 
             {/* Footer */}
             <div className="px-4 py-3 border-t border-gray-200">
-              <p className="text-xs text-black m-0">
-                © 2025 FindX
-              </p>
+              <p className="text-xs text-black m-0">© 2025 FindX</p>
             </div>
           </div>
         </div>

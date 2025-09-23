@@ -708,19 +708,7 @@ function FallbackCertificate(props: Props) {
           >
             Demonstrated exceptional skill and dedication in achieving
             outstanding results
-            {score && (
-              <div
-                style={{
-                  marginTop: "6px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  color: rankColor,
-                  textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
-                }}
-              >
-                Score: {score}/{maxScore}
-              </div>
-            )}
+           
             {category && (
               <div style={{ marginTop: "4px" }}>Category: {category}</div>
             )}

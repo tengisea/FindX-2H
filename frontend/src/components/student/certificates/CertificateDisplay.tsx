@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
-import { gql } from "@apollo/client";
+import { useQuery, gql } from "@apollo/client";
 import Mandat3D from "../mandat/Mandat3D";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

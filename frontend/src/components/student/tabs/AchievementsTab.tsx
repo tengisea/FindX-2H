@@ -172,6 +172,7 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
   const [selectedCertificate, setSelectedCertificate] = useState<{
     olympiadId: string;
     medalType: "gold" | "silver" | "bronze";
+    olympiadDetails: any;
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const certificateRef = useRef<HTMLDivElement>(null);
@@ -210,22 +211,10 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
       if (olympiad.organizer?.organizationName) {
         organizationName = olympiad.organizer.organizationName;
       }
-      // Check if organizer has a name field
-      else if (olympiad.organizer?.name) {
-        organizationName = olympiad.organizer.name;
-      }
-      // Check if there's a direct organizer field
-      else if (olympiad.organizerName) {
-        organizationName = olympiad.organizerName;
-      }
-      // Check if there's an organization field
-      else if (olympiad.organization) {
-        organizationName = olympiad.organization;
-      }
       // Try to find in organizers data by ID
       else if (olympiad.organizer?.id) {
         const organizer = organizersData?.getAllOrganizers?.find(
-          (org: any) => org.id === olympiad.organizer.id
+          (org: any) => org.id === olympiad.organizer?.id
         );
         if (organizer?.organizationName) {
           organizationName = organizer.organizationName;
@@ -689,9 +678,12 @@ const AchievementsTab = ({ studentId }: AchievementsTabProps) => {
                 data-certificate-container
                 ref={certificateRef}
               >
-                {getCertificateData(selectedCertificate) && (
-                  <Certificate {...getCertificateData(selectedCertificate)!} />
-                )}
+                {selectedCertificate &&
+                  getCertificateData(selectedCertificate) && (
+                    <Certificate
+                      {...getCertificateData(selectedCertificate)!}
+                    />
+                  )}
               </div>
             </motion.div>
           </motion.div>
