@@ -19,7 +19,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Tooltip,
-  Filler,
+  Filler
 );
 
 interface RankingHistory {
@@ -58,7 +58,7 @@ const RankingChart: React.FC<RankingChartProps> = ({
     }
 
     const sortedHistory = [...rankingHistory].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
     const labels = ["Initial"];
     const data = [sortedHistory[0]?.changedBy || currentRanking];
@@ -120,7 +120,7 @@ const RankingChart: React.FC<RankingChartProps> = ({
             if (index > 0 && rankingHistory?.length) {
               const sortedHistory = [...rankingHistory].sort(
                 (a, b) =>
-                  new Date(a.date).getTime() - new Date(b.date).getTime(),
+                  new Date(a.date).getTime() - new Date(b.date).getTime()
               );
               const entry = sortedHistory[index - 1];
               if (entry) {
@@ -172,11 +172,11 @@ const RankingChart: React.FC<RankingChartProps> = ({
 
   if (!rankingHistory?.length) {
     return (
-      <div className="h-56 flex items-center justify-center bg-muted rounded-lg">
-        <div className="text-center text-muted-foreground">
-          <div className="w-14 h-14 bg-muted-foreground/20 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="h-56 flex items-center justify-center bg-gray-100 rounded-lg">
+        <div className="text-center text-gray-600">
+          <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-6 h-6 text-muted-foreground"
+              className="w-6 h-6 text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -189,10 +189,10 @@ const RankingChart: React.FC<RankingChartProps> = ({
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
             No Ranking History
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-600">
             Your ranking history will appear here once you participate in
             olympiads.
           </p>

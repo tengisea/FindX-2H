@@ -20,11 +20,11 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
 
   if (loading) {
     return (
-      <Card className={className}>
+      <Card className={`bg-white border border-gray-200 ${className}`}>
         <CardContent className="p-6">
           <div className="animate-pulse">
-            <div className="h-6 rounded w-1/3 mb-2 bg-muted"></div>
-            <div className="h-4 rounded w-1/2 bg-muted"></div>
+            <div className="h-6 rounded w-1/3 mb-2 bg-gray-200"></div>
+            <div className="h-4 rounded w-1/2 bg-gray-200"></div>
           </div>
         </CardContent>
       </Card>
@@ -33,12 +33,10 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
 
   if (error) {
     return (
-      <Card className={`border-destructive/20 bg-destructive/10 ${className}`}>
+      <Card className={`border-red-200 bg-red-50 ${className}`}>
         <CardContent className="p-6">
-          <p className="text-destructive text-center">
-            Error loading ranking data
-          </p>
-          <p className="text-xs text-destructive/70 text-center mt-2">
+          <p className="text-red-600 text-center">Error loading ranking data</p>
+          <p className="text-sm text-red-600/70 text-center mt-2">
             {error.message || "Please try again later"}
           </p>
         </CardContent>
@@ -48,11 +46,9 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
 
   if (!currentStudent || currentStudentRank === null) {
     return (
-      <Card className={className}>
+      <Card className={`bg-white border border-gray-200 ${className}`}>
         <CardContent className="p-6">
-          <p className="text-muted-foreground text-center">
-            No ranking data available
-          </p>
+          <p className="text-gray-600 text-center">No ranking data available</p>
         </CardContent>
       </Card>
     );
@@ -76,7 +72,7 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
         bg: "bg-green-500/10",
       };
     if (percentage <= 25)
-      return { text: "Top 25%", color: "text-primary", bg: "bg-primary/10" };
+      return { text: "Top 25%", color: "text-orange-600", bg: "bg-orange-100" };
     if (percentage <= 50)
       return {
         text: "Top 50%",
@@ -85,8 +81,8 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
       };
     return {
       text: "Keep improving!",
-      color: "text-muted-foreground",
-      bg: "bg-muted/10",
+      color: "text-gray-600",
+      bg: "bg-gray-200/10",
     };
   };
 
@@ -94,28 +90,28 @@ const StudentRankingDisplay: React.FC<StudentRankingDisplayProps> = ({
 
   return (
     <Card
-      className={`hover:shadow-lg transition-shadow duration-200 ${className}`}
+      className={`bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-200 ${className}`}
     >
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground mb-1">
+            <p className="text-base font-medium text-gray-600 mb-1">
               Current Ranking
             </p>
-            <p className="text-3xl font-bold text-primary">
+            <p className="text-3xl font-bold text-orange-600">
               #{currentStudentRank}
             </p>
             {showDetails && (
               <p
-                className={`text-xs mt-1 px-2 py-1 rounded-full inline-block ${rankingStatus.bg} ${rankingStatus.color}`}
+                className={`text-sm mt-1 px-2 py-1 rounded-full inline-block ${rankingStatus.bg} ${rankingStatus.color}`}
               >
                 {rankingStatus.text}
               </p>
             )}
           </div>
-          <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-primary/10">
+          <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-orange-100">
             <svg
-              className="w-7 h-7 text-primary"
+              className="w-7 h-7 text-orange-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

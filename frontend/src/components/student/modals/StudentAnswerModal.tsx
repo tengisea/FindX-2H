@@ -73,27 +73,25 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
 
         {/* Modal */}
         <motion.div
-          className="relative bg-card rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-border"
+          className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-200"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
         >
           {/* Header */}
-          <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-border p-6 rounded-t-3xl">
+          <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 p-6 rounded-t-3xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-primary" />
+                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-foreground">
+                  <h2 className="text-2xl font-bold text-gray-800">
                     Answer Details
                   </h2>
                   {studentName && (
-                    <p className="text-sm text-muted-foreground">
-                      {studentName}
-                    </p>
+                    <p className="text-base text-gray-600">{studentName}</p>
                   )}
                 </div>
               </div>
@@ -101,9 +99,9 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
               >
-                <X className="w-4 h-4 text-muted-foreground" />
+                <X className="w-4 h-4 text-gray-600" />
               </motion.button>
             </div>
           </div>
@@ -113,73 +111,75 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
             {loading ? (
               <div className="space-y-4">
                 <div className="animate-pulse">
-                  <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-muted rounded w-1/2 mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
                 </div>
                 <div className="animate-pulse space-y-3">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-20 bg-muted rounded-lg"></div>
+                    <div key={i} className="h-20 bg-gray-200 rounded-lg"></div>
                   ))}
                 </div>
               </div>
             ) : error ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
-                  <X className="w-8 h-8 text-destructive" />
+                <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                  <X className="w-8 h-8 text-red-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   Error Loading Answer
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-gray-600">
                   {error.message || "Failed to load answer details"}
                 </p>
               </div>
             ) : !studentAnswer ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-8 h-8 text-muted-foreground" />
+                <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-gray-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   No Answer Found
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-gray-600">
                   The requested answer could not be found.
                 </p>
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Answer Summary */}
-                <Card>
+                <Card className="bg-white border border-gray-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <Trophy className="w-5 h-5 text-primary" />
+                    <CardTitle className="flex items-center space-x-2 text-gray-800">
+                      <Trophy className="w-5 h-5 text-orange-600" />
                       <span>Answer Summary</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="text-center p-4 bg-primary/10 rounded-lg">
-                        <div className="text-2xl font-bold text-primary">
+                      <div className="text-center p-4 bg-orange-100 rounded-lg">
+                        <div className="text-2xl font-bold text-orange-600">
                           {studentAnswer.totalScoreofOlympiad || 0}
                         </div>
-                        <div className="text-sm text-primary">Total Score</div>
+                        <div className="text-base text-orange-600">
+                          Total Score
+                        </div>
                       </div>
                       <div className="text-center p-4 bg-blue-500/10 rounded-lg">
                         <div className="text-2xl font-bold text-blue-500">
                           {studentAnswer.answers?.length || 0}
                         </div>
-                        <div className="text-sm text-blue-500">Questions</div>
+                        <div className="text-base text-blue-500">Questions</div>
                       </div>
                       <div className="text-center p-4 bg-green-500/10 rounded-lg">
                         <div className="text-2xl font-bold text-green-500">
                           {studentAnswer.mandatNumber}
                         </div>
-                        <div className="text-sm text-green-500">
+                        <div className="text-base text-green-500">
                           Mandat Number
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
+                    <div className="mt-4 flex items-center space-x-4 text-base text-gray-600">
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-4 h-4" />
                         <span>
@@ -200,10 +200,10 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
 
                 {/* Submitted Images */}
                 {studentAnswer.image && studentAnswer.image.length > 0 && (
-                  <Card>
+                  <Card className="bg-white border border-gray-200">
                     <CardHeader>
-                      <CardTitle className="flex items-center space-x-2">
-                        <ImageIcon className="w-5 h-5 text-primary" />
+                      <CardTitle className="flex items-center space-x-2 text-gray-800">
+                        <ImageIcon className="w-5 h-5 text-orange-600" />
                         <span>Submitted Images</span>
                       </CardTitle>
                     </CardHeader>
@@ -220,7 +220,7 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                             <img
                               src={imageUrl}
                               alt={`Submission ${index + 1}`}
-                              className="w-full h-auto rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                              className="w-full h-auto rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                               onError={(e) => {
                                 e.currentTarget.style.display = "none";
                                 const nextElement = e.currentTarget
@@ -230,10 +230,10 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                                 }
                               }}
                             />
-                            <div className="hidden w-full h-32 bg-muted rounded-lg border border-border items-center justify-center text-muted-foreground text-sm">
+                            <div className="hidden w-full h-32 bg-gray-200 rounded-lg border border-gray-200 items-center justify-center text-gray-600 text-base">
                               Image could not be loaded
                             </div>
-                            <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                            <div className="absolute top-2 right-2 bg-gray-800/80 text-white text-sm px-2 py-1 rounded">
                               {index + 1}
                             </div>
                           </motion.div>
@@ -245,10 +245,10 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
 
                 {/* Individual Answers */}
                 {studentAnswer.answers && studentAnswer.answers.length > 0 && (
-                  <Card>
+                  <Card className="bg-white border border-gray-200">
                     <CardHeader>
-                      <CardTitle className="flex items-center space-x-2">
-                        <FileText className="w-5 h-5 text-primary" />
+                      <CardTitle className="flex items-center space-x-2 text-gray-800">
+                        <FileText className="w-5 h-5 text-orange-600" />
                         <span>Question Answers</span>
                       </CardTitle>
                     </CardHeader>
@@ -260,35 +260,35 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-muted/30 rounded-lg p-4 border border-border"
+                            className="bg-gray-200/30 rounded-lg p-4 border border-gray-200"
                           >
                             <div className="flex justify-between items-start mb-3">
                               <div className="flex items-center space-x-2">
-                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                  <span className="text-sm font-bold text-primary">
+                                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                                  <span className="text-base font-bold text-orange-600">
                                     {index + 1}
                                   </span>
                                 </div>
-                                <span className="font-semibold text-foreground">
+                                <span className="font-semibold text-gray-800">
                                   Question {index + 1}
                                 </span>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <span className="text-sm text-muted-foreground">
+                                <span className="text-base text-gray-600">
                                   Score:
                                 </span>
-                                <span className="text-lg font-bold text-primary">
+                                <span className="text-lg font-bold text-orange-600">
                                   {answer.score || 0} points
                                 </span>
                               </div>
                             </div>
                             {answer.description && (
                               <div className="mt-3">
-                                <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                                <h4 className="text-base font-medium text-gray-600 mb-2">
                                   Description:
                                 </h4>
-                                <div className="bg-background rounded-lg p-3 border border-border">
-                                  <p className="text-foreground whitespace-pre-wrap">
+                                <div className="bg-white rounded-lg p-3 border border-gray-200">
+                                  <p className="text-gray-800 whitespace-pre-wrap">
                                     {answer.description}
                                   </p>
                                 </div>
@@ -306,15 +306,15 @@ const StudentAnswerModal: React.FC<StudentAnswerModalProps> = ({
                   studentAnswer.answers.length === 0) &&
                   (!studentAnswer.image ||
                     studentAnswer.image.length === 0) && (
-                    <Card>
+                    <Card className="bg-white border border-gray-200">
                       <CardContent className="text-center py-8">
-                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                          <FileText className="w-8 h-8 text-muted-foreground" />
+                        <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
+                          <FileText className="w-8 h-8 text-gray-600" />
                         </div>
-                        <h3 className="text-lg font-semibold text-foreground mb-2">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
                           No Detailed Answers
                         </h3>
-                        <p className="text-muted-foreground">
+                        <p className="text-gray-600">
                           No detailed answers or images are available for this
                           submission.
                         </p>

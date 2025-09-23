@@ -3,7 +3,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatClassYear, safeFormatDate } from "@/lib/dateUtils";
-import { useClassTypeQuery, useAllOlympiadsQuery } from "@/generated";
+import { useAllOlympiadsQuery } from "@/generated";
 import { RankingChart } from "@/components/student/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StudentAnswerModal from "@/components/student/modals/StudentAnswerModal";
@@ -18,34 +18,42 @@ interface ResultsTabProps {
 const ClassTypeGrade = ({
   classTypeId,
   onMaxScoreChange,
+  olympiadsData,
 }: {
   classTypeId: string;
   onMaxScoreChange?: (maxScore: number) => void;
+  olympiadsData?: any;
 }) => {
-  const { data, loading } = useClassTypeQuery({
-    variables: { classTypeId },
-    skip: !classTypeId,
-  });
-
   const hasNotifiedRef = useRef(false);
+
+  // Find the class type data from olympiads data
+  const classTypeData = React.useMemo(() => {
+    if (!olympiadsData?.allOlympiads || !classTypeId) return null;
+
+    for (const olympiad of olympiadsData.allOlympiads) {
+      const classType = olympiad.classtypes?.find(
+        (ct: any) => ct.id === classTypeId
+      );
+      if (classType) {
+        return classType;
+      }
+    }
+    return null;
+  }, [olympiadsData, classTypeId]);
 
   // Notify parent component of maxScore when data is available (only once)
   React.useEffect(() => {
     if (
-      data?.classType?.maxScore &&
+      classTypeData?.maxScore &&
       onMaxScoreChange &&
       !hasNotifiedRef.current
     ) {
-      onMaxScoreChange(data.classType.maxScore);
+      onMaxScoreChange(classTypeData.maxScore);
       hasNotifiedRef.current = true;
     }
-  }, [data?.classType?.maxScore, onMaxScoreChange]);
+  }, [classTypeData?.maxScore, onMaxScoreChange]);
 
-  if (loading) {
-    return <span className="ml-2 font-semibold text-gray-400">Loading...</span>;
-  }
-
-  if (!data?.classType) {
+  if (!classTypeData) {
     return (
       <span className="ml-2 font-semibold text-gray-500">Unknown Grade</span>
     );
@@ -53,7 +61,7 @@ const ClassTypeGrade = ({
 
   return (
     <span className="ml-2 font-semibold">
-      {formatClassYear(data.classType.classYear)}
+      {formatClassYear(classTypeData.classYear)}
     </span>
   );
 };
@@ -68,6 +76,42 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
 
   // Get olympiads data to find olympiad names
   const { data: olympiadsData } = useAllOlympiadsQuery();
+
+  // Initialize maxScores with actual data from olympiad class types
+  React.useEffect(() => {
+    if (olympiadsData?.allOlympiads && studentAnswers) {
+      const initialMaxScores: Record<string, number> = {};
+
+      // Get all unique classTypeIds from student answers
+      const classTypeIds = new Set<string>();
+      studentAnswers.forEach((answer: any) => {
+        if (answer.classTypeId) {
+          classTypeIds.add(answer.classTypeId);
+        }
+      });
+
+      // Find the maxScore for each classTypeId from olympiad data
+      classTypeIds.forEach((classTypeId) => {
+        const olympiad = olympiadsData.allOlympiads.find((olympiad) =>
+          olympiad.classtypes?.some((classType) => classType.id === classTypeId)
+        );
+
+        if (olympiad) {
+          const classType = olympiad.classtypes?.find(
+            (ct) => ct.id === classTypeId
+          );
+          if (classType?.maxScore) {
+            initialMaxScores[classTypeId] = classType.maxScore;
+          }
+        }
+      });
+
+      // Only update if we have new data
+      if (Object.keys(initialMaxScores).length > 0) {
+        setMaxScores(initialMaxScores);
+      }
+    }
+  }, [olympiadsData, studentAnswers]);
 
   // Helper function to get olympiad name from classTypeId
   const getOlympiadName = (classTypeId: string) => {
@@ -109,58 +153,58 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
 
   return (
     <div className="content-wrapper container">
-      <h2 className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
+      <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
         Results & Performance
       </h2>
 
       <div className="space-y-8">
         {/* Performance Overview */}
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardHeader>
-            <CardTitle className="text-center text-foreground text-2xl">
+            <CardTitle className="text-center text-gray-800 text-2xl">
               Performance Overview
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-3xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">
                   {student?.ranking + " points" || "N/A"}
                 </div>
-                <div className="text-base text-primary">Current Ranking</div>
+                <div className="text-base text-orange-600">Current Ranking</div>
               </div>
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-3xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">
                   {Array.isArray(student?.gold) ? student.gold.length : 0}
                 </div>
-                <div className="text-base text-primary">Gold Medals</div>
+                <div className="text-base text-orange-600">Gold Medals</div>
               </div>
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-3xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">
                   {Array.isArray(student?.silver) ? student.silver.length : 0}
                 </div>
-                <div className="text-base text-primary">Silver Medals</div>
+                <div className="text-base text-orange-600">Silver Medals</div>
               </div>
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-3xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">
                   {Array.isArray(student?.bronze) ? student.bronze.length : 0}
                 </div>
-                <div className="text-base text-primary">Bronze Medals</div>
+                <div className="text-base text-orange-600">Bronze Medals</div>
               </div>
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-3xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-3xl font-bold text-orange-600">
                   {Array.isArray(student?.top10) ? student.top10.length : 0}
                 </div>
-                <div className="text-base text-primary">Top 10 Finishes</div>
+                <div className="text-base text-orange-600">Top 10 Finishes</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Recent Results */}
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardHeader>
-            <CardTitle className="text-center text-foreground text-2xl">
+            <CardTitle className="text-center text-gray-800 text-2xl">
               Recent Results
             </CardTitle>
           </CardHeader>
@@ -170,7 +214,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="border border-gray-200 rounded-lg p-4"
+                    className="border border-gray-200 rounded-lg p-4 bg-gray-50"
                   >
                     <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                     <div className="h-3 bg-gray-200 rounded w-1/2"></div>
@@ -190,20 +234,20 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                   return (
                     <Card
                       key={studentAnswer.id}
-                      className="hover:shadow-lg transition-shadow duration-200"
+                      className="bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-200"
                     >
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div>
-                            <h4 className="font-semibold text-foreground">
+                            <h4 className="font-semibold text-gray-800">
                               {getOlympiadName(studentAnswer.classTypeId)}
                             </h4>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-base text-gray-600">
                               {safeFormatDate(studentAnswer.createdAt)}
                             </p>
                           </div>
                           <div
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            className={`px-3 py-1 rounded-full text-base font-semibold ${
                               percentage >= 90
                                 ? "bg-green-100 text-green-800"
                                 : percentage >= 80
@@ -223,37 +267,30 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-base">
                           <div>
-                            <span className="text-muted-foreground">
-                              Score:
-                            </span>
-                            <span className="ml-2 font-semibold text-foreground">
+                            <span className="text-gray-600">Score:</span>
+                            <span className="ml-2 font-semibold text-gray-800">
                               {totalScore}/{maxScore}
                             </span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">
-                              Questions:
-                            </span>
-                            <span className="ml-2 font-semibold text-foreground">
+                            <span className="text-gray-600">Questions:</span>
+                            <span className="ml-2 font-semibold text-gray-800">
                               {studentAnswer.answers?.length || 0}
                             </span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">
-                              Percentage:
-                            </span>
-                            <span className="ml-2 font-semibold text-foreground">
+                            <span className="text-gray-600">Percentage:</span>
+                            <span className="ml-2 font-semibold text-gray-800">
                               {percentage}%
                             </span>
                           </div>
                           <div>
-                            <span className="text-muted-foreground">
-                              Grade:
-                            </span>
+                            <span className="text-gray-600">Grade:</span>
                             <ClassTypeGrade
                               classTypeId={studentAnswer.classTypeId}
+                              olympiadsData={olympiadsData}
                               onMaxScoreChange={(maxScore) =>
                                 handleMaxScoreChange(
                                   studentAnswer.classTypeId,
@@ -266,20 +303,20 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
 
                         {/* Progress Bar */}
                         <div className="mt-3">
-                          <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                          <div className="flex justify-between text-sm text-gray-600 mb-1">
                             <span>Performance</span>
                             <span>{percentage}%</span>
                           </div>
-                          <div className="w-full bg-muted rounded-full h-2">
+                          <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
                               className={`h-2 rounded-full ${
                                 percentage >= 90
                                   ? "bg-green-500"
                                   : percentage >= 80
-                                  ? "bg-primary"
+                                  ? "bg-orange-500"
                                   : percentage >= 70
                                   ? "bg-yellow-500"
-                                  : "bg-destructive"
+                                  : "bg-red-500"
                               }`}
                               style={{
                                 width: `${percentage}%`,
@@ -289,7 +326,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="mt-4 pt-4 border-t border-border">
+                        <div className="mt-4 pt-4 border-t border-gray-200">
                           <div className="flex space-x-3">
                             <motion.button
                               onClick={() =>
@@ -322,7 +359,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                             </motion.button>
                             <motion.button
                               onClick={() => toggleExpanded(studentAnswer.id)}
-                              className="px-4 py-2 bg-muted text-muted-foreground rounded-lg font-medium hover:bg-muted/80 transition-colors duration-200 flex items-center justify-center space-x-2"
+                              className="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg font-medium hover:bg-gray-300 transition-colors duration-200 flex items-center justify-center space-x-2"
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                             >
@@ -380,14 +417,14 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                       animate={{ opacity: 1, y: 0 }}
                                       transition={{ delay: 0.1, duration: 0.3 }}
                                     >
-                                      <h5 className="text-sm font-semibold text-foreground mb-2">
+                                      <h5 className="text-base font-semibold text-gray-800 mb-2">
                                         Submitted Image
                                       </h5>
                                       <div className="relative">
                                         <img
                                           src={studentAnswer.image}
                                           alt="Student submission"
-                                          className="w-full max-w-md h-auto rounded-lg border border-border shadow-sm"
+                                          className="w-full max-w-md h-auto rounded-lg border border-gray-200 shadow-sm"
                                           onError={(e) => {
                                             e.currentTarget.style.display =
                                               "none";
@@ -399,7 +436,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                             }
                                           }}
                                         />
-                                        <div className="hidden w-full max-w-md h-32 bg-muted rounded-lg border border-border items-center justify-center text-muted-foreground text-sm">
+                                        <div className="hidden w-full max-w-md h-32 bg-gray-100 rounded-lg border border-gray-200 items-center justify-center text-gray-600 text-base">
                                           Image could not be loaded
                                         </div>
                                       </div>
@@ -417,7 +454,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                           duration: 0.3,
                                         }}
                                       >
-                                        <h5 className="text-sm font-semibold text-foreground mb-3">
+                                        <h5 className="text-base font-semibold text-gray-800 mb-3">
                                           Question Answers
                                         </h5>
                                         <div className="space-y-3">
@@ -425,7 +462,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                             (answer: any, index: number) => (
                                               <motion.div
                                                 key={answer.questionId || index}
-                                                className="bg-muted/30 rounded-lg p-3 border border-border"
+                                                className="bg-gray-50 rounded-lg p-3 border border-gray-200"
                                                 initial={{ opacity: 0, x: -20 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 transition={{
@@ -434,15 +471,15 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                                 }}
                                               >
                                                 <div className="flex justify-between items-start mb-2">
-                                                  <span className="text-sm font-medium text-muted-foreground">
+                                                  <span className="text-base font-medium text-gray-600">
                                                     Question {index + 1}
                                                   </span>
-                                                  <span className="text-sm font-semibold text-primary">
+                                                  <span className="text-base font-semibold text-orange-600">
                                                     {answer.score || 0} points
                                                   </span>
                                                 </div>
                                                 {answer.description && (
-                                                  <p className="text-sm text-foreground whitespace-pre-wrap">
+                                                  <p className="text-base text-gray-800 whitespace-pre-wrap">
                                                     {answer.description}
                                                   </p>
                                                 )}
@@ -458,7 +495,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                                     studentAnswer.answers.length === 0) &&
                                     !studentAnswer.image && (
                                       <motion.div
-                                        className="text-center py-4 text-muted-foreground text-sm"
+                                        className="text-center py-4 text-gray-600 text-base"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{
@@ -483,7 +520,7 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
             ) : (
               <div className="text-center py-8">
                 <svg
-                  className="w-16 h-16 text-muted-foreground mx-auto mb-4"
+                  className="w-16 h-16 text-gray-500 mx-auto mb-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -495,10 +532,10 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                   />
                 </svg>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   No Results Yet
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-gray-600">
                   You haven&apos;t completed any olympiads yet. Results will
                   appear here once you participate in olympiads.
                 </p>
@@ -508,12 +545,12 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
         </Card>
 
         {/* Ranking Trend Chart */}
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardHeader>
-            <CardTitle className="text-center text-foreground text-2xl">
+            <CardTitle className="text-center text-gray-800 text-2xl">
               Ranking Trend
             </CardTitle>
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-base text-gray-600 text-center">
               Track your ranking progress over time
             </p>
           </CardHeader>
@@ -525,15 +562,15 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
 
             {/* Ranking Summary */}
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl font-bold text-orange-600">
                   {student?.ranking || 0}
                 </div>
-                <div className="text-sm text-primary">Current Ranking</div>
+                <div className="text-base text-orange-600">Current Ranking</div>
               </div>
 
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl font-bold text-orange-600">
                   {student?.rankingHistory && student.rankingHistory.length > 0
                     ? (() => {
                         const lastEntry =
@@ -549,14 +586,14 @@ const ResultsTab = ({ student, studentAnswers, loading }: ResultsTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-sm text-primary">Last Change</div>
+                <div className="text-base text-orange-600">Last Change</div>
               </div>
 
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl font-bold text-orange-600">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-sm text-primary">
+                <div className="text-base text-orange-600">
                   Olympiads Participated
                 </div>
               </div>

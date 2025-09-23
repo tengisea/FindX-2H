@@ -10,6 +10,7 @@ interface Props {
   rank: "gold" | "silver" | "bronze";
   rankLabel: string;
   score?: number;
+  maxScore?: number;
   category?: string;
   completionTime?: string;
   certificateId?: string;
@@ -36,6 +37,7 @@ function CardMesh({
   rank,
   rankLabel,
   score = 98,
+  maxScore = 100,
   category = "Mathematics - Algebra",
   completionTime = "45 minutes",
   certificateId,
@@ -63,33 +65,33 @@ function CardMesh({
         ref.current.rotation.y = THREE.MathUtils.lerp(
           ref.current.rotation.y,
           Math.sin(time * 0.8) * 0.15 + Math.cos(time * 0.3) * 0.05,
-          3 * delta,
+          3 * delta
         );
         ref.current.rotation.x = THREE.MathUtils.lerp(
           ref.current.rotation.x,
           Math.sin(time * 0.6) * 0.05,
-          2 * delta,
+          2 * delta
         );
         ref.current.rotation.z = THREE.MathUtils.lerp(
           ref.current.rotation.z,
           Math.sin(time * 0.4) * 0.02,
-          1.5 * delta,
+          1.5 * delta
         );
       } else {
         ref.current.rotation.y = THREE.MathUtils.lerp(
           ref.current.rotation.y,
           0,
-          2 * delta,
+          2 * delta
         );
         ref.current.rotation.x = THREE.MathUtils.lerp(
           ref.current.rotation.x,
           0,
-          2 * delta,
+          2 * delta
         );
         ref.current.rotation.z = THREE.MathUtils.lerp(
           ref.current.rotation.z,
           0,
-          1.5 * delta,
+          1.5 * delta
         );
       }
 
@@ -98,7 +100,7 @@ function CardMesh({
       const currentScale = THREE.MathUtils.lerp(
         ref.current.scale.x,
         targetScale,
-        3 * delta,
+        3 * delta
       );
       ref.current.scale.setScalar(currentScale);
 
@@ -111,7 +113,7 @@ function CardMesh({
 
   const rankColor =
     rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
- 
+
   // Certificate variant styles
   const getVariantStyles = () => {
     switch (variant) {
@@ -122,7 +124,7 @@ function CardMesh({
           borderStyle: "solid",
           borderWidth: "2px",
           borderRadius: "16px",
-          textColor: "#ffffff",
+          textColor: "#1a365d",
           accentColor: "#ff6b35",
           fontFamily: "'Inter', sans-serif",
         };
@@ -133,7 +135,7 @@ function CardMesh({
           borderStyle: "solid",
           borderWidth: "2px",
           borderRadius: "12px",
-          textColor: "#ffffff",
+          textColor: "#1a365d",
           accentColor: "#ff6b35",
           fontFamily: "'Inter', sans-serif",
         };
@@ -144,7 +146,7 @@ function CardMesh({
           borderStyle: "solid",
           borderWidth: "2px",
           borderRadius: "16px",
-          textColor: "#ffffff",
+          textColor: "#1a365d",
           accentColor: "#ff6b35",
           fontFamily: "'Inter', sans-serif",
         };
@@ -403,7 +405,7 @@ function CardMesh({
                 🏆 Achievement Details
               </div>
               <div style={{ marginBottom: "6px", opacity: 0.9 }}>
-                Final Score: {score}/100
+                Final Score: {score}/{maxScore}
               </div>
               <div style={{ marginBottom: "6px", opacity: 0.9 }}>
                 Category: {category}
@@ -459,7 +461,7 @@ function FallbackCertificate(props: Props) {
 
   const rankColor =
     rank === "gold" ? "#FFD700" : rank === "silver" ? "#E5E5E5" : "#CD7F32";
-    
+
   const getVariantStyles = () => {
     switch (variant) {
       case "modern":
@@ -469,7 +471,7 @@ function FallbackCertificate(props: Props) {
           borderStyle: "solid",
           borderWidth: "2px",
           borderRadius: "16px",
-          textColor: "#ffffff",
+          textColor: "#1a365d",
           accentColor: "#ff6b35",
           fontFamily: "'Inter', sans-serif",
         };
@@ -480,7 +482,7 @@ function FallbackCertificate(props: Props) {
           borderStyle: "solid",
           borderWidth: "2px",
           borderRadius: "12px",
-          textColor: "#ffffff",
+          textColor: "#1a365d",
           accentColor: "#ff6b35",
           fontFamily: "'Inter', sans-serif",
         };
@@ -491,7 +493,7 @@ function FallbackCertificate(props: Props) {
           borderStyle: "solid",
           borderWidth: "2px",
           borderRadius: "16px",
-          textColor: "#ffffff",
+          textColor: "#1a365d",
           accentColor: "#ff6b35",
           fontFamily: "'Inter', sans-serif",
         };
@@ -716,7 +718,7 @@ function FallbackCertificate(props: Props) {
                   textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
                 }}
               >
-                Score: {score}/100
+                Score: {score}/{maxScore}
               </div>
             )}
             {category && (
@@ -901,14 +903,14 @@ export default function Certificate(props: Props) {
       const newCount = contextLossCount + 1;
       setContextLossCount(newCount);
       console.warn(
-        `WebGL context lost (${newCount} times), switching to fallback`,
+        `WebGL context lost (${newCount} times), switching to fallback`
       );
       setWebglError(true);
 
       // Force fallback after 2 context losses
       if (newCount >= 2) {
         console.warn(
-          "Multiple WebGL context losses detected, forcing 2D fallback mode",
+          "Multiple WebGL context losses detected, forcing 2D fallback mode"
         );
         localStorage.setItem("forceWebGLFallback", "true");
       }
@@ -1033,14 +1035,14 @@ export default function Certificate(props: Props) {
                 const newCount = contextLossCount + 1;
                 setContextLossCount(newCount);
                 console.warn(
-                  `WebGL context lost (${newCount} times), switching to fallback`,
+                  `WebGL context lost (${newCount} times), switching to fallback`
                 );
                 setWebglError(true);
 
                 // Force fallback after 2 context losses
                 if (newCount >= 2) {
                   console.warn(
-                    "Multiple WebGL context losses detected, forcing 2D fallback mode",
+                    "Multiple WebGL context losses detected, forcing 2D fallback mode"
                   );
                   localStorage.setItem("forceWebGLFallback", "true");
                 }

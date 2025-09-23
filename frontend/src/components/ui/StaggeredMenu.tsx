@@ -222,7 +222,7 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 >
                   <Link
                     href={item.link}
-                    className="flex items-center justify-start space-x-4 text-foreground text-2xl font-medium hover:text-muted-foreground transition-colors duration-200"
+                    className="flex items-center justify-start space-x-4 text-gray-800 text-2xl font-medium hover:text-gray-600 transition-colors duration-200"
                     aria-label={item.ariaLabel}
                     onClick={(e) => {
                       if (onMenuItemClick) {

@@ -19,17 +19,17 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
   if (loading) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
+        <h2 className="text-5xl font-bold mb-8 text-center text-gray-800">
           Profile
         </h2>
-        <div className="card p-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
           <div className="animate-pulse space-y-4">
             <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 rounded-full bg-muted"></div>
+              <div className="w-24 h-24 rounded-full bg-gray-200"></div>
               <div className="space-y-2 flex-1">
-                <div className="h-6 rounded w-1/3 bg-muted"></div>
-                <div className="h-4 rounded w-1/2 bg-muted"></div>
-                <div className="h-4 rounded w-1/4 bg-muted"></div>
+                <div className="h-6 rounded w-1/3 bg-gray-200"></div>
+                <div className="h-4 rounded w-1/2 bg-gray-200"></div>
+                <div className="h-4 rounded w-1/4 bg-gray-200"></div>
               </div>
             </div>
           </div>
@@ -41,12 +41,12 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
   if (error) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
+        <h2 className="text-5xl font-bold mb-8 text-center text-gray-800">
           Profile
         </h2>
-        <Card className="border-destructive/20 bg-destructive/10">
+        <Card className="border-red-200 bg-red-50">
           <CardContent className="p-6">
-            <p className="text-destructive text-center text-xl">
+            <p className="text-red-600 text-center text-xl">
               Error loading student data: {error.message}
             </p>
           </CardContent>
@@ -58,12 +58,12 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
   if (!student) {
     return (
       <div className="content-wrapper container">
-        <h2 className="text-5xl font-bold mb-8 text-center text-foreground">
+        <h2 className="text-5xl font-bold mb-8 text-center text-gray-800">
           Profile
         </h2>
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardContent className="p-6">
-            <p className="text-muted-foreground text-xl text-center">
+            <p className="text-gray-600 text-xl text-center">
               No student data found.
             </p>
           </CardContent>
@@ -81,12 +81,12 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
 
   return (
     <div className="content-wrapper container">
-      <h2 className="text-5xl font-bold mb-8 text-center text-foreground items-center justify-center mt-20">
+      <h2 className="text-5xl font-bold mb-8 text-center text-gray-800 items-center justify-center mt-20">
         Profile
       </h2>
 
       <div className="space-y-8">
-        <Card>
+        <Card className="bg-white border border-gray-200 shadow-sm">
           <CardContent className="p-8">
             <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
               <div className="relative">
@@ -104,17 +104,17 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                   )}
                 </div>
                 {currentStudentRank && (
-                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                  <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded-full shadow-md">
                     #{currentStudentRank}
                   </div>
                 )}
               </div>
               <div className="flex-1 text-center lg:text-left">
-                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-3">
                   {student.name}
                 </h3>
                 <div className="space-y-2 mb-4">
-                  <p className="text-muted-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
+                  <p className="text-gray-600 text-lg sm:text-xl flex items-center justify-center lg:justify-start">
                     <svg
                       className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
                       fill="none"
@@ -130,7 +130,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                     </svg>
                     <span className="truncate">{student.email}</span>
                   </p>
-                  <p className="text-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
+                  <p className="text-gray-800 text-lg sm:text-xl flex items-center justify-center lg:justify-start">
                     <svg
                       className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
                       fill="none"
@@ -149,7 +149,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       {student.class.replace("GRADE_", "")}
                     </span>
                   </p>
-                  <p className="text-foreground text-lg sm:text-xl flex items-center justify-center lg:justify-start">
+                  <p className="text-gray-800 text-lg sm:text-xl flex items-center justify-center lg:justify-start">
                     <svg
                       className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
                       fill="none"
@@ -175,7 +175,7 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-base font-medium bg-primary/10 text-primary">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-base font-medium bg-orange-100 text-orange-600">
                     <svg
                       className="w-4 h-4 mr-1"
                       fill="currentColor"
@@ -219,14 +219,14 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
             className="hover:shadow-lg transition-shadow duration-200"
           />
 
-          <Card className="hover:shadow-lg transition-shadow duration-200">
+          <Card className="bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-base font-medium text-muted-foreground mb-1">
+                  <p className="text-base font-medium text-gray-600 mb-1">
                     Total Medals
                   </p>
-                  <p className="text-4xl font-bold text-primary">
+                  <p className="text-4xl font-bold text-orange-600">
                     {totalMedals}
                   </p>
                 </div>
@@ -243,14 +243,14 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow duration-200">
+          <Card className="bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-base font-medium text-muted-foreground mb-1">
+                  <p className="text-base font-medium text-gray-600 mb-1">
                     Olympiads
                   </p>
-                  <p className="text-4xl font-bold text-primary">
+                  <p className="text-4xl font-bold text-orange-600">
                     {Array.isArray(student.participatedOlympiads)
                       ? student.participatedOlympiads.length
                       : 0}
@@ -277,10 +277,12 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
         </div>
 
         {/* Ranking History Chart */}
-        <Card>
+        <Card className="bg-white border border-gray-200">
           <CardHeader>
-            <CardTitle className="text-center">Ranking History</CardTitle>
-            <p className="text-center text-muted-foreground">
+            <CardTitle className="text-center text-gray-800">
+              Ranking History
+            </CardTitle>
+            <p className="text-center text-gray-600">
               Track your ranking progress over time
             </p>
           </CardHeader>
@@ -292,15 +294,15 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
 
             {/* Ranking Summary */}
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl font-bold text-orange-600">
                   {currentStudentRank ? `#${currentStudentRank}` : "N/A"}
                 </div>
-                <div className="text-sm text-primary">Current Ranking</div>
+                <div className="text-base text-orange-600">Current Ranking</div>
               </div>
 
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl font-bold text-orange-600">
                   {student?.rankingHistory && student.rankingHistory.length > 0
                     ? (() => {
                         const lastEntry =
@@ -316,14 +318,14 @@ const ProfileTab = ({ student, loading, error }: ProfileTabProps) => {
                       })()
                     : "0"}
                 </div>
-                <div className="text-sm text-primary">Last Change</div>
+                <div className="text-base text-orange-600">Last Change</div>
               </div>
 
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="text-2xl font-bold text-orange-600">
                   {student?.participatedOlympiads?.length || 0}
                 </div>
-                <div className="text-sm text-primary">
+                <div className="text-base text-orange-600">
                   Olympiads Participated
                 </div>
               </div>
