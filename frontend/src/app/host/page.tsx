@@ -300,6 +300,7 @@ const HostPage = () => {
                         onResetForm={resetForm}
                         isSubmitting={isSubmitting}
                         onRefetch={refetch}
+                        onNavigateToManage={() => setActiveTab("manage")}
                     />
                 );
             case "manage":

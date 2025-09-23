@@ -90,12 +90,12 @@ export const OlympiadDetailModal = ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title="Olympiad Details"
+        title="Олимпиадын дэлгэрэнгүй"
         size="lg"
       >
-        <div className="flex items-center justify-center  py-8">
+        <div className="flex items-center justify-center bg-white py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-card"></div>
-          <span className="ml-2 text-gray-300">Loading...</span>
+          <span className="ml-2 text-gray-600">Ачааллаж байна...</span>
         </div>
       </Modal>
     );
@@ -106,12 +106,12 @@ export const OlympiadDetailModal = ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title="Olympiad Details"
+        title="Олимпиадын дэлгэрэнгүй"
         size="lg"
       >
         <div className="text-center py-8">
           <p className="text-red-500">
-            Error loading olympiad details: {error.message}
+            Олимпиадын дэлгэрэнгүй ачаалахад алдаа гарлаа: {error.message}
           </p>
         </div>
       </Modal>
@@ -123,56 +123,56 @@ export const OlympiadDetailModal = ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title="Olympiad Details"
+        title="Олимпиадын дэлгэрэнгүй"
         size="lg"
       >
-        <div className="text-center py-8 bg-card">
-          <p className="text-gray-300">Olympiad not found</p>
+        <div className="text-center py-8 bg-white">
+          <p className="text-gray-600">Олимпиад олдсонгүй</p>
         </div>
       </Modal>
     );
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Olympiad Details" size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title="Олимпиадын дэлгэрэнгүй" size="lg">
       <div className="">
         {/* Header Section */}
-        <div className="flex items-start justify-between bg-[#1a1a1a] p-4">
+        <div className="flex items-start justify-between bg-white p-4">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-white">{olympiad.name}</h2>
-            <p className="text-gray-300 leading-relaxed ">
+            <h2 className="text-2xl font-bold text-black">{olympiad.name}</h2>
+            <p className="text-gray-600 leading-relaxed ">
               {olympiad.description}
             </p>
           </div>
 
         </div>
 
-        <div className="bg-[#1a1a1a] p-2">
-          <h3 className="text-sm font-medium text-white flex items-center space-x-2 mb-3">
-            <BookOpen className="w-4 h-4 text-gray-400" />
-            <span>Class Types</span>
+        <div className="bg-white p-2">
+          <h3 className="text-sm font-medium text-black flex items-center space-x-2 mb-3">
+            <BookOpen className="w-4 h-4 text-gray-600" />
+            <span>Ангийн төрлүүд</span>
           </h3>
           <div className="space-y-3">
             {olympiad.classtypes?.map((classType: any, index: number) => (
               <div
                 key={classType.id}
-                className="border-2 rounded-lg border-gray-600 pl-3  p-2"
+                className="border-2 rounded-lg border-gray-300 pl-3  p-2"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-medium text-white">
+                  <h4 className="text-sm font-medium text-black">
                     {formatClassYear(classType.classYear)}
                   </h4>
-                  <div className="flex items-center space-x-3 text-xs text-gray-300">
-                    <span>{classType.medalists} medalists</span>
+                  <div className="flex items-center space-x-3 text-xs text-gray-600">
+                    <span>{classType.medalists} медальт</span>
                     <span>
-                      {classType.participants?.length || 0} participants
+                      {classType.participants?.length || 0} оролцогч
                     </span>
                     <span>{formatTime(classType.occurringTime)}</span>
                   </div>
                 </div>
-                <p className="text-xs text-gray-300 mb-2">
-                  Max Score:{" "}
-                  <span className="text-white font-medium">
+                <p className="text-xs text-gray-600 mb-2">
+                  Дээд оноо:{" "}
+                  <span className="text-black font-medium">
                     {classType.maxScore}
                   </span>
                 </p>
@@ -184,11 +184,11 @@ export const OlympiadDetailModal = ({
                           key={question.id}
                           className="flex items-center justify-between text-xs"
                         >
-                          <span className="text-gray-300">
+                          <span className="text-gray-600">
                             {question.questionName}
                           </span>
-                          <span className="text-gray-400">
-                            {question.maxScore} pts
+                          <span className="text-gray-500">
+                            {question.maxScore} оноо
                           </span>
                         </div>
                       )
@@ -201,40 +201,40 @@ export const OlympiadDetailModal = ({
         </div>
 
         {/* Basic Information */}
-        <div className="bg-[#1a1a1a]  p-4">
+        <div className="bg-white  p-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-gray-400" />
+              <Calendar className="w-4 h-4 text-gray-600" />
               <div>
-                <p className="text-xs text-gray-400">Registration Deadline</p>
-                <p className="text-sm text-white font-medium">
+                <p className="text-xs text-gray-600">Бүртгэл хаагдах огноо</p>
+                <p className="text-sm text-black font-medium">
                   {formatDate(olympiad.closeDay)}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Clock className="w-4 h-4 text-gray-400" />
+              <Clock className="w-4 h-4 text-gray-600" />
               <div>
-                <p className="text-xs text-gray-400">Event Date</p>
-                <p className="text-sm text-white font-medium">
+                <p className="text-xs text-gray-600">Олимпиадын огноо</p>
+                <p className="text-sm text-black font-medium">
                   {formatDate(olympiad.occurringDay)}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <MapPin className="w-4 h-4 text-gray-400" />
+              <MapPin className="w-4 h-4 text-gray-600" />
               <div>
-                <p className="text-xs text-gray-400">Location</p>
-                <p className="text-sm text-white font-medium">
+                <p className="text-xs text-gray-600">Байршил</p>
+                <p className="text-sm text-black font-medium">
                   {olympiad.location || "N/A"}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Users className="w-4 h-4 text-gray-400" />
+              <Users className="w-4 h-4 text-gray-600" />
               <div>
-                <p className="text-xs text-gray-400">Participants</p>
-                <p className="text-sm text-white font-medium">
+                <p className="text-xs text-gray-600">Оролцогчид</p>
+                <p className="text-sm text-black font-medium">
                   {olympiad.classtypes?.reduce(
                     (total: number, ct: any) => total + (ct.participants?.length || 0),
                     0
@@ -245,14 +245,14 @@ export const OlympiadDetailModal = ({
           </div>
         </div>
 
-        <div className="flex justify-end bg-[#1a1a1a] p-4">
+        <div className="flex justify-end bg-white p-4">
           {onEdit && (
             <div className="ml-4">
               <Button
                 onClick={onEdit}
                 className="bg-[#FF8400] hover:bg-[#FF8400]/80 text-white"
               >
-                Edit
+                Засах
               </Button>
             </div>
           )}

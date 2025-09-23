@@ -118,7 +118,7 @@ export default function OlympiadDetailsPage() {
 
   if (!olympiad && !olympiadLoading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-white mb-4">Olympiad not found</h1>
@@ -134,7 +134,7 @@ export default function OlympiadDetailsPage() {
 
   // Get unique class types from students
   const availableClassTypes = [...new Set(students.map(student => student.class).filter(Boolean))];
-  
+
   // Sort class types by grade level
   const sortedClassTypes = availableClassTypes.sort((a, b) => {
     const getGradeNumber = (classType: string) => {
@@ -155,7 +155,7 @@ export default function OlympiadDetailsPage() {
   }
 
   // Filter students by selected class type and sort by medals
-  const filteredStudents = selectedClassType 
+  const filteredStudents = selectedClassType
     ? students.filter(student => student.class === selectedClassType)
     : [];
 
@@ -175,7 +175,7 @@ export default function OlympiadDetailsPage() {
   const getStudentMedal = (student: any) => {
     // Only show medals for finished olympiads
     if (olympiad?.status !== "FINISHED") return "NONE";
-    
+
     if (student.gold && student.gold.length > 0) return "GOLD";
     if (student.silver && student.silver.length > 0) return "SILVER";
     if (student.bronze && student.bronze.length > 0) return "BRONZE";
@@ -183,7 +183,7 @@ export default function OlympiadDetailsPage() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen"
       initial={{ y: 100, scaleY: 0 }}
       animate={{ y: 0, scaleY: 1 }}
@@ -204,7 +204,7 @@ export default function OlympiadDetailsPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Буцах
           </Button>
-          
+
           <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 shadow-sm">
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -213,16 +213,15 @@ export default function OlympiadDetailsPage() {
                     {olympiad?.name || "Loading..."}
                   </h1>
                   {olympiad?.status && (
-                    <Badge className={`${
-                      olympiad.status === "OPEN" ? "bg-orange-500" :
-                      olympiad.status === "CLOSED" ? "bg-orange-600" :
-                      olympiad.status === "FINISHED" ? "bg-orange-700" :
-                      "bg-orange-400"
-                    } text-white border-0`}>
+                    <Badge className={`${olympiad.status === "OPEN" ? "bg-orange-500" :
+                        olympiad.status === "CLOSED" ? "bg-orange-600" :
+                          olympiad.status === "FINISHED" ? "bg-orange-700" :
+                            "bg-orange-400"
+                      } text-white border-0`}>
                       {olympiad.status === "OPEN" ? "Нээлттэй" :
-                       olympiad.status === "CLOSED" ? "Хаалттай" :
-                       olympiad.status === "FINISHED" ? "Дууссан" :
-                       olympiad.status}
+                        olympiad.status === "CLOSED" ? "Хаалттай" :
+                          olympiad.status === "FINISHED" ? "Дууссан" :
+                            olympiad.status}
                     </Badge>
                   )}
                 </div>
@@ -248,7 +247,7 @@ export default function OlympiadDetailsPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3 text-gray-600">
                 <Calendar className="w-5 h-5" />
                 <div>
@@ -258,7 +257,7 @@ export default function OlympiadDetailsPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3 text-gray-600">
                 <MapPin className="w-5 h-5" />
                 <div>
@@ -268,7 +267,7 @@ export default function OlympiadDetailsPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3 text-gray-600">
                 <Users className="w-5 h-5" />
                 <div>
@@ -293,14 +292,14 @@ export default function OlympiadDetailsPage() {
                 </CardTitle>
                 {olympiad?.status && olympiad.status !== "FINISHED" && (
                   <p className="text-sm text-gray-600 mt-1">
-                    {olympiad.status === "OPEN" 
+                    {olympiad.status === "OPEN"
                       ? "Тэмцээн хараахан эхлээгүй байна. Медаль тэмцээн дууссаны дараа харуулагдана."
                       : "Тэмцээн дуусаагүй байна. Медаль тэмцээн дууссаны дараа харуулагдана."
                     }
                   </p>
                 )}
               </div>
-              
+
               {/* Class Type Tabs */}
               {students.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -310,11 +309,10 @@ export default function OlympiadDetailsPage() {
                       <button
                         key={classType}
                         onClick={() => setSelectedClassType(classType)}
-                        className={`px-4 py-2 rounded-lg border transition-colors ${
-                          selectedClassType === classType
+                        className={`px-4 py-2 rounded-lg border transition-colors ${selectedClassType === classType
                             ? 'bg-orange-500 text-white border-orange-500'
                             : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 hover:text-black'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-2">
                           <Building className="w-4 h-4" />
@@ -330,7 +328,7 @@ export default function OlympiadDetailsPage() {
               )}
             </div>
           </CardHeader>
-          
+
           <CardContent className="!pt-0">
             {studentsLoading ? (
               <div className="text-center py-12">
@@ -352,7 +350,7 @@ export default function OlympiadDetailsPage() {
                       <ExternalLink className="w-4 h-4" />
                       Оролцогч дээр дарж дэлгэрэнгүй мэдээллийг үзэх боломжтой
                     </p>
-                    
+
                     <div className="space-y-3">
                       {sortedStudents.map((student, index) => {
                         const medal = getStudentMedal(student);
@@ -366,7 +364,7 @@ export default function OlympiadDetailsPage() {
                               <div className="flex items-center justify-center w-8 h-8 bg-orange-500 text-white font-bold rounded-full text-sm">
                                 {index + 1}
                               </div>
-                              
+
                               <div className="flex items-center gap-3">
                                 {student.profilePicture ? (
                                   <img
@@ -379,14 +377,14 @@ export default function OlympiadDetailsPage() {
                                     <Users className="w-5 h-5 text-gray-400" />
                                   </div>
                                 )}
-                                
-                                    <div>
-                                      <h3 className="font-semibold text-black">{student.name}</h3>
-                                      <p className="text-sm text-gray-600">{student.school}</p>
-                                    </div>
+
+                                <div>
+                                  <h3 className="font-semibold text-black">{student.name}</h3>
+                                  <p className="text-sm text-gray-600">{student.school}</p>
+                                </div>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-center gap-4">
                               {medal !== "NONE" && (
                                 <Badge className={`${getMedalColor(medal)} border`}>
@@ -394,12 +392,12 @@ export default function OlympiadDetailsPage() {
                                   <span className="ml-1">{getMedalName(medal)}</span>
                                 </Badge>
                               )}
-                              
+
                               <div className="text-right">
-                    
+
                                 <p className="font-semibold text-black">#{student.ranking || "N/A"}</p>
                               </div>
-                              
+
                               <ExternalLink className="w-4 h-4 text-gray-500 hover:text-black transition-colors" />
                             </div>
                           </div>
