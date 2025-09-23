@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PageTransition } from "@/components/ui/PageTransition";
@@ -46,8 +46,8 @@ const formatClassYear = (classYear: string | null | undefined) => {
   return classYearMapping[classYear] || classYear;
 };
 
-const formatDate = (dateString: string | null | undefined) => {
-  if (!dateString) return "Тодорхойгүй";
+const formatDateWithFallback = (dateString: string | null | undefined, fallbackText: string = "Тодорхойгүй") => {
+  if (!dateString) return fallbackText;
   
   try {
     const date = new Date(dateString);
@@ -91,12 +91,18 @@ export const Olympiad = () => {
     [key: string]: boolean;
   }>({});
 
-  const { data, loading, error } = useAllOlympiadsQuery();
+  const { data, loading, error } = useAllOlympiadsQuery({
+    // Add error policy to handle network issues
+    errorPolicy: 'ignore',
+    // Completely bypass cache to prevent stale data
+    fetchPolicy: 'no-cache',
+    // Disable cache for this query
+    notifyOnNetworkStatusChange: false,
+  });
 
-  const DESCRIPTION_LIMIT = 150; // Character limit for truncated description
+  const DESCRIPTION_LIMIT = 150;
 
   const toggleDescription = (olympiadId: string, event: React.MouseEvent) => {
-    // Prevent event bubbling if needed
     event.preventDefault();
     event.stopPropagation();
 
@@ -107,22 +113,16 @@ export const Olympiad = () => {
   };
 
   const olympiads = data?.allOlympiads || [];
-
   const statusTypes = ["OPEN", "CLOSED", "FINISHED"];
-
   const filteredOlympiads = olympiads.filter(
     (olympiad) => olympiad.status === selectedStatus
   );
 
-  // Debug: Log the olympiad data to check date fields
-  console.log("Olympiads data:", olympiads.map(o => ({
-    id: o.id,
-    name: o.name,
-    occurringDay: o.occurringDay,
-    closeDay: o.closeDay,
-    status: o.status
-  })));
 
+
+
+
+  // Show loading state during data loading
   if (loading) {
     return (
       <div className="px-6 py-8">
@@ -132,7 +132,7 @@ export const Olympiad = () => {
               Олимпиадуудын мэдээлэл
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Олимпиадуудыг хайж байна...
+              Олимпиадуудыг ачааллаж байна...
             </p>
           </div>
         </div>
@@ -282,7 +282,7 @@ export const Olympiad = () => {
                           <span className="font-medium">Олимпиадын огноо</span>
                         </div>
                         <div className="text-black font-semibold">
-                          {formatDate(olympiad.occurringDay)}
+                          {formatDateWithFallback(olympiad.occurringDay, "Огноо тодорхойгүй")}
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-black mt-1">
@@ -314,7 +314,7 @@ export const Olympiad = () => {
                           <span className="font-medium">Бүртгүүлэх хугацаа</span>
                         </div>
                         <div className="text-black font-semibold">
-                          {formatDate(olympiad.closeDay)}
+                          {formatDateWithFallback(olympiad.closeDay, "Хугацаа тодорхойгүй")}
                         </div>
                       </div>
                     </div>

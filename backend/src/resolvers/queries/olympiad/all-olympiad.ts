@@ -61,6 +61,15 @@ export const allOlympiads = async () => {
       delete transformed.organizer.Olympiads;
     }
 
+    // Ensure dates are properly serialized as ISO strings for GraphQL
+    if (transformed.occurringDay) {
+      transformed.occurringDay = new Date(transformed.occurringDay).toISOString();
+    }
+    if (transformed.closeDay) {
+      transformed.closeDay = new Date(transformed.closeDay).toISOString();
+    }
+
+
     return transformed;
   });
 };
