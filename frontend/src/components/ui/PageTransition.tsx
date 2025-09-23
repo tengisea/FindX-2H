@@ -62,7 +62,7 @@ export const PageTransition = ({
             zIndex: 9999,
             display: "none"
           }}
-          className="bg-black"
+          className="bg-white"
         />
       </AnimatePresence>
     </>
