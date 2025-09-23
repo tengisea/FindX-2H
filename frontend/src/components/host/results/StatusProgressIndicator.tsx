@@ -9,11 +9,11 @@ interface StatusProgressIndicatorProps {
 }
 
 const statusSteps = [
-    { key: "DRAFT", label: "Draft", icon: "📝" },
-    { key: "OPEN", label: "Open", icon: "🚀" },
-    { key: "CLOSED", label: "Closed", icon: "🔒" },
-    { key: "MEDALS_PREVIEW", label: "Medals Preview", icon: "🏅" },
-    { key: "FINISHED", label: "Finished", icon: "✅" }
+    { key: "DRAFT", label: "Draft" },
+    { key: "OPEN", label: "Open" },
+    { key: "CLOSED", label: "Closed" },
+    { key: "MEDALS_PREVIEW", label: "Medals Preview" },
+    { key: "FINISHED", label: "Finished" }
 ];
 
 export const StatusProgressIndicator: React.FC<StatusProgressIndicatorProps> = ({
@@ -54,7 +54,7 @@ export const StatusProgressIndicator: React.FC<StatusProgressIndicatorProps> = (
                                             : "bg-primary/20 text-primary"
                                         : "bg-muted text-muted-foreground"
                                 }`}>
-                                    {isActive ? step.icon : index + 1}
+                                    {isActive ? index + 1 : index + 1}
                                 </div>
                                 <span className={`text-xs mt-2 text-center ${
                                     isActive ? "text-foreground font-medium" : "text-muted-foreground"

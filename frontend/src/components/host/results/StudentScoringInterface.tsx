@@ -8,7 +8,7 @@ interface StudentScoringInterfaceProps {
     studentAnswers: any[];
     questions: any[];
     onUpdateScore: (options: { variables: { studentAnswerId: string; questionId: string; score: number } }) => Promise<any>;
-    onAddResult: (input: any) => Promise<any>;
+    onAddResult: (options: { variables: { input: any } }) => Promise<any>;
     onRefetch: () => void;
     onBack: () => void;
 }
@@ -26,20 +26,18 @@ export const StudentScoringInterface: React.FC<StudentScoringInterfaceProps> = (
 
     if (!classType) return null;
 
-    const handleScoreUpdate = async (studentAnswerId: string, questionId: string, score: number) => {
+    const handleScoreUpdate = async (options: { variables: { studentAnswerId: string; questionId: string; score: number } }) => {
         try {
-            await onUpdateScore({
-                variables: { studentAnswerId, questionId, score }
-            });
+            await onUpdateScore(options);
             onRefetch();
         } catch (error) {
             console.error("Error updating score:", error);
         }
     };
 
-    const handleAddStudentResult = async (input: any) => {
+    const handleAddStudentResult = async (options: { variables: { input: any } }) => {
         try {
-            await onAddResult(input);
+            await onAddResult(options);
             onRefetch();
             setSelectedStudent(null);
         } catch (error) {

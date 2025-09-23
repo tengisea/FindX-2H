@@ -7,7 +7,7 @@ interface StudentAnswerFormProps {
     questions: any[];
     classType: any;
     onUpdateScore: (options: { variables: { studentAnswerId: string; questionId: string; score: number } }) => Promise<any>;
-    onAddResult: (input: any) => Promise<any>;
+    onAddResult: (options: { variables: { input: any } }) => Promise<any>;
 }
 
 export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
@@ -20,11 +20,12 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
     const [answers, setAnswers] = useState<any[]>([]);
     const [uploadedImages, setUploadedImages] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [updateTimeout, setUpdateTimeout] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        if (studentAnswer?.answers) {
+        if (studentAnswer?.answers && studentAnswer.answers.length > 0) {
             setAnswers([...studentAnswer.answers]);
-        } else {
+        } else if (questions.length > 0) {
             // Initialize with empty answers for each question
             const initialAnswers = questions.map(question => ({
                 questionId: question.id,
@@ -32,11 +33,21 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                 description: ""
             }));
             setAnswers(initialAnswers);
+        } else {
+            setAnswers([]);
         }
     }, [studentAnswer, questions]);
 
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+        };
+    }, [updateTimeout]);
+
     const handleScoreChange = async (questionId: string, newScore: number) => {
-        console.log("🎯 Frontend: Updating score for questionId:", questionId, "newScore:", newScore);
         
         const question = questions.find(q => q.id === questionId);
         if (!question) {
@@ -47,28 +58,69 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
         // Validate score is within bounds
         const score = Math.max(0, Math.min(newScore, question.maxScore));
 
-        // Update local state
-        setAnswers(prev => prev.map(answer => 
-            answer.questionId === questionId 
-                ? { ...answer, score }
-                : answer
-        ));
+        // Store previous score for potential revert
+        const previousAnswer = answers.find(a => a.questionId === questionId);
+        const previousScore = previousAnswer?.score || 0;
 
-        // Update in database if student answer exists
-        if (studentAnswer?.id) {
-            try {
-                await onUpdateScore({
-                    variables: { studentAnswerId: studentAnswer.id, questionId, score }
-                });
-            } catch (error) {
-                console.error("Error updating score:", error);
-                // Revert local state on error
-                setAnswers(prev => prev.map(answer => 
+        // Update local state - ensure we have an answer for this question
+        setAnswers(prev => {
+            const existingAnswer = prev.find(a => a.questionId === questionId);
+            
+            if (existingAnswer) {
+                // Update existing answer
+                const updated = prev.map(answer => 
                     answer.questionId === questionId 
-                        ? { ...answer, score: answer.score }
+                        ? { ...answer, score }
                         : answer
-                ));
+                );
+                return updated;
+            } else {
+                // Add new answer for this question only
+                const newAnswer = {
+                    questionId,
+                    score,
+                    description: ""
+                };
+                const updated = [...prev, newAnswer];
+                return updated;
             }
+        });
+
+        // Update in database if student answer exists (with debounce)
+        if (studentAnswer?.id) {
+            // Clear existing timeout
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+            
+            // Set new timeout for debounced update
+            const timeout = setTimeout(async () => {
+                try {
+                    await onUpdateScore({
+                        variables: { studentAnswerId: studentAnswer.id, questionId, score }
+                    });
+                } catch (error) {
+                    console.error("Error updating score:", error);
+                    
+                    // Check if it's a version conflict error
+                    if (error instanceof Error && error.message && error.message.includes("No matching document found")) {
+                        // Don't revert on version conflict, let the parent component refetch
+                        return;
+                    }
+                    
+                    // Revert local state on other errors
+                    setAnswers(prev => {
+                        const updated = prev.map(answer => 
+                            answer.questionId === questionId 
+                                ? { ...answer, score: previousScore }
+                                : answer
+                        );
+                        return updated;
+                    });
+                }
+            }, 500); // 500ms debounce
+            
+            setUpdateTimeout(timeout);
         }
     };
 
@@ -96,11 +148,19 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
         try {
             const imageUrls = uploadedImages.map(file => URL.createObjectURL(file)); // In real app, upload to server
             
+            // Filter answers to only include those with actual scores or descriptions
+            const validAnswers = answers.filter(answer => 
+                answer.score > 0 || (answer.description && answer.description.trim() !== "")
+            );
+            
+            
             await onAddResult({
-                input: {
-                    studentAnswerId: studentAnswer.id,
-                    answers,
-                    image: imageUrls
+                variables: {
+                    input: {
+                        studentAnswerId: studentAnswer.id,
+                        answers: validAnswers,
+                        image: imageUrls
+                    }
                 }
             });
         } catch (error) {
@@ -171,7 +231,6 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                     </div>
                                 </div>
                             </div>
-<div className="flex items-center space-x-4 justify-start">
 
                             {/* Score Input */}
                             <div className="mb-4">
@@ -203,7 +262,6 @@ export const StudentAnswerForm: React.FC<StudentAnswerFormProps> = ({
                                     rows={3}
                                 />
                             </div>
-</div>
                         </div>
                     );
                 })}
