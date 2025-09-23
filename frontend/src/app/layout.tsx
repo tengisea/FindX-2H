@@ -36,16 +36,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <ApolloWrapper>
         <body
-          className={`${inter.variable} ${libreBaskerville.variable} ${greatVibes.variable} font-sans antialiased bg-background text-foreground`}
+          className={`${inter.variable} ${libreBaskerville.variable} ${greatVibes.variable} font-sans antialiased bg-white text-gray-900`}
           style={{
             backgroundImage: `
               linear-gradient(to right, #e5e7eb 1px, transparent 1px),
               linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
             `,
-            backgroundSize: '40px 40px'
+            backgroundSize: "40px 40px",
           }}
         >
           <AlertProvider>
