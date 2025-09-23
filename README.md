@@ -4,7 +4,7 @@ A comprehensive digital platform for managing mathematics olympiads and competit
 
 ## 🎯 Project Overview
 
-FindX is a full-stack web application that digitizes the traditional olympiad system, providing a modern platform for students, organizers, and administrators to manage competitive mathematics events. The system supports multiple user roles with dedicated interfaces and comprehensive tournament management.
+FindX is a full-stack web application that digitizes the traditional olympiad system, providing a modern platform for students and organizers to manage competitive mathematics events. The system supports multiple user roles with dedicated interfaces, comprehensive tournament management, and advanced ranking systems with medal-based point calculations.
 
 ## 🏗️ Architecture
 
@@ -14,208 +14,302 @@ FindX is a full-stack web application that digitizes the traditional olympiad sy
 - **Backend**: Node.js, Apollo GraphQL Server, MongoDB (Mongoose)
 - **Real-time**: Socket.IO, LiveKit (for video calls)
 - **AI Integration**: OpenAI API for task generation
-- **UI Components**: Radix UI, Lucide React icons
-
-### Project Structure
-
-```
-FindX-2H/
-├── frontend/          # Next.js React application
-├── backend/           # GraphQL API server
-└── README.md         # This file
-```
-
-## 👥 User Roles & Access
-
-The application has **no authentication system** - users access different interfaces through dedicated routes:
+- **UI Components**: Radix UI, Lucide React icons, Framer Motion
+- **Styling**: Custom #FF8400 color scheme, responsive design
+- **Animations**: Staggered menus, smooth transitions, interactive elements
 
 ### 🎓 Student Interface (`/student`)
 
+- **Modern Staggered Menu**: Animated navigation with smooth transitions
 - **Profile Management**: View personal information, scores, and achievements
 - **Olympiad Registration**: Browse and register for available olympiads
-- **Tournament Participation**: Join tournaments and view brackets
-- **Results & Performance**: Track scores, rankings, and progress
-- **Achievements**: View earned badges and certificates
+- **Results & Performance**: Track scores, rankings, and progress with medal-based points
+- **Achievements**: View earned badges and certificates with consistent card sizing
+- **Mandat System**: Digital certificate generation and management
+- **Responsive Design**: Optimized for all devices with clean white theme
 
-### 🏢 Host/Organizer Interface (`/host`)
+### 🏢 Host Interface (`/host`)
 
-- **Olympiad Creation**: Create new olympiad events with class types and questions
-- **Event Management**: Edit, update, and delete olympiads
-- **Class Type Configuration**: Set up grade levels, scoring, and questions
-- **Question Management**: Add, edit, and organize olympiad questions
-
-### 👨‍💼 Admin Interface (`/admin`)
-
-- **Olympiad Approval**: Review and approve pending olympiad requests
-- **Organizer Management**: Manage organizer accounts and permissions
-- **Tournament Creation**: Create and manage competitive tournaments
-- **System Oversight**: Monitor all system activities and data
+- **Olympiad Creation**: Comprehensive form for creating new olympiads
+- **Class Type Management**: Configure grade levels, questions, and scoring
+- **Results Processing**: Process student answers and assign medals
+- **Medal Preview**: Preview medal distribution before finalization
+- **Email Notifications**: Automated email system for student notifications
+- **Staggered Menu Navigation**: Modern animated interface
 
 ## 🚀 Key Features
 
-### 1. Olympiad Management System
+### 1. Advanced Ranking & Scoring System
 
-- **Multi-grade Support**: Supports grades 1-12 with Mongolian class naming
-- **Flexible Question Types**: Multiple choice, open-ended, and problem-solving questions
-- **Scoring System**: Configurable point values and medal thresholds
-- **Status Tracking**: PENDING → APPROVED workflow for olympiad approval
+- **Medal-Based Points**: Gold (100%), Silver (80%), Bronze (60%), Top10 (40%) of base score
+- **Automatic Point Assignment**: Students receive points when olympiads are finalized
+- **Ranking History**: Complete audit trail of point changes with organizer tracking
+- **Real-time Updates**: Live ranking updates with transaction safety
+- **Context-Aware Processing**: Organizer attribution for all ranking changes
 
-### 2. Tournament System
+### 2. Comprehensive Olympiad Management
 
-- **Bracket Generation**: Automatic tournament bracket creation
-- **Match Management**: Real-time match updates and winner tracking
-- **Pi Points System**: Gamified scoring system with point rewards
-- **Results Generation**: Automatic ranking and award distribution
+- **Multi-Grade Support**: Support for grades 1-12 and special classes (C, D, E, F)
+- **Question Management**: Create and manage problem sets for each grade level
+- **Room Assignment**: Automatic room allocation for participants
+- **Status Workflow**: Draft → Open → Closed → Medals Preview → Finished
+- **Invitation System**: Private olympiad invitations for qualified students
 
-### 3. AI-Powered Task Generation
+### 3. Tournament System
 
-- **OpenAI Integration**: Generates competitive programming problems
-- **Template Fallback**: 50+ pre-built problem templates across 8 topics
-- **Multi-difficulty**: Easy, Medium, Hard problem generation
-- **Topic Coverage**: Math, algorithms, data structures, English, and more
+- **Bracket Management**: Single and double elimination tournaments
+- **Live Updates**: Real-time match results and bracket progression
+- **Video Integration**: LiveKit integration for remote competitions
+- **Match Scheduling**: Automated scheduling with conflict detection
 
-### 4. Real-time Features
+### 4. AI-Powered Task Generation
+
+- **OpenAI Integration**: Automatic problem generation based on difficulty levels
+- **Custom Prompts**: Tailored problem creation for different grade levels
+- **Quality Control**: Built-in validation and review systems
+
+### 5. Modern User Interface
+
+- **Staggered Menu Navigation**: Smooth animated navigation with Framer Motion
+- **Custom Color Scheme**: Consistent #FF8400 orange theme throughout
+- **White Theme Design**: Clean, modern interface with excellent contrast
+- **Responsive Cards**: Uniform sizing for achievement and content cards
+- **Interactive Elements**: Hover effects, smooth transitions, and micro-animations
+
+### 6. Real-time Features
 
 - **Live Updates**: Socket.IO for real-time notifications
 - **Tournament Brackets**: Live bracket updates during tournaments
 - **Match Results**: Instant winner announcements and score updates
-
-## 📱 User Interface Highlights
-
-### Student Dashboard
-
-- **Modern Design**: Clean, intuitive interface with gradient backgrounds
-- **Responsive Layout**: Works on desktop, tablet, and mobile devices
-- **Interactive Elements**: Hover effects, animations, and smooth transitions
-- **Data Visualization**: Progress bars, statistics cards, and achievement displays
-
-### Host Dashboard
-
-- **Form Management**: Dynamic form creation for olympiad setup
-- **Class Type Builder**: Visual interface for configuring grade levels
-- **Question Editor**: Rich text editing for problem statements
-- **Status Management**: Visual indicators for olympiad approval status
-
-### Admin Dashboard
-
-- **Approval Workflow**: Streamlined process for reviewing olympiad requests
-- **Data Tables**: Sortable, filterable tables for managing large datasets
-- **Modal Interfaces**: Quick actions without page navigation
-- **Statistics Overview**: System-wide metrics and performance indicators
-
-## 🎮 Demo Scenarios
-
-### For Students:
-
-1. **Navigate to `/student`** - View personal dashboard
-2. **Browse Olympiads** - See available mathematics competitions
-3. **Register for Events** - Select grade level and register
-4. **View Tournaments** - Check tournament brackets and participate
-5. **Track Progress** - Monitor scores, achievements, and rankings
-
-### For Hosts/Organizers:
-
-1. **Navigate to `/host`** - Access organizer dashboard
-2. **Create Olympiad** - Set up new mathematics competition
-3. **Configure Classes** - Define grade levels and scoring
-4. **Add Questions** - Create problem sets for each grade
-5. **Manage Events** - Edit, update, or delete olympiads
-
-### For Administrators:
-
-1. **Navigate to `/admin`** - Access admin control panel
-2. **Review Pending** - Approve or reject olympiad requests
-3. **Create Tournaments** - Set up competitive programming events
-4. **Manage Organizers** - Oversee organizer accounts
-5. **System Monitoring** - View system statistics and performance
+- **Alert System**: Toast notifications with white theme styling
 
 ## 🗄️ Database Schema
 
 ### Core Entities
 
-- **Students**: Personal info, scores, participated olympiads
-- **Organizers**: Organization details, created olympiads
-- **Olympiads**: Event details, class types, questions, status
-- **ClassTypes**: Grade levels, scoring, participants
-- **Questions**: Problem statements, answers, difficulty levels
-- **Tournaments**: Competitive events, brackets, matches
-- **MatchRooms**: Individual matches, winners, scores
-- **PiWards**: Tournament results, rankings, awards
+- **Students**: Personal info, scores, participated olympiads, ranking history
+- **Olympiads**: Competition details, status, organizer, class types
+- **ClassTypes**: Grade-specific configurations, questions, participants
+- **Organizers**: Host organizations with olympiad management
+- **StudentAnswers**: Individual responses and scoring
+- **Questions**: Problem sets with scoring criteria
+- **ClassRooms**: Physical/virtual room assignments
 
 ### Key Relationships
 
-- Organizers create Olympiads
-- Olympiads contain multiple ClassTypes
-- ClassTypes have Questions and Participants
-- Students participate in Olympiads and Tournaments
-- Tournaments generate MatchRooms and PiWards
+- Students participate in multiple Olympiads
+- Olympiads contain multiple ClassTypes (grades)
+- ClassTypes have multiple Questions and Participants
+- Organizers create and manage Olympiads
+- StudentAnswers link Students to Questions with scores
 
-## 🔧 Technical Implementation
+## 🎮 Demo Scenarios
 
-### GraphQL API
+### For Students:
 
-- **Type-safe**: Full TypeScript integration with generated types
-- **Real-time**: Subscriptions for live updates
-- **Optimized**: Efficient queries with proper data fetching
-- **Scalable**: Modular resolver structure
+1. **Navigate to `/student`** - View personal dashboard with staggered menu
+2. **Browse Olympiads** - Search and filter available competitions
+3. **Register for Olympiad** - Select grade level and complete registration
+4. **View Results** - Check scores, rankings, and medal achievements
+5. **Download Certificates** - Generate and download achievement certificates
+6. **Track Progress** - Monitor ranking history and point changes
 
-### Frontend Architecture
+### For Hosts:
 
-- **Component-based**: Reusable UI components
-- **State Management**: React hooks and Apollo Client
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Performance**: Optimized rendering and lazy loading
+1. **Navigate to `/host`** - Access host dashboard with staggered menu
+2. **Create Olympiad** - Set up new competition with class types
+3. **Add Questions** - Create problem sets for each grade
+4. **Manage Events** - Edit, update, or delete olympiads
+5. **Process Results** - Assign medals and finalize rankings
+6. **Send Notifications** - Automated email system
 
-### AI Integration
-
-- **Fallback System**: AI generation with template backup
-- **Error Handling**: Graceful degradation when AI fails
-- **Content Quality**: Curated templates ensure consistent quality
-- **Scalability**: Easy to add new topics and difficulty levels
-
-## 🎯 Hackathon Evaluation Points
-
-### Innovation
-
-- **AI-Powered Content**: Automated problem generation
-- **Gamification**: Pi Points system for engagement
-- **Real-time Features**: Live tournament updates
-- **Multi-role System**: Comprehensive user management
-
-### Technical Excellence
-
-- **Modern Stack**: Latest React, Next.js, and TypeScript
-- **Type Safety**: Full TypeScript coverage
-- **Performance**: Optimized queries and rendering
-- **Scalability**: Modular, maintainable codebase
-
-### User Experience
-
-- **Intuitive Design**: Clean, modern interface
-- **Responsive**: Works across all devices
-- **Accessibility**: Proper semantic HTML and ARIA labels
-- **Performance**: Fast loading and smooth interactions
-
-### Completeness
-
-- **Full CRUD**: Complete data management
-- **Real-time Updates**: Live notifications and updates
-- **Error Handling**: Graceful error management
-- **Data Validation**: Input validation and sanitization
-
-## 🚀 Getting Started
+## 🚀 Installation & Setup
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 18+ and npm
 - MongoDB database
-- OpenAI API key (optional, for AI features)
+- OpenAI API key (for AI features)
 
+### Environment Configuration
 
-FindX Olympiad System represents a comprehensive solution for digitizing competitive mathematics education in Mongolia. The platform successfully combines modern web technologies with educational needs, providing a scalable, maintainable, and user-friendly system for managing olympiads and tournaments.
+Create `.env.local` files in both `frontend/` and `backend/` directories:
 
-The system demonstrates strong technical implementation, innovative features, and excellent user experience design, making it a compelling solution for the hackathon evaluation.
+```bash
+# Backend (.env.local)
+MONGODB_URI=mongodb://localhost:27017/findx
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
 
----
+# Frontend (.env.local)
+NEXT_PUBLIC_GRAPHQL_URL=http://localhost:8000/api/graphql
+```
 
-**Built with ❤️ for the Pinequest **
+### Installation Steps
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd FindX-2H
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   # Frontend
+   cd frontend
+   npm install
+
+   # Backend
+   cd ../backend
+   npm install
+   ```
+
+3. **Environment Setup**
+
+   ```bash
+   # Backend environment variables
+   cp backend/.env.example backend/.env.local
+   # Edit backend/.env.local with your configuration
+
+   # Frontend environment variables
+   cp frontend/.env.example frontend/.env.local
+   # Edit frontend/.env.local with your configuration
+   ```
+
+4. **Run the application**
+
+   ```bash
+   # Backend (GraphQL server)
+   cd backend
+   npm run dev
+
+   # Frontend (Next.js app)
+   cd frontend
+   npm run dev
+   ```
+
+### Access Points
+
+- **Landing Page**: `http://localhost:3000`
+- **Student Interface**: `http://localhost:3000/student`
+- **Host Interface**: `http://localhost:3000/host`
+- **All Olympiads**: `http://localhost:3000/olympiads`
+- **Student Rankings**: `http://localhost:3000/students-rankings`
+- **GraphQL Playground**: `http://localhost:8000/api/graphql`
+
+## 📊 System Statistics
+
+The landing page displays real-time statistics:
+
+- **Active Students**: Total registered students
+- **Host Organizations**: Number of organizing institutions
+- **Competitions Held**: Completed olympiads
+- **Top Performer**: Highest-ranked student
+
+## 🎨 Design System
+
+### Color Palette
+
+- **Primary Orange**: #FF8400 (buttons, accents, highlights)
+- **Background**: White with subtle grid pattern
+- **Text**: Black (#000000) for primary text
+- **Gray Scale**: Various shades for secondary elements
+
+### Typography
+
+- **Primary Font**: Inter (modern, clean)
+- **Display Font**: Libre Baskerville (elegant headings)
+- **Accent Font**: Great Vibes (decorative elements)
+
+### Components
+
+- **Staggered Menus**: Animated navigation with smooth transitions
+- **Cards**: Consistent sizing with hover effects
+- **Buttons**: Orange theme with hover states
+- **Forms**: Clean inputs with focus states
+- **Modals**: Overlay dialogs with backdrop blur
+
+## 🔧 Technical Features
+
+### Backend Architecture
+
+- **GraphQL API**: Type-safe queries and mutations
+- **MongoDB**: Document-based data storage
+- **Mongoose**: ODM with schema validation
+- **Transaction Support**: ACID compliance for critical operations
+- **Error Handling**: Comprehensive error management
+- **Email Services**: Automated notification system
+
+### Frontend Architecture
+
+- **Next.js 15**: Latest React framework with App Router
+- **TypeScript**: Full type safety
+- **Apollo Client**: GraphQL state management
+- **Framer Motion**: Advanced animations
+- **Tailwind CSS**: Utility-first styling
+- **Responsive Design**: Mobile-first approach
+
+### Performance Optimizations
+
+- **Code Splitting**: Automatic route-based splitting
+- **Image Optimization**: Next.js Image component
+- **Bundle Analysis**: Optimized build sizes
+- **Caching**: Apollo Client cache management
+- **Lazy Loading**: Component-level lazy loading
+
+## 🚀 Recent Updates
+
+### Ranking System Overhaul
+
+- Implemented medal-based point calculation
+- Added comprehensive ranking history tracking
+- Enhanced transaction safety for point updates
+- Improved organizer attribution system
+
+### UI/UX Enhancements
+
+- Implemented staggered menu navigation
+- Standardized #FF8400 color scheme
+- Added consistent card sizing
+- Improved white theme design
+- Enhanced responsive layouts
+
+### Backend Improvements
+
+- Centralized medal calculation logic
+- Added email notification system
+- Improved error handling and logging
+- Enhanced database transaction support
+
+## 🎯 Demo Data
+
+The system includes sample data for demonstration:
+
+- **Sample Students**: Pre-configured student profiles
+- **Sample Olympiads**: Various competition examples
+- **Sample Organizers**: Host organization data
+- **Sample Results**: Medal distributions and rankings
+
+## 📱 Mobile Responsiveness
+
+- **Responsive Design**: Optimized for all screen sizes
+- **Touch Interactions**: Mobile-friendly navigation
+- **Adaptive Layouts**: Flexible grid systems
+- **Performance**: Optimized for mobile devices
+
+## 🔒 Security Features
+
+- **Input Validation**: Comprehensive data validation
+- **Error Handling**: Secure error messages
+- **Database Security**: Mongoose schema validation
+- **API Security**: GraphQL query validation
+
+## 🎉 Conclusion
+
+FindX represents a modern approach to olympiad management, combining advanced technology with user-friendly design. The system provides a complete solution for organizing, participating in, and managing competitive mathematics events with real-time updates, comprehensive tracking, and beautiful user interfaces.
+
+**Built with ❤️ for the Pinequest Hackathon**
