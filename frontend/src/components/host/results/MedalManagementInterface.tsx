@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface MedalManagementInterfaceProps {
   olympiad: any;
@@ -87,10 +87,10 @@ export const MedalManagementInterface: React.FC<
           assignments,
         },
       });
-      alert("Medal assignments updated successfully!");
+      alert("Медалийн олгох мэдээлэл амжилттай шинэчлэгдлээ!");
     } catch (error) {
       console.error("Error updating medal assignments:", error);
-      alert("Error updating medal assignments");
+      alert("Медалийн олгох мэдээлэл шинэчлэхэд алдаа гарлаа!");
     }
   };
 
@@ -242,15 +242,14 @@ export const MedalManagementInterface: React.FC<
         <div className="bg-card rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h4 className="text-lg font-semibold text-foreground">
-              Medal Assignments - Grade{" "}
-              {selectedClassTypeData.classYear.replace("GRADE_", "")}
+            Медалийн оноолт - {selectedClassTypeData.classYear.replace("GRADE_", "")}р анги
             </h4>
             <div className="flex items-center space-x-2">
               <button
                 onClick={handleSaveMedalAssignments}
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
-                Save Changes
+               Өөрчлөлт хадгалах
               </button>
             </div>
           </div>
@@ -271,10 +270,10 @@ export const MedalManagementInterface: React.FC<
                     </h5>
                     <div className="text-lg font-bold">{count}</div>
                     <div className="text-xs text-muted-foreground">
-                      {medalType === "gold" && "1st Place"}
-                      {medalType === "silver" && "2nd Place"}
-                      {medalType === "bronze" && "3rd Place"}
-                      {medalType === "top10" && "Top 10"}
+                      {medalType === "gold" && "1-р байр"}
+                      {medalType === "silver" && "2-р байр"}
+                      {medalType === "bronze" && "3-р байр"}
+                      {medalType === "top10" && "эхний 10 байр"}
                     </div>
                   </div>
                 </div>
@@ -287,11 +286,11 @@ export const MedalManagementInterface: React.FC<
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
               <div className="flex items-center space-x-2 mb-2">
                 <div className="text-blue-600">ℹ️</div>
-                <h5 className="font-semibold text-blue-800">Auto-Assigned Medals</h5>
+                <h5 className="font-semibold text-blue-800">Автоматаар оноосон медалиуд</h5>
               </div>
               <p className="text-sm text-blue-700">
-                Medals have been automatically assigned based on student scores. 
-                You can review and adjust the assignments below before finalizing.
+              Сурагчдын оноонд үндэслэн медалиуд автоматаар оноогдсон.
+              Эцэслэхийн өмнө доорх оноолтыг шалгаж, шаардлагатай бол өөрчлөлт оруулна уу
               </p>
               <div className="grid grid-cols-4 gap-4 mt-3 text-sm">
                 <div>Gold: {selectedMedalPreview.gold?.length || 0}</div>
@@ -305,7 +304,7 @@ export const MedalManagementInterface: React.FC<
           {/* Student Rankings and Medal Assignment */}
           <div className="space-y-4">
             <h5 className="font-medium text-foreground">
-              Student Rankings & Medal Assignment
+              Нэгтгэгдсэн дүн
             </h5>
             
             {/* Show students from medal preview if available, otherwise from participants */}
@@ -328,7 +327,7 @@ export const MedalManagementInterface: React.FC<
                           {student.studentName}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          Score: {student.score} | Rank #{student.rank}
+                          Score: {student.score} | #{student.rank}
                         </div>
                       </div>
                     </div>

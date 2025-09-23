@@ -26,6 +26,7 @@ import { StudentScoringInterface } from "./results/StudentScoringInterface";
 import { RankingInterface } from "./results/RankingInterface";
 import { MedalManagementInterface } from "./results/MedalManagementInterface";
 import { StatusProgressIndicator } from "./results/StatusProgressIndicator";
+import { FinalResultsTable } from "./results/FinalResultsTable";
 
 interface ManageResultsProps {
     olympiads: any[];
@@ -61,7 +62,7 @@ interface ClassType {
     questions: Question[];
 }
 
-type ViewMode = "overview" | "scoring" | "ranking" | "medals";
+type ViewMode = "overview" | "scoring" | "ranking" | "medals" | "final-results";
 
 export const ManageResults: React.FC<ManageResultsProps> = ({
     olympiads,
@@ -197,6 +198,10 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                         onFinishOlympiad={handleFinishOlympiad}
                         onExportResults={onExportResults}
                         onViewResults={onViewResults}
+                        onViewFinalResults={(classTypeId) => {
+                            setSelectedClassType(classTypeId);
+                            setViewMode("final-results");
+                        }}
                         getStatusColor={getStatusColor}
                         getStatusDescription={getStatusDescription}
                     />
@@ -230,6 +235,29 @@ export const ManageResults: React.FC<ManageResultsProps> = ({
                         onUpdateMedalAssignments={updateMedalAssignments}
                         onBack={() => setViewMode("overview")}
                     />
+                );
+            case "final-results":
+                return (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                            </div>
+                            <button
+                                onClick={() => setViewMode("overview")}
+                                className="px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors flex items-center space-x-2"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                <span>Буцах</span>
+                            </button>
+                        </div>
+                        <FinalResultsTable
+                            classType={classTypes.find(ct => ct.id === selectedClassType)}
+                            studentAnswers={studentAnswers}
+                            questions={questions}
+                        />
+                    </div>
                 );
             default:
                 return null;
